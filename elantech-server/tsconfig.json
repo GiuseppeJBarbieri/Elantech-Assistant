@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "declaration": false,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "incremental": true,
+    "module": "commonjs",
+    "baseUrl": "./",
+    "outDir": "./build",
+    "target": "es6",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "lib": ["es6"],
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
+  },
+  "include": [
+    "**.ts"
+  ],
+  "exclude": []
+}

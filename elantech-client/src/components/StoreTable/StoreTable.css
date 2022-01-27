@@ -1,0 +1,13 @@
+div.row-expansion-style {
+    padding: 0px !important;
+  }
+  div.row-expansion-style:hover {
+    background: #212529 !important;
+  }
+  .spinnerDiv {
+    text-align: center;
+    padding-top: calc(25vh - 5%);  
+  }
+  th {
+    font-weight: 400;
+  }

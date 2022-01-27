@@ -1,0 +1,221 @@
+{
+   "swagger": "2.0",
+   "info": {
+      "description": "Elantech Assistant API Info",
+      "version": "1.0.0",
+      "title": "Elantech Assistant API",
+      "termsOfService": "http://swagger.io/terms/",
+      "contact": {
+         "name": "Giuseppe Barbieri & Steven Correia",
+         "email": "Giuseppejbarbieri@gmail.com"
+      },
+      "license": {
+         "name": "License TBA",
+         "url": "http://www.duckduckgo.com"
+      }
+   },
+   "tags": [
+      {
+         "name": "User",
+         "description": "User-based endpoints"
+      },
+      {
+         "name": "DEBUG",
+         "description": "Debug-based endpoints"
+      }
+   ],
+   "schemes": [
+      "http"
+   ],
+   "paths": {
+      "/api/v1/users/login": {
+         "post": {
+            "tags": [
+               "User"
+            ],
+            "summary": "Logins in with given credentials",
+            "description": "",
+            "operationId": "UserLogin",
+            "consumes": [
+               "application/json"
+            ],
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "in": "body",
+                  "name": "body",
+                  "description": "Credentials to login with.",
+                  "required": true,
+                  "schema": {
+                     "$ref": "#/definitions/UserLoginRequest"
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "Login successful"
+               },
+               "404": {
+                  "description": "Login unsuccessful"
+               }
+            }
+         }
+      },
+      "/api/v1/users": {
+         "post": {
+            "tags": [
+               "User"
+            ],
+            "summary": "Adds a new User",
+            "description": "",
+            "operationId": "AddUser",
+            "consumes": [
+               "application/json"
+            ],
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "in": "body",
+                  "name": "body",
+                  "description": "User to be created.",
+                  "required": true,
+                  "schema": {
+                     "$ref": "#/definitions/AddUserRequest"
+                  }
+               }
+            ],
+            "responses": {
+               "201": {
+                  "description": "Resource created"
+               },
+               "404": {
+                  "description": "Resource not found"
+               }
+            }
+         },
+         "get": {
+            "tags": [
+               "User"
+            ],
+            "summary": "Gets all Users",
+            "description": "",
+            "operationId": "GetAllUsers",
+            "consumes": [
+               "application/json"
+            ],
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [],
+            "responses": {
+               "200": {
+                  "description": "Resource found"
+               },
+               "400": {
+                  "description": "Resource not found"
+               }
+            }
+         }
+      },
+      "/api/v1/users/{id}": {
+         "get": {
+            "tags": [
+               "User"
+            ],
+            "summary": "Gets a User with given ID",
+            "description": "",
+            "operationId": "GetUserByID",
+            "consumes": [
+               "application/json"
+            ],
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "in": "path",
+                  "name": "id",
+                  "description": "ID of User to get.",
+                  "required": true,
+                  "schema": {
+                     "type": "integer",
+                     "minimum": 1
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "Resource found"
+               },
+               "400": {
+                  "description": "Resource not found"
+               }
+            }
+         }
+      }
+   },
+   "definitions": {
+      "AddUserRequest": {
+         "type": "object",
+         "properties": {
+            "email": {
+               "type": "string",
+               "format": "email",
+               "example": "admin@test.com"
+            },
+            "password": {
+               "type": "string",
+               "format": "password",
+               "example": "SomeStrongPassword"
+            },
+            "userTypeId": {
+               "type": "integer",
+               "format": "int32",
+               "example": "1"
+            }
+         }
+      },
+      "UserLoginRequest": {
+         "type": "object",
+         "properties": {
+            "username": {
+               "type": "string",
+               "format": "email",
+               "example": "admin@test.com"
+            },
+            "password": {
+               "type": "string",
+               "format": "password",
+               "example": "SomeStrongPassword"
+            }
+         }
+      },
+      "GeneralResponse": {
+         "type": "object",
+         "properties": {
+            "statusCode": {
+               "type": "integer",
+               "format": "int32",
+               "example": "201"
+            },
+            "message": {
+               "type": "string",
+               "example": "Resource created"
+            },
+            "id": {
+               "type": "integer",
+               "format": "int32",
+               "example": "1"
+            }
+         }
+      }
+   },
+   "externalDocs": {
+      "description": "More documentation here",
+      "url": "http://www.duckduckgo.com"
+   }
+}
