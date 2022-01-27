@@ -1,0 +1,10 @@
+Middle ware to parse out different types of products.
+
+Business layer will do the work.
+
+
+MONGO DB
+Cluster Name: ElantechCluster()
+Username: VipClubElantech
+Password: YKXSghAaeoHxcyTK
+

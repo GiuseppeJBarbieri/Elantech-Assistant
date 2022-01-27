@@ -51,7 +51,8 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
 
   }
   const getDrivers = () => {
-    setDriverTableState({ ...driverTableState, isPending: true });
+    setDriverTableState({ ...driverTableState, isPending: false });
+
     setTimeout(() => {
       axios.get(`${BASE_API_URL}drivers`, { withCredentials: true })
         .then((response) => {
@@ -114,7 +115,6 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
                 style={{ marginLeft: 10 }}
                 className='btn btn-dark'
                 onClick={() => setOpenEmailBtns(!openEmailBtns)}
-
               >
                 All Stores
               </Button>

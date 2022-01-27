@@ -1,0 +1,7 @@
+Products
+Inventory
+Outgoing
+Received
+Quotes
+Need to get (request purchases)
+
