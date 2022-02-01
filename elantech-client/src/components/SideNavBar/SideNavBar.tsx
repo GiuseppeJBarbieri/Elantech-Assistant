@@ -2,7 +2,7 @@ import * as React from 'react';
 import { FunctionComponent, HTMLAttributes } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import SlidingPane from 'react-sliding-pane';
-import { Truck, HouseDoor, Shop, ArrowBarLeft } from 'react-bootstrap-icons';
+import { HouseDoor, Shop, ArrowBarLeft } from 'react-bootstrap-icons';
 import { PAGE_ROUTES } from '../../constants/PageRoutes';
 import './SideNavBar.css';
 import 'react-sliding-pane/dist/react-sliding-pane.css';
@@ -61,22 +61,9 @@ const SideNavBarComponent: FunctionComponent<SideNavBarProps> = (props: SideNavB
                 verticalAlign: 'middle',
                 textAlign: 'center',
               }}
-              onClick={() => { props.setPanelVisible(false); props.history.replace(PAGE_ROUTES.STORES) }}>
+              onClick={() => { props.setPanelVisible(false); props.history.replace(PAGE_ROUTES.QUOTES) }}>
               <Shop className="bi me-2" width="25" height="25" style={{ 'verticalAlign': 'middle' }} />
-              <h4 className='font-weight-300' style={{ marginTop: 3 }}>Stores</h4>
-            </div>
-          </li>
-          <li>
-            <div className="btn btn-dark"
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                verticalAlign: 'middle',
-                textAlign: 'center',
-              }}
-              onClick={() => { props.setPanelVisible(false); props.history.replace(PAGE_ROUTES.DRIVERS) }}>
-              <Truck className="bi me-2" width="25" height="25" style={{ 'verticalAlign': 'middle' }} />
-              <h4 className='font-weight-300'>Drivers</h4>
+              <h4 className='font-weight-300' style={{ marginTop: 3 }}>Quotes</h4>
             </div>
           </li>
         </ul>

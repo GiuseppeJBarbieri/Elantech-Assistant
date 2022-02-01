@@ -13,9 +13,7 @@ export const PAGE_ROUTES = {
      */
     HOME: '/home',
 
-    DRIVERS: '/drivers',
-
-    STORES: '/stores',
+    QUOTES: '/quotes',
 
     SETTINGS: '/settings',
 

@@ -13,10 +13,9 @@ import { TopToolBar } from './components/TopToolBar/TopToolBar';
 import { Login } from './screens/Login/Login';
 import { ForgotPassword } from './screens/ForgotPassword/ForgotPassword';
 import { Register } from './screens/Register/Register';
-import { Home } from './screens/Home/Home';
 import { Settings } from './screens/Settings/Settings';
-import { Drivers } from './screens/Drivers/Drivers';
-import { Stores } from './screens/Stores/Stores';
+import { Home } from './screens/Home/Home';
+import { Quotes } from './screens/Quotes/Quotes';
 import NotFound from './screens/NotFound/NotFound';
 
 interface AppProps {
@@ -49,8 +48,7 @@ const App: React.FunctionComponent<AppProps> = (props) => {
             <Route exact path="/register" component={Register} />
 
             <Route exact path="/home" component={Home} />
-            <Route exact path="/drivers" component={Drivers} />
-            <Route exact path="/stores" component={Stores} />
+            <Route exact path="/quotes" component={Quotes} />
             <Route exact path="/settings" render={() => <Settings loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
 
             <Route component={NotFound} />

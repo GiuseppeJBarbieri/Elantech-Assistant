@@ -10,7 +10,7 @@ interface TopToolBarProps extends RouteComponentProps, HTMLAttributes<HTMLDivEle
 
 const TopToolBarComponent: FunctionComponent<TopToolBarProps> = ({ setPanelVisible }) => {
   return (
-    <div className="tool-bar-div TopToolBar bg-dark d-flex justify-content-start" style={{padding: 5}}>
+    <div className="tool-bar-div TopToolBar bg-dark d-flex justify-content-start" style={{padding: 5 }}>
       <button className="btn btn-dark" type="button" onClick={() => setPanelVisible(true)} >
         <List className="tool-bar-icon bi me-2" width="40" height="32" />
       </button>
