@@ -1,11 +1,18 @@
-th {
-  font-weight: 400;
+th, td {
+  font-weight: 300;
 }
 .expandedProductRow {
   background: #212529;
 }
 .react-bootstrap-table .row-expansion-style {
   padding: 0 !important;
+}
+
+.btn-dark {
+  font-weight: 300;
+}
+.dropdown-item {
+  font-weight: 300 !important;
 }
 
 .react-bootstrap-table table { table-layout: auto !important; }

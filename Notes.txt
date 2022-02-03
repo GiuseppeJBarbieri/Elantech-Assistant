@@ -31,3 +31,23 @@ Load all products on load up,
 every x interval check if products have been updated? Update if so.
 
 Use paginationprovider to filter data in tables
+
+
+Add count selected
+
+reserve multiple
+
+edit multiples 
+
+remove multiples
+
+
+
+
+
+******
+Add Product Modal
+
+Find way to add...
+1. Additional product numbers
+2. Additional Product Information
