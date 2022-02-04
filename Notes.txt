@@ -8,42 +8,30 @@ Cluster Name: ElantechCluster()
 Username: VipClubElantech
 Password: YKXSghAaeoHxcyTK
 
-
-
 Dashboard
 1. Add Product - added
 2. Edit Product - added
 3. Remove Product - added
-
 4. Add Inventory- added
 5. Edit Inventory- added
 6. Remove Inventory- added
-
 7. Reserved*** Change this???
-
 8. Quick ADD Quote for product - added
 
 
 ***
 
 Load all products on load up,
-
 every x interval check if products have been updated? Update if so.
+Use pagination provider to filter data in tables
 
-Use paginationprovider to filter data in tables
 
-
-Add count selected
+Add count selected --- done
 
 reserve multiple
-
 edit multiples 
-
 remove multiples
-
-
-
-
+    For this use selected rows, get all selected, if > 1 selected, bring up modal --- done
 
 ******
 Add Product Modal

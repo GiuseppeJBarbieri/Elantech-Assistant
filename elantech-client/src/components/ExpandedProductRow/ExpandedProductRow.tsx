@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { FunctionComponent, HTMLAttributes, useEffect, useState } from 'react';
-import { Navbar, Nav, Button, Collapse } from 'react-bootstrap';
+import { Navbar, Nav, Button, Collapse, Form } from 'react-bootstrap';
 import { Pencil, Trash } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
@@ -202,6 +202,10 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
         sizePerPage: 5,
         totalSize: fake_data_inner.length
     };
+    const selectRow = {
+        mode: 'checkbox',
+        clickToSelect: true
+    };
     return (
         <div style={{ padding: 20 }} className='expandedProductRow'>
             <Navbar bg="dark" variant="dark">
@@ -220,7 +224,6 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                 <p>Refurbished: 3</p>
                 <p>Renew: 2</p>
                 <p>Used: 2</p>
-                <p>Reserved: 2</p>
                 <p>Damaged: 2</p>
             </ div>
             <hr />
@@ -263,8 +266,10 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                                     paginationTableProps
                                 }) => (
                                     <div>
+                                        <div style={{marginBottom: 5, float: 'right'}}>
+                                            <Form.Control disabled size="sm" type="text" placeholder="Selected" style={{ width: 100, textAlign: 'center' }}/>
+                                        </div>
                                         <BootstrapTable
-                                            key='inventory_table'
                                             bootstrap4
                                             condensed
                                             {...paginationTableProps}
@@ -273,6 +278,10 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                                             data={fake_data_inner}
                                             classes="table table-dark table-hover table-striped"
                                             noDataIndication="Table is Empty"
+                                            selectRow={{
+                                                mode: 'checkbox',
+                                                clickToSelect: true
+                                            }}
                                         />
                                         <div className='d-flex justify-content-between'>
                                             <SizePerPageDropdownStandalone
