@@ -13,8 +13,9 @@ interface LoginProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement>
 }
 
 export const LoginLayout: FunctionComponent<LoginProps> = ({ history, loggedIn, setLoggedIn }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  // TODO REMOVE INPUTS HERE -DEV PURP
+  const [email, setEmail] = useState('giuseppe@elantechus.com');
+  const [password, setPassword] = useState('Admin123!');
 
   const loginClicked = () => {
     const PASSWORD_REGEX = /(?=^.{8,32}$)(?=(?:.*?\d){1})(?=.*[a-z])(?=(?:.*?[!@#$%*()_+^&}{:;?.]){1})(?!.*\s)[0-9a-zA-Z!@#$%^&*]*$/;

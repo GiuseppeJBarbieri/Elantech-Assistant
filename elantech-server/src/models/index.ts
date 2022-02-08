@@ -4,9 +4,6 @@ import config from '../config';
 import Session from './Session';
 import User from './User';
 import UserType from './UserType';
-import Driver from './Driver';
-import TimeFrame from './TimeFrame';
-import Store from './Store';
 
 const db: any = {};
 const DB_PARAMS = config.db;
@@ -33,15 +30,6 @@ db[user.name] = user;
 
 const userType = UserType(sequelize, Sequelize.DataTypes);
 db[userType.name] = userType;
-
-const timeFrame = TimeFrame(sequelize, Sequelize.DataTypes);
-db[timeFrame.name] = timeFrame;
-
-const driver = Driver(sequelize, Sequelize.DataTypes);
-db[driver.name] = driver;
-
-const store = Store(sequelize, Sequelize.DataTypes);
-db[store.name] = store;
 
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {

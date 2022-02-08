@@ -45,16 +45,7 @@ export default class Server {
 
       // Verify database connection and sync if we wish
       try {
-        await db.sequelize.authenticate();
-        if (DB_PARAMS.SYNC) {
-          await db.sequelize.sync(); // If this is enabled in config.json it will sync the DB to the code
-          // Create default user types if there are none
-          const userTypes = await db.UserTypes.findAll({});
-          if (userTypes.length === 0) {
-            await db.UserTypes.create({ value: 'Admin' });
-            await db.UserTypes.create({ value: 'User' });
-          }
-        }
+        // Authenticate with mongo here
       } catch (e) {
         logger.error(`Database configuration failed due to: ${e.message}`);
         onServerClosed();
@@ -128,8 +119,6 @@ export default class Server {
       // =============================================================================================== //
       //  SESSION CLEANUP TASK                                                                           //
       // =============================================================================================== //
-
-      /*
       const sessionCleanupTask = () => {
         try {
           UserController.ClearStaleSessions()
@@ -143,7 +132,6 @@ export default class Server {
           logger.error(`An error occurred during cleanup:\n${e.stack || e}`);
         }
       };
-      */
       // =============================================================================================== //
       // SESSION CLEANUP TASK  ^^^^^                                                                     //
       // =============================================================================================== //
