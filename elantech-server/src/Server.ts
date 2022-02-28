@@ -11,11 +11,11 @@ import upload from 'express-fileupload';
 // Application imports
 import cors from 'cors';
 import config from './config/index';
-import db from './models';
 import logger from './utils/logging/Logger';
 import router from './Routes';
 // import UserController from './features/users/UserController';
 import swaggerDocument from '../docs/swagger.json';
+import UserController from './features/users/UserController';
 
 const DB_PARAMS = config.db;
 

@@ -534,12 +534,11 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
     <section className="text-white main-section overflow-auto">
       <div style={{ padding: 20 }}>
         <div className='d-flex justify-content-between'>
-          <h1 style={{ fontWeight: 300 }}>Products</h1>
+          <h2 style={{ fontWeight: 300 }}>Products</h2>
           <div>
-            <Button variant="dark" size='lg' style={{ marginRight: 5 }}>Export to Excel</Button>
-            <Button variant="dark" size='lg' onClick={() => {setAddProductSwitch(true)}}
-            >
-            <Plus height="25" width="25" />New Product
+            <Button variant="dark" style={{ marginRight: 5 }}>Export to Excel</Button>
+            <Button variant="dark" onClick={() => {setAddProductSwitch(true)}}>
+            <Plus height="25" width="25" style={{ marginTop: -3, marginLeft: -10 }}/>New Product
           </Button>
         </div>
       </div>
@@ -554,7 +553,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
           <DropdownButton
             variant="dark"
             menuVariant="dark"
-            title={'Filter Products'}
+            title={'Filter Products '}
             style={{ marginRight: 5 }}
           >
             <Dropdown.Item eventKey="1">CPU</Dropdown.Item>
@@ -567,7 +566,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
             key={'dark'}
             variant="dark"
             menuVariant="dark"
-            title={'Search History'}
+            title={'Search History '}
           >
             <Dropdown.Item eventKey="1">---------</Dropdown.Item>
             <Dropdown.Item eventKey="2">---------</Dropdown.Item>
