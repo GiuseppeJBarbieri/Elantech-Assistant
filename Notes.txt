@@ -39,3 +39,8 @@ Add Product Modal
 Find way to add...
 1. Additional product numbers
 2. Additional Product Information
+
+
+
+Product Quotes
+Company Name - Quantity - Price - Date - Quoted By - Sold - Comments

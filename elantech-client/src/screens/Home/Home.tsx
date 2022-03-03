@@ -72,6 +72,9 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
       dataField: "product_number",
       text: "Product Number",
       sort: true,
+      style: {
+        maxWidth: 180
+      }
     },
     {
       id: 7,
@@ -98,6 +101,9 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
       dataField: "description",
       text: "Description",
       sort: false,
+      style: {
+        maxWidth: 280
+      }
     },
     {
       id: 12,
