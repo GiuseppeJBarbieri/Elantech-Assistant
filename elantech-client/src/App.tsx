@@ -16,7 +16,10 @@ import { Register } from './screens/Register/Register';
 import { Settings } from './screens/Settings/Settings';
 import { Home } from './screens/Home/Home';
 import { Quotes } from './screens/Quotes/Quotes';
+import { Receiving } from './screens/Receiving/Receiving';
+
 import NotFound from './screens/NotFound/NotFound';
+
 
 interface AppProps {
   width?: string;
@@ -46,9 +49,9 @@ const App: React.FunctionComponent<AppProps> = (props) => {
 
             <Route exact path="/forgotPassword" component={ForgotPassword} />
             <Route exact path="/register" component={Register} />
-
             <Route exact path="/home" component={Home} />
             <Route exact path="/quotes" component={Quotes} />
+            <Route exact path="/receiving" component={Receiving} />
             <Route exact path="/settings" render={() => <Settings loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
 
             <Route component={NotFound} />

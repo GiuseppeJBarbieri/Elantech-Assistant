@@ -14,6 +14,7 @@ interface HomeProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> 
 
 export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
   const [addProductSwitch, setAddProductSwitch] = useState(false);
+
   const rankFormatterEdit = (_: any, data: any, index: any) => {
     return (
       <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }}
@@ -61,7 +62,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
       id: 1,
       dataField: "quantity",
       text: "Qty",
-      sort: false,
+      sort: true,
       headerAlign: 'center',
       style: {
         textAlign: 'center',
@@ -80,7 +81,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
       id: 7,
       dataField: "product_type",
       text: "Type",
-      sort: false,
+      sort: true,
       headerAlign: 'center',
       style: {
         textAlign: 'center'
@@ -90,7 +91,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
       id: 8,
       dataField: "brand",
       text: "Brand",
-      sort: false,
+      sort: true,
       headerAlign: 'center',
       style: {
         textAlign: 'center'
@@ -109,18 +110,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
       id: 12,
       dataField: "last_added",
       text: "Last Added",
-      sort: false,
-    },
-    {
-      id: 3,
-      dataField: "addTimeFrame",
-      text: "Add",
-      sort: false,
-      formatter: rankFormatterAdd,
-      headerAlign: 'center',
-      style: {
-        textAlign: 'center'
-      }
+      sort: true,
     },
     {
       id: 10,
@@ -543,96 +533,96 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
           <h2 style={{ fontWeight: 300 }}>Products</h2>
           <div>
             <Button variant="dark" style={{ marginRight: 5 }}>Export to Excel</Button>
-            <Button variant="dark" onClick={() => {setAddProductSwitch(true)}}>
-            <Plus height="25" width="25" style={{ marginTop: -3, marginLeft: -10 }}/>New Product
-          </Button>
+            <Button variant="dark" onClick={() => { setAddProductSwitch(true) }}>
+              <Plus height="25" width="25" style={{ marginTop: -3, marginLeft: -10 }} />New Product
+            </Button>
+          </div>
         </div>
-      </div>
-      <hr />
-      <div className='d-flex justify-content-between'>
-        <input type='text'
-          className="form-control custom-input"
-          placeholder="Search Product"
-          style={{ width: 200 }}
-        />
-        <div className='d-flex'>
-          <DropdownButton
-            variant="dark"
-            menuVariant="dark"
-            title={'Filter Products '}
-            style={{ marginRight: 5 }}
-          >
-            <Dropdown.Item eventKey="1">CPU</Dropdown.Item>
-            <Dropdown.Item eventKey="2">Memory</Dropdown.Item>
-            <Dropdown.Item eventKey="3" active>SSD</Dropdown.Item>
-            <Dropdown.Item eventKey="4">HDD</Dropdown.Item>
-          </DropdownButton>
+        <hr />
+        <div className='d-flex justify-content-between'>
+          <input type='text'
+            className="form-control custom-input"
+            placeholder="Search Product"
+            style={{ width: 200 }}
+          />
+          <div className='d-flex'>
+            <DropdownButton
+              variant="dark"
+              menuVariant="dark"
+              title={'Filter Products '}
+              style={{ marginRight: 5 }}
+            >
+              <Dropdown.Item eventKey="1">CPU</Dropdown.Item>
+              <Dropdown.Item eventKey="2">Memory</Dropdown.Item>
+              <Dropdown.Item eventKey="3" active>SSD</Dropdown.Item>
+              <Dropdown.Item eventKey="4">HDD</Dropdown.Item>
+            </DropdownButton>
 
-          <DropdownButton
-            key={'dark'}
-            variant="dark"
-            menuVariant="dark"
-            title={'Search History '}
+            <DropdownButton
+              key={'dark'}
+              variant="dark"
+              menuVariant="dark"
+              title={'Search History '}
+            >
+              <Dropdown.Item eventKey="1">---------</Dropdown.Item>
+              <Dropdown.Item eventKey="2">---------</Dropdown.Item>
+              <Dropdown.Item eventKey="3" active>---------</Dropdown.Item>
+              <Dropdown.Item eventKey="4">---------</Dropdown.Item>
+            </DropdownButton>
+          </div>
+        </div>
+        <br />
+        <div>
+          <PaginationProvider
+            pagination={paginationFactory(options)}
           >
-            <Dropdown.Item eventKey="1">---------</Dropdown.Item>
-            <Dropdown.Item eventKey="2">---------</Dropdown.Item>
-            <Dropdown.Item eventKey="3" active>---------</Dropdown.Item>
-            <Dropdown.Item eventKey="4">---------</Dropdown.Item>
-          </DropdownButton>
+            {
+              ({
+                paginationProps,
+                paginationTableProps
+              }) => (
+                <div>
+                  <BootstrapTable
+                    key='product_table'
+                    {...paginationTableProps}
+                    keyField="product_number"
+                    bootstrap4
+                    data={fake_data}
+                    columns={column}
+                    classes="table table-dark table-hover table-striped table-responsive"
+                    noDataIndication="Table is Empty"
+                    expandRow={{
+                      onlyOneExpanding: true,
+                      renderer: (row, index) => {
+                        return (
+                          <ExpandedProductRow />
+                        )
+                      }
+                    }}
+                  />
+                  <div className='d-flex justify-content-between'>
+                    <SizePerPageDropdownStandalone
+                      {...paginationProps}
+                    />
+                    <PaginationListStandalone
+                      {...paginationProps}
+                    />
+                  </div>
+                </div>
+              )
+            }
+          </PaginationProvider>
         </div>
       </div>
-      <br />
-      <div>
-        <PaginationProvider
-          pagination={paginationFactory(options)}
-        >
-          {
-            ({
-              paginationProps,
-              paginationTableProps
-            }) => (
-              <div>
-                <BootstrapTable
-                  key='product_table'
-                  {...paginationTableProps}
-                  keyField="product_number"
-                  bootstrap4
-                  data={fake_data}
-                  columns={column}
-                  classes="table table-dark table-hover table-striped table-responsive"
-                  noDataIndication="Table is Empty"
-                  expandRow={{
-                    onlyOneExpanding: true,
-                    renderer: (row, index) => {
-                      return (
-                        <ExpandedProductRow />
-                      )
-                    }
-                  }}
-                />
-                <div className='d-flex justify-content-between'>
-                  <SizePerPageDropdownStandalone
-                    {...paginationProps}
-                  />
-                  <PaginationListStandalone
-                    {...paginationProps}
-                  />
-                </div>
-              </div>
-            )
-          }
-        </PaginationProvider>
-      </div>
-    </div>
-    {
+      {
         addProductSwitch &&
         <div className='modal-dialog'>
           <AddProductModal
             modalVisible={addProductSwitch}
             onClose={async () => {
               setAddProductSwitch(false);
-            }} 
-            />
+            }}
+          />
         </div>
       }
     </section >

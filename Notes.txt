@@ -44,3 +44,47 @@ Find way to add...
 
 Product Quotes
 Company Name - Quantity - Price - Date - Quoted By - Sold - Comments
+
+Company Information
+Company ID
+Company Name
+Company Rep
+Phone Number
+Address
+Comments
+Type (Broker - End User)
+
+
+
+Add quotes to top top bar
+
+
+Quotes
+ID
+Quantity
+Product Number
+Quoted Price
+Date Quoted
+Time Quoted
+Comments
+Who Quoted
+Sold
+
+Multiple quoted Prices for one quoted
+
+Quote approval system
+
+Times zones Screen
+
+
+
+Add need to by for order*
+
+
+Receiving
+po_number - comments - 
+date_received - time_received - purchased_from - received_by - Finished
+
+Receiving orders will have multiple products sometimes
+
+product_number - qty - CUD - Added-to-inventory - added_by

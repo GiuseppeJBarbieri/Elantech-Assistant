@@ -2,7 +2,7 @@ import * as React from 'react';
 import { FunctionComponent, HTMLAttributes } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import SlidingPane from 'react-sliding-pane';
-import { HouseDoor, Shop, ArrowBarLeft } from 'react-bootstrap-icons';
+import { HouseDoor, Shop, ArrowBarLeft, CartPlus, Truck } from 'react-bootstrap-icons';
 import { PAGE_ROUTES } from '../../constants/PageRoutes';
 import './SideNavBar.css';
 import 'react-sliding-pane/dist/react-sliding-pane.css';
@@ -64,6 +64,71 @@ const SideNavBarComponent: FunctionComponent<SideNavBarProps> = (props: SideNavB
               onClick={() => { props.setPanelVisible(false); props.history.replace(PAGE_ROUTES.QUOTES) }}>
               <Shop className="bi me-2" width="25" height="25" style={{ 'verticalAlign': 'middle' }} />
               <h4 className='font-weight-300' style={{ marginTop: 3 }}>Quotes</h4>
+            </div>
+          </li>
+          <li>
+            <div className="btn btn-dark"
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                verticalAlign: 'middle',
+                textAlign: 'center',
+              }}
+              onClick={() => { props.setPanelVisible(false); props.history.replace(PAGE_ROUTES.RECEIVING) }}>
+              <Truck className="bi me-2" width="25" height="25" style={{ 'verticalAlign': 'middle' }} />
+              <h4 className='font-weight-300' style={{ marginTop: 3 }}>Receiving</h4>
+            </div>
+          </li>
+          <li>
+            <div className="btn btn-dark"
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                verticalAlign: 'middle',
+                textAlign: 'center',
+              }}
+              onClick={() => { props.setPanelVisible(false); props.history.replace(PAGE_ROUTES.ORDER_PROCUREMENT) }}>
+              <CartPlus className="bi me-2" width="25" height="25" style={{ 'verticalAlign': 'middle' }} />
+              <h4 className='font-weight-300' style={{ marginTop: 3 }}>Outgoing</h4>
+            </div>
+          </li>
+          <li>
+            <div className="btn btn-dark"
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                verticalAlign: 'middle',
+                textAlign: 'center',
+              }}
+              onClick={() => { props.setPanelVisible(false); props.history.replace(PAGE_ROUTES.ORDER_PROCUREMENT) }}>
+              <CartPlus className="bi me-2" width="25" height="25" style={{ 'verticalAlign': 'middle' }} />
+              <h4 className='font-weight-300' style={{ marginTop: 3 }}>Procurement</h4>
+            </div>
+          </li>
+          <li>
+            <div className="btn btn-dark"
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                verticalAlign: 'middle',
+                textAlign: 'center',
+              }}
+              onClick={() => { props.setPanelVisible(false); props.history.replace(PAGE_ROUTES.ORDER_PROCUREMENT) }}>
+              <CartPlus className="bi me-2" width="25" height="25" style={{ 'verticalAlign': 'middle' }} />
+              <h4 className='font-weight-300' style={{ marginTop: 3 }}>Broker Bin</h4>
+            </div>
+          </li>
+          <li>
+            <div className="btn btn-dark"
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                verticalAlign: 'middle',
+                textAlign: 'center',
+              }}
+              onClick={() => { props.setPanelVisible(false); props.history.replace(PAGE_ROUTES.ORDER_PROCUREMENT) }}>
+              <CartPlus className="bi me-2" width="25" height="25" style={{ 'verticalAlign': 'middle' }} />
+              <h4 className='font-weight-300' style={{ marginTop: 3 }}>My Info</h4>
             </div>
           </li>
         </ul>

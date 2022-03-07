@@ -15,6 +15,11 @@ export const PAGE_ROUTES = {
 
     QUOTES: '/quotes',
 
+    ORDER_PROCUREMENT: '/order_procurement',
+
+    RECEIVING: '/receiving',
+
+
     SETTINGS: '/settings',
 
 
