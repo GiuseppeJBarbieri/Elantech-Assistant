@@ -87,7 +87,7 @@ const SideNavBarComponent: FunctionComponent<SideNavBarProps> = (props: SideNavB
                 verticalAlign: 'middle',
                 textAlign: 'center',
               }}
-              onClick={() => { props.setPanelVisible(false); props.history.replace(PAGE_ROUTES.ORDER_PROCUREMENT) }}>
+              onClick={() => { props.setPanelVisible(false); props.history.replace(PAGE_ROUTES.OUTGOING) }}>
               <CartPlus className="bi me-2" width="25" height="25" style={{ 'verticalAlign': 'middle' }} />
               <h4 className='font-weight-300' style={{ marginTop: 3 }}>Outgoing</h4>
             </div>
@@ -100,7 +100,7 @@ const SideNavBarComponent: FunctionComponent<SideNavBarProps> = (props: SideNavB
                 verticalAlign: 'middle',
                 textAlign: 'center',
               }}
-              onClick={() => { props.setPanelVisible(false); props.history.replace(PAGE_ROUTES.ORDER_PROCUREMENT) }}>
+              onClick={() => { props.setPanelVisible(false); props.history.replace(PAGE_ROUTES.PROCUREMENT) }}>
               <CartPlus className="bi me-2" width="25" height="25" style={{ 'verticalAlign': 'middle' }} />
               <h4 className='font-weight-300' style={{ marginTop: 3 }}>Procurement</h4>
             </div>
@@ -113,7 +113,7 @@ const SideNavBarComponent: FunctionComponent<SideNavBarProps> = (props: SideNavB
                 verticalAlign: 'middle',
                 textAlign: 'center',
               }}
-              onClick={() => { props.setPanelVisible(false); props.history.replace(PAGE_ROUTES.ORDER_PROCUREMENT) }}>
+              onClick={() => { props.setPanelVisible(false); props.history.replace(PAGE_ROUTES.RECEIVING) }}>
               <CartPlus className="bi me-2" width="25" height="25" style={{ 'verticalAlign': 'middle' }} />
               <h4 className='font-weight-300' style={{ marginTop: 3 }}>Broker Bin</h4>
             </div>
@@ -126,7 +126,7 @@ const SideNavBarComponent: FunctionComponent<SideNavBarProps> = (props: SideNavB
                 verticalAlign: 'middle',
                 textAlign: 'center',
               }}
-              onClick={() => { props.setPanelVisible(false); props.history.replace(PAGE_ROUTES.ORDER_PROCUREMENT) }}>
+              onClick={() => { props.setPanelVisible(false); props.history.replace(PAGE_ROUTES.PROCUREMENT) }}>
               <CartPlus className="bi me-2" width="25" height="25" style={{ 'verticalAlign': 'middle' }} />
               <h4 className='font-weight-300' style={{ marginTop: 3 }}>My Info</h4>
             </div>

@@ -17,6 +17,8 @@ import { Settings } from './screens/Settings/Settings';
 import { Home } from './screens/Home/Home';
 import { Quotes } from './screens/Quotes/Quotes';
 import { Receiving } from './screens/Receiving/Receiving';
+import { Procurement } from './screens/Procurement/Procurement';
+import { Outgoing } from './screens/Outgoing/Outgoing';
 
 import NotFound from './screens/NotFound/NotFound';
 
@@ -52,6 +54,8 @@ const App: React.FunctionComponent<AppProps> = (props) => {
             <Route exact path="/home" component={Home} />
             <Route exact path="/quotes" component={Quotes} />
             <Route exact path="/receiving" component={Receiving} />
+            <Route exact path="/procurement" component={Procurement} />
+            <Route exact path="/outgoing" component={Outgoing} />
             <Route exact path="/settings" render={() => <Settings loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
 
             <Route component={NotFound} />

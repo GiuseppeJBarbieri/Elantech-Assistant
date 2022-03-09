@@ -88,3 +88,9 @@ date_received - time_received - purchased_from - received_by - Finished
 Receiving orders will have multiple products sometimes
 
 product_number - qty - CUD - Added-to-inventory - added_by
+
+
+flag sku's (PRODUCTS) for DO NOT SELL
+
+Procurement
+product_number - quantity - requested_by - po_number - date_needed_by - sold_for - comments
