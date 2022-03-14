@@ -128,7 +128,33 @@ const SideNavBarComponent: FunctionComponent<SideNavBarProps> = (props: SideNavB
               }}
               onClick={() => { props.setPanelVisible(false); props.history.replace(PAGE_ROUTES.PROCUREMENT) }}>
               <CartPlus className="bi me-2" width="25" height="25" style={{ 'verticalAlign': 'middle' }} />
-              <h4 className='font-weight-300' style={{ marginTop: 3 }}>My Info</h4>
+              <h4 className='font-weight-300' style={{ marginTop: 3 }}>Removed</h4>
+            </div>
+          </li>
+          <li>
+            <div className="btn btn-dark"
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                verticalAlign: 'middle',
+                textAlign: 'center',
+              }}
+              onClick={() => { props.setPanelVisible(false); props.history.replace(PAGE_ROUTES.PROCUREMENT) }}>
+              <CartPlus className="bi me-2" width="25" height="25" style={{ 'verticalAlign': 'middle' }} />
+              <h4 className='font-weight-300' style={{ marginTop: 3 }}>Completed Orders</h4>
+            </div>
+          </li>
+          <li>
+            <div className="btn btn-dark"
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                verticalAlign: 'middle',
+                textAlign: 'center',
+              }}
+              onClick={() => { props.setPanelVisible(false); props.history.replace(PAGE_ROUTES.PROCUREMENT) }}>
+              <CartPlus className="bi me-2" width="25" height="25" style={{ 'verticalAlign': 'middle' }} />
+              <h4 className='font-weight-300' style={{ marginTop: 3 }}>Current Orders</h4>
             </div>
           </li>
         </ul>

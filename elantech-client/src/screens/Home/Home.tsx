@@ -9,22 +9,14 @@ import './Home.css';
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import { ExpandedProductRow } from '../../components/ExpandedProductRow/ExpandedProductRow';
 import { AddProductModal } from '../../components/AddProductModal/AddProductModal';
+import IProduct from '../../types/IProduct';
 
 interface HomeProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> { }
 
 export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
   const [addProductSwitch, setAddProductSwitch] = useState(false);
-
-  const rankFormatterEdit = (_: any, data: any, index: any) => {
-    return (
-      <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }}
-        onClick={() => {
-          console.log('Edit Column')
-        }} >
-        <Pencil style={{ fontSize: 20, color: 'white' }} />
-      </div>
-    );
-  };
+  const [editProductSwitch, setEditProductSwitch] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<IProduct>();
 
   const rankFormatterRemove = (_: any, data: any, index: any) => {
     return (
@@ -34,7 +26,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
     );
   };
 
-  const rankFormatterAdd = (_: any, data: any, index: any) => {
+  const rankFormatterEdit = (_: any, data: any, index: any) => {
     return (
       <div
         style={{
@@ -43,15 +35,16 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
           lineHeight: 'normal',
           zIndex: 0
         }}
-        onClick={(e) => { e.stopPropagation() }}
-      >
+        onClick={(e) => {
+          e.stopPropagation()
+        }} >
         <div onClick={(e) => {
-          console.log('add');
+          setEditProductSwitch(true);
+          setSelectedProduct(e)
+          console.log('Edit');
         }}
         >
-          <Plus
-            style={{ fontSize: 20, color: 'white' }}
-          />
+          <Pencil style={{ fontSize: 20, color: 'white' }} />
         </div>
       </div>
     );
@@ -619,8 +612,21 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
         <div className='modal-dialog'>
           <AddProductModal
             modalVisible={addProductSwitch}
+            edit_product={selectedProduct}
             onClose={async () => {
               setAddProductSwitch(false);
+            }}
+          />
+        </div>
+      }
+      {
+        editProductSwitch &&
+        <div className='modal-dialog'>
+          <AddProductModal
+            modalVisible={editProductSwitch}
+            edit_product={selectedProduct}
+            onClose={async () => {
+              setEditProductSwitch(false);
             }}
           />
         </div>

@@ -21,6 +21,8 @@ export const PAGE_ROUTES = {
 
     OUTGOING: '/outgoing',
 
+    BROKERBIN: '/brokerbin',
+
     SETTINGS: '/settings',
 
 

@@ -76,7 +76,7 @@ Quote approval system
 
 Times zones Screen
 
-
+                                         
 
 Add need to by for order*
 
@@ -94,3 +94,40 @@ flag sku's (PRODUCTS) for DO NOT SELL
 
 Procurement
 product_number - quantity - requested_by - po_number - date_needed_by - sold_for - comments
+
+
+outgoing
+order_number - shipping_to - added_by - shipping_type - order_type - tracking_number - date_shipped
+
+
+Removed Inventory section
+
+When removing inventory get a reason for removal
+
+
+Completed orders
+Company Name - Seller - PONUMBER - Who processed - Date - Product Number - QTY - description  
+
+Serial Numbers - who we bought it from - po number (incoming)
+
+
+place to add serial number
+
+PO - reserve inventory - remove - 
+
+
+Reserved
+when order is created, warehouse will reserve for that order
+
+
+upload csv to quickbooks for order form
+
+
+
+New sections
+
+completed orders - shipped - not shipped
+
+current orders
+
+Quote -> Order -> ben reserves for the order - completed order adds Completed order information
