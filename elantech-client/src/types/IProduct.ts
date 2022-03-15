@@ -1,7 +1,7 @@
 interface IProduct {
     quantity?: number;
     product_number?: string;
-    type?: string;
+    product_type?: string;
     brand?: string;
     description?: string;
     last_added?: Date;
@@ -11,7 +11,8 @@ interface IProduct {
     alt_4?: string;
     ebay_link?: string;
     website_link?: string;
-    quick_specs_link?: string;
+    quick_specs?: string;
+    related_tags?: string;
 }
 
 export default IProduct;

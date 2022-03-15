@@ -5,12 +5,14 @@ import { Pencil, Trash } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { AddInventoryModal } from '../AddInventoryModal/AddInventoryModal';
 
 interface ExpandedProductRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
 }
 
 const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = (props) => {
     const [open, setOpen] = useState(false);
+    const [addInventorySwitch, setAddInventorySwitch] = useState(false);
     const rankFormatterEdit = (_: any, data: any, index: any) => {
         return (
             <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }}
@@ -242,7 +244,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
             quoted_by: 'Giuseppe',
             comments: 'Lorem Ipsum',
             sold: 'No',
-        },{
+        }, {
             quantity: '15',
             company_name: 'Service Express',
             price: '$12.50',
@@ -251,7 +253,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
             comments: 'Lorem Ipsum',
             sold: 'No',
         },
-        
+
     ];
     const quotes_column = [
         {
@@ -325,6 +327,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                     <Nav.Link href="#features">Website Listing</Nav.Link>
                     <Nav.Link href="#pricing">HPE Quick Specs</Nav.Link>
                     <Nav.Link href="#quickQuote">Quick Quote</Nav.Link>
+                    <Nav.Link onClick={() => setAddInventorySwitch(true)}>Add Inventory</Nav.Link>
                     <Nav.Link onClick={() => {
                         setHideQuotes(!hideQuotes);
                         if (viewQuotesLbl == 'View Quotes') {
@@ -392,8 +395,25 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                                             paginationTableProps
                                         }) => (
                                             <div>
-                                                <div style={{ marginBottom: 5, float: 'right' }}>
-                                                    <Form.Control disabled size="sm" type="text" placeholder="Selected" style={{ width: 100, textAlign: 'center' }} />
+                                                <div>
+                                                    <div className='d-flex justify-content-between' style={{ marginBottom: 5 }}>
+                                                        <Button
+                                                            aria-controls="example-collapse-text"
+                                                            aria-expanded={open}
+                                                            variant='dark'
+                                                            onClick={() => {
+                                                                setOpen(!open);
+                                                                if (expandInventoryLbl == 'Expand Inventory Table') {
+                                                                    setExpandInventoryLbl('Collapse Inventory Table')
+                                                                } else {
+                                                                    setExpandInventoryLbl('Expand Inventory Table')
+                                                                }
+                                                            }}
+                                                        >
+                                                            Edit Inventory
+                                                        </Button>
+                                                        <Form.Control disabled size="sm" type="text" placeholder="Selected" style={{ width: 100, textAlign: 'center' }} />
+                                                    </div>
                                                 </div>
                                                 <BootstrapTable
                                                     bootstrap4
@@ -464,6 +484,17 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                         </PaginationProvider>
                     </div>
                     <hr />
+                </div>
+            }
+            {
+                addInventorySwitch &&
+                <div className='modal-dialog'>
+                    <AddInventoryModal
+                        modalVisible={addInventorySwitch}
+                        onClose={async () => {
+                            setAddInventorySwitch(false);
+                        }}
+                    />
                 </div>
             }
         </ div>

@@ -1,15 +1,16 @@
 import * as React from 'react';
 import { FunctionComponent, HTMLAttributes, useState } from 'react';
-import { Accordion, Button, Collapse, Container, Dropdown, DropdownButton, Nav, Navbar } from 'react-bootstrap';
-import paginationFactory, { PaginationProvider, PaginationTotalStandalone, PaginationListStandalone, SizePerPageDropdownStandalone } from 'react-bootstrap-table2-paginator';
+import { Button, Dropdown, DropdownButton } from 'react-bootstrap';
+import paginationFactory, { PaginationProvider, PaginationListStandalone, SizePerPageDropdownStandalone } from 'react-bootstrap-table2-paginator';
 import { Pencil, Plus, Trash } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { ExpandedProductRow } from '../../components/ExpandedProductRow/ExpandedProductRow';
+import { ProductModal } from '../../components/ProductModal/ProductModal';
+import IProduct from '../../types/IProduct';
 import './Home.css';
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
-import { ExpandedProductRow } from '../../components/ExpandedProductRow/ExpandedProductRow';
-import { AddProductModal } from '../../components/AddProductModal/AddProductModal';
-import IProduct from '../../types/IProduct';
+import { AddInventoryModal } from '../../components/AddInventoryModal/AddInventoryModal';
 
 interface HomeProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> { }
 
@@ -25,7 +26,6 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
       </div>
     );
   };
-
   const rankFormatterEdit = (_: any, data: any, index: any) => {
     return (
       <div
@@ -40,7 +40,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
         }} >
         <div onClick={(e) => {
           setEditProductSwitch(true);
-          setSelectedProduct(e)
+          setSelectedProduct(data)
           console.log('Edit');
         }}
         >
@@ -49,12 +49,11 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
       </div>
     );
   };
-
   const column = [
     {
       id: 1,
       dataField: "quantity",
-      text: "Qty",
+      text: "QTY",
       sort: true,
       headerAlign: 'center',
       style: {
@@ -610,9 +609,10 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
       {
         addProductSwitch &&
         <div className='modal-dialog'>
-          <AddProductModal
+          <ProductModal
             modalVisible={addProductSwitch}
-            edit_product={selectedProduct}
+            modalSwitch={0}
+            selectedProduct={undefined}
             onClose={async () => {
               setAddProductSwitch(false);
             }}
@@ -622,9 +622,10 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
       {
         editProductSwitch &&
         <div className='modal-dialog'>
-          <AddProductModal
+          <ProductModal
             modalVisible={editProductSwitch}
-            edit_product={selectedProduct}
+            modalSwitch={1}
+            selectedProduct={selectedProduct}
             onClose={async () => {
               setEditProductSwitch(false);
             }}
