@@ -5,13 +5,15 @@ import { Pencil, Trash } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+import IProduct from '../../types/IProduct';
 import { AddInventoryModal } from '../AddInventoryModal/AddInventoryModal';
+import electron from 'electron';
 
 interface ExpandedProductRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+    selectedProduct: IProduct
 }
-
 const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = (props) => {
-    const [open, setOpen] = useState(false);
+    const [openState, setOpenState] = useState(false);
     const [addInventorySwitch, setAddInventorySwitch] = useState(false);
     const rankFormatterEdit = (_: any, data: any, index: any) => {
         return (
@@ -318,15 +320,37 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
     const [hideQuotes, setHideQuotes] = useState(true);
     const [viewQuotesLbl, setViewQuotesLbl] = useState('View Quotes');
     const [expandInventoryLbl, setExpandInventoryLbl] = useState('Expand Inventory Table');
+    const [newOpenedBox, setNewOpenedBox] = useState(0);
+    const [factorySealed, setFactorySealed] = useState(0);
+    const [refurbished, setRefurbished] = useState(0);
+    const [renew, setRenew] = useState(0);
+    const [used, setUsed] = useState(0);
+    const [damaged, setDamaged] = useState(0);
     return (
         <div style={{ padding: 20 }} className='expandedProductRow'>
             <Navbar bg="dark" variant="dark">
                 <Navbar.Brand>More Info</Navbar.Brand>
                 <Nav className="me-auto">
-                    <Nav.Link href="#home">Ebay Listing</Nav.Link>
-                    <Nav.Link href="#features">Website Listing</Nav.Link>
-                    <Nav.Link href="#pricing">HPE Quick Specs</Nav.Link>
-                    <Nav.Link href="#quickQuote">Quick Quote</Nav.Link>
+                    <Nav.Link onClick={async () => {
+                        window.open(props.selectedProduct.ebay_link)
+                    }}>
+                        Ebay Listing
+                    </Nav.Link>
+                    <Nav.Link onClick={async () => {
+                        window.open(props.selectedProduct.website_link)
+                    }}>
+                        Website Listing
+                    </Nav.Link>
+                    <Nav.Link onClick={async () => {
+                        window.open(props.selectedProduct.quick_specs)
+                    }}>
+                        HPE Quick Specs
+                    </Nav.Link>
+                    <Nav.Link onClick={() => {
+                        window.open(props.selectedProduct.ebay_link)
+                    }}>
+                        Quick Quote
+                    </Nav.Link>
                     <Nav.Link onClick={() => setAddInventorySwitch(true)}>Add Inventory</Nav.Link>
                     <Nav.Link onClick={() => {
                         setHideQuotes(!hideQuotes);
@@ -342,22 +366,29 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                 <div>
                     <hr />
                     <div className='d-flex justify-content-between' style={{ paddingLeft: 15, paddingRight: 15 }}>
-                        <p>New Opened Box: 6</p>
-                        <p>Factory Sealed: 5</p>
-                        <p>Refurbished: 3</p>
-                        <p>Renew: 2</p>
-                        <p>Used: 2</p>
-                        <p>Damaged: 2</p>
+                        <p>New Opened Box: {newOpenedBox}</p>
+                        <p>Factory Sealed: {factorySealed}</p>
+                        <p>Refurbished: {refurbished}</p>
+                        <p>Renew: {renew}</p>
+                        <p>Used: {used}</p>
+                        <p>Damaged: {damaged}</p>
                     </ div>
                     <hr />
                     <div className='d-flex' style={{ padding: 20 }}>
                         <div style={{ marginRight: 50 }}>
-                            <p><strong style={{ fontWeight: 500 }}>Product Number : </strong>&emsp;&ensp;&nbsp;Example-b21</p>
-                            <p><strong style={{ fontWeight: 500 }}>Alternate Number 1:</strong>&emsp;Example-b21</p>
-                            <p><strong style={{ fontWeight: 500 }}>Alternate Number 2:</strong>&emsp;Example-b21</p>
-                            <p><strong style={{ fontWeight: 500 }}>Alternate Number 3:</strong>&emsp;Example-b21</p>
-                            <p><strong style={{ fontWeight: 500 }}>Alternate Number 4:</strong>&emsp;Example-b21</p>
+                            <p><strong style={{ fontWeight: 500 }}>Product Number : </strong></p>
+                            <p><strong style={{ fontWeight: 500 }}>Alternate Number 1:</strong></p>
+                            <p><strong style={{ fontWeight: 500 }}>Alternate Number 2:</strong></p>
+                            <p><strong style={{ fontWeight: 500 }}>Alternate Number 3:</strong></p>
+                            <p><strong style={{ fontWeight: 500 }}>Alternate Number 4:</strong></p>
                         </ div>
+                        <div>
+                        <p>{props.selectedProduct.product_number}</p>
+                        <p>{props.selectedProduct.alt_1}</p>
+                        <p>{props.selectedProduct.alt_2}</p>
+                        <p>{props.selectedProduct.alt_3}</p>
+                        <p>{props.selectedProduct.alt_4}</p>
+                        </div>
                         <div style={{ marginRight: 50 }}>
                             <p><strong style={{ fontWeight: 500 }}>Average Quote:</strong>&emsp;&emsp;&emsp; $210.00</p>
                             <p><strong style={{ fontWeight: 500 }}>Last Quoted Price:</strong>&emsp; $200.00</p>
@@ -370,10 +401,10 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                     <div style={{ textAlign: 'center' }}>
                         <Button
                             aria-controls="example-collapse-text"
-                            aria-expanded={open}
+                            aria-expanded={openState}
                             variant='dark'
                             onClick={() => {
-                                setOpen(!open);
+                                setOpenState(!openState);
                                 if (expandInventoryLbl == 'Expand Inventory Table') {
                                     setExpandInventoryLbl('Collapse Inventory Table')
                                 } else {
@@ -383,7 +414,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                         >
                             {expandInventoryLbl}
                         </Button>
-                        <Collapse in={open}>
+                        <Collapse in={openState}>
                             <div id="example-collapse-text">
                                 <br />
                                 <PaginationProvider
@@ -399,10 +430,10 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                                                     <div className='d-flex justify-content-between' style={{ marginBottom: 5 }}>
                                                         <Button
                                                             aria-controls="example-collapse-text"
-                                                            aria-expanded={open}
+                                                            aria-expanded={openState}
                                                             variant='dark'
                                                             onClick={() => {
-                                                                setOpen(!open);
+                                                                setOpenState(!openState);
                                                                 if (expandInventoryLbl == 'Expand Inventory Table') {
                                                                     setExpandInventoryLbl('Collapse Inventory Table')
                                                                 } else {

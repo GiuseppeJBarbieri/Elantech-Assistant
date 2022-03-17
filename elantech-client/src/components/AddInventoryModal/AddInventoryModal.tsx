@@ -11,6 +11,7 @@ interface AddInventoryModalProps extends RouteComponentProps, HTMLAttributes<HTM
 const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props) => {
     const [isSaving, setIsSaving] = useState(false);
     const [radioSwitch, setRadioSwitch] = useState(false);
+
     return (
         <div>
             <Modal backdrop="static" show={props.modalVisible} onHide={props.onClose} fullscreen={true}>
