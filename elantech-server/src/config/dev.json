@@ -27,7 +27,7 @@
     "HOST": "localhost",
     "NAME": "elantech-assistant",
     "USER": "postgres",
-    "PASSWORD": "admin123",
+    "PASSWORD": "Admin123!",
     "SYNC": false
   },
   "sessionLife": {

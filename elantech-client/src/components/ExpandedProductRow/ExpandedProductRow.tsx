@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { FunctionComponent, HTMLAttributes, useEffect, useState } from 'react';
-import { Navbar, Nav, Button, Collapse, Form, Fade } from 'react-bootstrap';
+import { Navbar, Nav, Button, Collapse, Form } from 'react-bootstrap';
 import { Pencil, Trash } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+import IInventory from '../../types/IInventory';
 import IProduct from '../../types/IProduct';
 import { AddInventoryModal } from '../AddInventoryModal/AddInventoryModal';
-import electron from 'electron';
 
 interface ExpandedProductRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     selectedProduct: IProduct
@@ -15,6 +15,16 @@ interface ExpandedProductRowProps extends RouteComponentProps, HTMLAttributes<HT
 const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = (props) => {
     const [openState, setOpenState] = useState(false);
     const [addInventorySwitch, setAddInventorySwitch] = useState(false);
+    const [hideQuotes, setHideQuotes] = useState(true);
+    const [viewQuotesLbl, setViewQuotesLbl] = useState('View Quotes');
+    const [expandInventoryLbl, setExpandInventoryLbl] = useState('Expand Inventory Table');
+    const [selectedInventory, setSelectedInventory] = useState<IInventory[]>([]);
+    const newOpenedBox = useState(0);
+    const factorySealed = useState(0);
+    const refurbished = useState(0);
+    const renew = useState(0);
+    const used = useState(0);
+    const damaged = useState(0);
     const rankFormatterEdit = (_: any, data: any, index: any) => {
         return (
             <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }}
@@ -317,15 +327,39 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
         sizePerPage: 5,
         totalSize: fake_data_inner.length
     };
-    const [hideQuotes, setHideQuotes] = useState(true);
-    const [viewQuotesLbl, setViewQuotesLbl] = useState('View Quotes');
-    const [expandInventoryLbl, setExpandInventoryLbl] = useState('Expand Inventory Table');
-    const [newOpenedBox, setNewOpenedBox] = useState(0);
-    const [factorySealed, setFactorySealed] = useState(0);
-    const [refurbished, setRefurbished] = useState(0);
-    const [renew, setRenew] = useState(0);
-    const [used, setUsed] = useState(0);
-    const [damaged, setDamaged] = useState(0);
+    const onSelect = {
+        mode: 'checkbox',
+        clickToSelect: true,
+        onSelect: (row: any, isSelect: any, rowIndex: any, e: any) => {
+            if (isSelect == true) {
+                // Add inventory to list
+                selectedInventory.push(row);
+                console.log(selectedInventory);
+            } else {
+                // Remove Inventory from list
+                var index = selectedInventory.indexOf(row);
+                if (index !== -1) {
+                    selectedInventory.splice(index, 1);
+                }
+                console.log(selectedInventory);
+            }
+        },
+        onSelectAll: (isSelect: any, rows: IInventory, e: any) => {
+            if (isSelect == true) {
+                // Add inventory to list
+                selectedInventory.push(rows);
+                console.log(selectedInventory);
+            } else {
+                // Remove Inventory from list
+                selectedInventory.
+                console.log(selectedInventory);
+            }
+
+            console.log(isSelect);
+            console.log(rows);
+            console.log(e);
+        }
+    }
     return (
         <div style={{ padding: 20 }} className='expandedProductRow'>
             <Navbar bg="dark" variant="dark">
@@ -375,25 +409,37 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                     </ div>
                     <hr />
                     <div className='d-flex' style={{ padding: 20 }}>
-                        <div style={{ marginRight: 50 }}>
-                            <p><strong style={{ fontWeight: 500 }}>Product Number : </strong></p>
-                            <p><strong style={{ fontWeight: 500 }}>Alternate Number 1:</strong></p>
-                            <p><strong style={{ fontWeight: 500 }}>Alternate Number 2:</strong></p>
-                            <p><strong style={{ fontWeight: 500 }}>Alternate Number 3:</strong></p>
-                            <p><strong style={{ fontWeight: 500 }}>Alternate Number 4:</strong></p>
-                        </ div>
-                        <div>
-                        <p>{props.selectedProduct.product_number}</p>
-                        <p>{props.selectedProduct.alt_1}</p>
-                        <p>{props.selectedProduct.alt_2}</p>
-                        <p>{props.selectedProduct.alt_3}</p>
-                        <p>{props.selectedProduct.alt_4}</p>
+                        <div className='d-flex' style={{ marginRight: 50 }}>
+                            <div style={{ marginRight: 20 }}>
+                                <p><strong style={{ fontWeight: 500 }}>Product Number: </strong></p>
+                                <p><strong style={{ fontWeight: 500 }}>Alternate Number 1:</strong></p>
+                                <p><strong style={{ fontWeight: 500 }}>Alternate Number 2:</strong></p>
+                                <p><strong style={{ fontWeight: 500 }}>Alternate Number 3:</strong></p>
+                                <p><strong style={{ fontWeight: 500 }}>Alternate Number 4:</strong></p>
+                            </ div>
+                            <div>
+                                <p>{props.selectedProduct.product_number}</p>
+                                <p>{props.selectedProduct.alt_1}</p>
+                                <p>{props.selectedProduct.alt_2}</p>
+                                <p>{props.selectedProduct.alt_3}</p>
+                                <p>{props.selectedProduct.alt_4}</p>
+                            </div>
                         </div>
-                        <div style={{ marginRight: 50 }}>
-                            <p><strong style={{ fontWeight: 500 }}>Average Quote:</strong>&emsp;&emsp;&emsp; $210.00</p>
-                            <p><strong style={{ fontWeight: 500 }}>Last Quoted Price:</strong>&emsp; $200.00</p>
-                            <p><strong style={{ fontWeight: 500 }}>Quoted By:</strong>&emsp;&emsp;&emsp;&emsp;&emsp;Giuseppe B.</p>
+                        <div className='d-flex' style={{ marginRight: 50 }}>
+                            <div style={{ marginRight: 20 }}>
+                                <p><strong style={{ fontWeight: 500 }}>Average Quote:</strong></p>
+                                <p><strong style={{ fontWeight: 500 }}>Last Quoted Price:</strong></p>
+                                <p><strong style={{ fontWeight: 500 }}>Quoted By:</strong></p>
+                                <p><strong style={{ fontWeight: 500 }}>Quoted To:</strong></p>
+                            </div>
+                            <div>
+                                <p>$210.00</p>
+                                <p>$200.00</p>
+                                <p>Giuseppe B.</p>
+                                <p>Service Express</p>
+                            </div>
                         </ div>
+
                         <div>
                         </div>
                     </ div>
@@ -455,10 +501,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                                                     data={fake_data_inner}
                                                     classes="table table-dark table-hover table-striped"
                                                     noDataIndication="Table is Empty"
-                                                    selectRow={{
-                                                        mode: 'checkbox',
-                                                        clickToSelect: true
-                                                    }}
+                                                    selectRow={onSelect}
                                                 />
                                                 <div className='d-flex justify-content-between'>
                                                     <SizePerPageDropdownStandalone

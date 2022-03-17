@@ -10,7 +10,6 @@ import { ProductModal } from '../../components/ProductModal/ProductModal';
 import IProduct from '../../types/IProduct';
 import './Home.css';
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
-import { AddInventoryModal } from '../../components/AddInventoryModal/AddInventoryModal';
 
 interface HomeProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> { }
 
@@ -138,8 +137,8 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
       last_added: '2022-01-29',
       alt_1: '877946-001',
       alt_2: '809461-001',
-      alt_3: '875056-001',
-      alt_4: '871820-001',
+      alt_3: '875056-002',
+      alt_4: '871820-003',
       ebay_link: 'https://www.ebay.com/itm/294851127729?hash=item44a67f29b1:g:nnYAAOSw6RdiJlYX',
       website_link: 'https://elantechit.com/hpe-804331-b21',
       quick_specs: 'https://www.hpe.com/psnow/doc/a00008200enw?jumpid=in_lit-psnow-red',
@@ -147,7 +146,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
     },
     {
       quantity: 130,
-      product_number: '804331-B21',
+      product_number: '804331-B212',
       product_type: 'Raid Controller',
       brand: 'HPE',
       description: 'HPE Smart Array P408i-a SR Gen10 Controller',
@@ -163,7 +162,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
     },
     {
       quantity: 130,
-      product_number: '804331-B21',
+      product_number: '804331-B213',
       product_type: 'Raid Controller',
       brand: 'HPE',
       description: 'HPE Smart Array P408i-a SR Gen10 Controller',
@@ -179,7 +178,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
     },
     {
       quantity: 130,
-      product_number: '804331-B21',
+      product_number: '804331-B214',
       product_type: 'Raid Controller',
       brand: 'HPE',
       description: 'HPE Smart Array P408i-a SR Gen10 Controller',
@@ -195,7 +194,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
     },
     {
       quantity: 130,
-      product_number: '804331-B21',
+      product_number: '804331-B215',
       product_type: 'Raid Controller',
       brand: 'HPE',
       description: 'HPE Smart Array P408i-a SR Gen10 Controller',
@@ -211,7 +210,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
     },
     {
       quantity: 130,
-      product_number: '804331-B21',
+      product_number: '804331-B216',
       product_type: 'Raid Controller',
       brand: 'HPE',
       description: 'HPE Smart Array P408i-a SR Gen10 Controller',
@@ -227,7 +226,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
     },
     {
       quantity: 130,
-      product_number: '804331-B21',
+      product_number: '804331-B217',
       product_type: 'Raid Controller',
       brand: 'HPE',
       description: 'HPE Smart Array P408i-a SR Gen10 Controller',
@@ -243,7 +242,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
     },
     {
       quantity: 130,
-      product_number: '804331-B21',
+      product_number: '804331-B218',
       product_type: 'Raid Controller',
       brand: 'HPE',
       description: 'HPE Smart Array P408i-a SR Gen10 Controller',
