@@ -131,3 +131,5 @@ completed orders - shipped - not shipped
 current orders
 
 Quote -> Order -> ben reserves for the order - completed order adds Completed order information
+
+Warranty section

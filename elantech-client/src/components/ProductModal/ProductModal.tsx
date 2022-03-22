@@ -36,8 +36,16 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
             related_tags: props.selectedProduct?.related_tags,
         }
     );
+    const addProduct = () => {
+        setIsSaving(true);
+        setTimeout(function() { //Start the timer
+            setIsSaving(false);
+            // Display Alert
+            props.onClose();
+        }.bind(this), 5000)
+    }
     useEffect(() => {
-        if (props.modalSwitch == 0) {
+        if (props.modalSwitch === 0) {
             setTitle('Create Product');
         } else {
             setTitle('Edit Product');
@@ -55,7 +63,7 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                 <Modal.Body style={{ background: '#2c3034', color: 'white' }}>
                     <div className='container d-grid gap-2' style={{ marginBottom: 15 }}>
                         {isSaving ?
-                            <div className='spinnerDiv' >
+                            <div className='spinnerDiv' style={{ margin: 'auto', textAlign: 'center', verticalAlign: 'middle' }} >
                                 <ul>
                                     <li key='1' style={{ listStyle: 'none' }}>
                                         <Spinner animation="border" role="status" />
@@ -152,6 +160,7 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                             variant="dark"
                             onClick={async () => {
                                 console.log('')
+                                addProduct();
                             }}>
                             Finish
                         </Button>

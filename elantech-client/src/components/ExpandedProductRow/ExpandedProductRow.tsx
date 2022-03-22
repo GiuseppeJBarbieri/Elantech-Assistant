@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { FunctionComponent, HTMLAttributes, useEffect, useState } from 'react';
+import { FunctionComponent, HTMLAttributes, useState } from 'react';
 import { Navbar, Nav, Button, Collapse, Form } from 'react-bootstrap';
-import { Pencil, Trash } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import IInventory from '../../types/IInventory';
 import IProduct from '../../types/IProduct';
 import { AddInventoryModal } from '../AddInventoryModal/AddInventoryModal';
+import { InventoryTable } from '../Tables/InventoryTable';
 
 interface ExpandedProductRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     selectedProduct: IProduct
@@ -18,199 +18,13 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
     const [hideQuotes, setHideQuotes] = useState(true);
     const [viewQuotesLbl, setViewQuotesLbl] = useState('View Quotes');
     const [expandInventoryLbl, setExpandInventoryLbl] = useState('Expand Inventory Table');
-    const [selectedInventory, setSelectedInventory] = useState<IInventory[]>([]);
-    const newOpenedBox = useState(0);
-    const factorySealed = useState(0);
-    const refurbished = useState(0);
-    const renew = useState(0);
-    const used = useState(0);
-    const damaged = useState(0);
-    const rankFormatterEdit = (_: any, data: any, index: any) => {
-        return (
-            <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }}
-                onClick={() => {
-                    console.log('Edit Column')
-                }} >
-                <Pencil style={{ fontSize: 20, color: 'white' }} />
-            </div>
-        );
-    };
-    const rankFormatterRemove = (_: any, data: any, index: any) => {
-        return (
-            <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }} onClick={() => console.log('Remove Column')} >
-                <Trash style={{ fontSize: 20, color: 'white' }} />
-            </div>
-        );
-    };
-    const fake_data_inner = [
-        {
-            serial_number: 'serial-number-1',
-            product_condition: 'condition',
-            seller_name: 'Ebay',
-            order_number: '809461-001',
-            date_received: '2021-01-29',
-            warranty_expiration: '2021-01-29',
-            tested: 'Yes',
-            comment: 'N/A',
-            location: 'Aisle 4 Row 2',
-            reserved: 'No'
-        },
-        {
-            serial_number: 'serial-number-2',
-            product_condition: 'condition',
-            seller_name: 'Ebay',
-            order_number: '809461-001',
-            date_received: '2021-01-29',
-            warranty_expiration: '2021-01-29',
-            tested: 'Yes',
-            comment: 'N/A',
-            location: 'Aisle 4 Row 2',
-            reserved: 'No'
-        },
-        {
-            serial_number: 'serial-number-3',
-            product_condition: 'condition',
-            seller_name: 'Ebay',
-            order_number: '809461-001',
-            date_received: '2021-01-29',
-            warranty_expiration: '2021-01-29',
-            tested: 'Yes',
-            comment: 'N/A',
-            location: 'Aisle 4 Row 2',
-            reserved: 'No'
-        },
-        {
-            serial_number: 'serial-number-4',
-            product_condition: 'condition',
-            seller_name: 'Ebay',
-            order_number: '809461-001',
-            date_received: '2021-01-29',
-            warranty_expiration: '2021-01-29',
-            tested: 'Yes',
-            comment: 'N/A',
-            location: 'Aisle 4 Row 2',
-            reserved: 'No'
-        },
-        {
-            serial_number: 'serial-number-5',
-            product_condition: 'condition',
-            seller_name: 'Ebay',
-            order_number: '809461-001',
-            date_received: '2021-01-29',
-            warranty_expiration: '2021-01-29',
-            tested: 'Yes',
-            comment: 'N/A',
-            location: 'Aisle 4 Row 2',
-            reserved: 'No'
-        },
-        {
-            serial_number: 'serial-number-6',
-            product_condition: 'condition',
-            seller_name: 'Ebay',
-            order_number: '809461-001',
-            date_received: '2021-01-29',
-            warranty_expiration: '2021-01-29',
-            tested: 'Yes',
-            comment: 'N/A',
-            location: 'Aisle 4 Row 2',
-            reserved: 'No'
-        },
-    ];
-    const inventory_columns = [
-        {
-            id: 1,
-            dataField: "serial_number",
-            text: "Serial Number",
-            sort: false,
-        },
-        {
-            id: 2,
-            dataField: "product_condition",
-            text: "Condition",
-            sort: true,
-        },
-        {
-            id: 3,
-            dataField: "seller_name",
-            text: "Seller Name",
-            sort: true
-        },
-        {
-            id: 4,
-            dataField: "order_number",
-            text: "Order Number",
-            sort: false,
-        }
-        ,
-        {
-            id: 5,
-            dataField: "date_received",
-            text: "Date Received",
-            sort: false,
-        }
-        ,
-        {
-            id: 6,
-            dataField: "warranty_expiration",
-            text: "Warranty Expiration",
-            sort: false,
-        },
-        {
-            id: 8,
-            dataField: "comment",
-            text: "Comment",
-            sort: false,
-        },
-        {
-            id: 9,
-            dataField: "location",
-            text: "Location",
-            sort: false,
-        },
-        {
-            id: 7,
-            dataField: "tested",
-            text: "Tested",
-            sort: false,
-            headerAlign: 'center',
-            style: {
-                textAlign: 'center'
-            }
-        },
-        {
-            id: 10,
-            dataField: "reserved",
-            text: "Reserved",
-            sort: false,
-            headerAlign: 'center',
-            style: {
-                textAlign: 'center'
-            }
-        },
-        {
-            id: 10,
-            dataField: "edit",
-            text: "Edit",
-            sort: false,
-            formatter: rankFormatterEdit,
-            headerAlign: 'center',
-            style: {
-                textAlign: 'center'
-            }
-        },
-        {
-            id: 11,
-            dataField: "remove",
-            text: "Remove",
-            sort: false,
-            formatter: rankFormatterRemove,
-            headerAlign: 'center',
-            style: {
-                textAlign: 'center'
-            }
-        }
+    const [newOpenedBox, setNewOpenedBox] = useState(0);
+    const [factorySealed, setFactorySealed] = useState(0);
+    const [refurbished, setRefurbished] = useState(0);
+    const [renew, setRenew] = useState(0);
+    const [used, setUsed] = useState(0);
+    const [damaged, setDamaged] = useState(0);
 
-    ];
     const fake_quote_data = [
         {
             quantity: '5',
@@ -305,9 +119,9 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
             dataField: "comments",
             text: "Comments",
             sort: false,
-            style: {
-                maxWidth: 200,
-            }
+            // style: {
+            //     maxWidth: 200,
+            // }
         },
         {
             id: 7,
@@ -315,51 +129,17 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
             text: " Sold ",
             sort: true,
             headerAlign: 'center',
-            style: {
-                textAlign: 'center',
-                marginRight: 2,
-                marginLeft: 2,
-            }
+            // style: {
+            //     textAlign: 'center',
+            //     marginRight: 2,
+            //     marginLeft: 2,
+            // }
         }
     ];
-    const options2 = {
+    const options = {
         custom: true,
         sizePerPage: 5,
-        totalSize: fake_data_inner.length
     };
-    const onSelect = {
-        mode: 'checkbox',
-        clickToSelect: true,
-        onSelect: (row: any, isSelect: any, rowIndex: any, e: any) => {
-            if (isSelect == true) {
-                // Add inventory to list
-                selectedInventory.push(row);
-                console.log(selectedInventory);
-            } else {
-                // Remove Inventory from list
-                var index = selectedInventory.indexOf(row);
-                if (index !== -1) {
-                    selectedInventory.splice(index, 1);
-                }
-                console.log(selectedInventory);
-            }
-        },
-        onSelectAll: (isSelect: any, rows: IInventory, e: any) => {
-            if (isSelect == true) {
-                // Add inventory to list
-                selectedInventory.push(rows);
-                console.log(selectedInventory);
-            } else {
-                // Remove Inventory from list
-                selectedInventory.
-                console.log(selectedInventory);
-            }
-
-            console.log(isSelect);
-            console.log(rows);
-            console.log(e);
-        }
-    }
     return (
         <div style={{ padding: 20 }} className='expandedProductRow'>
             <Navbar bg="dark" variant="dark">
@@ -388,7 +168,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                     <Nav.Link onClick={() => setAddInventorySwitch(true)}>Add Inventory</Nav.Link>
                     <Nav.Link onClick={() => {
                         setHideQuotes(!hideQuotes);
-                        if (viewQuotesLbl == 'View Quotes') {
+                        if (viewQuotesLbl === 'View Quotes') {
                             setViewQuotesLbl('Hide Quotes')
                         } else {
                             setViewQuotesLbl('View Quotes')
@@ -451,7 +231,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                             variant='dark'
                             onClick={() => {
                                 setOpenState(!openState);
-                                if (expandInventoryLbl == 'Expand Inventory Table') {
+                                if (expandInventoryLbl === 'Expand Inventory Table') {
                                     setExpandInventoryLbl('Collapse Inventory Table')
                                 } else {
                                     setExpandInventoryLbl('Expand Inventory Table')
@@ -462,59 +242,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                         </Button>
                         <Collapse in={openState}>
                             <div id="example-collapse-text">
-                                <br />
-                                <PaginationProvider
-                                    pagination={paginationFactory(options2)}
-                                >
-                                    {
-                                        ({
-                                            paginationProps,
-                                            paginationTableProps
-                                        }) => (
-                                            <div>
-                                                <div>
-                                                    <div className='d-flex justify-content-between' style={{ marginBottom: 5 }}>
-                                                        <Button
-                                                            aria-controls="example-collapse-text"
-                                                            aria-expanded={openState}
-                                                            variant='dark'
-                                                            onClick={() => {
-                                                                setOpenState(!openState);
-                                                                if (expandInventoryLbl == 'Expand Inventory Table') {
-                                                                    setExpandInventoryLbl('Collapse Inventory Table')
-                                                                } else {
-                                                                    setExpandInventoryLbl('Expand Inventory Table')
-                                                                }
-                                                            }}
-                                                        >
-                                                            Edit Inventory
-                                                        </Button>
-                                                        <Form.Control disabled size="sm" type="text" placeholder="Selected" style={{ width: 100, textAlign: 'center' }} />
-                                                    </div>
-                                                </div>
-                                                <BootstrapTable
-                                                    bootstrap4
-                                                    condensed
-                                                    {...paginationTableProps}
-                                                    columns={inventory_columns}
-                                                    keyField="serial_number"
-                                                    data={fake_data_inner}
-                                                    classes="table table-dark table-hover table-striped"
-                                                    noDataIndication="Table is Empty"
-                                                    selectRow={onSelect}
-                                                />
-                                                <div className='d-flex justify-content-between'>
-                                                    <SizePerPageDropdownStandalone
-                                                        {...paginationProps}
-                                                    />
-                                                    <PaginationListStandalone
-                                                        {...paginationProps}
-                                                    />
-                                                </div>
-                                            </div>
-                                        )
-                                    }
-                                </PaginationProvider>
+                                <InventoryTable />
                             </div>
                         </Collapse>
                     </div>
@@ -526,7 +254,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                     <div id="example-collapse-text">
                         <br />
                         <PaginationProvider
-                            pagination={paginationFactory(options2)}
+                            pagination={paginationFactory(options)}
                         >
                             {
                                 ({

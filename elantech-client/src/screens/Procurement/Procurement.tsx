@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { FunctionComponent, HTMLAttributes } from 'react';
-import { Button, DropdownButton, Dropdown } from 'react-bootstrap';
-import { Pencil, Plus } from 'react-bootstrap-icons';
+import { Button } from 'react-bootstrap';
+import { Plus } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
