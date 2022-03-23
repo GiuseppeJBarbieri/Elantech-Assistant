@@ -15,6 +15,9 @@ function createWindow() {
   let mainWindow;
   if (externalDisplay) {
     mainWindow = new BrowserWindow({
+      webPreferences: {
+        enableRemoteModule: true
+      },
       width: 1280, height: 1024,
       x: externalDisplay.bounds.x + 50,
       y: externalDisplay.bounds.y + 50

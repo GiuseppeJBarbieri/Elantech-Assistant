@@ -12,8 +12,7 @@ interface InventoryTableProps extends RouteComponentProps, HTMLAttributes<HTMLDi
 }
 
 const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) => {
-    const selectedInventory: IInventory[] = [];
-    const [numSelected, setNumSelected] = useState(0);
+    const [selectedInventory, setSelectedInventory] = useState<IInventory[]>([]);
     const rankFormatterEdit = (_: any, data: any, index: any) => {
         return (
             <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }}
@@ -209,25 +208,23 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             if (isSelect === true) {
                 // Add inventory to list
                 selectedInventory.push(row);
+                setSelectedInventory([...selectedInventory]);
             } else {
                 // Remove Inventory from list
                 var index = selectedInventory.indexOf(row);
-                if (index !== -1) {
-                    selectedInventory.splice(index, 1);
-                }
+                selectedInventory.splice(index, 1);
+                setSelectedInventory([...selectedInventory]);
             }
-            console.log(selectedInventory);
-
         },
         onSelectAll: (isSelect: any, rows: IInventory[], e: any) => {
             if (isSelect === true) {
                 for (var i = 0; i < rows.length; i++) {
                     selectedInventory.push(rows[i]);
                 }
+                setSelectedInventory([...selectedInventory]);
             } else {
-                selectedInventory.splice(0, (selectedInventory.length))
+                setSelectedInventory([]);
             }
-            console.log(selectedInventory);
         }
     };
     return (
@@ -240,7 +237,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                         <input type='text'
                             className="form-control custom-input"
                             placeholder="0"
-                            value={numSelected}
+                            value={selectedInventory.length}
                             readOnly={true}
                             style={{ width: 70 }}
                         />

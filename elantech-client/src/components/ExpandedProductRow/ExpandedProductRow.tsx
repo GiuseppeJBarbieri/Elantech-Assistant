@@ -4,7 +4,6 @@ import { Navbar, Nav, Button, Collapse, Form } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import IInventory from '../../types/IInventory';
 import IProduct from '../../types/IProduct';
 import { AddInventoryModal } from '../AddInventoryModal/AddInventoryModal';
 import { InventoryTable } from '../Tables/InventoryTable';
