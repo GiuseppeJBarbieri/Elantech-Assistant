@@ -5,6 +5,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import IInventory from '../../types/IInventory';
+import { EditInventoryModal } from '../EditInventoryModal/EditInventoryModal';
 
 
 interface InventoryTableProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
@@ -12,28 +13,57 @@ interface InventoryTableProps extends RouteComponentProps, HTMLAttributes<HTMLDi
 }
 
 const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) => {
-    const [selectedInventory, setSelectedInventory] = useState<IInventory[]>([]);
-    const rankFormatterEdit = (_: any, data: any, index: any) => {
+    const [selectedInventoryList, setSelectedInventoryList] = useState<IInventory[]>([]);
+    const [ selectedInventory, setSelectedInventory ] = useState<IInventory>();
+    const [editInventorySwitch, setEditInventorySwitch] = useState(false);
+    const [removeInventorySwitch, setRemoveInventorySwitch] = useState(false);
+
+    const rankFormatterRemove = (_: any, data: any, index: any) => {
         return (
-            <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }}
-                onClick={() => {
-                    console.log('Edit Column')
+            <div
+                style={{
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    lineHeight: 'normal'
+                }}
+                onClick={(e) => {
+                    e.stopPropagation()
                 }} >
-                <Pencil style={{ fontSize: 20, color: 'white' }} />
+                <div onClick={(e) => {
+                    setRemoveInventorySwitch(true);
+                }}
+                >
+                    <Trash style={{ fontSize: 20, color: 'white' }} />
+                </div>
             </div>
         );
     };
-    const rankFormatterRemove = (_: any, data: any, index: any) => {
+    const rankFormatterEdit = (_: any, data: any, index: any) => {
         return (
-            <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }} onClick={() => console.log('Remove Column')} >
-                <Trash style={{ fontSize: 20, color: 'white' }} />
+            <div
+                style={{
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    lineHeight: 'normal',
+                    zIndex: 0
+                }}
+                onClick={(e) => {
+                    e.stopPropagation()
+                }} >
+                <div onClick={(e) => {
+                    setEditInventorySwitch(true);
+                    setSelectedInventory(data);
+                }}
+                >
+                    <Pencil style={{ fontSize: 20, color: 'white' }} />
+                </div>
             </div>
         );
     };
     const fake_data_inner = [
         {
             serial_number: 'serial-number-1',
-            product_condition: 'condition',
+            condition: 'Used',
             seller_name: 'Ebay',
             order_number: '809461-001',
             date_received: '2021-01-29',
@@ -45,7 +75,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
         },
         {
             serial_number: 'serial-number-2',
-            product_condition: 'condition',
+            condition: 'condition',
             seller_name: 'Ebay',
             order_number: '809461-001',
             date_received: '2021-01-29',
@@ -57,7 +87,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
         },
         {
             serial_number: 'serial-number-3',
-            product_condition: 'condition',
+            condition: 'condition',
             seller_name: 'Ebay',
             order_number: '809461-001',
             date_received: '2021-01-29',
@@ -69,7 +99,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
         },
         {
             serial_number: 'serial-number-4',
-            product_condition: 'condition',
+            condition: 'condition',
             seller_name: 'Ebay',
             order_number: '809461-001',
             date_received: '2021-01-29',
@@ -81,7 +111,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
         },
         {
             serial_number: 'serial-number-5',
-            product_condition: 'condition',
+            condition: 'condition',
             seller_name: 'Ebay',
             order_number: '809461-001',
             date_received: '2021-01-29',
@@ -93,7 +123,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
         },
         {
             serial_number: 'serial-number-6',
-            product_condition: 'condition',
+            condition: 'condition',
             seller_name: 'Ebay',
             order_number: '809461-001',
             date_received: '2021-01-29',
@@ -105,7 +135,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
         },
         {
             serial_number: 'serial-number-7',
-            product_condition: 'condition',
+            condition: 'condition',
             seller_name: 'Ebay',
             order_number: '809461-001',
             date_received: '2021-01-29',
@@ -123,7 +153,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             sort: false,
         },
         {
-            dataField: "product_condition",
+            dataField: "condition",
             text: "Condition",
             sort: true,
         },
@@ -207,23 +237,23 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
         onSelect: (row: IInventory, isSelect: boolean, rowIndex: Number, e: any) => {
             if (isSelect === true) {
                 // Add inventory to list
-                selectedInventory.push(row);
-                setSelectedInventory([...selectedInventory]);
+                selectedInventoryList.push(row);
+                setSelectedInventoryList([...selectedInventoryList]);
             } else {
                 // Remove Inventory from list
-                var index = selectedInventory.indexOf(row);
-                selectedInventory.splice(index, 1);
-                setSelectedInventory([...selectedInventory]);
+                var index = selectedInventoryList.indexOf(row);
+                selectedInventoryList.splice(index, 1);
+                setSelectedInventoryList([...selectedInventoryList]);
             }
         },
         onSelectAll: (isSelect: any, rows: IInventory[], e: any) => {
             if (isSelect === true) {
                 for (var i = 0; i < rows.length; i++) {
-                    selectedInventory.push(rows[i]);
+                    selectedInventoryList.push(rows[i]);
                 }
-                setSelectedInventory([...selectedInventory]);
+                setSelectedInventoryList([...selectedInventoryList]);
             } else {
-                setSelectedInventory([]);
+                setSelectedInventoryList([]);
             }
         }
     };
@@ -237,7 +267,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                         <input type='text'
                             className="form-control custom-input"
                             placeholder="0"
-                            value={selectedInventory.length}
+                            value={selectedInventoryList.length}
                             readOnly={true}
                             style={{ width: 70 }}
                         />
@@ -255,6 +285,18 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                 pagination={paginationFactory(options)}
                 selectRow={selectRow}
             />
+            {
+                editInventorySwitch &&
+                <div className='modal-dialog'>
+                    <EditInventoryModal
+                        modalVisible={editInventorySwitch}
+                        selectedInventory={selectedInventory}
+                        onClose={async () => {
+                            setEditInventorySwitch(false);
+                        }}
+                    />
+                </div>
+            }
         </div>
     );
 };

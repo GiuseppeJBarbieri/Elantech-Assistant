@@ -133,3 +133,23 @@ current orders
 Quote -> Order -> ben reserves for the order - completed order adds Completed order information
 
 Warranty section
+
+
+Have option to hide out of stock products for listing
+
+
+
+
+3/23/2022
+Function that still needs to be added
+1. Remove Inventory
+2. Remove Multiple Inventory
+3. Edit Multiple Inventory
+4. Quick Quote
+5. Search History
+6. Search Products Bar + Filter Bar
+7. Form Validation
+    - Make Sure Dates have date pickers
+    - uneditable
+    - no special characters - limit text input?
+7. Export CSV

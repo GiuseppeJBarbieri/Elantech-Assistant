@@ -83,7 +83,10 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Product Type</Form.Label>
-                                    <Form.Select aria-label="Default select example" value={editProduct.product_type} onChange={(e) => setEditProduct({ ...editProduct, product_type: (e.target.value) })}>
+                                    <Form.Select aria-label="Default select example" 
+                                    value={editProduct.product_type} 
+                                    onChange={(e) => setEditProduct({ ...editProduct, product_type: (e.target.value) })}
+                                    >
                                         <option>Product Type</option>
                                         <option value="CPU">CPU</option>
                                         <option value="Riser">Riser</option>
