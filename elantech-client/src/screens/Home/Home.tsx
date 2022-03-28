@@ -19,6 +19,9 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
   const [editProductSwitch, setEditProductSwitch] = useState(false);
   const [removeProductSwitch, setRemoveProductSwitch] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<IProduct>();
+  const [searchText, setSearchText] = useState('');
+  const [filterText, setFilterText] = useState('Filter Products');
+  const [searchHistory, setSearchHistory] = useState<IProduct[]>([]);
 
   const rankFormatterRemove = (_: any, data: any, index: any) => {
     return (
@@ -150,7 +153,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
       brand: 'HPE',
       description: 'HPE Smart Array P408i-a SR Gen10 Controller',
       last_added: '2022-01-29',
-      alt_1: '877946-001',
+      alt_1: '99999999',
       alt_2: '809461-001',
       alt_3: '875056-002',
       alt_4: '871820-003',
@@ -161,7 +164,71 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
     },
     {
       quantity: 130,
-      product_number: '804331-B212',
+      product_number: 'search 2',
+      product_type: 'CPU',
+      brand: 'HPE',
+      description: 'HPE Smart Array P408i-a SR Gen10 Controller',
+      last_added: '2022-01-29',
+      alt_1: '88888888',
+      alt_2: '809461-001',
+      alt_3: '875056-001',
+      alt_4: '871820-001',
+      ebay_link: 'https://www.ebay.com/itm/294851127729?hash=item44a67f29b1:g:nnYAAOSw6RdiJlYX',
+      website_link: 'https://elantechit.com/hpe-804331-b21',
+      quick_specs: 'https://www.hpe.com/psnow/doc/a00008200enw?jumpid=in_lit-psnow-red',
+      related_tags: 'DL380G10',
+    },
+    {
+      quantity: 130,
+      product_number: 'Search 1',
+      product_type: 'Memory',
+      brand: 'HPE',
+      description: 'HPE Smart Array P408i-a SR Gen10 Controller',
+      last_added: '2022-01-29',
+      alt_1: '7777777777',
+      alt_2: '809461-001',
+      alt_3: '875056-001',
+      alt_4: '871820-001',
+      ebay_link: 'https://www.ebay.com/itm/294851127729?hash=item44a67f29b1:g:nnYAAOSw6RdiJlYX',
+      website_link: 'https://elantechit.com/hpe-804331-b21',
+      quick_specs: 'https://www.hpe.com/psnow/doc/a00008200enw?jumpid=in_lit-psnow-red',
+      related_tags: 'DL380G10',
+    },
+    {
+      quantity: 130,
+      product_number: 'text 1',
+      product_type: 'SSD',
+      brand: 'HPE',
+      description: 'HPE Smart Array P408i-a SR Gen10 Controller',
+      last_added: '2022-01-29',
+      alt_1: '877946-001',
+      alt_2: '809461-001',
+      alt_3: '875056-001',
+      alt_4: '871820-001',
+      ebay_link: 'https://www.ebay.com/itm/294851127729?hash=item44a67f29b1:g:nnYAAOSw6RdiJlYX',
+      website_link: 'https://elantechit.com/hpe-804331-b21',
+      quick_specs: 'https://www.hpe.com/psnow/doc/a00008200enw?jumpid=in_lit-psnow-red',
+      related_tags: 'DL380G10',
+    },
+    {
+      quantity: 130,
+      product_number: 'text 2',
+      product_type: 'HDD',
+      brand: 'HPE',
+      description: 'HPE Smart Array P408i-a SR Gen10 Controller',
+      last_added: '2022-01-29',
+      alt_1: '877946-001',
+      alt_2: '809461-001',
+      alt_3: '875056-001',
+      alt_4: '871820-001',
+      ebay_link: 'https://www.ebay.com/itm/294851127729?hash=item44a67f29b1:g:nnYAAOSw6RdiJlYX',
+      website_link: 'https://elantechit.com/hpe-804331-b21',
+      quick_specs: 'https://www.hpe.com/psnow/doc/a00008200enw?jumpid=in_lit-psnow-red',
+      related_tags: 'DL380G10',
+    },
+    {
+      quantity: 130,
+      product_number: 'Apples',
       product_type: 'Raid Controller',
       brand: 'HPE',
       description: 'HPE Smart Array P408i-a SR Gen10 Controller',
@@ -177,7 +244,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
     },
     {
       quantity: 130,
-      product_number: '804331-B213',
+      product_number: 'Oranges',
       product_type: 'Raid Controller',
       brand: 'HPE',
       description: 'HPE Smart Array P408i-a SR Gen10 Controller',
@@ -193,71 +260,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
     },
     {
       quantity: 130,
-      product_number: '804331-B214',
-      product_type: 'Raid Controller',
-      brand: 'HPE',
-      description: 'HPE Smart Array P408i-a SR Gen10 Controller',
-      last_added: '2022-01-29',
-      alt_1: '877946-001',
-      alt_2: '809461-001',
-      alt_3: '875056-001',
-      alt_4: '871820-001',
-      ebay_link: 'https://www.ebay.com/itm/294851127729?hash=item44a67f29b1:g:nnYAAOSw6RdiJlYX',
-      website_link: 'https://elantechit.com/hpe-804331-b21',
-      quick_specs: 'https://www.hpe.com/psnow/doc/a00008200enw?jumpid=in_lit-psnow-red',
-      related_tags: 'DL380G10',
-    },
-    {
-      quantity: 130,
-      product_number: '804331-B215',
-      product_type: 'Raid Controller',
-      brand: 'HPE',
-      description: 'HPE Smart Array P408i-a SR Gen10 Controller',
-      last_added: '2022-01-29',
-      alt_1: '877946-001',
-      alt_2: '809461-001',
-      alt_3: '875056-001',
-      alt_4: '871820-001',
-      ebay_link: 'https://www.ebay.com/itm/294851127729?hash=item44a67f29b1:g:nnYAAOSw6RdiJlYX',
-      website_link: 'https://elantechit.com/hpe-804331-b21',
-      quick_specs: 'https://www.hpe.com/psnow/doc/a00008200enw?jumpid=in_lit-psnow-red',
-      related_tags: 'DL380G10',
-    },
-    {
-      quantity: 130,
-      product_number: '804331-B216',
-      product_type: 'Raid Controller',
-      brand: 'HPE',
-      description: 'HPE Smart Array P408i-a SR Gen10 Controller',
-      last_added: '2022-01-29',
-      alt_1: '877946-001',
-      alt_2: '809461-001',
-      alt_3: '875056-001',
-      alt_4: '871820-001',
-      ebay_link: 'https://www.ebay.com/itm/294851127729?hash=item44a67f29b1:g:nnYAAOSw6RdiJlYX',
-      website_link: 'https://elantechit.com/hpe-804331-b21',
-      quick_specs: 'https://www.hpe.com/psnow/doc/a00008200enw?jumpid=in_lit-psnow-red',
-      related_tags: 'DL380G10',
-    },
-    {
-      quantity: 130,
-      product_number: '804331-B217',
-      product_type: 'Raid Controller',
-      brand: 'HPE',
-      description: 'HPE Smart Array P408i-a SR Gen10 Controller',
-      last_added: '2022-01-29',
-      alt_1: '877946-001',
-      alt_2: '809461-001',
-      alt_3: '875056-001',
-      alt_4: '871820-001',
-      ebay_link: 'https://www.ebay.com/itm/294851127729?hash=item44a67f29b1:g:nnYAAOSw6RdiJlYX',
-      website_link: 'https://elantechit.com/hpe-804331-b21',
-      quick_specs: 'https://www.hpe.com/psnow/doc/a00008200enw?jumpid=in_lit-psnow-red',
-      related_tags: 'DL380G10',
-    },
-    {
-      quantity: 130,
-      product_number: '804331-B218',
+      product_number: 'Pears',
       product_type: 'Raid Controller',
       brand: 'HPE',
       description: 'HPE Smart Array P408i-a SR Gen10 Controller',
@@ -276,6 +279,11 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
     custom: true,
     totalSize: fake_data.length
   };
+  const [productList, setProductList] = useState<IProduct[]>(fake_data);
+
+  const search = () => {
+
+  }
   return (
     <section className="text-white main-section overflow-auto">
       <div style={{ padding: 20 }}>
@@ -294,18 +302,46 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
             className="form-control custom-input"
             placeholder="Search Product"
             style={{ width: 200 }}
+            value={searchText}
+
+            onChange={(e) => {
+              setSearchText(e.target.value);
+              if (e.target.value.length == 0) {
+                setProductList(fake_data);
+              } else {
+                //setProductList(fake_data.filter(product => product.product_number.toLowerCase().includes(searchText.toLowerCase())));
+                setProductList(
+                  fake_data.filter(
+                    product => product.product_number.toLowerCase().includes(e.target.value.toLowerCase())
+                      ||
+                      product.alt_1.toLowerCase().includes(e.target.value.toLowerCase())
+                  ));
+              }
+            }}
           />
           <div className='d-flex'>
             <DropdownButton
               variant="dark"
               menuVariant="dark"
-              title={'Filter Products '}
+              title={filterText}
               style={{ marginRight: 5 }}
+              onSelect={(e) => {
+                if (e !== null) {
+                  if (e.toLowerCase() === 'clear') {
+                    setProductList(fake_data);
+                    setFilterText('Filter Products');
+                  } else {
+                    setProductList(fake_data.filter(product => product.product_type.toLowerCase().includes(e.toLowerCase())));
+                    setFilterText(e);
+                  }
+                }
+              }}
             >
-              <Dropdown.Item eventKey="1">CPU</Dropdown.Item>
-              <Dropdown.Item eventKey="2">Memory</Dropdown.Item>
-              <Dropdown.Item eventKey="3" active>SSD</Dropdown.Item>
-              <Dropdown.Item eventKey="4">HDD</Dropdown.Item>
+              <Dropdown.Item eventKey="CPU">CPU</Dropdown.Item>
+              <Dropdown.Item eventKey="Memory">Memory</Dropdown.Item>
+              <Dropdown.Item eventKey="SSD">SSD</Dropdown.Item>
+              <Dropdown.Item eventKey="HDD">HDD</Dropdown.Item>
+              <Dropdown.Item eventKey="Clear">Clear</Dropdown.Item>
             </DropdownButton>
 
             <DropdownButton
@@ -316,7 +352,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
             >
               <Dropdown.Item eventKey="1">---------</Dropdown.Item>
               <Dropdown.Item eventKey="2">---------</Dropdown.Item>
-              <Dropdown.Item eventKey="3" active>---------</Dropdown.Item>
+              <Dropdown.Item eventKey="3">---------</Dropdown.Item>
               <Dropdown.Item eventKey="4">---------</Dropdown.Item>
             </DropdownButton>
           </div>
@@ -337,7 +373,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
                     {...paginationTableProps}
                     keyField="product_number"
                     bootstrap4
-                    data={fake_data}
+                    data={productList}
                     columns={column}
                     classes="table table-dark table-hover table-striped table-responsive"
                     noDataIndication="Table is Empty"

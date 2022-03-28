@@ -6,6 +6,7 @@ import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, P
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import IProduct from '../../types/IProduct';
 import { AddInventoryModal } from '../AddInventoryModal/AddInventoryModal';
+import { AddSimpleQuoteModal } from '../AddSimpleQuoteModal/AddSimpleQuoteModal';
 import { InventoryTable } from '../Tables/InventoryTable';
 
 interface ExpandedProductRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
@@ -14,6 +15,7 @@ interface ExpandedProductRowProps extends RouteComponentProps, HTMLAttributes<HT
 const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = (props) => {
     const [openState, setOpenState] = useState(false);
     const [addInventorySwitch, setAddInventorySwitch] = useState(false);
+    const [addSimpleQuoteSwitch, setAddSimpleQuoteSwitch] = useState(false);
     const [hideQuotes, setHideQuotes] = useState(true);
     const [viewQuotesLbl, setViewQuotesLbl] = useState('View Quotes');
     const [expandInventoryLbl, setExpandInventoryLbl] = useState('Expand Inventory Table');
@@ -160,7 +162,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                         HPE Quick Specs
                     </Nav.Link>
                     <Nav.Link onClick={() => {
-                        window.open(props.selectedProduct.ebay_link)
+                        setAddSimpleQuoteSwitch(true);
                     }}>
                         Quick Quote
                     </Nav.Link>
@@ -294,6 +296,17 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                         modalVisible={addInventorySwitch}
                         onClose={async () => {
                             setAddInventorySwitch(false);
+                        }}
+                    />
+                </div>
+            }
+            {
+                addSimpleQuoteSwitch &&
+                <div className='modal-dialog'>
+                    <AddSimpleQuoteModal
+                        modalVisible={addSimpleQuoteSwitch}
+                        onClose={async () => {
+                            setAddSimpleQuoteSwitch(false);
                         }}
                     />
                 </div>

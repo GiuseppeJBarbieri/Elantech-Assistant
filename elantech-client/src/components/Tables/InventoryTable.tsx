@@ -1,11 +1,14 @@
 import React, { FunctionComponent, HTMLAttributes, useState } from 'react';
-import { Button, Form } from 'react-bootstrap';
+import { Button, Collapse, Fade, Form } from 'react-bootstrap';
 import { Pencil, Trash } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import IInventory from '../../types/IInventory';
 import { EditInventoryModal } from '../EditInventoryModal/EditInventoryModal';
+import { EditMultipleInventoryModal } from '../EditMultipleInventoryModal/EditMultipleInventoryModal';
+import { RemoveInventoryModal } from '../RemoveInventoryModal/RemoveInventoryModal';
+import { RemoveMultipleInventoryModal } from '../RemoveMultipleInventoryModal/RemoveMultipleInventoryModal';
 
 
 interface InventoryTableProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
@@ -14,10 +17,12 @@ interface InventoryTableProps extends RouteComponentProps, HTMLAttributes<HTMLDi
 
 const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) => {
     const [selectedInventoryList, setSelectedInventoryList] = useState<IInventory[]>([]);
-    const [ selectedInventory, setSelectedInventory ] = useState<IInventory>();
+    const [selectedInventory, setSelectedInventory] = useState<IInventory>();
     const [editInventorySwitch, setEditInventorySwitch] = useState(false);
     const [removeInventorySwitch, setRemoveInventorySwitch] = useState(false);
-
+    const [removeMultipleInventorySwitch, setRemoveMultipleInventorySwitch] = useState(false);
+    const [editMultipleInventorySwitch, setEditMultipleInventorySwitch] = useState(false);
+    
     const rankFormatterRemove = (_: any, data: any, index: any) => {
         return (
             <div
@@ -31,6 +36,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                 }} >
                 <div onClick={(e) => {
                     setRemoveInventorySwitch(true);
+                    setSelectedInventory(data);
                 }}
                 >
                     <Trash style={{ fontSize: 20, color: 'white' }} />
@@ -192,18 +198,12 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             text: "Tested",
             sort: false,
             headerAlign: 'center',
-            // style: {
-            //     textAlign: 'center'
-            // }
         },
         {
             dataField: "reserved",
             text: "Reserved",
             sort: false,
             headerAlign: 'center',
-            // style: {
-            //     textAlign: 'center'
-            // }
         },
         {
             dataField: "edit",
@@ -211,9 +211,6 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             sort: false,
             formatter: rankFormatterEdit,
             headerAlign: 'center',
-            // style: {
-            //     textAlign: 'center'
-            // }
         },
         {
             dataField: "remove",
@@ -221,11 +218,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             sort: false,
             formatter: rankFormatterRemove,
             headerAlign: 'center',
-            // style: {
-            //     textAlign: 'center'
-            // }
         }
-
     ];
     const options = {
         sizePerPage: 5,
@@ -262,15 +255,32 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             <br />
             <div>
                 <div>
-                    <div className='d-flex justify-content-between' style={{ marginBottom: 5 }}>
-                        <Button variant='dark'>Edit Inventory</Button>
+                    <div className='d-flex flex-row-reverse' style={{ marginBottom: 5 }}>
                         <input type='text'
-                            className="form-control custom-input"
+                            className="form-control custom-input d-flex flex-row-reverse"
                             placeholder="0"
                             value={selectedInventoryList.length}
                             readOnly={true}
-                            style={{ width: 70 }}
+                            style={{ width: 70, textAlign: 'center', marginLeft: 5 }}
                         />
+                        {
+                            selectedInventoryList.length > 1 &&
+                            <div className='fade-in-right' aria-controls="example-fade-text">
+                                <Button variant='dark' style={{ marginLeft: 5 }}
+                                    onClick={() => {
+                                        setEditMultipleInventorySwitch(true);
+                                    }}
+                                >
+                                    Edit Multiple Inventory</Button>
+                                <Button variant='dark' style={{ marginLeft: 5 }}
+                                    onClick={() => {
+                                        setRemoveMultipleInventorySwitch(true);
+                                    }}
+                                >
+                                    Remove Inventory
+                                </Button>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -297,7 +307,43 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                     />
                 </div>
             }
-        </div>
+            {
+                removeInventorySwitch &&
+                <div className='modal-dialog'>
+                    <RemoveInventoryModal
+                        modalVisible={removeInventorySwitch}
+                        selectedInventory={selectedInventory}
+                        onClose={async () => {
+                            setRemoveInventorySwitch(false);
+                        }}
+                    />
+                </div>
+            }
+            {
+                removeMultipleInventorySwitch &&
+                <div className='modal-dialog'>
+                    <RemoveMultipleInventoryModal
+                        modalVisible={removeMultipleInventorySwitch}
+                        selectedInventory={selectedInventoryList}
+                        onClose={async () => {
+                            setRemoveMultipleInventorySwitch(false);
+                        }}
+                    />
+                </div>
+            }
+            {
+                editMultipleInventorySwitch &&
+                <div className='modal-dialog'>
+                    <EditMultipleInventoryModal
+                        modalVisible={editMultipleInventorySwitch}
+                        selectedInventory={selectedInventoryList}
+                        onClose={async () => {
+                            setEditMultipleInventorySwitch(false);
+                        }}
+                    />
+                </div>
+            }
+        </div >
     );
 };
 

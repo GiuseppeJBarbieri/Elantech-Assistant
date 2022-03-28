@@ -142,10 +142,7 @@ Have option to hide out of stock products for listing
 
 3/23/2022
 Function that still needs to be added
-1. Remove Inventory
-2. Remove Multiple Inventory
-3. Edit Multiple Inventory
-4. Quick Quote
+2. Switch for Tested in Inventory
 5. Search History
 6. Search Products Bar + Filter Bar
 7. Form Validation

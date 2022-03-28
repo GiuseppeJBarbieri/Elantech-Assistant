@@ -1,10 +1,10 @@
 interface IProduct {
     quantity?: number;
-    product_number?: string;
+    product_number: string;
     product_type?: string;
     brand?: string;
     description?: string;
-    last_added?: Date;
+    last_added?: string;
     alt_1?: string;
     alt_2?: string;
     alt_3?: string;
