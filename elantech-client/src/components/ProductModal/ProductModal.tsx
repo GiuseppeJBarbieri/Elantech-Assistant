@@ -16,7 +16,7 @@ interface ProductModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivE
 
 const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
     const [isSaving, setIsSaving] = useState(false);
-    const [title, setTitle]  = useState('Create Product');
+    const [title, setTitle] = useState('Create Product');
 
     const [editProduct, setEditProduct] = useState<IProduct>(
         {
@@ -38,7 +38,7 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
     );
     const addProduct = () => {
         setIsSaving(true);
-        setTimeout(function() { //Start the timer
+        setTimeout(function () { //Start the timer
             setIsSaving(false);
             // Display Alert
             props.onClose();
@@ -83,9 +83,9 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Product Type</Form.Label>
-                                    <Form.Select aria-label="Default select example" 
-                                    value={editProduct.product_type} 
-                                    onChange={(e) => setEditProduct({ ...editProduct, product_type: (e.target.value) })}
+                                    <Form.Select aria-label="Default select example"
+                                        value={editProduct.product_type}
+                                        onChange={(e) => setEditProduct({ ...editProduct, product_type: (e.target.value) })}
                                     >
                                         <option>Product Type</option>
                                         <option value="CPU">CPU</option>
@@ -95,9 +95,18 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Brand</Form.Label>
-                                    <Form.Control
-                                        id="orderNumber" type="text" placeholder="Brand" value={editProduct.brand} onChange={(e) => setEditProduct({ ...editProduct, brand: (e.target.value) })}
-                                    />
+                                    <Form.Select aria-label="Default select example"
+                                        value={editProduct.brand}
+                                        onChange={(e) => setEditProduct({ ...editProduct, brand: (e.target.value) })}
+                                    >
+                                        <option>Brand</option>
+                                        <option value="HP">HP</option>
+                                        <option value="HPE">HPE</option>
+                                        <option value="Dell">Dell</option>
+                                        <option value="Cisco">Cisco</option>
+                                        <option value="IBM">IBM</option>
+                                        <option value="Lenovo">Lenovo</option>
+                                    </Form.Select>
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Description</Form.Label>

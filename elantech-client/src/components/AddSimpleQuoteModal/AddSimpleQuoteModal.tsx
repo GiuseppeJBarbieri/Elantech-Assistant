@@ -71,9 +71,7 @@ const AddSimpleQuoteModalComponent: FunctionComponent<AddSimpleQuoteModalProps> 
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Date</Form.Label>
-                                    <Form.Control
-                                        id="dateReceived" type="text" placeholder="Date"
-                                    />
+                                    <Form.Control id="orderNumber" type="date" />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Comments</Form.Label>

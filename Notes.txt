@@ -1,152 +1,63 @@
-Middle ware to parse out different types of products.
-
-Business layer will do the work.
-
-
 MONGO DB
 Cluster Name: ElantechCluster()
 Username: VipClubElantech
 Password: YKXSghAaeoHxcyTK
 
-Dashboard
-1. Add Product - added
-2. Edit Product - added
-3. Remove Product - added
-4. Add Inventory- added
-5. Edit Inventory- added
-6. Remove Inventory- added
-7. Reserved*** Change this???
-8. Quick ADD Quote for product - added
-
-
-***
-
-Load all products on load up,
-every x interval check if products have been updated? Update if so.
-Use pagination provider to filter data in tables
-
-
-Add count selected --- done
-
-reserve multiple
-edit multiples 
-remove multiples
-    For this use selected rows, get all selected, if > 1 selected, bring up modal --- done
-
-******
-Add Product Modal
-
-Find way to add...
-1. Additional product numbers
-2. Additional Product Information
-
-
-
-Product Quotes
-Company Name - Quantity - Price - Date - Quoted By - Sold - Comments
-
-Company Information
-Company ID
-Company Name
-Company Rep
-Phone Number
-Address
-Comments
-Type (Broker - End User)
-
-
-
-Add quotes to top top bar
-
-
-Quotes
-ID
-Quantity
-Product Number
-Quoted Price
-Date Quoted
-Time Quoted
-Comments
-Who Quoted
-Sold
-
-Multiple quoted Prices for one quoted
-
-Quote approval system
-
+Quote approval  - quote log - add time 
 Times zones Screen
 
-                                         
-
-Add need to by for order*
-
-
 Receiving
-po_number - comments - 
-date_received - time_received - purchased_from - received_by - Finished
+* Receiving orders will have multiple products sometimes
 
-Receiving orders will have multiple products sometimes
-
-product_number - qty - CUD - Added-to-inventory - added_by
-
+* po_number - comments - date_received - time_received - purchased_from - received_by - finished
+* product_number - qty - CUD - Added-to-inventory - added_by
 
 flag sku's (PRODUCTS) for DO NOT SELL
+
+********* TABLES START *********
 
 Procurement
 product_number - quantity - requested_by - po_number - date_needed_by - sold_for - comments
 
-
-outgoing
+Outgoing
 order_number - shipping_to - added_by - shipping_type - order_type - tracking_number - date_shipped
 
-
-Removed Inventory section
-
-When removing inventory get a reason for removal
-
-
 Completed orders
-Company Name - Seller - PONUMBER - Who processed - Date - Product Number - QTY - description  
-
-Serial Numbers - who we bought it from - po number (incoming)
-
-
-place to add serial number
-
-PO - reserve inventory - remove - 
-
+company_name - seller - po_number - who_processed - date - product_number - quantity - description  
 
 Reserved
-when order is created, warehouse will reserve for that order
-
-
-upload csv to quickbooks for order form
-
-
+When order is created, warehouse will reserve for that order
+********* TABLES END *********
 
 New sections
-
 completed orders - shipped - not shipped
-
 current orders
-
 Quote -> Order -> ben reserves for the order - completed order adds Completed order information
-
 Warranty section
-
-
 Have option to hide out of stock products for listing
-
-
 
 
 3/23/2022
 Function that still needs to be added
 2. Switch for Tested in Inventory
-5. Search History
-6. Search Products Bar + Filter Bar
 7. Form Validation
     - Make Sure Dates have date pickers
     - uneditable
     - no special characters - limit text input?
 7. Export CSV
+
+3/29/2022
+SEARCH Functionality
+1. Search by Brand && Type && Query
+2. Search by Brand && Type
+3. Search by Brand && Query
+4. Search by Type && Query
+
+*** Maybe add generation into products?
+
+TODO Products Page
+- Export to CSV
+- Fix search functionality?
+- Fix form validation
+- Fix column Styles
+- Rethink debouncer

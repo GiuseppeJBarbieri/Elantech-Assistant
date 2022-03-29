@@ -1,6 +1,6 @@
 import React, { HTMLAttributes, FunctionComponent } from "react";
 import { useState } from "react";
-import { Modal, Spinner, Form, Button } from "react-bootstrap";
+import { Modal, Spinner, Form, Button, InputGroup } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import IInventory from "../../types/IInventory";
@@ -132,12 +132,15 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
                                                     </Form.Select>
                                                 </Form.Group>
                                                 <Form.Group className="mb-3">
-                                                    <Form.Label>Seller Name</Form.Label>
-                                                    <Form.Control
-                                                        id="sellerName" type="text" placeholder="Seller Name"
-                                                    // value={editInventory.seller_name}
-                                                    // onChange={(e) => setEditInventory({ ...editInventory, seller_name: (e.target.value) })}
-                                                    />
+                                                    <Form.Label>Seller</Form.Label>
+                                                    <Form.Select aria-label="Default select example" >
+                                                        <option>Choose Seller</option>
+                                                        <option value="New Factory Sealed">Ebay</option>
+                                                        <option value="New Opened Box">Company 1</option>
+                                                        <option value="Renew">Company 2</option>
+                                                        <option value="Used">Company 3</option>
+                                                        <option value="Damaged">Company 4</option>
+                                                    </Form.Select>
                                                 </Form.Group>
                                                 <Form.Group className="mb-3">
                                                     <Form.Label>Order Number</Form.Label>
@@ -151,19 +154,11 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
                                             <div className="container">
                                                 <Form.Group className="mb-3">
                                                     <Form.Label>Date Received</Form.Label>
-                                                    <Form.Control
-                                                        id="dateReceived" type="text" placeholder="Date Received"
-                                                    // value={editInventory.date_received}
-                                                    // onChange={(e) => setEditInventory({ ...editInventory, date_received: (e.target.value) })}
-                                                    />
+                                                    <Form.Control id="orderNumber" type="date" />
                                                 </Form.Group>
                                                 <Form.Group className="mb-3">
                                                     <Form.Label>Warranty Expiration</Form.Label>
-                                                    <Form.Control
-                                                        id="warrantyExpiration" type="text" placeholder="Warranty Expiration"
-                                                    // value={editInventory.warranty_expiration}
-                                                    // onChange={(e) => setEditInventory({ ...editInventory, warranty_expiration: (e.target.value) })}
-                                                    />
+                                                    <Form.Control id="orderNumber" type="date" />
                                                 </Form.Group>
                                                 <Form.Group className="mb-3">
                                                     <Form.Label>Comments</Form.Label>
@@ -185,11 +180,31 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
                                                 </Form.Group>
                                                 <Form.Group className="mb-3">
                                                     <Form.Label>Tested</Form.Label>
-                                                    <Form.Control
-                                                        id="tested" type="text" placeholder="Tested"
-                                                    // value={editInventory.tested}
-                                                    // onChange={(e) => setEditInventory({ ...editInventory, tested: (e.target.value) })}
-                                                    />
+                                                    <InputGroup>
+                                                        <div key={`inline-radio-2`}>
+                                                            <Form.Check
+                                                                inline
+                                                                defaultChecked
+                                                                label="Tested"
+                                                                name='group2'
+                                                                type={'radio'}
+                                                                id={'inline-radio-3'}
+                                                                onClick={() => {
+                                                                    console.log('Not Tested');
+                                                                }}
+                                                            />
+                                                            <Form.Check
+                                                                inline
+                                                                label="Not Tested"
+                                                                name='group2'
+                                                                type={'radio'}
+                                                                id={'inline-radio-4'}
+                                                                onClick={() => {
+                                                                    console.log('Not Tested');
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    </InputGroup>
                                                 </Form.Group>
                                                 <div className="mb-3" style={{ textAlign: 'center', display: 'grid', marginTop: 47, height: 40 }}>
                                                     <Button variant="dark">Submit Changes</Button>

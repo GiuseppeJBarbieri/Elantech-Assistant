@@ -73,12 +73,15 @@ const EditInventoryComponent: FunctionComponent<EditInventoryModalProps> = (prop
                                     </Form.Select>
                                 </Form.Group>
                                 <Form.Group className="mb-3">
-                                    <Form.Label>Seller Name</Form.Label>
-                                    <Form.Control
-                                        id="sellerName" type="text" placeholder="Seller Name"
-                                        value={editInventory.seller_name}
-                                        onChange={(e) => setEditInventory({ ...editInventory, seller_name: (e.target.value) })}
-                                    />
+                                    <Form.Label>Seller</Form.Label>
+                                    <Form.Select aria-label="Default select example" >
+                                        <option>Choose Seller</option>
+                                        <option value="Ebay">Ebay</option>
+                                        <option value="New Opened Box">Company 1</option>
+                                        <option value="Renew">Company 2</option>
+                                        <option value="Used">Company 3</option>
+                                        <option value="Damaged">Company 4</option>
+                                    </Form.Select>
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Order Number</Form.Label>
@@ -90,19 +93,11 @@ const EditInventoryComponent: FunctionComponent<EditInventoryModalProps> = (prop
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Date Received</Form.Label>
-                                    <Form.Control
-                                        id="dateReceived" type="text" placeholder="Date Received"
-                                        value={editInventory.date_received}
-                                        onChange={(e) => setEditInventory({ ...editInventory, date_received: (e.target.value) })}
-                                    />
+                                    <Form.Control id="orderNumber" type="date" />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Warranty Expiration</Form.Label>
-                                    <Form.Control
-                                        id="warrantyExpiration" type="text" placeholder="Warranty Expiration"
-                                        value={editInventory.warranty_expiration}
-                                        onChange={(e) => setEditInventory({ ...editInventory, warranty_expiration: (e.target.value) })}
-                                    />
+                                    <Form.Control id="orderNumber" type="date" />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Comments</Form.Label>

@@ -1,6 +1,6 @@
 interface IProduct {
     quantity?: number;
-    product_number: string;
+    product_number?: string;
     product_type?: string;
     brand?: string;
     description?: string;

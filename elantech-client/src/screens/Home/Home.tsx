@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { FunctionComponent, HTMLAttributes, useState } from 'react';
-import { Button, Dropdown, DropdownButton } from 'react-bootstrap';
+import { Button, Dropdown, DropdownButton, Spinner } from 'react-bootstrap';
 import paginationFactory, { PaginationProvider, PaginationListStandalone, SizePerPageDropdownStandalone } from 'react-bootstrap-table2-paginator';
 import { Pencil, Plus, Trash } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
@@ -11,6 +11,7 @@ import IProduct from '../../types/IProduct';
 import './Home.css';
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import { RemoveProductModal } from '../../components/RemoveProductModal/RemoveProductModal';
+import { DebounceInput } from 'react-debounce-input';
 
 interface HomeProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> { }
 
@@ -20,8 +21,11 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
   const [removeProductSwitch, setRemoveProductSwitch] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<IProduct>();
   const [searchText, setSearchText] = useState('');
-  const [filterText, setFilterText] = useState('Filter Products');
-  const [searchHistory, setSearchHistory] = useState<IProduct[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [filterType, setFilterType] = useState('Filter Type');
+  const [filterBrand, setFilterBrand] = useState('Filter Brand');
+
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
 
   const rankFormatterRemove = (_: any, data: any, index: any) => {
     return (
@@ -166,7 +170,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
       quantity: 130,
       product_number: 'search 2',
       product_type: 'CPU',
-      brand: 'HPE',
+      brand: 'Dell',
       description: 'HPE Smart Array P408i-a SR Gen10 Controller',
       last_added: '2022-01-29',
       alt_1: '88888888',
@@ -182,7 +186,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
       quantity: 130,
       product_number: 'Search 1',
       product_type: 'Memory',
-      brand: 'HPE',
+      brand: 'Lenovo',
       description: 'HPE Smart Array P408i-a SR Gen10 Controller',
       last_added: '2022-01-29',
       alt_1: '7777777777',
@@ -198,7 +202,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
       quantity: 130,
       product_number: 'text 1',
       product_type: 'SSD',
-      brand: 'HPE',
+      brand: 'IBM',
       description: 'HPE Smart Array P408i-a SR Gen10 Controller',
       last_added: '2022-01-29',
       alt_1: '877946-001',
@@ -214,7 +218,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
       quantity: 130,
       product_number: 'text 2',
       product_type: 'HDD',
-      brand: 'HPE',
+      brand: 'Cisco',
       description: 'HPE Smart Array P408i-a SR Gen10 Controller',
       last_added: '2022-01-29',
       alt_1: '877946-001',
@@ -281,8 +285,41 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
   };
   const [productList, setProductList] = useState<IProduct[]>(fake_data);
 
-  const search = () => {
+  const filterProducts = (e: string) => {
+    setIsSearching(true);
+    if (e.length > 0) {
+      setSearchText(e);
+      searchHistory.push(e);
+      if (searchHistory.length > 8) {
+        searchHistory.splice(0, 1);
+      }
+    }
+    let type_filter = filterType;
+    let brand_filter = filterBrand;
 
+    // if filterType is not - Filter Type
+    // if filterBrand is not - Filter Brand
+    // if filterBrand and Filter Type is not - 
+    if (e.length === 0) {
+      setProductList(fake_data);
+    } else {
+      setProductList(
+        fake_data.filter(
+          product =>
+            product.product_number.toLowerCase().includes(e)
+            ||
+            product.alt_1.toLowerCase().includes(e)
+            ||
+            product.alt_2.toLowerCase().includes(e)
+            ||
+            product.alt_3.toLowerCase().includes(e)
+            ||
+            product.alt_4.toLowerCase().includes(e)
+            ||
+            product.description.toLowerCase().includes(e)
+        ));
+    }
+    setIsSearching(false);
   }
   return (
     <section className="text-white main-section overflow-auto">
@@ -290,7 +327,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
         <div className='d-flex justify-content-between'>
           <h2 style={{ fontWeight: 300 }}>Products</h2>
           <div>
-            <Button variant="dark" style={{ marginRight: 5 }}>Export to Excel</Button>
+            <Button variant="dark" style={{ marginRight: 5 }}>Export to CSV</Button>
             <Button variant="dark" onClick={() => { setAddProductSwitch(true) }}>
               <Plus height="25" width="25" style={{ marginTop: -3, marginLeft: -10 }} />New Product
             </Button>
@@ -298,41 +335,82 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
         </div>
         <hr />
         <div className='d-flex justify-content-between'>
-          <input type='text'
-            className="form-control custom-input"
-            placeholder="Search Product"
-            style={{ width: 200 }}
-            value={searchText}
-
-            onChange={(e) => {
-              setSearchText(e.target.value);
-              if (e.target.value.length == 0) {
-                setProductList(fake_data);
-              } else {
-                //setProductList(fake_data.filter(product => product.product_number.toLowerCase().includes(searchText.toLowerCase())));
-                setProductList(
-                  fake_data.filter(
-                    product => product.product_number.toLowerCase().includes(e.target.value.toLowerCase())
-                      ||
-                      product.alt_1.toLowerCase().includes(e.target.value.toLowerCase())
-                  ));
-              }
-            }}
-          />
           <div className='d-flex'>
+            <DebounceInput
+              type='input'
+              value={searchText}
+              className="form-control custom-input"
+              placeholder="Search Product"
+              minLength={1}
+              style={{ width: 200, marginRight: 10 }}
+              debounceTimeout={300}
+              onChange={(e) => {
+                setIsSearching(true);
+                filterProducts(e.target.value.toLowerCase());
+              }}
+            />
+            {isSearching &&
+              <div className='spinnerDiv d-flex' >
+                <div style={{ marginRight: 10 }}>
+                  <Spinner animation="border" role="status" />
+                </div>
+                <br />
+                <div style={{ margin: 'auto' }}>
+                  <label>Loading...</label>
+                </div>
+              </div>
+            }
+          </div>
+          <div className='d-flex'>
+            <Button variant="dark" style={{ marginRight: 5 }}
+              onClick={() => {
+                setFilterBrand('Filter Brand');
+                setFilterType('Filter Type');
+                setProductList(fake_data);
+                setSearchText('');
+              }}
+            >
+              Clear Filters
+            </Button>
             <DropdownButton
               variant="dark"
               menuVariant="dark"
-              title={filterText}
+              title={filterBrand}
               style={{ marginRight: 5 }}
               onSelect={(e) => {
                 if (e !== null) {
                   if (e.toLowerCase() === 'clear') {
                     setProductList(fake_data);
-                    setFilterText('Filter Products');
+                    setFilterBrand('Filter Brand');
+                  } else {
+                    setProductList(fake_data.filter(product => product.brand.toLowerCase().includes(e.toLowerCase())));
+                    setFilterBrand(e);
+                  }
+                  console.log(e);
+                }
+              }}
+            >
+              <Dropdown.Item eventKey="HPE">HPE</Dropdown.Item>
+              <Dropdown.Item eventKey="Dell">Dell</Dropdown.Item>
+              <Dropdown.Item eventKey="Cisco">Cisco</Dropdown.Item>
+              <Dropdown.Item eventKey="Lenovo">Lenovo</Dropdown.Item>
+              <Dropdown.Item eventKey="IBM">IBM</Dropdown.Item>
+              <Dropdown.Item eventKey="Clear">Clear</Dropdown.Item>
+            </DropdownButton>
+
+            <DropdownButton
+              variant="dark"
+              menuVariant="dark"
+              title={filterType}
+              style={{ marginRight: 5 }}
+              onSelect={(e) => {
+                if (e !== null) {
+                  if (e.toLowerCase() === 'clear') {
+                    setProductList(fake_data);
+                    setFilterType('Filter Type');
                   } else {
                     setProductList(fake_data.filter(product => product.product_type.toLowerCase().includes(e.toLowerCase())));
-                    setFilterText(e);
+                    setFilterType(e);
                   }
                 }
               }}
@@ -349,11 +427,21 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
               variant="dark"
               menuVariant="dark"
               title={'Search History '}
+              onSelect={(e) => {
+                if (e !== null) {
+                  setSearchText(e);
+                  filterProducts(e);
+                }
+              }}
             >
-              <Dropdown.Item eventKey="1">---------</Dropdown.Item>
-              <Dropdown.Item eventKey="2">---------</Dropdown.Item>
-              <Dropdown.Item eventKey="3">---------</Dropdown.Item>
-              <Dropdown.Item eventKey="4">---------</Dropdown.Item>
+              {
+                searchHistory.length > 0 ?
+                  searchHistory.map((o) => {
+                    return <Dropdown.Item eventKey={o}>{o}</Dropdown.Item>
+                  })
+                  :
+                  <Dropdown.Item eventKey='1'>No History</Dropdown.Item>
+              }
             </DropdownButton>
           </div>
         </div>
