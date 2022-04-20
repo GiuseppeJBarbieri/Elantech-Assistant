@@ -58,6 +58,55 @@ SEARCH Functionality
 TODO Products Page
 - Export to CSV
 - Fix search functionality?
-- Fix form validation
+- Form validation
 - Fix column Styles
 - Rethink debouncer
+- Show/Not Show out of stock
+
+
+4/4/2022
+Quotes Section
+1. Add Company Function - DONE
+2. Edit Company - DONE
+3. Edit Quote
+4. Add Quote
+5. Remove Quote
+6. More Info
+7. Add quote history for one quote
+8. Set Sold
+9. Remove company
+
+
+Company Information
+---------------------
+Customer Type
+Company Name
+Company Rep
+Phone Number
+Address
+Comments
+
+Quote Information
+--------------------
+Company ID
+Date
+Time
+Comments
+Quoter
+
+Quoted Product Information
+--------------------
+Quantity
+Product Number
+Quoted Price
+Sold
+
+4/20
+1. Get add quote to work 
+    and add to table
+
+
+    spare rib w fried rice
+    hot + sour soup small
+
+    

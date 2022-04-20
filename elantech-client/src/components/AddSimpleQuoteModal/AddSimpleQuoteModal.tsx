@@ -74,6 +74,14 @@ const AddSimpleQuoteModalComponent: FunctionComponent<AddSimpleQuoteModalProps> 
                                     <Form.Control id="orderNumber" type="date" />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
+                                    <Form.Label>Sold</Form.Label>
+                                    <Form.Select aria-label="Default select example" >
+                                        <option>Did it sell?</option>
+                                        <option value="Sold">Sold</option>
+                                        <option value="Not Sold">Not Sold</option>
+                                    </Form.Select>
+                                </Form.Group>
+                                <Form.Group className="mb-3">
                                     <Form.Label>Comments</Form.Label>
                                     <Form.Control
                                         id="warrantyExpiration" as="textarea" placeholder="Comments"

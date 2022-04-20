@@ -1,25 +1,64 @@
 import * as React from 'react';
-import { FunctionComponent, HTMLAttributes } from 'react';
+import { FunctionComponent, HTMLAttributes, useState } from 'react';
 import { Button, DropdownButton, Dropdown } from 'react-bootstrap';
-import { Pencil, Plus } from 'react-bootstrap-icons';
+import { Pencil, Plus, Trash } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { CompanyModal } from '../../components/CompanyModal/CompanyModal';
 import { ExpandedQuoteRow } from '../../components/ExpandedQuoteRow/ExpandedQuoteRow';
+import ICompany from '../../types/ICompany';
 
 import './Quotes.css';
 
 interface QuotesProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> { }
 
 export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
+  const [addCompanySwitch, setAddCompanySwitch] = useState(false);
+  const [editCompanySwitch, setEditCompanySwitch] = useState(false);
+  const [selectedCompany, setSelectedCompany] = useState<ICompany>();
 
+  const rankFormatterRemove = (_: any, data: any, index: any) => {
+    return (
+      <div
+        style={{
+          textAlign: 'center',
+          cursor: 'pointer',
+          lineHeight: 'normal'
+        }}
+        onClick={(e) => {
+          e.stopPropagation()
+        }} >
+        <div onClick={(e) => {
+          //setRemoveProductSwitch(true);
+          //setSelectedProduct(data);
+        }}
+        >
+          <Trash style={{ fontSize: 20, color: 'white' }} />
+        </div>
+      </div>
+    );
+  };
   const rankFormatterEdit = (_: any, data: any, index: any) => {
     return (
-      <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }}
-        onClick={() => {
-          console.log('Edit Column')
+      <div
+        style={{
+          textAlign: 'center',
+          cursor: 'pointer',
+          lineHeight: 'normal',
+          zIndex: 0
+        }}
+        onClick={(e) => {
+          e.stopPropagation()
         }} >
-        <Pencil style={{ fontSize: 20, color: 'white' }} />
+        <div onClick={(e) => {
+          setSelectedCompany(data);
+          setEditCompanySwitch(true);
+
+        }}
+        >
+          <Pencil style={{ fontSize: 20, color: 'white' }} />
+        </div>
       </div>
     );
   };
@@ -27,7 +66,7 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
 
     {
       id: 1,
-      dataField: "type",
+      dataField: "company_type",
       text: "Type",
       sort: true,
     },
@@ -52,18 +91,25 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
     },
     {
       id: 5,
-      dataField: "address",
-      text: "Address",
+      dataField: "email",
+      text: "Email",
       sort: false,
+      headerAlign: 'center',
     },
     {
       id: 6,
+      dataField: "location",
+      text: "Location",
+      sort: false,
+    },
+    {
+      id: 7,
       dataField: "comments",
       text: "Comments",
       sort: false,
     },
     {
-      id: 7,
+      id: 8,
       dataField: "edit",
       text: "Edit",
       sort: false,
@@ -77,47 +123,62 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
   const fake_data = [
     {
       company_id: 1,
-      type: 'Broker',
+      company_type: 'Broker',
       company_name: 'Kings Collectables',
       company_rep: 'Giuseppe',
       phone_number: '631-278-8517',
-      address: 'Farmingdale',
+      email: 'giuseppe@elantechus.com',
+      location: 'Farmingdale',
       comments: 'Nothing to be said!',
     },
     {
       company_id: 2,
-      type: 'Broker',
+      company_type: 'Broker',
       company_name: 'Kings Collectables',
       company_rep: 'Giuseppe',
       phone_number: '631-278-8517',
-      address: 'Farmingdale',
+      email: 'giuseppe@elantechus.com',
+      location: 'Farmingdale',
       comments: 'Nothing to be said!',
     },
     {
       company_id: 3,
-      type: 'Broker',
+      company_type: 'Broker',
       company_name: 'Kings Collectables',
       company_rep: 'Giuseppe',
       phone_number: '631-278-8517',
-      address: 'Farmingdale',
+      email: 'giuseppe@elantechus.com',
+      location: 'Farmingdale',
       comments: 'Nothing to be said!',
     },
     {
       company_id: 4,
-      type: 'Broker',
+      company_type: 'Broker',
       company_name: 'Kings Collectables',
       company_rep: 'Giuseppe',
       phone_number: '631-278-8517',
-      address: 'Farmingdale',
+      email: 'giuseppe@elantechus.com',
+      location: 'Farmingdale',
       comments: 'Nothing to be said!',
     },
     {
       company_id: 5,
-      type: 'Broker',
+      company_type: 'Broker',
       company_name: 'Kings Collectables',
       company_rep: 'Giuseppe',
       phone_number: '631-278-8517',
-      address: 'Farmingdale',
+      email: 'giuseppe@elantechus.com',
+      location: 'Farmingdale',
+      comments: 'Nothing to be said!',
+    },
+    {
+      company_id: 6,
+      company_type: 'Broker',
+      company_name: 'Kings Collectables',
+      company_rep: 'Giuseppe',
+      phone_number: '631-278-8517',
+      email: 'giuseppe@elantechus.com',
+      location: 'Farmingdale',
       comments: 'Nothing to be said!',
     },
   ];
@@ -131,7 +192,7 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
         <div className='d-flex justify-content-between'>
           <h2 style={{ fontWeight: 300 }}>Quotes by Company</h2>
           <div>
-            <Button variant="dark" >
+            <Button variant="dark" onClick={() => { setAddCompanySwitch(true) }}>
               <Plus height="25" width="25" style={{ marginTop: -3, marginLeft: -10 }} />Company
             </Button>
           </div>
@@ -181,7 +242,9 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
                       onlyOneExpanding: true,
                       renderer: (row, index) => {
                         return (
-                          <ExpandedQuoteRow />
+                          <ExpandedQuoteRow 
+                            selectedCompany={selectedCompany}
+                          />
                         )
                       }
                     }}
@@ -200,6 +263,32 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
           </PaginationProvider>
         </div>
       </div>
+      {
+        addCompanySwitch &&
+        <div className='modal-dialog'>
+          <CompanyModal
+            modalVisible={addCompanySwitch}
+            modalSwitch={0}
+            selectedCompany={undefined}
+            onClose={async () => {
+              setAddCompanySwitch(false);
+            }}
+          />
+        </div>
+      }
+      {
+        editCompanySwitch &&
+        <div className='modal-dialog'>
+          <CompanyModal
+            modalVisible={editCompanySwitch}
+            modalSwitch={1}
+            selectedCompany={selectedCompany}
+            onClose={async () => {
+              setEditCompanySwitch(false);
+            }}
+          />
+        </div>
+      }
     </section >
   );
 };
