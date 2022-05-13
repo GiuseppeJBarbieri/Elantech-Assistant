@@ -1,29 +1,42 @@
 import * as React from 'react';
-import { FunctionComponent, HTMLAttributes } from 'react';
+import { FunctionComponent, HTMLAttributes, useState } from 'react';
 import { Button, DropdownButton, Dropdown } from 'react-bootstrap';
 import { Pencil, Plus } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { ExpandedQuoteRow } from '../../components/ExpandedQuoteRow/ExpandedQuoteRow';
+import { AddReceivingOrderModal } from '../../components/AddReceivingOrderModal/AddReceivingOrderModal';
+import { EditReceivingOrderModal } from '../../components/EditReceivingOrderModal/EditReceivingOrderModal';
 import { ExpandedReceivingRow } from '../../components/ExpandedReceivingRow/ExpandedReceivingRow';
 
 interface ReceivingProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> { }
 
 export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) => {
+    const [addReceivingSwitch, setAddReceivingSwitch] = useState(false);
+    const [editOrderSwitch, setEditOrderSwitch] = useState(false);
 
     const rankFormatterEdit = (_: any, data: any, index: any) => {
         return (
-            <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }}
-                onClick={() => {
-                    console.log('Edit Column')
+            <div
+                style={{
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    lineHeight: 'normal',
+                    zIndex: 0
+                }}
+                onClick={(e) => {
+                    e.stopPropagation()
                 }} >
-                <Pencil style={{ fontSize: 20, color: 'white' }} />
+                <div onClick={(e) => {
+                    setEditOrderSwitch(true);
+                }}
+                >
+                    <Pencil style={{ fontSize: 20, color: 'white' }} />
+                </div>
             </div>
         );
     };
     const column = [
-
         {
             id: 1,
             dataField: "po_number",
@@ -32,8 +45,8 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) 
         },
         {
             id: 2,
-            dataField: "comments",
-            text: "Comments",
+            dataField: "purchased_from",
+            text: "Purchased From",
             sort: false,
         },
         {
@@ -44,23 +57,33 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) 
         },
         {
             id: 4,
-            dataField: "purchased_from",
-            text: "Purchased From",
-            sort: false,
-        },
-        {
-            id: 5,
             dataField: "received_by",
             text: "Received By",
             sort: false,
         },
         {
-            id: 6,
-            dataField: "added_to_inventory",
-            text: "Added",
+            id: 5,
+            dataField: "comments",
+            text: "Comments",
             sort: false,
         },
-
+        {
+            id: 6,
+            dataField: "added_to_inventory",
+            text: "Completed",
+            sort: false,
+        },
+        {
+            id: 7,
+            dataField: "edit",
+            text: "Edit",
+            sort: false,
+            formatter: rankFormatterEdit,
+            headerAlign: 'center',
+            style: {
+                textAlign: 'center'
+            }
+        },
     ];
     const fake_data = [
         {
@@ -128,7 +151,7 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) 
                 <div className='d-flex justify-content-between'>
                     <h2 style={{ fontWeight: 300 }}>Receiving</h2>
                     <div>
-                        <Button variant="dark" >
+                        <Button variant="dark" onClick={() => { setAddReceivingSwitch(true) }} >
                             <Plus height="25" width="25" style={{ marginTop: -3, marginLeft: -10 }} />Order
                         </Button>
                     </div>
@@ -197,6 +220,28 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) 
                     </PaginationProvider>
                 </div>
             </div>
+            {
+                addReceivingSwitch &&
+                <div className='modal-dialog'>
+                    <AddReceivingOrderModal
+                        modalVisible={addReceivingSwitch}
+                        onClose={async () => {
+                            setAddReceivingSwitch(false);
+                        }}
+                    />
+                </div>
+            }
+            {
+                editOrderSwitch &&
+                <div className='modal-dialog'>
+                    <EditReceivingOrderModal
+                        modalVisible={editOrderSwitch}
+                        onClose={async () => {
+                            setEditOrderSwitch(false);
+                        }}
+                    />
+                </div>
+            }
         </section >
     );
 };

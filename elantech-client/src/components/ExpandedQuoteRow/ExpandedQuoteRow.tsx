@@ -1,12 +1,15 @@
 import * as React from 'react';
 import { FunctionComponent, HTMLAttributes, useState } from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
-import { Pencil, Trash } from 'react-bootstrap-icons';
+import { Pencil, Plus, ThreeDots, Trash } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import ICompany from '../../types/ICompany';
+import IQuotedProduct from '../../types/IQuotedProduct';
 import { AddMultiQuoteModal } from '../AddMultiQuoteModal/AddMultiQuoteModal';
+import { EditQuoteModal } from '../EditQuoteModal/EditQuoteModal';
+import { ViewQuotedProductsModal } from '../ViewQuotedProductsModal/ViewQuotedProductsModal';
 
 interface ExpandedQuoteRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     selectedCompany: ICompany | undefined;
@@ -14,14 +17,68 @@ interface ExpandedQuoteRowProps extends RouteComponentProps, HTMLAttributes<HTML
 
 const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (props) => {
     const [addQuoteSwitch, setAddQuoteSwitch] = useState(false);
-
+    const [editQuoteSwitch, setEditQuoteSwitch] = useState(false);
+    const [selectedQuote, setSelectedQuote] = useState<IQuotedProduct>();
+    const [viewMoreSwitch, setViewMoreSwitch] = useState(false);
+    const rankFormatterAdd = (_: any, data: any, index: any) => {
+        return (
+            <div
+                style={{
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    lineHeight: 'normal'
+                }}
+                onClick={(e) => {
+                    e.stopPropagation()
+                }}>
+                <div onClick={(e) => {
+                    console.log('Create Order');
+                }}>
+                    <Plus style={{ fontSize: 20, color: 'white' }} />
+                </div>
+            </div>
+        );
+    };
+    const rankFormatterViewMore = (_: any, data: any, index: any) => {
+        return (
+            <div
+                style={{
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    lineHeight: 'normal',
+                    zIndex: 0
+                }}
+                onClick={(e) => {
+                    e.stopPropagation()
+                }} >
+                <div onClick={(e) => {
+                    setViewMoreSwitch(true);
+                }}
+                >
+                    <ThreeDots style={{ fontSize: 20, color: 'white' }} />
+                </div>
+            </div>
+        );
+    };
     const rankFormatterEdit = (_: any, data: any, index: any) => {
         return (
-            <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }}
-                onClick={() => {
-                    console.log('Edit Column')
+            <div
+                style={{
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    lineHeight: 'normal',
+                    zIndex: 0
+                }}
+                onClick={(e) => {
+                    e.stopPropagation()
                 }} >
-                <Pencil style={{ fontSize: 20, color: 'white' }} />
+                <div onClick={(e) => {
+                    setSelectedQuote(data);
+                    setEditQuoteSwitch(true);
+                }}
+                >
+                    <Pencil style={{ fontSize: 20, color: 'white' }} />
+                </div>
             </div>
         );
     };
@@ -32,6 +89,110 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
             </div>
         );
     };
+    const column_inner_2 = [
+        {
+            id: 1,
+            dataField: "quote_id",
+            text: "Quote ID",
+            sort: false,
+        },
+        {
+            id: 2,
+            dataField: "num_of_products",
+            text: "Number of Products",
+            sort: false,
+        },
+        {
+            id: 3,
+            dataField: "quoter",
+            text: "Quoter",
+            sort: true,
+        },
+        {
+            id: 4,
+            dataField: "date",
+            text: "Date",
+            sort: true,
+        },
+        {
+            id: 5,
+            dataField: "time",
+            text: "Time",
+            sort: true,
+        },
+        {
+            id: 6,
+            dataField: "total_quote",
+            text: "Total Quote",
+            sort: true,
+        },
+        {
+            id: 7,
+            dataField: "sold",
+            text: "Sold",
+            sort: true,
+        },
+        {
+            id: 8,
+            dataField: "view",
+            text: "View More",
+            sort: false,
+            formatter: rankFormatterViewMore,
+            headerAlign: 'center',
+            style: {
+                textAlign: 'center'
+            }
+        },
+        {
+            id: 9,
+            dataField: "Add",
+            text: "Create Order",
+            sort: false,
+            formatter: rankFormatterAdd,
+            headerAlign: 'center',
+            style: {
+                textAlign: 'center'
+            }
+        },
+    ];
+    const fake_data_2 = [
+        {
+            quote_id: 1,
+            num_of_products: 2,
+            quoter: 'Giuseppe',
+            date: '04-29-2022',
+            time: '12:43',
+            total_quote: '$5,500.00',
+            sold: 'Yes'
+        },
+        {
+            quote_id: 2,
+            num_of_products: 2,
+            quoter: 'Giuseppe',
+            date: '04-29-2022',
+            time: '12:43',
+            total_quote: '$5,500.00',
+            sold: 'Yes'
+        },
+        {
+            quote_id: 3,
+            num_of_products: 2,
+            quoter: 'Giuseppe',
+            date: '04-29-2022',
+            time: '12:43',
+            total_quote: '$5,500.00',
+            sold: 'No'
+        },
+        {
+            quote_id: 4,
+            num_of_products: 2,
+            quoter: 'Giuseppe',
+            date: '04-29-2022',
+            time: '12:43',
+            total_quote: '$5,500.00',
+            sold: 'No'
+        },
+    ];
     const column_inner = [
 
         {
@@ -196,9 +357,9 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
                                     bootstrap4
                                     condensed
                                     {...paginationTableProps}
-                                    columns={column_inner}
+                                    columns={column_inner_2}
                                     keyField="serial_number"
-                                    data={fake_data}
+                                    data={fake_data_2}
                                     classes="table table-dark table-hover table-striped"
                                     noDataIndication="Table is Empty"
 
@@ -225,6 +386,29 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
                         selectedCompany={props.selectedCompany}
                         onClose={async () => {
                             setAddQuoteSwitch(false);
+                        }}
+                    />
+                </div>
+            }
+            {
+                editQuoteSwitch &&
+                <div className='modal-dialog'>
+                    <EditQuoteModal
+                        modalVisible={editQuoteSwitch}
+                        selectedQuote={selectedQuote}
+                        onClose={async () => {
+                            setEditQuoteSwitch(false);
+                        }}
+                    />
+                </div>
+            }
+            {
+                viewMoreSwitch &&
+                <div className='modal-dialog'>
+                    <ViewQuotedProductsModal
+                        modalVisible={viewMoreSwitch}
+                        onClose={async () => {
+                            setViewMoreSwitch(false);
                         }}
                     />
                 </div>

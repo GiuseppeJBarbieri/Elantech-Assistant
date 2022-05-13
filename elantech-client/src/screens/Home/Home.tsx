@@ -284,7 +284,6 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
     totalSize: fake_data.length
   };
   const [productList, setProductList] = useState<IProduct[]>(fake_data);
-
   const filterProducts = (e: string) => {
     setIsSearching(true);
     if (e.length > 0) {

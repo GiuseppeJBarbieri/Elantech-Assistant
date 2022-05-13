@@ -1,17 +1,59 @@
 import * as React from 'react';
-import { FunctionComponent, HTMLAttributes } from 'react';
-import { Button, DropdownButton, Dropdown } from 'react-bootstrap';
-import { Pencil, Plus } from 'react-bootstrap-icons';
+import { FunctionComponent, HTMLAttributes, useState } from 'react';
+import { Button } from 'react-bootstrap';
+import { Pencil, Plus, Trash } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { AddOutgoingOrderModal } from '../../components/AddOutgoingOrderModal/AddOutgoingOrderModel';
+import { ExpandedOutgoingRow } from '../../components/ExpandedOutgoingRow/ExpandedOutgoingRow';
 
 interface OutgoingProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> { }
 
 export const OutgoingLayout: FunctionComponent<OutgoingProps> = ({ history }) => {
-
+    const [addOrderSwitch, setAddOrderSwitch] = useState(false);
+    const rankFormatterEdit = (_: any, data: any, index: any) => {
+        return (
+            <div
+                style={{
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    lineHeight: 'normal',
+                    zIndex: 0
+                }}
+                onClick={(e) => {
+                    e.stopPropagation()
+                }} >
+                <div onClick={(e) => {
+                    console.log('Edit Order');
+                }}
+                >
+                    <Pencil style={{ fontSize: 20, color: 'white' }} />
+                </div>
+            </div>
+        );
+    };
+    const rankFormatterRemove = (_: any, data: any, index: any) => {
+        return (
+            <div
+                style={{
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    lineHeight: 'normal'
+                }}
+                onClick={(e) => {
+                    e.stopPropagation()
+                }} >
+                <div onClick={(e) => {
+                    console.log('Remove');
+                }}
+                >
+                    <Trash style={{ fontSize: 20, color: 'white' }} />
+                </div>
+            </div>
+        );
+    };
     const column = [
-
         {
             id: 1,
             dataField: "order_number",
@@ -53,7 +95,29 @@ export const OutgoingLayout: FunctionComponent<OutgoingProps> = ({ history }) =>
             dataField: "date_shipped",
             text: "Date Shipped",
             sort: true,
-        }
+        },
+        {
+            id: 8,
+            dataField: "edit",
+            text: "Edit",
+            sort: false,
+            formatter: rankFormatterEdit,
+            headerAlign: 'center',
+            style: {
+                textAlign: 'center'
+            }
+        },
+        {
+            id: 9,
+            dataField: "remove",
+            text: "Remove",
+            sort: false,
+            formatter: rankFormatterRemove,
+            headerAlign: 'center',
+            style: {
+              textAlign: 'center'
+            }
+          }
 
     ];
     const fake_data = [
@@ -127,7 +191,7 @@ export const OutgoingLayout: FunctionComponent<OutgoingProps> = ({ history }) =>
             tracking_number: '907i9390839S938J',
             date_shipped: '2022-03-09',
         },
-        
+
     ];
     const options = {
         custom: true,
@@ -139,7 +203,9 @@ export const OutgoingLayout: FunctionComponent<OutgoingProps> = ({ history }) =>
                 <div className='d-flex justify-content-between'>
                     <h2 style={{ fontWeight: 300 }}>Outgoing</h2>
                     <div>
-                        <Button variant="dark" >
+                        <Button variant="dark" onClick={() => {
+                            setAddOrderSwitch(true);
+                        }}>
                             <Plus height="25" width="25" style={{ marginTop: -3, marginLeft: -10 }} />Shipment
                         </Button>
                     </div>
@@ -172,6 +238,14 @@ export const OutgoingLayout: FunctionComponent<OutgoingProps> = ({ history }) =>
                                         columns={column}
                                         classes="table table-dark table-hover table-striped table-responsive"
                                         noDataIndication="Table is Empty"
+                                        expandRow={{
+                                            onlyOneExpanding: true,
+                                            renderer: (row, index) => {
+                                                return (
+                                                    <ExpandedOutgoingRow />
+                                                )
+                                            }
+                                        }}
 
                                     />
                                     <div className='d-flex justify-content-between'>
@@ -188,6 +262,17 @@ export const OutgoingLayout: FunctionComponent<OutgoingProps> = ({ history }) =>
                     </PaginationProvider>
                 </div>
             </div>
+            {
+                addOrderSwitch &&
+                <div className='modal-dialog'>
+                    <AddOutgoingOrderModal
+                        modalVisible={addOrderSwitch}
+                        onClose={async () => {
+                            setAddOrderSwitch(false);
+                        }}
+                    />
+                </div>
+            }
         </section >
     );
 };

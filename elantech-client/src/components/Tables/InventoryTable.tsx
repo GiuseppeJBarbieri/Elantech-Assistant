@@ -22,7 +22,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
     const [removeInventorySwitch, setRemoveInventorySwitch] = useState(false);
     const [removeMultipleInventorySwitch, setRemoveMultipleInventorySwitch] = useState(false);
     const [editMultipleInventorySwitch, setEditMultipleInventorySwitch] = useState(false);
-    
+
     const rankFormatterRemove = (_: any, data: any, index: any) => {
         return (
             <div
@@ -268,10 +268,18 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                             <div className='fade-in-right' aria-controls="example-fade-text">
                                 <Button variant='dark' style={{ marginLeft: 5 }}
                                     onClick={() => {
+                                        console.log('')
+                                    }}
+                                >
+                                    Reserve Items
+                                </Button>
+                                <Button variant='dark' style={{ marginLeft: 5 }}
+                                    onClick={() => {
                                         setEditMultipleInventorySwitch(true);
                                     }}
                                 >
-                                    Edit Multiple Inventory</Button>
+                                    Edit Multiple Inventory
+                                </Button>
                                 <Button variant='dark' style={{ marginLeft: 5 }}
                                     onClick={() => {
                                         setRemoveMultipleInventorySwitch(true);

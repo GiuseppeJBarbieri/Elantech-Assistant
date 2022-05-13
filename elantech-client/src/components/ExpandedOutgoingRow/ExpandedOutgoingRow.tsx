@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { FunctionComponent, HTMLAttributes, useState } from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
-import { Pencil, Trash, Plus } from 'react-bootstrap-icons';
+import { Pencil, Trash, Plus, ThreeDots } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
@@ -9,35 +9,15 @@ import { AddInventoryModal } from '../AddInventoryModal/AddInventoryModal';
 import { EditReceivedProductOrderModal } from '../EditReceivedProductInOrderModal/EditReceivedProductOrderModal';
 import { ReceivingAddProductModal } from '../ReceivingAddProductModal/ReceivingAddProductModal';
 
-interface ExpandedReceivingRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface ExpandedOutgoingRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
 }
 
-const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps> = (props) => {
+const ExpandedOutgoingRowComponent: FunctionComponent<ExpandedOutgoingRowProps> = (props) => {
     const [editProductSwitch, setEditProductSwitch] = useState(false);
     const [addInventorySwitch, setAddInventorySwitch] = useState(false);
     const [addProductSwitch, setAddProductSwitch] = useState(false);
 
-    const rankFormatterAdd = (_: any, data: any, index: any) => {
-        return (
-            <div
-                style={{
-                    textAlign: 'center',
-                    cursor: 'pointer',
-                    lineHeight: 'normal'
-                }}
-                onClick={(e) => {
-                    e.stopPropagation()
-                }}>
-                <div onClick={(e) => {
-                    // add 3rd switch for adding inventory from here
-                    setAddInventorySwitch(true);
-                }}>
-                    <Plus style={{ fontSize: 20, color: 'white' }} />
-                </div>
-            </div>
-        );
-    };
-    const rankFormatterEdit = (_: any, data: any, index: any) => {
+    const rankFormatterViewMore = (_: any, data: any, index: any) => {
         return (
             <div
                 style={{
@@ -50,18 +30,11 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
                     e.stopPropagation()
                 }} >
                 <div onClick={(e) => {
-                    setEditProductSwitch(true);
+                    console.log('View More');
                 }}
                 >
-                    <Pencil style={{ fontSize: 20, color: 'white' }} />
+                    <ThreeDots style={{ fontSize: 20, color: 'white' }} />
                 </div>
-            </div>
-        );
-    };
-    const rankFormatterRemove = (_: any, data: any, index: any) => {
-        return (
-            <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }} onClick={() => console.log('Remove Column')} >
-                <Trash style={{ fontSize: 20, color: 'white' }} />
             </div>
         );
     };
@@ -79,100 +52,76 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
             sort: true,
         },
         {
-            id: 2,
+            id: 3,
+            dataField: "condition",
+            text: "Condition",
+            sort: true,
+        },
+        {
+            id: 4,
             dataField: "product_type",
             text: "Type",
             sort: true,
         },
         {
-            id: 2,
+            id: 5,
             dataField: "brand",
             text: "Brand",
             sort: true,
         },
         {
-            id: 2,
+            id: 6,
             dataField: "description",
             text: "Description",
             sort: true,
         },
         {
-            id: 3,
-            dataField: "condition_upon_delivery",
-            text: "CUD",
-            sort: true,
-        },
-        {
-            id: 4,
-            dataField: "added_to_inventory",
-            text: "Added",
-            sort: true,
-        },
-        {
-            id: 5,
-            dataField: "Add",
-            text: "Receive Item",
-            sort: false,
-            formatter: rankFormatterAdd,
-            headerAlign: 'center',
-            style: {
-                textAlign: 'center'
-            }
-        },
-        {
-            id: 6,
-            dataField: "edit",
-            text: "Edit",
-            sort: false,
-            formatter: rankFormatterEdit,
-            headerAlign: 'center',
-            style: {
-                textAlign: 'center'
-            }
-        },
-        {
             id: 7,
-            dataField: "remove",
-            text: "Delete",
+            dataField: "view",
+            text: "View More",
             sort: false,
-            formatter: rankFormatterRemove,
+            formatter: rankFormatterViewMore,
             headerAlign: 'center',
             style: {
                 textAlign: 'center'
             }
-        }
+        },
+
     ];
     const fake_data = [
         {
-            quantity: 1,
-            product_number: '875001-B21',
-            condition_upon_delivery: 'New',
-            added_to_inventory: 'Yes',
-            added_by: 'Giuseppe',
-            product_type: 'Raid Controller',
-            brand: 'HPE',
-            description: 'HPE Smart Array P408i-a SR Gen10 Controller',
-        },
-        {
             quantity: 3,
-            product_number: '875001-B21',
-            condition_upon_delivery: 'New',
-            added_to_inventory: 'Yes',
-            added_by: 'Giuseppe',
+            product_number: '804331-B21',
+            condition: 'Refurbished',
             product_type: 'Raid Controller',
             brand: 'HPE',
             description: 'HPE Smart Array P408i-a SR Gen10 Controller',
         },
         {
-            quantity: 12,
-            product_number: '875001-B21',
-            condition_upon_delivery: 'Used',
-            added_to_inventory: 'No',
-            added_by: 'Giuseppe',
+            quantity: 4,
+            product_number: '804331-B22',
+            condition: 'Refurbished',
             product_type: 'Raid Controller',
             brand: 'HPE',
             description: 'HPE Smart Array P408i-a SR Gen10 Controller',
         },
+        {
+            quantity: 23,
+            product_number: '804331-B23',
+            condition: 'Refurbished',
+            product_type: 'Raid Controller',
+            brand: 'HPE',
+            description: 'HPE Smart Array P408i-a SR Gen10 Controller',
+        },
+        {
+            quantity: 57,
+            product_number: '804331-B24',
+            condition: 'Refurbished',
+            product_type: 'Raid Controller',
+            brand: 'HPE',
+            description: 'HPE Smart Array P408i-a SR Gen10 Controller',
+        },
+
     ];
     const options = {
         custom: true,
@@ -183,7 +132,7 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
     return (
         <div style={{ padding: 20 }} className='expandedProductRow'>
             <Navbar bg="dark" variant="dark">
-                <Navbar.Brand>Received Products</Navbar.Brand>
+                <Navbar.Brand>Products in Order</Navbar.Brand>
                 <Nav className="me-auto" style={{ marginBottom: -3 }}>
                     <Nav.Link onClick={() => {
                         setAddProductSwitch(true);
@@ -245,8 +194,6 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
                         modalVisible={addInventorySwitch}
                         onClose={async () => {
                             setAddInventorySwitch(false);
-                            // if it was added
-                            // set to added for product
                         }}
                     />
                 </div>
@@ -258,8 +205,6 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
                         modalVisible={addProductSwitch}
                         onClose={async () => {
                             setAddProductSwitch(false);
-                            // if it was added
-                            // set to added for product
                         }}
                     />
                 </div>
@@ -268,4 +213,4 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
     );
 };
 
-export const ExpandedReceivingRow = withRouter(ExpandedReceivingRowComponent);
+export const ExpandedOutgoingRow = withRouter(ExpandedOutgoingRowComponent);

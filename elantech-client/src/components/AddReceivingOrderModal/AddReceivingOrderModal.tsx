@@ -1,46 +1,20 @@
 import React, { HTMLAttributes, FunctionComponent } from "react";
 import { useState } from "react";
-import { Modal, Spinner, Form, Button, InputGroup } from "react-bootstrap";
+import { Modal, Spinner, Form, Button, InputGroup, Row, Col, Container } from "react-bootstrap";
 import { Plus, Pencil, Trash } from "react-bootstrap-icons";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from "react-bootstrap-table2-paginator";
-import { DebounceInput } from "react-debounce-input";
 import { RouteComponentProps, withRouter } from "react-router-dom";
-import ICompany from '../../types/ICompany';
-import IProduct from "../../types/IProduct";
-import IQuotedProduct from "../../types/IQuotedProduct";
 import { ExpandedProductRow } from "../ExpandedProductRow/ExpandedProductRow";
 
-interface AddMultiQuoteModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+
+interface AddReceivingOrderModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
     modalVisible: boolean;
-    selectedCompany: ICompany | undefined;
 }
 
-const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = (props) => {
+const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalProps> = (props) => {
     const [isSaving, setIsSaving] = useState(false);
-    const [condition, setCondition] = useState('Choose Condition');
-    const [quantity, setQuantity] = useState(0);
-    const [price, setPrice] = useState(0);
-    const [rowSelected, setRowSelected] = useState(false);
-    const [selectedProduct, setSelectedProduct] = useState<IProduct>({
-        quantity: 0,
-        product_number: 'string',
-        product_type: 'string',
-        brand: 'string',
-        description: 'string',
-        last_added: 'string',
-        alt_1: 'string',
-        alt_2: 'string',
-        alt_3: 'string',
-        alt_4: 'string',
-        ebay_link: 'string',
-        website_link: 'string',
-        quick_specs: 'string',
-        related_tags: 'string',
-
-    });
-    const [quotedProducts, setQuotedProducts] = useState<IQuotedProduct[]>([]);
 
     const rankFormatterRemove = (_: any, data: any, index: any) => {
         return (
@@ -54,8 +28,8 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
                     e.stopPropagation()
                 }} >
                 <div onClick={(e) => {
-                    for(var i = 0; i < setQuotedProducts.length; i++) {
-                        if(quotedProducts[i] === data) {
+                    for (var i = 0; i < setQuotedProducts.length; i++) {
+                        if (quotedProducts[i] === data) {
                             quotedProducts.splice(i, 1);
                             setQuotedProducts([...quotedProducts]);
                             break;
@@ -80,6 +54,30 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
             id: 2,
             dataField: "product_number",
             text: "Product Number",
+            sort: true,
+        },
+        {
+            id: 2,
+            dataField: "alt_1",
+            text: "Alt 1",
+            sort: true,
+        },
+        {
+            id: 2,
+            dataField: "alt_2",
+            text: "Alt 2",
+            sort: true,
+        },
+        {
+            id: 2,
+            dataField: "alt_3",
+            text: "Alt 3",
+            sort: true,
+        },
+        {
+            id: 2,
+            dataField: "alt_4",
+            text: "Alt 4",
             sort: true,
         },
         {
@@ -297,43 +295,7 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
     };
     const selectRow = {
         mode: 'radio',
-        clickToSelect: true,
-        onSelect: (row: IProduct, isSelect: boolean, rowIndex: Number, e: any) => {
-            if (isSelect === true) {
-                // Select product
-                setRowSelected(true);
-                setSelectedProduct(row);
-            } else {
-                setRowSelected(false);
-            }
-        },
-    };
-    const addQuote = () => {
-        let p = selectedProduct;
-        console.log(selectedProduct);
-        let q: IQuotedProduct = {
-            quantity: (quantity),
-            product_number: (p.product_number),
-            product_type: (p.product_type),
-            brand: (p.brand),
-            description: (p.description),
-            condition: condition,
-            price: price,
-        };
-        var found = false;
-        for (var i = 0; i < quotedProducts.length; i++) {
-            if (quotedProducts[i].product_number === q.product_number
-                && quotedProducts[i].condition === q.condition) {
-                console.log('Alert - already exists!');
-                found = true;
-            }
-        }
-
-        if (!found && p.product_number !== 'string') {
-            quotedProducts.push(q);
-            setQuotedProducts([...quotedProducts]);
-        }
-
+        clickToSelect: true
     };
     return (
         <div>
@@ -343,9 +305,9 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
                     closeButton
                 >
                     <Modal.Title>
-                        <h2 style={{ verticalAlign: '', fontWeight: 300 }} >Create Quote</h2>
+                        <h2 style={{ verticalAlign: '', fontWeight: 300 }} >Receiving Order</h2>
                         <p style={{ color: 'darkgray', fontSize: 18, fontWeight: 300 }}>
-                            Please enter quote information.
+                            Please enter order information.
                         </p>
                     </Modal.Title>
                 </Modal.Header>
@@ -363,79 +325,98 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
                                 </ul>
                             </div>
                             :
-                            <Form className="container d-grid" >
-                                <h3 style={{ fontWeight: 300 }}>Select Products</h3>
-                                <p style={{ fontWeight: 300 }}>
-                                    First select a product, add the quote information, then click add quote when finished.
-                                </p>
-                                <div className='d-flex justify-content-between'>
-                                    <div className='d-flex'>
-                                        <div>
-                                            <input type='text'
-                                                className="form-control custom-input"
-                                                placeholder="Search Product"
-                                                style={{ width: 200 }}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className='d-flex'>
-                                        <div style={{ marginRight: 5 }}>
-                                            <Form.Select aria-label="Default select example"
-                                                value={condition}
-                                                onChange={(e) => setCondition(e.target.value)}
-                                            >
-                                                <option>Choose Condition</option>
-                                                <option value="New Factory Sealed">New Factory Sealed</option>
-                                                <option value="New Opened Box">New Opened Box</option>
-                                                <option value="Renew">Renew</option>
-                                                <option value="Used">Used</option>
-                                                <option value="Damaged">Damaged</option>
-                                            </Form.Select>
-                                        </div>
-                                        <div style={{ marginRight: 5 }}>
-                                            <input
-                                                type='text'
-                                                className="form-control custom-input"
-                                                placeholder="QTY"
-                                                style={{ width: 75 }}
-                                                pattern='[0-9]*'
-                                                value={quantity}
-                                                onChange={(e) => {
-                                                    if (!isNaN(Number(e.target.value))) {
-                                                        setQuantity(Number(e.target.value))
-                                                    }
-                                                }}
-                                            />
-                                        </div>
-                                        <div style={{ marginRight: 5 }}>
-                                            <input type='text'
-                                                className="form-control custom-input"
-                                                placeholder="Price"
-                                                style={{ width: 100 }}
-                                                pattern='[0-9]\.*'
-                                                value={price}
-                                                onChange={(e) => {
-                                                    if (!isNaN(Number(e.target.value))) {
-                                                        setPrice(Number(e.target.value))
-                                                    }
-                                                }}
-                                            />
-                                        </div>
-                                        <div>
-                                            <Button variant="dark"
-                                                onClick={() => {
-                                                    // Add quoted product to list
-                                                    addQuote();
-                                                }}
-                                            >
-                                                <Plus style={{ marginTop: -3, marginLeft: -10 }} />
-                                                Add Quote
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
+                            <Form className="d-grid" >
+                                <h3 style={{ fontWeight: 300 }}>Order Information</h3>
                                 <hr />
+                                <p style={{ fontWeight: 300 }}>
+                                    Please enter all information below, as it is required.
+                                </p>
+                                <Container>
+                                    <Row>
+                                        <Col>
+                                            <Form.Group className="mb-3" style={{ marginRight: 5 }}>
+                                                <Form.Label style={{ fontWeight: 300 }}>PO Number</Form.Label>
+                                                <Form.Control id="comments" type="text" placeholder="PO Number" />
+                                            </Form.Group>
+                                        </Col>
+                                        <Col>
+                                            <Form.Group className="mb-3" style={{ marginRight: 5 }}>
+                                                <Form.Label style={{ fontWeight: 300 }}>Order Type</Form.Label>
+                                                <Form.Select aria-label="Default select example">
+                                                    <option>Choose Order Type</option>
+                                                    <option value="Order">Order</option>
+                                                    <option value="RMA">RMA</option>
+                                                </Form.Select>
+                                            </Form.Group>
+                                        </Col>
+                                        <Col>
+                                            <Form.Group className="mb-3" style={{ marginRight: 5 }}>
+                                                <Form.Label style={{ fontWeight: 300 }}>Seller</Form.Label>
+                                                <Form.Select aria-label="Default select example">
+                                                    <option>Choose Seller</option>
+                                                    <option value="New Factory Sealed">Company 1</option>
+                                                    <option value="New Opened Box">Company 2</option>
+                                                    <option value="Renew">Company 3</option>
+                                                    <option value="Used">Company 4</option>
+                                                    <option value="Damaged">Company 5</option>
+                                                </Form.Select>
+                                            </Form.Group>
+                                        </Col>
+                                        <Col>
+                                            <Form.Group className="mb-3" style={{ marginRight: 5 }}>
+                                                <Form.Label style={{ fontWeight: 300 }}>Date Received</Form.Label>
+                                                <Form.Control id="dateReceived" type="date" />
+                                            </Form.Group>
+                                        </Col>
+                                        <Col>
+                                            <Form.Group className="mb-3">
+                                                <Form.Label style={{ fontWeight: 300 }}>Comments</Form.Label>
+                                                <Form.Control id="comments" type="text" placeholder="Comments" />
+                                            </Form.Group>
+                                        </Col>
+                                    </Row>
+                                </Container>
+                                <br />
+                                <br />
+                                <h3 style={{ fontWeight: 300 }}>Product Information</h3>
+                                <hr />
+                                <p style={{ fontWeight: 300 }}>Please select all products in this order.</p>
                                 <div>
+                                    <Container>
+                                        <div className='d-flex justify-content-between'>
+                                            <div className="d-flex">
+                                                <Form.Group className="mb-1" style={{ marginRight: 5 }}>
+                                                    <Form.Control id="quantity" type="text" placeholder="Quantity" />
+                                                </Form.Group>
+                                                <Form.Group className="mb-3" style={{ marginRight: 5 }}>
+                                                    <Form.Select aria-label="Default select example">
+                                                        <option>Choose Condition</option>
+                                                        <option value="New Factory Sealed">New Factory Sealed</option>
+                                                        <option value="New Opened Box">New Opened Box</option>
+                                                        <option value="Renew">Renew</option>
+                                                        <option value="Used">Used</option>
+                                                        <option value="Damaged">Damaged</option>
+                                                    </Form.Select>
+                                                </Form.Group>
+                                            </div>
+                                            <div style={{ float: 'right' }}>
+                                                <Form.Group className="mb-3">
+                                                    <Button variant="secondary">Submit</Button>
+                                                </Form.Group>
+                                            </div>
+                                        </div>
+                                    </Container>
+                                </div>
+                                <br />
+                                <p style={{ fontWeight: 300 }}>Please select a product and enter the information above.</p>
+                                <Container>
+                                    <div style={{ width: 200 }}>
+                                        <Form.Group className="md-2">
+                                            <Form.Control id="search" type="text" placeholder="Search Product" />
+                                        </Form.Group>
+                                        <br />
+                                    </div>
+
                                     <PaginationProvider
                                         pagination={paginationFactory(options)}
                                     >
@@ -478,22 +459,24 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
                                             )
                                         }
                                     </PaginationProvider>
-                                </div>
-                                <hr />
+                                </Container>
                                 <br />
+                                <h3 style={{ fontWeight: 300 }}>Products in Order</h3>
+                                <hr />
+                                <p style={{ fontWeight: 300 }}>Review all products below.</p>
                                 <div>
-                                    <h3 style={{ fontWeight: 300 }}>Quoted Products</h3>
-                                    <hr />
-                                    <BootstrapTable
-                                        keyField='serial_number'
-                                        data={quotedProducts}
-                                        columns={column_inner}
-                                        bootstrap4
-                                        condensed
-                                        classes="table table-dark table-hover table-striped"
-                                        noDataIndication="Table is Empty"
-                                    />
+                                    <Container>
+                                        <BootstrapTable
+                                            keyField='product_number'
+                                            data={fake_data}
+                                            columns={column}
+                                            bootstrap4
+                                            classes="table table-dark table-hover table-striped"
+                                            noDataIndication="Table is Empty"
+                                        />
+                                    </Container>
                                 </div>
+
                             </Form>
                         }
                     </div>
@@ -514,4 +497,4 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
     );
 };
 
-export const AddMultiQuoteModal = withRouter(AddMultiQuoteModalComponent);
+export const AddReceivingOrderModal = withRouter(AddReceivingOrderModalComponent);

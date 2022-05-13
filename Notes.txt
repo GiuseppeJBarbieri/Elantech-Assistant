@@ -3,15 +3,6 @@ Cluster Name: ElantechCluster()
 Username: VipClubElantech
 Password: YKXSghAaeoHxcyTK
 
-Quote approval  - quote log - add time 
-Times zones Screen
-
-Receiving
-* Receiving orders will have multiple products sometimes
-
-* po_number - comments - date_received - time_received - purchased_from - received_by - finished
-* product_number - qty - CUD - Added-to-inventory - added_by
-
 flag sku's (PRODUCTS) for DO NOT SELL
 
 ********* TABLES START *********
@@ -36,45 +27,7 @@ Quote -> Order -> ben reserves for the order - completed order adds Completed or
 Warranty section
 Have option to hide out of stock products for listing
 
-
-3/23/2022
-Function that still needs to be added
-2. Switch for Tested in Inventory
-7. Form Validation
-    - Make Sure Dates have date pickers
-    - uneditable
-    - no special characters - limit text input?
-7. Export CSV
-
-3/29/2022
-SEARCH Functionality
-1. Search by Brand && Type && Query
-2. Search by Brand && Type
-3. Search by Brand && Query
-4. Search by Type && Query
-
 *** Maybe add generation into products?
-
-TODO Products Page
-- Export to CSV
-- Fix search functionality?
-- Form validation
-- Fix column Styles
-- Rethink debouncer
-- Show/Not Show out of stock
-
-
-4/4/2022
-Quotes Section
-1. Add Company Function - DONE
-2. Edit Company - DONE
-3. Edit Quote
-4. Add Quote
-5. Remove Quote
-6. More Info
-7. Add quote history for one quote
-8. Set Sold
-9. Remove company
 
 
 Company Information
@@ -101,12 +54,57 @@ Product Number
 Quoted Price
 Sold
 
-4/20
-1. Get add quote to work 
-    and add to table
+4/21
+1. Edit Quote
+2. Delete Quote
+3. Search Function
 
 
-    spare rib w fried rice
-    hot + sour soup small
+TO BE FINISHED
+1. Receiving
+2. Outgoing
+3. Procurement
+4. Removed
 
-    
+
+Outgoing
+---------------
+Order Number
+Shipping To
+Added By
+Shipping Type
+Order Type
+Tracking Number
+# of Packages
+Weight
+
+
+Qty
+Product Number
+Condition
+Product Type
+Brand
+Description
+- View More - -- Here is where they can see the selected items for the order
+
+Serial Number
+Condition
+Seller Name
+Order Number
+Date Received
+Warranty Expiration
+Comment
+Tested
+
+
+
+Company
+Quote Info
+# of product - Date - Time - Quoter - Total Quote
+
+
+Type:
+Company Name
+Company Rep
+Phone Number
+Email
