@@ -28,7 +28,7 @@
     "NAME": "elantech-assistant",
     "USER": "postgres",
     "PASSWORD": "Admin123!",
-    "SYNC": false
+    "SYNC": true
   },
   "sessionLife": {
     "staleSessionTimeToLiveInDays": 31,
