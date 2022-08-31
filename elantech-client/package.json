@@ -70,6 +70,9 @@
     "ts-node": "^9.0.0",
     "typescript": "^4.0.2"
   },
+  "resolutions": {
+    "@types/react": "^16.14.10"
+  },
   "browserslist": [
     ">0.2%",
     "not dead",

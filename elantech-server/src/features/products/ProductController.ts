@@ -1,7 +1,7 @@
 import IHTTPResponse from '../../utils/interfaces/IHTTPResponse';
 import ProductRepository from './ProductRepository';
 import constants from '../../utils/constants/Constants';
-import IProduct from './IProduct';
+import { IProduct, IProductUPDATE } from './IProduct';
 
 export default {
 
@@ -46,10 +46,12 @@ export default {
     }
   },
 
-  async Edit(product: IProduct): Promise<IHTTPResponse> {
+  async Edit(product: IProductUPDATE): Promise<IHTTPResponse> {
     try {
-      const _product = { ...product };
-      await ProductRepository.Edit(_product);
+      const _product: IProduct = { ...product };
+      const { oldProductNumber } = product;
+
+      await ProductRepository.Edit(_product, oldProductNumber);
 
       return {
         ...constants.HTTP.SUCCESS.UPDATE,
@@ -70,6 +72,5 @@ export default {
       return Promise.reject(err);
     }
   },
-
 
 };

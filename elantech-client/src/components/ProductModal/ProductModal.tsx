@@ -40,7 +40,7 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
     const editProduct = async () => {
         setIsSaving(true);
         setTimeout(() => {
-            axios.put(`${BASE_API_URL}products`, editProductObj, { withCredentials: true })
+            axios.put(`${BASE_API_URL}products`, {...editProductObj, oldProductNumber: props.selectedProduct.productNumber}, { withCredentials: true })
                 .then((response) => {
                     setIsSaving(false);
                     props.getAllProducts();

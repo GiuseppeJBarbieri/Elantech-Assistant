@@ -1,7 +1,7 @@
 import db from '../../models';
 import logger from '../../utils/logging/Logger';
 import IRepoError from '../../utils/interfaces/IRepoError';
-import IProduct from './IProduct';
+import { IProduct, IProductUPDATE } from './IProduct';
 
 /// /////////////////
 /// / INTERNALS /////
@@ -47,11 +47,11 @@ export default {
     }
   },
 
-  async Edit(product): Promise<IProduct> {
+  async Edit(product: IProduct, oldProductNumber: string): Promise<IProductUPDATE> {
     try {
       return await db.product.update(product, {
         where: {
-          productNumber: product.productNumber,
+          productNumber: oldProductNumber,
         },
       });
     } catch (err) {

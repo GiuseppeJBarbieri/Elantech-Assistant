@@ -15,7 +15,6 @@ export const LoginLayout: FunctionComponent<LoginProps> = ({ history, loggedIn, 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [show, setShow] = useState(true);
-
   const loginClicked = (event: any) => {
     const PASSWORD_REGEX = /(?=^.{8,32}$)(?=(?:.*?\d){1})(?=.*[a-z])(?=(?:.*?[!@#$%*()_+^&}{:;?.]){1})(?!.*\s)[0-9a-zA-Z!@#$%^&*]*$/;
     if (!email) {
@@ -28,6 +27,7 @@ export const LoginLayout: FunctionComponent<LoginProps> = ({ history, loggedIn, 
       // \nOne number
       // \nOne special character
       // `);
+      
     } else {
       const data = {
         username: email,
@@ -41,14 +41,14 @@ export const LoginLayout: FunctionComponent<LoginProps> = ({ history, loggedIn, 
         })
         .catch(() => {
           setPassword('');
-          <Alert variant="danger" onClose={e => setShow(false)} dismissible>
-            <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
-            <p>
-              Change this and that and try again. Duis mollis, est non commodo
-              luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.
-              Cras mattis consectetur purus sit amet fermentum.
-            </p>
-          </Alert>
+          render (<Alert variant="danger" onClose={() => setShow(true)} dismissible>
+          <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
+          <p>
+            Change this and that and try again. Duis mollis, est non commodo
+            luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.
+            Cras mattis consectetur purus sit amet fermentum.
+          </p>
+        </Alert>)
         });
     }
   };
