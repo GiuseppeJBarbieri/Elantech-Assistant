@@ -4,45 +4,60 @@ import { useState } from "react";
 import { Modal, Spinner, Form, Button } from "react-bootstrap";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import IProduct from "../../types/IProduct";
-
+import axios from 'axios';
+import { BASE_API_URL } from '../../constants/API';
 import './ProductModal.css'
 
 interface ProductModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
     modalVisible: boolean;
-    selectedProduct: IProduct | undefined;
+    selectedProduct: IProduct;
     modalSwitch: Number;
+    getAllProducts: () => void;
 }
 
 const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
     const [isSaving, setIsSaving] = useState(false);
     const [title, setTitle] = useState('Create Product');
+    const [editProductObj, setEditProductObj] = useState<IProduct>(props.selectedProduct);
 
-    const [editProduct, setEditProduct] = useState<IProduct>(
-        {
-            quantity: props.selectedProduct?.quantity,
-            product_number: props.selectedProduct?.product_number,
-            product_type: props.selectedProduct?.product_type,
-            brand: props.selectedProduct?.brand,
-            description: props.selectedProduct?.description,
-            last_added: props.selectedProduct?.last_added,
-            alt_1: props.selectedProduct?.alt_1,
-            alt_2: props.selectedProduct?.alt_2,
-            alt_3: props.selectedProduct?.alt_3,
-            alt_4: props.selectedProduct?.alt_4,
-            ebay_link: props.selectedProduct?.ebay_link,
-            website_link: props.selectedProduct?.website_link,
-            quick_specs: props.selectedProduct?.quick_specs,
-            related_tags: props.selectedProduct?.related_tags,
-        }
-    );
-    const addProduct = () => {
+    const addProduct = async () => {
+        setEditProductObj({ ...editProductObj, userId: 0 })
         setIsSaving(true);
-        setTimeout(function () { //Start the timer
-            setIsSaving(false);
-            // Display Alert
-            props.onClose();
-        }.bind(this), 5000)
+        setTimeout(() => {
+            axios.post(`${BASE_API_URL}products`, editProductObj, { withCredentials: true })
+                .then((response) => {
+                    setIsSaving(false);
+                    props.getAllProducts();
+                    props.onClose();
+                })
+                .catch((err) => {
+                    console.log(err);
+                    setIsSaving(false);
+                });
+        }, 400);
+    };
+    const editProduct = async () => {
+        setIsSaving(true);
+        setTimeout(() => {
+            axios.put(`${BASE_API_URL}products`, editProductObj, { withCredentials: true })
+                .then((response) => {
+                    setIsSaving(false);
+                    props.getAllProducts();
+                    props.onClose();
+                })
+                .catch((err) => {
+                    console.log(err);
+                    setIsSaving(false);
+                });
+        }, 500);
+    };
+    const submitProduct = () => {
+        if (props.modalSwitch === 0) {
+            addProduct();
+        } else {
+            editProduct();
+        }
     }
     useEffect(() => {
         if (props.modalSwitch === 0) {
@@ -50,7 +65,8 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
         } else {
             setTitle('Edit Product');
         }
-    }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+    }, [])
     return (
         <div>
             <Modal backdrop="static" show={props.modalVisible} onHide={props.onClose} fullscreen={true}>
@@ -78,14 +94,17 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                                 <Form.Group className="mb-3">
                                     <Form.Label>Product Number</Form.Label>
                                     <Form.Control
-                                        type="text" placeholder="Product Number" value={editProduct.product_number} onChange={(e) => setEditProduct({ ...editProduct, product_number: (e.target.value) })}
+                                        type="text"
+                                        placeholder="Product Number"
+                                        value={editProductObj.productNumber}
+                                        onChange={(e) => setEditProductObj({ ...editProductObj, productNumber: (e.target.value) })}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Product Type</Form.Label>
                                     <Form.Select aria-label="Default select example"
-                                        value={editProduct.product_type}
-                                        onChange={(e) => setEditProduct({ ...editProduct, product_type: (e.target.value) })}
+                                        value={editProductObj.productType}
+                                        onChange={(e) => setEditProductObj({ ...editProductObj, productType: (e.target.value) })}
                                     >
                                         <option>Product Type</option>
                                         <option value="CPU">CPU</option>
@@ -96,8 +115,8 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                                 <Form.Group className="mb-3">
                                     <Form.Label>Brand</Form.Label>
                                     <Form.Select aria-label="Default select example"
-                                        value={editProduct.brand}
-                                        onChange={(e) => setEditProduct({ ...editProduct, brand: (e.target.value) })}
+                                        value={editProductObj.brand}
+                                        onChange={(e) => setEditProductObj({ ...editProductObj, brand: (e.target.value) })}
                                     >
                                         <option>Brand</option>
                                         <option value="HP">HP</option>
@@ -111,55 +130,111 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                                 <Form.Group className="mb-3">
                                     <Form.Label>Description</Form.Label>
                                     <Form.Control
-                                        id="timeFrame" type="text" placeholder="Description" value={editProduct.description} onChange={(e) => setEditProduct({ ...editProduct, description: (e.target.value) })}
-                                    />
-                                </Form.Group>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Ebay Link</Form.Label>
-                                    <Form.Control
-                                        id="timeFrame" type="text" placeholder="Ebay Link" value={editProduct.ebay_link} onChange={(e) => setEditProduct({ ...editProduct, ebay_link: (e.target.value) })}
-                                    />
-                                </Form.Group>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Website Link</Form.Label>
-                                    <Form.Control
-                                        id="timeFrame" type="text" placeholder="Website Link" value={editProduct.website_link} onChange={(e) => setEditProduct({ ...editProduct, website_link: (e.target.value) })}
-                                    />
-                                </Form.Group>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Quick Specs</Form.Label>
-                                    <Form.Control
-                                        id="timeFrame" type="text" placeholder="Quick Specs" value={editProduct.quick_specs} onChange={(e) => setEditProduct({ ...editProduct, quick_specs: (e.target.value) })}
+                                        id="timeFrame"
+                                        type="text"
+                                        placeholder="Description"
+                                        value={editProductObj.description}
+                                        onChange={(e) => setEditProductObj({ ...editProductObj, description: (e.target.value) })}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Alt Number 1</Form.Label>
                                     <Form.Control
-                                        id="timeFrame" type="text" placeholder="Alt Number 1" value={editProduct.alt_1} onChange={(e) => setEditProduct({ ...editProduct, alt_1: (e.target.value) })}
+                                        id="timeFrame"
+                                        type="text"
+                                        placeholder="Alt Number 1"
+                                        value={editProductObj.altNumber1}
+                                        onChange={(e) => setEditProductObj({ ...editProductObj, altNumber1: (e.target.value) })}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Alt Number 2</Form.Label>
                                     <Form.Control
-                                        id="timeFrame" type="text" placeholder="Alt Number 2" value={editProduct.alt_2} onChange={(e) => setEditProduct({ ...editProduct, alt_2: (e.target.value) })}
+                                        id="timeFrame"
+                                        type="text"
+                                        placeholder="Alt Number 2"
+                                        value={editProductObj.altNumber2}
+                                        onChange={(e) => setEditProductObj({ ...editProductObj, altNumber2: (e.target.value) })}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Alt Number 3</Form.Label>
                                     <Form.Control
-                                        id="timeFrame" type="text" placeholder="Alt Number 3" value={editProduct.alt_3} onChange={(e) => setEditProduct({ ...editProduct, alt_3: (e.target.value) })}
+                                        id="timeFrame"
+                                        type="text"
+                                        placeholder="Alt Number 3"
+                                        value={editProductObj.altNumber3}
+                                        onChange={(e) => setEditProductObj({ ...editProductObj, altNumber3: (e.target.value) })}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Alt Number 4</Form.Label>
                                     <Form.Control
-                                        id="timeFrame" type="text" placeholder="Alt Number 4" value={editProduct.alt_4} onChange={(e) => setEditProduct({ ...editProduct, alt_4: (e.target.value) })}
+                                        id="timeFrame"
+                                        type="text"
+                                        placeholder="Alt Number 4"
+                                        value={editProductObj.altNumber4}
+                                        onChange={(e) => setEditProductObj({ ...editProductObj, altNumber4: (e.target.value) })}
+                                    />
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Alt Number 5</Form.Label>
+                                    <Form.Control
+                                        id="timeFrame"
+                                        type="text"
+                                        placeholder="Alt Number 5"
+                                        value={editProductObj.altNumber5}
+                                        onChange={(e) => setEditProductObj({ ...editProductObj, altNumber5: (e.target.value) })}
+                                    />
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Alt Number 6</Form.Label>
+                                    <Form.Control
+                                        id="timeFrame"
+                                        type="text"
+                                        placeholder="Alt Number 6"
+                                        value={editProductObj.altNumber6}
+                                        onChange={(e) => setEditProductObj({ ...editProductObj, altNumber6: (e.target.value) })}
+                                    />
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Ebay Link</Form.Label>
+                                    <Form.Control
+                                        id="timeFrame"
+                                        type="text"
+                                        placeholder="Ebay Link"
+                                        value={editProductObj.ebayLink}
+                                        onChange={(e) => setEditProductObj({ ...editProductObj, ebayLink: (e.target.value) })}
+                                    />
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Website Link</Form.Label>
+                                    <Form.Control
+                                        id="timeFrame"
+                                        type="text"
+                                        placeholder="Website Link"
+                                        value={editProductObj.websiteLink}
+                                        onChange={(e) => setEditProductObj({ ...editProductObj, websiteLink: (e.target.value) })}
+                                    />
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Quick Specs</Form.Label>
+                                    <Form.Control
+                                        id="timeFrame"
+                                        type="text"
+                                        placeholder="Quick Specs"
+                                        value={editProductObj.quickSpecsLink}
+                                        onChange={(e) => setEditProductObj({ ...editProductObj, quickSpecsLink: (e.target.value) })}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Related Tags</Form.Label>
                                     <Form.Control
-                                        id="timeFrame" type="text" placeholder="Related Tags" value={editProduct.related_tags} onChange={(e) => setEditProduct({ ...editProduct, related_tags: (e.target.value) })}
+                                        id="timeFrame"
+                                        type="text"
+                                        placeholder="Related Tags"
+                                        value={editProductObj.relatedTags}
+                                        onChange={(e) => setEditProductObj({ ...editProductObj, relatedTags: (e.target.value) })}
                                     />
                                 </Form.Group>
                             </Form>
@@ -171,8 +246,8 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                         <Button
                             variant="dark"
                             onClick={async () => {
-                                console.log('')
-                                addProduct();
+                                console.log(editProductObj.productNumber)
+                                submitProduct();
                             }}>
                             Finish
                         </Button>

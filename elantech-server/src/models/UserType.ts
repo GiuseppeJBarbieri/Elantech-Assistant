@@ -15,18 +15,17 @@ export default (sequelize: any, DataTypes: any) => {
        * This method is not a part of Sequelize lifecycle.
        * The `models/index` file will call this method automatically.
        */
-       id!: number;
+    id!: number;
 
-       value!: string;
+    value!: string;
 
-       createdBy!: number;
+    createdBy!: number;
 
-       editedBy: number;
+    editedBy: number;
 
-       // eslint-disable-next-line no-unused-vars
-       static associate(models: any) {
-         // ...
-       }
+    static associate(models: any) {
+      UserType.hasMany(models.user, { foreignKey: 'id' });
+    }
   }
 
   UserType.init({
@@ -50,7 +49,7 @@ export default (sequelize: any, DataTypes: any) => {
     },
   }, {
     sequelize,
-    modelName: 'UserTypes',
+    modelName: 'userType',
     paranoid: true,
   });
 

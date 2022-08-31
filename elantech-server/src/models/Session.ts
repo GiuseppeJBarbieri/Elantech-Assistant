@@ -27,7 +27,7 @@ export default (sequelize: any, DataTypes: any) => {
      userId!: number
 
      static associate(models: any) {
-       Session.belongsTo(models.Users, {
+       Session.belongsTo(models.user, {
          foreignKey: 'userId',
        });
      }
@@ -57,7 +57,7 @@ export default (sequelize: any, DataTypes: any) => {
     },
   }, {
     sequelize,
-    modelName: 'Sessions',
+    modelName: 'session',
   });
 
   return Session;

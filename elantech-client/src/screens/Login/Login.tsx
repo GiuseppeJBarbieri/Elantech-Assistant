@@ -1,10 +1,9 @@
 import React, { useState, FunctionComponent, HTMLAttributes } from 'react';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import axios from 'axios';
-
 import { BASE_API_URL } from '../../constants/API';
 import { PAGE_ROUTES } from '../../constants/PageRoutes';
-
+import Alert from 'react-bootstrap/Alert';
 import './Login.css';
 
 interface LoginProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
@@ -13,22 +12,22 @@ interface LoginProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement>
 }
 
 export const LoginLayout: FunctionComponent<LoginProps> = ({ history, loggedIn, setLoggedIn }) => {
-  // TODO REMOVE INPUTS HERE -DEV PURP
-  const [email, setEmail] = useState('giuseppe@elantechus.com');
-  const [password, setPassword] = useState('Admin123!');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [show, setShow] = useState(true);
 
-  const loginClicked = () => {
+  const loginClicked = (event: any) => {
     const PASSWORD_REGEX = /(?=^.{8,32}$)(?=(?:.*?\d){1})(?=.*[a-z])(?=(?:.*?[!@#$%*()_+^&}{:;?.]){1})(?!.*\s)[0-9a-zA-Z!@#$%^&*]*$/;
     if (!email) {
-      alert('email cannot be empty!');
+      // alert('email cannot be empty!');
     } else if (!PASSWORD_REGEX.exec(password)) {
-      alert(`Passwords must have at least:
-      \n8 characters
-      \nOne upper case
-      \nOne lower case
-      \nOne number
-      \nOne special character
-      `);
+      // alert(`Passwords must have at least:
+      // \n8 characters
+      // \nOne upper case
+      // \nOne lower case
+      // \nOne number
+      // \nOne special character
+      // `);
     } else {
       const data = {
         username: email,
@@ -36,18 +35,28 @@ export const LoginLayout: FunctionComponent<LoginProps> = ({ history, loggedIn, 
       };
 
       axios.post(`${BASE_API_URL}users/login`, data, { withCredentials: true })
-        .then(() => {
+        .then((req) => {
           setLoggedIn(true);
           history.push(PAGE_ROUTES.HOME);
         })
         .catch(() => {
-          // TODO: Hide loading spinner and display error message
           setPassword('');
-          alert('Incorrect credentials');
+          <Alert variant="danger" onClose={e => setShow(false)} dismissible>
+            <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
+            <p>
+              Change this and that and try again. Duis mollis, est non commodo
+              luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.
+              Cras mattis consectetur purus sit amet fermentum.
+            </p>
+          </Alert>
         });
     }
   };
-
+  const handleKeyDown = (event: any) => {
+    if (event.key === 'Enter') {
+      loginClicked(event);
+    }
+  };
   return (
     <div className="Login login-section text-white" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', bottom: 0, position: 'absolute' }}>
       <div className='bg-dark' style={{ margin: 'auto' }}>
@@ -57,13 +66,13 @@ export const LoginLayout: FunctionComponent<LoginProps> = ({ history, loggedIn, 
             <h1 className='neonText' style={{ 'marginBottom': 30, fontWeight: 300 }}>Elantech Assistant</h1>
             <h2 style={{ 'marginBottom': 25, fontWeight: 300 }}>Sign In</h2>
 
-            <form className='container' style={{ 'maxWidth': 350 }}>
+            <div className='container' style={{ 'maxWidth': 350 }}>
 
-              <input type='email' className="form-control" placeholder="Enter Email" style={{ 'marginBottom': 15, 'textAlign': 'center' }} onChange={(e) => setEmail(e.target.value)} />
-              <input type='password' className="form-control" placeholder="Password" style={{ 'marginBottom': 15, 'textAlign': 'center' }} onChange={(e) => setPassword(e.target.value)} />
+              <input required type='text' className="form-control" placeholder="Enter Email" style={{ 'marginBottom': 15, 'textAlign': 'center' }} value={email} onChange={(e) => setEmail(e.target.value)} />
+              <input type='password' className="form-control" placeholder="Password" style={{ 'marginBottom': 15, 'textAlign': 'center' }} value={password} onChange={(e) => setPassword(e.target.value)} onKeyDown={handleKeyDown} />
 
               <hr style={{ 'maxWidth': '80%', 'margin': 'auto', 'marginBottom': 15 }} />
-              <button type='submit' className='btn btn-primary form-control' style={{ 'marginBottom': 5 }} onClick={loginClicked} >Login</button>
+              <button type='button' className='btn btn-primary form-control' style={{ 'marginBottom': 5 }} onClick={loginClicked} >Login</button>
 
               <div className='d-flex justify-content-between'>
                 <Link to="/forgotPassword" style={{ textDecoration: 'none' }}>
@@ -75,7 +84,7 @@ export const LoginLayout: FunctionComponent<LoginProps> = ({ history, loggedIn, 
                 </Link>
               </div>
 
-            </form>
+            </div>
 
           </div>
         </div>

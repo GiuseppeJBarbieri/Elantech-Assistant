@@ -25,7 +25,7 @@ const standardError = (message: string) => {
 export default {
   async Add(user): Promise<IUser> {
     try {
-      return await db.Users.create(user);
+      return await db.user.create(user);
     } catch (err) {
       standardError(`${err.name} ${err.message}`);
       throw repoErr;
@@ -34,11 +34,26 @@ export default {
 
   async GetById(id: number): Promise<IUser> {
     try {
-      return await db.Users.findOne({
+      return await db.user.findOne({
         where: { id },
         attributes: { exclude: ['password'] },
         include: [
-          { model: db.UserType, attributes: ['value'] },
+          { model: db.userType, attributes: ['value'] },
+        ],
+      });
+    } catch (err) {
+      standardError(err.message);
+      return Promise.reject(repoErr);
+    }
+  },
+
+  async GetByEmail(email: string): Promise<IUser> {
+    try {
+      return await db.user.findOne({
+        where: { email },
+        attributes: { exclude: ['password'] },
+        include: [
+          { model: db.userType, attributes: ['value'] },
         ],
       });
     } catch (err) {
@@ -49,7 +64,7 @@ export default {
 
   async Update(user): Promise<number[]> {
     try {
-      const affectedRows = await db.Users.update(user,
+      const affectedRows = await db.user.update(user,
         {
           where: { id: user.id },
         });
@@ -67,10 +82,10 @@ export default {
 
   async Login(email: string): Promise<IUser> {
     try {
-      const users = await db.Users.findAll({
+      const users = await db.user.findAll({
         where: sequelize.where(sequelize.fn('lower', sequelize.col('email')), sequelize.fn('lower', email)),
         include: [
-          { model: db.UserTypes, attributes: ['value'] },
+          { model: db.userType, attributes: ['value'] },
         ],
       });
 
@@ -85,9 +100,25 @@ export default {
     }
   },
 
+  async Logout(uuid: string): Promise<ISession> {
+    try {
+      const result = db.session.destroy({
+        where: {
+          uuid,
+        },
+      });
+
+      return Promise.resolve(result);
+    } catch (err) {
+      standardError(err);
+      logger.info(err);
+      return Promise.reject(repoErr);
+    }
+  },
+
   async GetSession(uuid: string): Promise<ISession> {
     try {
-      return await db.Sessions.findOne({
+      return await db.session.findOne({
         where: {
           uuid,
           active: true,
@@ -102,7 +133,7 @@ export default {
 
   async UpdateSession(session): Promise<ISession> {
     try {
-      const affectedRows = await db.Sessions.update(session, {
+      const affectedRows = await db.session.update(session, {
         where: {
           uuid: session.uuid,
         },
@@ -122,7 +153,7 @@ export default {
 
   async NewSession(session: ISession): Promise<ISession> {
     try {
-      return await db.Sessions.create(session);
+      return await db.session.create(session);
     } catch (err) {
       standardError(err.message);
       return Promise.reject(repoErr);
@@ -135,7 +166,7 @@ export default {
    */
   async ClearStaleSessions(cutoffDate: Date): Promise<any[]> {
     try {
-      const result = db.Sessions.destroy({
+      const result = db.session.destroy({
         where: {
           expiresAt: {
             [Op.lt]: cutoffDate,

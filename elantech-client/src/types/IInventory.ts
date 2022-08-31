@@ -1,11 +1,11 @@
 interface IInventory {
-    serial_number?: string;
-    product_number?: string;
+    serialNumber?: string;
+    productNumber?: string;
     condition?: string;
-    seller_name?: string;
-    order_number?: string;
-    date_received?: string;
-    warranty_expiration?: string;
+    sellerName?: string;
+    orderNumber?: string;
+    dateReceived?: string;
+    warrantyExpiration?: string;
     comment?: string;
     location?: string;
     tested?: string;

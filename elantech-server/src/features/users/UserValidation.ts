@@ -16,12 +16,19 @@ export default {
       // One Special character
       password: Joi.string().regex(constants.USER.PASSWORD.REGEX).required(),
       userTypeId: Joi.number().required(),
+      phoneNumber: Joi.string(),
     },
   },
 
   GetUser: {
     params: {
       id: Joi.number().required(),
+    },
+  },
+
+  GetUserByEmail: {
+    params: {
+      email: Joi.string().required(),
     },
   },
 

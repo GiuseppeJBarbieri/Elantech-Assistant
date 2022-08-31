@@ -20,6 +20,7 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
     const [editQuoteSwitch, setEditQuoteSwitch] = useState(false);
     const [selectedQuote, setSelectedQuote] = useState<IQuotedProduct>();
     const [viewMoreSwitch, setViewMoreSwitch] = useState(false);
+
     const rankFormatterAdd = (_: any, data: any, index: any) => {
         return (
             <div
@@ -329,6 +330,20 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
         totalSize: fake_data.length
 
     };
+    // const getAllQuotes = () => {
+    //     setTimeout(() => {
+    //       axios.get(`${BASE_API_URL}quotes`, { withCredentials: true })
+    //         .then((response) => {
+    //           setQuoteList(response?.data?.payload);
+    //         })
+    //         .catch((err) => {
+    //           console.log(err);
+    //         })
+    //     }, 400)
+    //   };
+    //   useEffect(() => {
+    //     getAllQuotes();
+    //   }, []);
     return (
         <div style={{ padding: 20 }} className='expandedProductRow'>
             <Navbar bg="dark" variant="dark">

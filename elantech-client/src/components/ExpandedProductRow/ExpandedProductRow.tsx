@@ -1,13 +1,16 @@
-import * as React from 'react';
+import axios from 'axios';
+import React, { useEffect } from 'react';
 import { FunctionComponent, HTMLAttributes, useState } from 'react';
-import { Navbar, Nav, Button, Collapse, Form } from 'react-bootstrap';
+import { Navbar, Nav, Button, Collapse } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+import IInventory from '../../types/IInventory';
 import IProduct from '../../types/IProduct';
 import { AddInventoryModal } from '../AddInventoryModal/AddInventoryModal';
 import { AddSimpleQuoteModal } from '../AddSimpleQuoteModal/AddSimpleQuoteModal';
 import { InventoryTable } from '../Tables/InventoryTable';
+import { BASE_API_URL } from '../../constants/API';
 
 interface ExpandedProductRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     selectedProduct: IProduct
@@ -19,12 +22,15 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
     const [hideQuotes, setHideQuotes] = useState(true);
     const [viewQuotesLbl, setViewQuotesLbl] = useState('View Quotes');
     const [expandInventoryLbl, setExpandInventoryLbl] = useState('Expand Inventory Table');
-    const [newOpenedBox, setNewOpenedBox] = useState(0);
+    
     const [factorySealed, setFactorySealed] = useState(0);
+    const [newOpenedBox, setNewOpenedBox] = useState(0);
     const [refurbished, setRefurbished] = useState(0);
     const [renew, setRenew] = useState(0);
     const [used, setUsed] = useState(0);
     const [damaged, setDamaged] = useState(0);
+
+    const [inventory, setInventory] = useState<IInventory[]>([]);
 
     const fake_quote_data = [
         {
@@ -120,9 +126,6 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
             dataField: "comments",
             text: "Comments",
             sort: false,
-            // style: {
-            //     maxWidth: 200,
-            // }
         },
         {
             id: 7,
@@ -130,16 +133,44 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
             text: " Sold ",
             sort: true,
             headerAlign: 'center',
-            // style: {
-            //     textAlign: 'center',
-            //     marginRight: 2,
-            //     marginLeft: 2,
-            // }
         }
     ];
     const options = {
         custom: true,
         sizePerPage: 5,
+    };
+    const getAllInventory = (product_number: string) => {
+        setTimeout(() => {
+            axios.get(`${BASE_API_URL}inventory/${product_number}`, { withCredentials: true})
+                .then((response) => {
+                    setInventory(response?.data?.payload);
+                    setConditionAmount(response?.data?.payload);
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
+        }, 400)
+    };
+    useEffect(() => {
+        getAllInventory(props.selectedProduct.productNumber);
+    }, []);
+    
+    const setConditionAmount = (inventory: IInventory[]) => {
+        for(const item of inventory){
+            if(item.condition == 'Factory Sealed') {
+                setFactorySealed((factorySealed + 1))
+            } else if(item.condition == 'New Opened Box') {
+                setNewOpenedBox((newOpenedBox + 1));
+            } else if(item.condition == 'Refurbished') {
+                setRefurbished((refurbished + 1));
+            } else if(item.condition == 'Renew') {
+                setRenew((renew + 1));
+            } else if(item.condition == 'Used') {
+                setUsed((used + 1));
+            } else if(item.condition == 'Damaged') {
+                setDamaged((damaged + 1));
+            }
+        }
     };
     return (
         <div style={{ padding: 20 }} className='expandedProductRow'>
@@ -147,17 +178,17 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                 <Navbar.Brand>More Info</Navbar.Brand>
                 <Nav className="me-auto">
                     <Nav.Link onClick={async () => {
-                        window.open(props.selectedProduct.ebay_link)
+                        window.open(props.selectedProduct.ebayLink)
                     }}>
                         Ebay Listing
                     </Nav.Link>
                     <Nav.Link onClick={async () => {
-                        window.open(props.selectedProduct.website_link)
+                        window.open(props.selectedProduct.websiteLink)
                     }}>
                         Website Listing
                     </Nav.Link>
                     <Nav.Link onClick={async () => {
-                        window.open(props.selectedProduct.quick_specs)
+                        window.open(props.selectedProduct.quickSpecsLink)
                     }}>
                         HPE Quick Specs
                     </Nav.Link>
@@ -181,8 +212,8 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                 <div>
                     <hr />
                     <div className='d-flex justify-content-between' style={{ paddingLeft: 15, paddingRight: 15 }}>
-                        <p>New Opened Box: {newOpenedBox}</p>
                         <p>Factory Sealed: {factorySealed}</p>
+                        <p>New Opened Box: {newOpenedBox}</p>
                         <p>Refurbished: {refurbished}</p>
                         <p>Renew: {renew}</p>
                         <p>Used: {used}</p>
@@ -197,13 +228,17 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                                 <p><strong style={{ fontWeight: 500 }}>Alternate Number 2:</strong></p>
                                 <p><strong style={{ fontWeight: 500 }}>Alternate Number 3:</strong></p>
                                 <p><strong style={{ fontWeight: 500 }}>Alternate Number 4:</strong></p>
+                                <p><strong style={{ fontWeight: 500 }}>Alternate Number 5:</strong></p>
+                                <p><strong style={{ fontWeight: 500 }}>Alternate Number 6:</strong></p>
                             </ div>
                             <div>
-                                <p>{props.selectedProduct.product_number}</p>
-                                <p>{props.selectedProduct.alt_1}</p>
-                                <p>{props.selectedProduct.alt_2}</p>
-                                <p>{props.selectedProduct.alt_3}</p>
-                                <p>{props.selectedProduct.alt_4}</p>
+                                <p>{props.selectedProduct.productNumber}</p>
+                                <p>{props.selectedProduct.altNumber1}</p>
+                                <p>{props.selectedProduct.altNumber2}</p>
+                                <p>{props.selectedProduct.altNumber3}</p>
+                                <p>{props.selectedProduct.altNumber4}</p>
+                                <p>{props.selectedProduct.altNumber5}</p>
+                                <p>{props.selectedProduct.altNumber6}</p>
                             </div>
                         </div>
                         <div className='d-flex' style={{ marginRight: 50 }}>
@@ -243,7 +278,9 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                         </Button>
                         <Collapse in={openState}>
                             <div id="example-collapse-text">
-                                <InventoryTable />
+                                <InventoryTable 
+                                    inventory={inventory}
+                                />
                             </div>
                         </Collapse>
                     </div>

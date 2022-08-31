@@ -5,6 +5,7 @@ import constants from '../../utils/constants/Constants';
 import config from '../../config';
 import IHTTPResponse from '../../utils/interfaces/IHTTPResponse';
 import IUser from './IUser';
+import ISession from '../session/ISession';
 
 const SESSION_LIFE_PARAMS = config.sessionLife;
 
@@ -50,6 +51,25 @@ export default {
   },
 
   /**
+ * This function will fetch the user with the given _email
+ * @param email The email of the user to fetch
+ * @returns JSON user
+ */
+  async GetByEmail(email): Promise<IUser> {
+    try {
+      const user: IUser = await UserRepository.GetByEmail(email);
+      if (!user) {
+        const response = constants.HTTP.ERROR.NOT_FOUND;
+        return Promise.reject(response);
+      }
+
+      return user;
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  },
+
+  /**
     * Using the value from the config for stale session life,
     * it will call the repository to delete old inactive sessions.
     *
@@ -61,6 +81,17 @@ export default {
       return await UserRepository.ClearStaleSessions(cutoffDate);
     } catch (err) {
       return err;
+    }
+  },
+  /**
+   * Using the value from the config for stale session life,
+   * it will call the repository to delete old inactive sessions.
+   */
+  async Logout(uuid: string): Promise<ISession> {
+    try {
+      return await UserRepository.Logout(uuid);
+    } catch (err) {
+      return Promise.reject(err);
     }
   },
 };

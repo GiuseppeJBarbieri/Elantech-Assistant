@@ -3,7 +3,9 @@ import { FunctionComponent, HTMLAttributes, useEffect, useState } from 'react';
 import { Button, Dropdown, DropdownButton, Spinner } from 'react-bootstrap';
 import paginationFactory, { PaginationProvider, PaginationListStandalone, SizePerPageDropdownStandalone } from 'react-bootstrap-table2-paginator';
 import { Pencil, Plus, Trash } from 'react-bootstrap-icons';
+
 import BootstrapTable from 'react-bootstrap-table-next';
+
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { ExpandedProductRow } from '../../components/ExpandedProductRow/ExpandedProductRow';
 import { ProductModal } from '../../components/ProductModal/ProductModal';
@@ -13,22 +15,47 @@ import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import { RemoveProductModal } from '../../components/RemoveProductModal/RemoveProductModal';
 import { DebounceInput } from 'react-debounce-input';
 import axios from 'axios';
+import { BASE_API_URL } from '../../constants/API';
+import { PAGE_ROUTES } from '../../constants/PageRoutes';
+import { clearCookie } from '../../utils/Auth';
 
-interface HomeProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> { }
+interface HomeProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+  loggedIn: boolean;
 
-export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
+  setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, setLoggedIn }) => {
   const [addProductSwitch, setAddProductSwitch] = useState(false);
   const [editProductSwitch, setEditProductSwitch] = useState(false);
   const [removeProductSwitch, setRemoveProductSwitch] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<IProduct>();
   const [searchText, setSearchText] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [filterType, setFilterType] = useState('Filter Type');
   const [filterBrand, setFilterBrand] = useState('Filter Brand');
-
+  const [selectedProduct, setSelectedProduct] = useState<IProduct>(
+    {
+      productNumber: '',
+      userId: 0,
+      altNumber1: '',
+      altNumber2: '',
+      altNumber3: '',
+      altNumber4: '',
+      altNumber5: '',
+      altNumber6: '',
+      quantity: 0,
+      productType: '',
+      brand: '',
+      description: '',
+      ebayLink: '',
+      websiteLink: '',
+      quickSpecsLink: '',
+      relatedTags: '',
+    }
+  );
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [productList, setProductList] = useState<IProduct[]>([]);
-  
+
   const rankFormatterRemove = (_: any, data: any, index: any) => {
     return (
       <div
@@ -79,28 +106,19 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
       text: "QTY",
       sort: true,
       headerAlign: 'center',
-      style: {
-        textAlign: 'center',
-      }
     },
     {
       id: 2,
-      dataField: "product_number",
+      dataField: "productNumber",
       text: "Product Number",
       sort: true,
-      style: {
-        maxWidth: 180
-      }
     },
     {
       id: 7,
-      dataField: "product_type",
+      dataField: "productType",
       text: "Type",
       sort: true,
       headerAlign: 'center',
-      style: {
-        textAlign: 'center'
-      }
     },
     {
       id: 8,
@@ -108,22 +126,16 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
       text: "Brand",
       sort: true,
       headerAlign: 'center',
-      style: {
-        textAlign: 'center'
-      }
     },
     {
       id: 9,
       dataField: "description",
       text: "Description",
       sort: false,
-      style: {
-        maxWidth: 280
-      }
     },
     {
       id: 12,
-      dataField: "last_added",
+      dataField: "lastAdded",
       text: "Last Added",
       sort: true,
     },
@@ -134,9 +146,6 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
       sort: false,
       formatter: rankFormatterEdit,
       headerAlign: 'center',
-      style: {
-        textAlign: 'center'
-      }
     },
     {
       id: 11,
@@ -145,17 +154,15 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
       sort: false,
       formatter: rankFormatterRemove,
       headerAlign: 'center',
-      style: {
-        textAlign: 'center'
-      }
     }
 
   ];
- 
+
   const options = {
     custom: true,
     totalSize: productList.length
   };
+
   const filterProducts = (e: string) => {
     setIsSearching(true);
     if (e.length > 0) {
@@ -172,42 +179,60 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
     // if filterBrand is not - Filter Brand
     // if filterBrand and Filter Type is not - 
     if (e.length === 0) {
-      setProductList(fake_data);
+      setProductList(productList);
     } else {
       setProductList(
-        fake_data.filter(
+        productList.filter(
           product =>
-            product.product_number.toLowerCase().includes(e)
+            product.productNumber.toLowerCase().includes(e)
             ||
-            product.alt_1.toLowerCase().includes(e)
+            product.altNumber1?.toLowerCase().includes(e)
             ||
-            product.alt_2.toLowerCase().includes(e)
+            product.altNumber2?.toLowerCase().includes(e)
             ||
-            product.alt_3.toLowerCase().includes(e)
+            product.altNumber3?.toLowerCase().includes(e)
             ||
-            product.alt_4.toLowerCase().includes(e)
+            product.altNumber4?.toLowerCase().includes(e)
+            ||
+            product.altNumber5?.toLowerCase().includes(e)
+            ||
+            product.altNumber6?.toLowerCase().includes(e)
             ||
             product.description.toLowerCase().includes(e)
         ));
     }
     setIsSearching(false);
-  }
-  const getAllProducts = () => {
-    // setLoadingSomething();
-    setTimeout(() => {
-      axios.post('${BASE_API_URL}/products', { withCredentials: true})
-      .then((response) => {
-        setProductList(response?.data?.payload);
-      })
-      .catch((err) => {
-        console.log(err);
+  };
 
-      })
+  const getAllProducts = () => {
+    setTimeout(() => {
+      axios.get(`${BASE_API_URL}products`, { withCredentials: true })
+        .then((response) => {
+          setProductList(response?.data?.payload);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
     }, 400)
-  }
+  };
+
   useEffect(() => {
     getAllProducts();
-  }, [])
+  }, []);
+
+  const logout = () => {
+    setTimeout(() => {
+      axios.get(`${BASE_API_URL}users/logout`, { withCredentials: true })
+        .then((response) => {
+          clearCookie();
+          setLoggedIn(false);
+          history.replace(PAGE_ROUTES.LOGIN);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+    }, 400)
+  }
   return (
     <section className="text-white main-section overflow-auto">
       <div style={{ padding: 20 }}>
@@ -218,9 +243,12 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
             <Button variant="dark" onClick={() => { setAddProductSwitch(true) }}>
               <Plus height="25" width="25" style={{ marginTop: -3, marginLeft: -10 }} />New Product
             </Button>
+            <Button variant="dark" style={{ marginRight: 5 }} onClick={e => logout()}>
+              Logout
+            </Button>
           </div>
         </div>
-        <hr style={{marginBottom: 20, height: 3, borderRadius: 5, border: 1}} />
+        <hr style={{ marginBottom: 20, height: 3, borderRadius: 5, border: 1 }} />
         <div className='d-flex justify-content-between'>
           <div className='d-flex'>
             <DebounceInput
@@ -236,24 +264,13 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
                 filterProducts(e.target.value.toLowerCase());
               }}
             />
-            {isSearching &&
-              <div className='spinnerDiv d-flex' >
-                <div style={{ marginRight: 10 }}>
-                  <Spinner animation="border" role="status" />
-                </div>
-                <br />
-                <div style={{ margin: 'auto' }}>
-                  <label>Loading...</label>
-                </div>
-              </div>
-            }
           </div>
           <div className='d-flex'>
             <Button variant="dark" style={{ marginRight: 5 }}
               onClick={() => {
                 setFilterBrand('Filter Brand');
                 setFilterType('Filter Type');
-                setProductList(fake_data);
+                setProductList(productList);
                 setSearchText('');
               }}
             >
@@ -267,10 +284,9 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
               onSelect={(e) => {
                 if (e !== null) {
                   if (e.toLowerCase() === 'clear') {
-                    setProductList(fake_data);
-                    setFilterBrand('Filter Brand');
+                    setProductList(productList);setFilterBrand('Filter Brand');
                   } else {
-                    setProductList(fake_data.filter(product => product.brand.toLowerCase().includes(e.toLowerCase())));
+                    setProductList(productList.filter(product => product.brand.toLowerCase().includes(e.toLowerCase())));
                     setFilterBrand(e);
                   }
                   console.log(e);
@@ -293,10 +309,10 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
               onSelect={(e) => {
                 if (e !== null) {
                   if (e.toLowerCase() === 'clear') {
-                    setProductList(fake_data);
+                    setProductList(productList);
                     setFilterType('Filter Type');
                   } else {
-                    setProductList(fake_data.filter(product => product.product_type.toLowerCase().includes(e.toLowerCase())));
+                    setProductList(productList.filter(product => product.productType.toLowerCase().includes(e.toLowerCase())));
                     setFilterType(e);
                   }
                 }
@@ -333,48 +349,60 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
           </div>
         </div>
         <br />
-        <div>
-          <PaginationProvider
-            pagination={paginationFactory(options)}
-          >
-            {
-              ({
-                paginationProps,
-                paginationTableProps
-              }) => (
-                <div>
-                  <BootstrapTable
-                    key='product_table'
-                    {...paginationTableProps}
-                    keyField="product_number"
-                    bootstrap4
-                    data={productList}
-                    columns={column}
-                    classes="table table-dark table-hover table-striped table-responsive"
-                    noDataIndication="Table is Empty"
-                    expandRow={{
-                      onlyOneExpanding: true,
-                      renderer: (row, index) => {
-                        return (
-                          <ExpandedProductRow
-                            selectedProduct={row} />
-                        )
-                      }
-                    }}
-                  />
-                  <div className='d-flex justify-content-between'>
-                    <SizePerPageDropdownStandalone
-                      {...paginationProps}
+        {isSearching ?
+          <div className='spinnerDiv d-flex' >
+            <div style={{ marginRight: 10 }}>
+              <Spinner animation="border" role="status" />
+            </div>
+            <br />
+            <div style={{ margin: 'auto' }}>
+              <label>Loading...</label>
+            </div>
+          </div>
+          :
+          <div>
+            <PaginationProvider
+              pagination={paginationFactory(options)}
+            >
+              {
+                ({
+                  paginationProps,
+                  paginationTableProps
+                }) => (
+                  <div>
+                    <BootstrapTable
+                      key='product_table'
+                      {...paginationTableProps}
+                      keyField="productNumber"
+                      bootstrap4
+                      data={productList}
+                      columns={column}
+                      classes="table table-dark table-hover table-striped table-responsive"
+                      noDataIndication="Table is Empty"
+                      expandRow={{
+                        onlyOneExpanding: true,
+                        renderer: (row, index) => {
+                          return (
+                            <ExpandedProductRow
+                              selectedProduct={row} />
+                          )
+                        }
+                      }}
                     />
-                    <PaginationListStandalone
-                      {...paginationProps}
-                    />
+                    <div className='d-flex justify-content-between'>
+                      <SizePerPageDropdownStandalone
+                        {...paginationProps}
+                      />
+                      <PaginationListStandalone
+                        {...paginationProps}
+                      />
+                    </div>
                   </div>
-                </div>
-              )
-            }
-          </PaginationProvider>
-        </div>
+                )
+              }
+            </PaginationProvider>
+          </div>
+        }
       </div>
       {
         addProductSwitch &&
@@ -382,7 +410,25 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
           <ProductModal
             modalVisible={addProductSwitch}
             modalSwitch={0}
-            selectedProduct={undefined}
+            selectedProduct={{
+              productNumber: '',
+              userId: 0,
+              altNumber1: '',
+              altNumber2: '',
+              altNumber3: '',
+              altNumber4: '',
+              altNumber5: '',
+              altNumber6: '',
+              quantity: 0,
+              productType: '',
+              brand: '',
+              description: '',
+              ebayLink: '',
+              websiteLink: '',
+              quickSpecsLink: '',
+              relatedTags: '',
+            }}
+            getAllProducts={getAllProducts}
             onClose={async () => {
               setAddProductSwitch(false);
             }}
@@ -396,6 +442,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history }) => {
             modalVisible={editProductSwitch}
             modalSwitch={1}
             selectedProduct={selectedProduct}
+            getAllProducts={getAllProducts}
             onClose={async () => {
               setEditProductSwitch(false);
             }}

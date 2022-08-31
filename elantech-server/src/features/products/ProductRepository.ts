@@ -8,7 +8,7 @@ import IProduct from './IProduct';
 /// /////////////////
 
 const repoErr: IRepoError = {
-  location: 'DriverRepository.js',
+  location: 'ProductRepository.js',
   statusCode: 500,
 };
 
@@ -18,11 +18,55 @@ const standardError = (message: string) => {
 };
 
 export default {
+  async Add(product): Promise<IProduct> {
+    try {
+      return await db.product.create(product);
+    } catch (err) {
+      standardError(`${err.name} ${err.message}`);
+      throw repoErr;
+    }
+  },
+
   async GetAllProducts(): Promise<IProduct[]> {
     try {
-      return await db.Products.findAll();
+      return await db.product.findAll();
     } catch (err) {
       standardError(err.message);
+      return Promise.reject(repoErr);
+    }
+  },
+
+  async GetByProductNumber(productNumber: string): Promise<IProduct> {
+    try {
+      return await db.product.findOne({
+        where: { productNumber },
+      });
+    } catch (err) {
+      standardError(err.message);
+      return Promise.reject(repoErr);
+    }
+  },
+
+  async Edit(product): Promise<IProduct> {
+    try {
+      return await db.product.update(product, {
+        where: {
+          productNumber: product.productNumber,
+        },
+      });
+    } catch (err) {
+      standardError(`${err.name} ${err.message}`);
+      throw repoErr;
+    }
+  },
+
+  async DeleteByProductNumber(product: string): Promise<IProduct[]> {
+    try {
+      return await db.product.destroy({
+        where: { product },
+      });
+    } catch (err) {
+      standardError(`${err.name} ${err.message}`);
       return Promise.reject(repoErr);
     }
   },

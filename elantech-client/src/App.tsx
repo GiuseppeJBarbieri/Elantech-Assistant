@@ -23,7 +23,6 @@ import { BrokerBin } from './screens/BrokerBin/BrokerBin';
 
 import NotFound from './screens/NotFound/NotFound';
 
-
 interface AppProps {
   width?: string;
 }
@@ -31,7 +30,6 @@ interface AppProps {
 const App: React.FunctionComponent<AppProps> = (props) => {
   const [panelVisible, setPanelVisible] = React.useState(false);
   const [loggedIn, setLoggedIn] = React.useState(isLoggedIn);
-
   return (
     <HashRouter>
       <div className="App">
@@ -49,10 +47,10 @@ const App: React.FunctionComponent<AppProps> = (props) => {
             }} />
 
             <Route exact path="/login" render={() => <Login loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
+            <Route exact path="/home" render={() => <Home loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
 
             <Route exact path="/forgotPassword" component={ForgotPassword} />
             <Route exact path="/register" component={Register} />
-            <Route exact path="/home" component={Home} />
             <Route exact path="/quotes" component={Quotes} />
             <Route exact path="/receiving" component={Receiving} />
             <Route exact path="/procurement" component={Procurement} />

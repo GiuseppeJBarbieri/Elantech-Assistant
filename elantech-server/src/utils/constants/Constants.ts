@@ -57,6 +57,12 @@ export default {
         message: 'Login Successful',
       };
     },
+    get LOGOUT_SUCCESS() {
+      return {
+        statusCode: 200,
+        message: 'Logout Successful',
+      };
+    },
     get SESSION_FAIL() {
       return {
         statusCode: 401,

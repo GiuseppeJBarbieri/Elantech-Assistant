@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { FunctionComponent, HTMLAttributes, useState } from 'react';
+import axios from 'axios';
+import React, { FunctionComponent, HTMLAttributes, useState, useEffect } from 'react';
 import { Button, DropdownButton, Dropdown } from 'react-bootstrap';
 import { Pencil, Plus, Trash } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
@@ -7,7 +7,9 @@ import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, P
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { CompanyModal } from '../../components/CompanyModal/CompanyModal';
 import { ExpandedQuoteRow } from '../../components/ExpandedQuoteRow/ExpandedQuoteRow';
+import { BASE_API_URL } from '../../constants/API';
 import ICompany from '../../types/ICompany';
+import IQuote from '../../types/IQuote';
 
 import './Quotes.css';
 
@@ -16,6 +18,7 @@ interface QuotesProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement
 export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
   const [addCompanySwitch, setAddCompanySwitch] = useState(false);
   const [editCompanySwitch, setEditCompanySwitch] = useState(false);
+  const [quoteList, setQuoteList] = useState<IQuote[]>([])
   const [selectedCompany, setSelectedCompany] = useState<ICompany>();
 
   const rankFormatterRemove = (_: any, data: any, index: any) => {
@@ -115,9 +118,6 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
       sort: false,
       formatter: rankFormatterEdit,
       headerAlign: 'center',
-      style: {
-        textAlign: 'center'
-      }
     },
   ];
   const fake_data = [
@@ -186,6 +186,20 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
     custom: true,
     totalSize: fake_data.length
   };
+  const getAllQuotes = () => {
+    setTimeout(() => {
+      axios.get(`${BASE_API_URL}quotes`, { withCredentials: true })
+        .then((response) => {
+          setQuoteList(response?.data?.payload);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+    }, 400)
+  };
+  useEffect(() => {
+    getAllQuotes();
+  }, []);
   return (
     <section className="text-white main-section overflow-auto">
       <div style={{ padding: 20 }}>
@@ -234,7 +248,7 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
                     {...paginationTableProps}
                     keyField="company_id"
                     bootstrap4
-                    data={fake_data}
+                    data={quoteList}
                     columns={column}
                     classes="table table-dark table-hover table-striped table-responsive"
                     noDataIndication="Table is Empty"
@@ -242,7 +256,7 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
                       onlyOneExpanding: true,
                       renderer: (row, index) => {
                         return (
-                          <ExpandedQuoteRow 
+                          <ExpandedQuoteRow
                             selectedCompany={selectedCompany}
                           />
                         )

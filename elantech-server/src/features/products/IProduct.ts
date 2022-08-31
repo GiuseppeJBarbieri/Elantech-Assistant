@@ -1,18 +1,20 @@
 interface IProduct {
-    quantity?: number;
     productNumber: string;
+    userId: number;
+    altNumber1: string;
+    altNumber2: string;
+    altNumber3: string;
+    altNumber4: string;
+    altNumber5: string;
+    altNumber6: string;
+    quantity: number;
     productType: string;
     brand: string;
     description: string;
-    lastAdded: string; // should be date
-    alt1?: string;
-    alt2?: string;
-    alt3?: string;
-    alt4?: string;
-    ebayLink?: string;
-    websiteLink?: string;
-    quickSpecs?: string;
-    relatedTags?: string;
+    ebayLink: string;
+    websiteLink: string;
+    quickSpecsLink: string;
+    relatedTags: string;
 }
 
 export default IProduct;

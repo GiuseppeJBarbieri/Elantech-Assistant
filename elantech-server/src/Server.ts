@@ -13,9 +13,9 @@ import cors from 'cors';
 import config from './config/index';
 import logger from './utils/logging/Logger';
 import router from './Routes';
-// import UserController from './features/users/UserController';
 import swaggerDocument from '../docs/swagger.json';
 import UserController from './features/users/UserController';
+import db from './models';
 
 const DB_PARAMS = config.db;
 
@@ -45,7 +45,16 @@ export default class Server {
 
       // Verify database connection and sync if we wish
       try {
-        // Authenticate with mongo here
+        await db.sequelize.authenticate();
+        if (DB_PARAMS.SYNC) {
+          await db.sequelize.sync(); // If this is enabled in config.json it will sync the DB to the code
+          // Create default user types if there are none
+          const userTypes = await db.userType.findAll({});
+          if (userTypes.length === 0) {
+            await db.userType.create({ value: 'Admin' });
+            await db.userType.create({ value: 'User' });
+          }
+        }
       } catch (e) {
         logger.error(`Database configuration failed due to: ${e.message}`);
         onServerClosed();
@@ -100,7 +109,8 @@ export default class Server {
       this.app.use(`${config.app.PATH}/api-docs`, swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
       // General Exception Handler
-      this.app.use((err, req, res, next) => {
+      // eslint-disable-next-line no-unused-vars
+      this.app.use((err, req, res, _next) => {
         logger.warn(err.message);
         if (err.output) {
           return res.status(err.output.statusCode).json(err.output.payload);
@@ -146,7 +156,6 @@ export default class Server {
             `****************************** Server Listening on Port:${config.app.PORT} ******************************`,
           );
         });
-        // clean up stale sessions
         /**
          * Convert the number of days to millis and take the min of that and the max 32 bit signed integer.
          * setInterval caps at that value
@@ -160,8 +169,8 @@ export default class Server {
           );
         }
         logger.info(`Starting session cleanup interval every ${sessionCleanupIntervalTime} milliseconds\n`);
-        // sessionCleanupTask();
-        // setInterval(sessionCleanupTask, sessionCleanupIntervalTime);
+        sessionCleanupTask();
+        setInterval(sessionCleanupTask, sessionCleanupIntervalTime);
       } catch (err) {
         logger.error(`${'error occurred starting express: '
               + '\n('}${err.toString()

@@ -11,7 +11,37 @@ interface AddInventoryModalProps extends RouteComponentProps, HTMLAttributes<HTM
 const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props) => {
     const [isSaving, setIsSaving] = useState(false);
     const [radioSwitch, setRadioSwitch] = useState(false);
-
+    
+    const addInventory = async (close: boolean) => {
+        setIsSaving(true);
+        setTimeout(() => {
+            // Trimming out store id b/c validation doesn't require
+            const _timeFrame = { ...timeFrame };
+            delete _timeFrame.orderId;
+            axios.post(`${BASE_API_URL}timeFrames`, _timeFrame, { withCredentials: true })
+                .then((response) => {
+                    props.getTimeFrames(Number(props.modalState.selectedDriver.driverId), new Date(props.selectedDate));
+                    setTimeFrame({
+                        orderId: 0,
+                        storeId: 0,
+                        driverId: props.modalState.selectedDriver.driverId,
+                        customerName: '',
+                        town: '',
+                        orderNumber: '',
+                        timeFrame: '',
+                        orderDate: new Date(props.selectedDate)
+                    });
+                    setIsSaving(false);
+                    if(close) {
+                        props.onClose();
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                    setIsSaving(false);
+                });
+        }, 400);
+    };
     return (
         <div>
             <Modal backdrop="static" show={props.modalVisible} onHide={props.onClose} fullscreen={true}>

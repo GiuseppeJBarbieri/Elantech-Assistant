@@ -1,10 +1,13 @@
-import React, { FunctionComponent, HTMLAttributes, useState } from 'react';
-import { Button, Collapse, Fade, Form } from 'react-bootstrap';
+import axios from 'axios';
+import React, { FunctionComponent, HTMLAttributes, useEffect, useState } from 'react';
+import { Button } from 'react-bootstrap';
 import { Pencil, Trash } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
-import paginationFactory from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { BASE_API_URL } from '../../constants/API';
+
 import IInventory from '../../types/IInventory';
+import IProduct from '../../types/IProduct';
 import { EditInventoryModal } from '../EditInventoryModal/EditInventoryModal';
 import { EditMultipleInventoryModal } from '../EditMultipleInventoryModal/EditMultipleInventoryModal';
 import { RemoveInventoryModal } from '../RemoveInventoryModal/RemoveInventoryModal';
@@ -12,7 +15,7 @@ import { RemoveMultipleInventoryModal } from '../RemoveMultipleInventoryModal/Re
 
 
 interface InventoryTableProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
-
+    inventory: IInventory[];
 }
 
 const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) => {
@@ -152,72 +155,84 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             reserved: 'No'
         },
     ];
-    const inventory_columns = [
+    const columns = [
         {
-            dataField: "serial_number",
+            id: 1,
+            dataField: "serialNumber",
             text: "Serial Number",
             sort: false,
         },
         {
+            id: 2,
             dataField: "condition",
             text: "Condition",
             sort: true,
         },
         {
-            dataField: "seller_name",
+            id: 3,
+            dataField: "sellerName",
             text: "Seller Name",
             sort: true
         },
         {
-            dataField: "order_number",
+            id: 4,
+            dataField: "orderNumber",
             text: "Order Number",
             sort: false,
         },
         {
-            dataField: "date_received",
+            id: 5,
+            dataField: "dateReceived",
             text: "Date Received",
             sort: false,
         },
         {
-            dataField: "warranty_expiration",
+            id: 6,
+            dataField: "warrantyExpiration",
             text: "Warranty Expiration",
             sort: false,
         },
         {
+            id: 7,
             dataField: "comment",
             text: "Comment",
             sort: false,
         },
         {
+            id: 8,
             dataField: "location",
             text: "Location",
             sort: false,
         },
         {
+            id: 9,
             dataField: "tested",
             text: "Tested",
             sort: false,
             headerAlign: 'center',
         },
         {
+            id: 10,
             dataField: "reserved",
             text: "Reserved",
             sort: false,
             headerAlign: 'center',
         },
         {
+            id: 11,
             dataField: "edit",
             text: "Edit",
             sort: false,
             formatter: rankFormatterEdit,
-            headerAlign: 'center',
+  //          headerAlign: 'center',
         },
         {
+            id: 12,
             dataField: "remove",
             text: "Remove",
             sort: false,
             formatter: rankFormatterRemove,
-            headerAlign: 'center',
+//            headerAlign: 'center',
         }
     ];
     const options = {
@@ -293,15 +308,14 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                 </div>
             </div>
             <BootstrapTable
-                keyField='serial_number'
-                data={fake_data_inner}
-                columns={inventory_columns}
+                key='inventory_table'
                 bootstrap4
                 condensed
+                data={props.inventory}
+                columns={columns}
+                keyField='serialNumber'
                 classes="table table-dark table-hover table-striped"
                 noDataIndication="Table is Empty"
-                pagination={paginationFactory(options)}
-                selectRow={selectRow}
             />
             {
                 editInventorySwitch &&

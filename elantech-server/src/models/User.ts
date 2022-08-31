@@ -1,15 +1,14 @@
 import { Model } from 'sequelize';
 
 interface UserAttributes {
-    id: number;
-    createdBy: number;
-    editedBy: number;
-    email: string;
-    firstName: string;
-    lastName: string;
-    password: string;
-    phoneNumber: string;
-    userTypeId: number;
+  id: number;
+  createdBy: number;
+  email: string;
+  firstName: string;
+  lastName: string;
+  password: string;
+  phoneNumber: string;
+  userTypeId: number;
 }
 
 export default (sequelize: any, DataTypes: any) => {
@@ -20,49 +19,55 @@ export default (sequelize: any, DataTypes: any) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-     id!: number;
+    id!: number;
 
-     createdBy!: number;
+    createdBy!: number;
 
-     editedBy!: number;
+    email!: string;
 
-     email!: string;
+    firstName!: string;
 
-     firstName!: string;
+    lastName!: string;
 
-     lastName!: string;
+    password!: string;
 
-     password!: string;
+    phoneNumber!: string;
 
-     phoneNumber!: string;
+    userTypeId!: number;
 
-     userTypeId!: number;
-
-     static associate(models: any) {
-       User.belongsTo(models.UserTypes, {
-         foreignKey: 'userTypeId',
-       });
-     }
+    static associate(models: any) {
+      User.belongsTo(models.userType, {
+        foreignKey: 'userTypeId',
+      });
+      User.hasMany(models.product, {
+        as: 'products',
+        foreignKey: 'userId',
+      });
+      User.hasMany(models.quote, {
+        foreignKey: 'userId',
+      });
+    }
   }
 
   User.init({
-    createdBy: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
-    editedBy: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
     id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
     },
+    userTypeId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    createdBy: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
     },
     firstName: {
       type: DataTypes.STRING,
@@ -76,17 +81,13 @@ export default (sequelize: any, DataTypes: any) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    userTypeId: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
     phoneNumber: {
       type: DataTypes.STRING,
       allowNull: true,
     },
   }, {
     sequelize,
-    modelName: 'Users',
+    modelName: 'user',
     paranoid: true,
   });
 

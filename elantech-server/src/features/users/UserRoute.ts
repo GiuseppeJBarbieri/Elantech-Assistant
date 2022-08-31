@@ -7,6 +7,7 @@ import logger from '../../utils/logging/Logger';
 import authenticationMiddleware from '../../middleware/Auth';
 import UserController from './UserController';
 import config from '../../config';
+import { resolve } from 'path';
 
 const router = express.Router();
 
@@ -17,10 +18,11 @@ const AUTH_PARAMS = config.auth;
 //= ==============================================================================================//
 
 /**
- * This route will add a user.  IMPORTANT to create your first user remove the
+ * This route will add a user.
+ * IMPORTANT to create your first user remove the
  * authenticationMiddleware temporarily
  */
-router.post('/', /* authenticationMiddleware, */ validate(UserValidation.PostUser),
+router.post('/', authenticationMiddleware, validate(UserValidation.PostUser),
   (req, res, next) => {
     logger.info('POST User');
     UserController.Add(req.body)
@@ -33,7 +35,7 @@ router.post('/', /* authenticationMiddleware, */ validate(UserValidation.PostUse
 /**
  * This route will fetch a user by id
  */
-router.get('/:id', authenticationMiddleware, validate(UserValidation.GetUser), (req, res, next) => {
+router.get('/byId/:id', authenticationMiddleware, validate(UserValidation.GetUser), (req, res, next) => {
   logger.info('GET User');
 
   UserController.GetById(req.params.id)
@@ -42,8 +44,20 @@ router.get('/:id', authenticationMiddleware, validate(UserValidation.GetUser), (
 });
 
 /**
+ * This route will fetch a user id by email address
+ */
+router.get('/byEmail/:email', authenticationMiddleware, validate(UserValidation.GetUserByEmail), (req, res, next) => {
+  logger.info('GET User');
+
+  UserController.GetByEmail(req.params.email)
+    .then((user) => res.status(200).json(user))
+    .catch((err) => next(err));
+});
+
+/**
  * This route will attempt to login the user with the given credentials
  */
+// eslint-disable-next-line max-len
 router.post('/login', validate(UserValidation.Login), passport.authenticate('local'), (req, res) => {
   logger.info('Login');
   const response = constants.AUTH.PASSWORD_SUCCESS;
@@ -51,7 +65,16 @@ router.post('/login', validate(UserValidation.Login), passport.authenticate('loc
   // Note that 3600000 converts our cookieLife param from hours to milliseconds
   const cookieOptions = { maxAge: AUTH_PARAMS.cookieLife * 3600000 };
   res.cookie('sessionId', req.session['passport'].user.uuid, cookieOptions);
-  return res.status(200).json(response);
+  return (res.status(200).json(response), req.session['passport'].user.uuid);
 });
-
+/**
+ * This route will attempt to logout the user with the given session id and clear cookie
+ */
+router.get('/logout', authenticationMiddleware, validate(UserValidation.Logout),
+  async (req, res) => {
+    const response = constants.AUTH.LOGOUT_SUCCESS;
+    logger.info(req.cookies.sessionId);
+    await UserController.Logout(req.cookies.sessionId);
+    res.status(200).json(response);
+  });
 export default router;
