@@ -10,11 +10,10 @@ const router = express.Router();
 /**
  * This route will fetch all Inventory by product number.
  */
-router.get('/:productNumber',
-  authenticationMiddleware, validate(InventoryValidation.GetInventory), (req, res, next) => {
+router.get('/:productId', authenticationMiddleware, validate(InventoryValidation.GetInventory),
+  (req, res, next) => {
     logger.info('GET ALL INVENTORY');
-
-    InventoryController.GetByProductNumber(req.params.productNumber)
+    InventoryController.GetByProductId(Number(req.params.productId))
       .then((Inventory) => res.status(200).json(Inventory))
       .catch((err) => next(err));
   });
@@ -37,7 +36,7 @@ router.post('/', validate(InventoryValidation.PostInventory),
 */
 router.put('/', authenticationMiddleware, validate(InventoryValidation.PutInventory),
   (req, res, next) => {
-    logger.info('PUT PRODUCT');
+    logger.info('PUT INVENTORY');
 
     InventoryController.Edit(req.body)
       .then((response) => {
@@ -47,14 +46,14 @@ router.put('/', authenticationMiddleware, validate(InventoryValidation.PutInvent
   });
 
 /**
-* This route will delete a product by product number
+* This route will delete a inventory by id
 */
-router.delete('/:serialNumber',
+router.delete('/:id',
   authenticationMiddleware,
   validate(InventoryValidation.DeleteInventory), (req, res, next) => {
-    logger.info('DELETE PRODUCT');
+    logger.info('DELETE INVENTORY');
 
-    InventoryController.DeleteBySerialNumber(req.params.serialNumber)
+    InventoryController.Delete(Number(req.params.id))
       .then((response) => {
         res.status(201).json(response);
       })

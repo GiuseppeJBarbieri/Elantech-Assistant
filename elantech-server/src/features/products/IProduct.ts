@@ -1,4 +1,5 @@
-export interface IProduct {
+interface IProduct {
+    id: number;
     productNumber: string;
     userId: number;
     altNumber1: string;
@@ -17,6 +18,4 @@ export interface IProduct {
     relatedTags: string;
 }
 
-export interface IProductUPDATE extends IProduct {
-    oldProductNumber: string;
-}
+export default IProduct;

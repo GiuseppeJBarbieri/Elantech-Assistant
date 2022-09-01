@@ -1,8 +1,9 @@
 import { Model } from 'sequelize';
 
 interface ProductAttributes {
-  productNumber: string;
+  id: number;
   userId: number;
+  productNumber: string;
   altNumber1: string;
   altNumber2: string;
   altNumber3: string;
@@ -22,9 +23,11 @@ interface ProductAttributes {
 export default (sequelize: any, DataTypes: any) => {
   class Product extends Model<ProductAttributes>
     implements ProductAttributes {
-    productNumber: string;
+    id: number;
 
     userId: number;
+
+    productNumber: string;
 
     altNumber1!: string;
 
@@ -58,43 +61,55 @@ export default (sequelize: any, DataTypes: any) => {
 
     static associate(models: any) {
       Product.belongsTo(models.user, { foreignKey: 'userId' });
-      Product.hasMany(models.inventory, { foreignKey: 'productNumber' });
+      Product.hasMany(models.inventory, { foreignKey: 'productId' });
     }
   }
 
   Product.init({
-    productNumber: {
-      type: DataTypes.STRING,
+    id: {
+      type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
+      autoIncrement: true,
     },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    productNumber: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
     altNumber1: {
       type: DataTypes.STRING,
       allowNull: true,
+      unique: true,
     },
     altNumber2: {
       type: DataTypes.STRING,
       allowNull: true,
+      unique: true,
     },
     altNumber3: {
       type: DataTypes.STRING,
       allowNull: true,
+      unique: true,
     },
     altNumber4: {
       type: DataTypes.STRING,
       allowNull: true,
+      unique: true,
     },
     altNumber5: {
       type: DataTypes.STRING,
       allowNull: true,
+      unique: true,
     },
     altNumber6: {
       type: DataTypes.STRING,
       allowNull: true,
+      unique: true,
     },
     quantity: {
       type: DataTypes.INTEGER,

@@ -22,7 +22,7 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
     const [editProductObj, setEditProductObj] = useState<IProduct>(props.selectedProduct);
 
     const addProduct = async () => {
-        setEditProductObj({ ...editProductObj, userId: 0 })
+        setEditProductObj(editProductObj);
         setIsSaving(true);
         setTimeout(() => {
             axios.post(`${BASE_API_URL}products`, editProductObj, { withCredentials: true })
@@ -40,7 +40,7 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
     const editProduct = async () => {
         setIsSaving(true);
         setTimeout(() => {
-            axios.put(`${BASE_API_URL}products`, {...editProductObj, oldProductNumber: props.selectedProduct.productNumber}, { withCredentials: true })
+            axios.put(`${BASE_API_URL}products`, editProductObj, { withCredentials: true })
                 .then((response) => {
                     setIsSaving(false);
                     props.getAllProducts();

@@ -1,18 +1,35 @@
+import axios from "axios";
 import React, { HTMLAttributes, FunctionComponent } from "react";
 import { useState } from "react";
 import { Modal, Spinner, Form, Button } from "react-bootstrap";
 import { RouteComponentProps, withRouter } from "react-router-dom";
+import { BASE_API_URL } from "../../constants/API";
 import IProduct from "../../types/IProduct";
 
 interface RemoveProductModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
     modalVisible: boolean;
-    selectedProduct: IProduct | undefined;
+    selectedProduct: IProduct;
+    getAllProducts: () => void;
 }
 
 const RemoveProductModalComponent: FunctionComponent<RemoveProductModalProps> = (props) => {
     const [isSaving, setIsSaving] = useState(false);
-
+    const removeProduct = () => {
+        setIsSaving(true);
+        setTimeout(() => {
+            axios.delete(`${BASE_API_URL}products/${props.selectedProduct.id}`, { withCredentials: true })
+              .then((response) => {
+                props.getAllProducts();
+                setIsSaving(false);
+                props.onClose();
+              })
+              .catch((err) => {
+                console.log(err);
+                setIsSaving(false);
+              })
+          }, 400)
+    };
     return (
         <div>
             <Modal
@@ -67,7 +84,7 @@ const RemoveProductModalComponent: FunctionComponent<RemoveProductModalProps> = 
                         <Button
                             variant="dark"
                             onClick={async () => {
-                                console.log('CLOSING')
+                                removeProduct()
                                 props.onClose();
                             }}>
                             Finish

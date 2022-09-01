@@ -18,12 +18,13 @@ export default {
 
   DeleteProduct: {
     params: {
-      productNumber: Joi.string().required(),
+      id: Joi.number().required(),
     },
   },
 
   PostProduct: {
     body: {
+      id: Joi.number(),
       productNumber: Joi.string().required(),
       userId: Joi.number().required(),
       altNumber1: Joi.string().optional().allow(''),
@@ -45,7 +46,7 @@ export default {
 
   PutProduct: {
     body: {
-      oldProductNumber: Joi.string().required(),
+      id: Joi.number().required(),
       productNumber: Joi.string().required(),
       userId: Joi.number().required(),
       altNumber1: Joi.string().optional().allow(''),

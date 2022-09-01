@@ -3,7 +3,7 @@ import { Model } from 'sequelize';
 interface QuotedProductsAttributes {
     id: number;
     quoteID: number;
-    productNumber: string;
+    productId: number;
     orderID: number;
     quantity: number;
     quotedPrice: string;
@@ -18,7 +18,7 @@ export default (sequelize: any, DataTypes: any) => {
 
         quoteID: number;
 
-        productNumber: string;
+        productId: number;
 
         orderID: number;
 
@@ -41,13 +41,13 @@ export default (sequelize: any, DataTypes: any) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    productNumber: {
-      type: DataTypes.STRING,
+    productId: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     orderID: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     quantity: {
       type: DataTypes.INTEGER,
@@ -67,7 +67,7 @@ export default (sequelize: any, DataTypes: any) => {
     },
   }, {
     sequelize,
-    modelName: 'quotedProducts',
+    modelName: 'quoted_products',
     paranoid: true,
   });
 

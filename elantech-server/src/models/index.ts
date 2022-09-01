@@ -5,11 +5,13 @@ import Session from './Session';
 import UserType from './UserType';
 import User from './User';
 import Product from './Product';
+import Receiving from './Receiving';
 import Inventory from './Inventory';
 import Removed from './Removed';
 import Company from './Company';
 import Quote from './Quote';
 import QuotedProducts from './QuotedProducts';
+
 
 const db: any = {};
 const DB_PARAMS = config.db;
@@ -48,6 +50,9 @@ db[userType.name] = userType;
 
 const product = Product(sequelize, Sequelize.DataTypes);
 db[product.name] = product;
+
+const receiving = Receiving(sequelize, Sequelize.DataTypes);
+db[receiving.name] = receiving;
 
 const inventory = Inventory(sequelize, Sequelize.DataTypes);
 db[inventory.name] = inventory;

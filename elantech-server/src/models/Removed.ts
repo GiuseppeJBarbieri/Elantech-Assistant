@@ -1,35 +1,40 @@
 import { Model } from 'sequelize';
 
 interface RemovedAttributes {
-    id: string;
-    userId: string;
-    orderId: number;
-    reasonType: string;
-    reason: string;
-    dateRemoved: Date;
+  id: number;
+  userId: number;
+  orderId: number;
+  reasonType: string;
+  reason: string;
+  dateRemoved: Date;
 }
 
 export default (sequelize: any, DataTypes: any) => {
   class Removed extends Model<RemovedAttributes>
     implements RemovedAttributes {
-        id: string;
+    id: number;
 
-        userId: string;
+    userId: number;
 
-        orderId!: number;
+    orderId!: number;
 
-        reasonType: string;
+    reasonType: string;
 
-        reason: string;
+    reason: string;
 
-        dateRemoved: Date;
+    dateRemoved: Date;
+
+    static associate(models: any) {
+      Removed.belongsTo(models.inventory, { foreignKey: 'removedId' });
+    }
   }
 
   Removed.init({
     id: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
+      autoIncrement: true,
     },
     userId: {
       type: DataTypes.INTEGER,
@@ -53,7 +58,7 @@ export default (sequelize: any, DataTypes: any) => {
     },
   }, {
     sequelize,
-    modelName: 'removedInventory',
+    modelName: 'removed_inventory',
     paranoid: true,
   });
 

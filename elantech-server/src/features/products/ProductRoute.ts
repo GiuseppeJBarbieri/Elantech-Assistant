@@ -48,7 +48,7 @@ router.get('/:productNumber', authenticationMiddleware, validate(ProductValidati
 /**
  * This route will update a product
  */
-router.put('/', validate(ProductValidation.PutProduct),
+router.put('/', authenticationMiddleware, validate(ProductValidation.PutProduct),
   (req, res, next) => {
     logger.info('PUT PRODUCT');
     ProductController.Edit(req.body)
@@ -61,12 +61,12 @@ router.put('/', validate(ProductValidation.PutProduct),
 /**
 * This route will delete a product by product number
 */
-router.delete('/:productNumber',
+router.delete('/:id',
   authenticationMiddleware,
   validate(ProductValidation.DeleteProduct), (req, res, next) => {
     logger.info('DELETE PRODUCT');
 
-    ProductController.DeleteByProductNumber(req.params.productNumber)
+    ProductController.Delete(Number(req.params.id))
       .then((response) => {
         res.status(201).json(response);
       })

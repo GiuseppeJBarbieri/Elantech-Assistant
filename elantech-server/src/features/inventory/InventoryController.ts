@@ -10,9 +10,9 @@ export default {
    * @param productNumber The id of the user to fetch
    * @returns JSON user
    */
-  async GetByProductNumber(productNumber: string) {
+  async GetByProductId(productId: number) {
     try {
-      const inventory = await InventoryRepository.GetByProductNumber(productNumber);
+      const inventory = await InventoryRepository.GetByProductId(productId);
       return {
         ...constants.HTTP.SUCCESS.SELECTED,
         payload: [...inventory],
@@ -24,9 +24,7 @@ export default {
 
   async Add(inventory: IInventory): Promise<IHTTPResponse> {
     try {
-      const _inventory = { ...inventory };
-
-      await InventoryRepository.Add(_inventory);
+      await InventoryRepository.Add(inventory);
 
       return {
         ...constants.HTTP.SUCCESS.CREATED,
@@ -38,8 +36,7 @@ export default {
 
   async Edit(inventory: IInventory): Promise<IHTTPResponse> {
     try {
-      const _inventory = { ...inventory };
-      await InventoryRepository.Edit(_inventory);
+      await InventoryRepository.Edit(inventory);
 
       return {
         ...constants.HTTP.SUCCESS.UPDATE,
@@ -49,9 +46,9 @@ export default {
     }
   },
 
-  async DeleteBySerialNumber(serialNumber: string) {
+  async Delete(id: number) {
     try {
-      const affectedRowCount = await InventoryRepository.DeleteBySerialNumber(serialNumber);
+      const affectedRowCount = await InventoryRepository.Delete(id);
       return {
         ...constants.HTTP.SUCCESS.DELETE,
         payload: affectedRowCount,

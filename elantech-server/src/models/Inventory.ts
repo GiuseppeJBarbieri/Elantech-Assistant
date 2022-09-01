@@ -1,10 +1,11 @@
 import { Model } from 'sequelize';
 
 interface InventoryAttributes {
-  serialNumber: string;
-  productNumber: string;
+  id: number;
+  productId: number;
   removedId: number;
-  poNumber: string;
+  poId: number;
+  serialNumber: string;
   condition: string;
   warrantyExpiration: Date;
   isTested: boolean;
@@ -16,53 +17,62 @@ interface InventoryAttributes {
 export default (sequelize: any, DataTypes: any) => {
   class Inventory extends Model<InventoryAttributes>
     implements InventoryAttributes {
-        serialNumber: string;
+    id: number;
 
-        productNumber: string;
+    productId: number;
 
-        removedId!: number;
+    removedId!: number;
 
-        poNumber!: string;
+    poId!: number;
 
-        condition: string;
+    serialNumber: string;
 
-        warrantyExpiration!: Date;
+    condition: string;
 
-        isTested: boolean;
+    warrantyExpiration!: Date;
 
-        dateTested: Date;
+    isTested: boolean;
 
-        comment!: string;
+    dateTested: Date;
 
-        location!: string;
+    comment!: string;
 
-        static associate(models: any) {
-          Inventory.belongsTo(models.product, { foreignKey: 'productNumber' });
-          Inventory.hasOne(models.removedInventory, { foreignKey: 'removedId' });
-        }
+    location!: string;
+
+    static associate(models: any) {
+      Inventory.belongsTo(models.product, { foreignKey: 'productId' });
+      Inventory.hasMany(models.removed_inventory, { foreignKey: 'removedId' });
+      Inventory.hasMany(models.receiving, { foreignKey: 'poId' });
+    }
   }
 
   Inventory.init({
-    serialNumber: {
-      type: DataTypes.STRING,
+    id: {
+      type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
+      autoIncrement: true,
     },
-    productNumber: {
-      type: DataTypes.STRING,
+    productId: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     removedId: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
-    poNumber: {
-      type: DataTypes.STRING,
+    poId: {
+      type: DataTypes.INTEGER,
       allowNull: true,
+    },
+    serialNumber: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
     },
     condition: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
     warrantyExpiration: {
       type: DataTypes.DATE,
@@ -70,15 +80,15 @@ export default (sequelize: any, DataTypes: any) => {
     },
     isTested: {
       type: DataTypes.BOOLEAN,
-      allowNull: true,
+      allowNull: false,
     },
     dateTested: {
       type: DataTypes.DATE,
-      allowNull: false,
+      allowNull: true,
     },
     comment: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     location: {
       type: DataTypes.STRING,

@@ -3,26 +3,27 @@ import * as Joi from 'joi';
 export default {
   GetInventory: {
     params: {
-      productNumber: Joi.string().required(),
+      productId: Joi.number().required(),
     },
   },
 
   DeleteInventory: {
     params: {
-      serialNumber: Joi.string().required(),
+      id: Joi.number().required(),
     },
   },
 
   PostInventory: {
     body: {
-      serialNumber: Joi.string().required(),
-      productNumber: Joi.string().required(),
+      id: Joi.number(),
+      serialNumber: Joi.string(),
+      productId: Joi.number().required(),
       removedId: Joi.number(),
-      poNumber: Joi.string(),
+      poNumber: Joi.string().optional(),
       condition: Joi.string().required(),
-      warrantyExpiration: Joi.date().required(),
+      warrantyExpiration: Joi.date(),
       isTested: Joi.boolean().required(),
-      dateTested: Joi.date(),
+      dateTested: Joi.date().required(),
       comment: Joi.string(),
       location: Joi.string(),
     },
@@ -30,14 +31,15 @@ export default {
 
   PutInventory: {
     body: {
+      id: Joi.number().required(),
       serialNumber: Joi.string(),
-      productNumber: Joi.string(),
+      productId: Joi.number().required(),
       removedId: Joi.number(),
       poNumber: Joi.string(),
-      condition: Joi.string(),
+      condition: Joi.string().required(),
       warrantyExpiration: Joi.date(),
-      isTested: Joi.boolean(),
-      dateTested: Joi.date(),
+      isTested: Joi.boolean().required(),
+      dateTested: Joi.date().required(),
       comment: Joi.string(),
       location: Joi.string(),
     },

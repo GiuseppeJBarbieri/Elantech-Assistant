@@ -19,7 +19,7 @@ export default (sequelize: any, DataTypes: any) => {
         dateQuoted: Date;
 
         static associate(models: any) {
-          Quote.hasOne(models.quotedProducts, { foreignKey: 'id' });
+          Quote.hasOne(models.quoted_products, { foreignKey: 'id' });
         }
   }
 

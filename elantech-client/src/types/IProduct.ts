@@ -1,4 +1,5 @@
 interface IProduct {
+    id: number;
     productNumber: string;
     userId: number;
     altNumber1: string;

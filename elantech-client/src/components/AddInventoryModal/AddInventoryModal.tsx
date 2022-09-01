@@ -1,46 +1,58 @@
+import axios from "axios";
+import moment from "moment";
 import React, { HTMLAttributes, FunctionComponent } from "react";
 import { useState } from "react";
-import { Modal, Spinner, Form, Button, FormControl, InputGroup } from "react-bootstrap";
+import { Modal, Spinner, Form, Button, InputGroup } from "react-bootstrap";
 import { RouteComponentProps, withRouter } from "react-router-dom";
+import { BASE_API_URL } from "../../constants/API";
+import IInventory from "../../types/IInventory";
+import IProduct from "../../types/IProduct";
 
 interface AddInventoryModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
     modalVisible: boolean;
+    selectedProduct: IProduct;
+    // modalSwitch: Number;
 }
-
 const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props) => {
     const [isSaving, setIsSaving] = useState(false);
     const [radioSwitch, setRadioSwitch] = useState(false);
-    
-    const addInventory = async (close: boolean) => {
-        setIsSaving(true);
+    const [inventoryObj, setInventoryObj] = useState<IInventory>({
+        id: 0,
+        productId: props.selectedProduct.id,
+        removedId: 0,
+        poNumber: undefined,
+        serialNumber: '',
+        condition: '',
+        warrantyExpiration: '',
+        isTested: false,
+        dateTested: '',
+        comment: '',
+        location: '',
+    });
+    const [inventoryList, setInventoryList] = useState<IInventory[]>([]);
+
+    const finish = async () => {
+        // setInventoryObj({ ...inventoryObj, productId: props.selectedProduct.id });
+        // inventoryList.push(inventoryObj);
+        // setIsSaving(true);
         setTimeout(() => {
-            // Trimming out store id b/c validation doesn't require
-            const _timeFrame = { ...timeFrame };
-            delete _timeFrame.orderId;
-            axios.post(`${BASE_API_URL}timeFrames`, _timeFrame, { withCredentials: true })
+            axios.post(`${BASE_API_URL}inventory`, inventoryObj, { withCredentials: true })
                 .then((response) => {
-                    props.getTimeFrames(Number(props.modalState.selectedDriver.driverId), new Date(props.selectedDate));
-                    setTimeFrame({
-                        orderId: 0,
-                        storeId: 0,
-                        driverId: props.modalState.selectedDriver.driverId,
-                        customerName: '',
-                        town: '',
-                        orderNumber: '',
-                        timeFrame: '',
-                        orderDate: new Date(props.selectedDate)
-                    });
                     setIsSaving(false);
-                    if(close) {
-                        props.onClose();
-                    }
+                    // props.getAllInventory();
+                    props.onClose();
                 })
                 .catch((err) => {
                     console.log(err);
                     setIsSaving(false);
                 });
         }, 400);
+    };
+    const addInventory = () => {
+        // setInventoryObj({ ...inventoryObj, productId: props.selectedProduct.id });
+        // inventoryList.push(inventoryObj);
+        // // setInventoryObj(INVENTORY);
     };
     return (
         <div>
@@ -95,9 +107,30 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                                         </div>
                                     </InputGroup>
                                 </Form.Group>
+                                {
+                                    radioSwitch ?
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>Serial Number</Form.Label>
+                                            <Form.Control
+                                                id="serialNumber" type="text" placeholder="Serial Number"
+                                                value={inventoryObj.serialNumber}
+                                                onChange={(e) => setInventoryObj({ ...inventoryObj, serialNumber: (e.target.value) })}
+                                            />
+                                        </Form.Group>
+                                        :
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>Quantity</Form.Label>
+                                            <Form.Control
+                                                id="quantity" type="text" placeholder="Quantity"
+                                            />
+                                        </Form.Group>
+                                }
                                 <Form.Group className="mb-3">
                                     <Form.Label>Condition</Form.Label>
-                                    <Form.Select aria-label="Default select example" >
+                                    <Form.Select aria-label="Default select example"
+                                        value={inventoryObj.condition}
+                                        onChange={(e) => setInventoryObj({ ...inventoryObj, condition: (e.target.value) })}
+                                    >
                                         <option>Choose Condition</option>
                                         <option value="New Factory Sealed">New Factory Sealed</option>
                                         <option value="New Opened Box">New Opened Box</option>
@@ -107,40 +140,17 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                                     </Form.Select>
                                 </Form.Group>
                                 <Form.Group className="mb-3">
-                                    <Form.Label>Seller</Form.Label>
-                                    <Form.Select aria-label="Default select example" >
-                                        <option>Choose Seller</option>
-                                        <option value="New Factory Sealed">Ebay</option>
-                                        <option value="New Opened Box">Company 1</option>
-                                        <option value="Renew">Company 2</option>
-                                        <option value="Used">Company 3</option>
-                                        <option value="Damaged">Company 4</option>
-                                    </Form.Select>
-                                </Form.Group>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Order Number</Form.Label>
-                                    <Form.Control
-                                        id="orderNumber" type="text" placeholder="Order Number"
-                                    />
-                                </Form.Group>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Date Received</Form.Label>
-                                    <Form.Control id="orderNumber" type="date" />
-                                </Form.Group>
-                                <Form.Group className="mb-3">
                                     <Form.Label>Warranty Expiration</Form.Label>
-                                    <Form.Control id="orderNumber" type="date"/>
-                                </Form.Group>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Comments</Form.Label>
-                                    <Form.Control
-                                        id="comments" type="text" placeholder="Comments"
+                                    <Form.Control id="orderNumber" type="date"
+                                        value={inventoryObj.warrantyExpiration}
+                                        onChange={(e) => setInventoryObj({ ...inventoryObj, warrantyExpiration: moment(e.target.value).format('YYYY-MM-DD') })}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
-                                    <Form.Label>Location</Form.Label>
-                                    <Form.Control
-                                        id="location" type="text" placeholder="Location"
+                                    <Form.Label>Date Tested</Form.Label>
+                                    <Form.Control id="dateTested" type="date"
+                                        value={inventoryObj.dateTested}
+                                        onChange={(e) => setInventoryObj({ ...inventoryObj, dateTested: moment(e.target.value).format('YYYY-MM-DD') })}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
@@ -155,7 +165,7 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                                                 type={'radio'}
                                                 id={'inline-radio-3'}
                                                 onClick={() => {
-                                                    console.log('Not Tested');
+                                                    setInventoryObj({ ...inventoryObj, isTested: (true) })
                                                 }}
                                             />
                                             <Form.Check
@@ -165,28 +175,28 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                                                 type={'radio'}
                                                 id={'inline-radio-4'}
                                                 onClick={() => {
-                                                    console.log('Not Tested');
+                                                    setInventoryObj({ ...inventoryObj, isTested: (false) })
                                                 }}
                                             />
                                         </div>
                                     </InputGroup>
                                 </Form.Group>
-                                {
-                                    radioSwitch ?
-                                        <Form.Group className="mb-3">
-                                            <Form.Label>Serial Number</Form.Label>
-                                            <Form.Control
-                                                id="serialNumber" type="text" placeholder="Serial Number"
-                                            />
-                                        </Form.Group>
-                                        :
-                                        <Form.Group className="mb-3">
-                                            <Form.Label>Quantity</Form.Label>
-                                            <Form.Control
-                                                id="quantity" type="text" placeholder="Quantity"
-                                            />
-                                        </Form.Group>
-                                }
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Comments</Form.Label>
+                                    <Form.Control
+                                        id="comments" type="text" placeholder="Comments"
+                                        value={inventoryObj.comment}
+                                        onChange={(e) => setInventoryObj({ ...inventoryObj, comment: (e.target.value) })}
+                                    />
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Location</Form.Label>
+                                    <Form.Control
+                                        id="location" type="text" placeholder="Location"
+                                        value={inventoryObj.location}
+                                        onChange={(e) => setInventoryObj({ ...inventoryObj, location: (e.target.value) })}
+                                    />
+                                </Form.Group>
                             </Form>
                         }
                     </div>
@@ -195,15 +205,15 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                     <div style={{ textAlign: 'center' }}>
                         <Button
                             variant="dark"
-                            onClick={async () => {
-                                console.log('')
+                            onClick={() => {
+                                finish();
                             }}>
                             Finish
                         </Button>
                         <Button
                             variant="dark"
-                            onClick={async () => {
-                                console.log('')
+                            onClick={() => {
+                                addInventory();
                             }}>
                             Add Next
                         </Button>

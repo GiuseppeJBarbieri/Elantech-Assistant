@@ -1,7 +1,7 @@
 import db from '../../models';
 import logger from '../../utils/logging/Logger';
 import IRepoError from '../../utils/interfaces/IRepoError';
-import { IProduct, IProductUPDATE } from './IProduct';
+import IProduct from './IProduct';
 
 /// /////////////////
 /// / INTERNALS /////
@@ -18,7 +18,7 @@ const standardError = (message: string) => {
 };
 
 export default {
-  async Add(product): Promise<IProduct> {
+  async Add(product: IProduct): Promise<IProduct> {
     try {
       return await db.product.create(product);
     } catch (err) {
@@ -47,11 +47,11 @@ export default {
     }
   },
 
-  async Edit(product: IProduct, oldProductNumber: string): Promise<IProductUPDATE> {
+  async Edit(product: IProduct): Promise<IProduct> {
     try {
       return await db.product.update(product, {
         where: {
-          productNumber: oldProductNumber,
+          id: product.id,
         },
       });
     } catch (err) {
@@ -60,10 +60,12 @@ export default {
     }
   },
 
-  async DeleteByProductNumber(product: string): Promise<IProduct[]> {
+  async Delete(id: number): Promise<IProduct[]> {
     try {
       return await db.product.destroy({
-        where: { product },
+        where: {
+          id,
+        },
       });
     } catch (err) {
       standardError(`${err.name} ${err.message}`);

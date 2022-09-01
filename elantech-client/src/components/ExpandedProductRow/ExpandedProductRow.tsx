@@ -139,9 +139,9 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
         custom: true,
         sizePerPage: 5,
     };
-    const getAllInventory = (product_number: string) => {
+    const getAllInventory = (productId: number) => {
         setTimeout(() => {
-            axios.get(`${BASE_API_URL}inventory/${product_number}`, { withCredentials: true})
+            axios.get(`${BASE_API_URL}inventory/${productId}`, { withCredentials: true})
                 .then((response) => {
                     setInventory(response?.data?.payload);
                     setConditionAmount(response?.data?.payload);
@@ -152,7 +152,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
         }, 400)
     };
     useEffect(() => {
-        getAllInventory(props.selectedProduct.productNumber);
+        getAllInventory(props.selectedProduct.id);
     }, []);
     
     const setConditionAmount = (inventory: IInventory[]) => {
@@ -331,6 +331,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                 <div className='modal-dialog'>
                     <AddInventoryModal
                         modalVisible={addInventorySwitch}
+                        selectedProduct={props.selectedProduct}
                         onClose={async () => {
                             setAddInventorySwitch(false);
                         }}

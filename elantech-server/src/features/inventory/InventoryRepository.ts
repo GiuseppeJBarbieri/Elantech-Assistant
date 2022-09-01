@@ -19,13 +19,13 @@ const standardError = (message: string) => {
 };
 
 export default {
-  async GetByProductNumber(productNumber: string): Promise<IInventory[]> {
+  async GetByProductId(productId: number): Promise<IInventory[]> {
     try {
       return await db.inventory.findAll({
         where: {
           [Op.and]: [
             {
-              productNumber,
+              productId,
             },
           ],
         },
@@ -45,11 +45,15 @@ export default {
     }
   },
 
-  async Edit(inventory): Promise<IInventory> {
+  async Edit(inventory: IInventory): Promise<IInventory> {
     try {
+      const _inventory = inventory;
+      delete _inventory.poNumber;
+      delete _inventory.removedId;
+
       return await db.inventory.update(inventory, {
         where: {
-          inventoryNumber: inventory.productNumber,
+          id: inventory.id,
         },
       });
     } catch (err) {
@@ -58,10 +62,10 @@ export default {
     }
   },
 
-  async DeleteBySerialNumber(serialNumber: string): Promise<IInventory[]> {
+  async Delete(id: number): Promise<IInventory[]> {
     try {
       return await db.inventory.delete({
-        where: { serialNumber },
+        where: { id },
       });
     } catch (err) {
       standardError(`${err.name} ${err.message}`);

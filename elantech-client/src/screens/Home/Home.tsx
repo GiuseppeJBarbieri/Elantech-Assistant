@@ -33,26 +33,25 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
   const [isSearching, setIsSearching] = useState(false);
   const [filterType, setFilterType] = useState('Filter Type');
   const [filterBrand, setFilterBrand] = useState('Filter Brand');
-  const [selectedProduct, setSelectedProduct] = useState<IProduct>(
-    {
-      productNumber: '',
-      userId: 0,
-      altNumber1: '',
-      altNumber2: '',
-      altNumber3: '',
-      altNumber4: '',
-      altNumber5: '',
-      altNumber6: '',
-      quantity: 0,
-      productType: '',
-      brand: '',
-      description: '',
-      ebayLink: '',
-      websiteLink: '',
-      quickSpecsLink: '',
-      relatedTags: '',
-    }
-  );
+  const [selectedProduct, setSelectedProduct] = useState<IProduct>({
+    id: 0,
+    productNumber: '',
+    userId: 0,
+    altNumber1:'',
+    altNumber2:'',
+    altNumber3: '',
+    altNumber4:'',
+    altNumber5:'',
+    altNumber6:'',
+    quantity:0,
+    productType:'',
+    brand:'',
+    description:'',
+    ebayLink:'',
+    websiteLink:'',
+    quickSpecsLink: '',
+    relatedTags:'',
+  });
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [productList, setProductList] = useState<IProduct[]>([]);
 
@@ -284,7 +283,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
               onSelect={(e) => {
                 if (e !== null) {
                   if (e.toLowerCase() === 'clear') {
-                    setProductList(productList);setFilterBrand('Filter Brand');
+                    setProductList(productList); setFilterBrand('Filter Brand');
                   } else {
                     setProductList(productList.filter(product => product.brand.toLowerCase().includes(e.toLowerCase())));
                     setFilterBrand(e);
@@ -411,6 +410,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
             modalVisible={addProductSwitch}
             modalSwitch={0}
             selectedProduct={{
+              id: 0,
               productNumber: '',
               userId: 0,
               altNumber1: '',
@@ -449,12 +449,14 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
           />
         </div>
       }
+      {/* hEATING UP FOOD BRB */}
       {
         removeProductSwitch &&
         <div className='modal-dialog'>
           <RemoveProductModal
             modalVisible={removeProductSwitch}
             selectedProduct={selectedProduct}
+            getAllProducts={getAllProducts}
             onClose={async () => {
               setRemoveProductSwitch(false);
             }}

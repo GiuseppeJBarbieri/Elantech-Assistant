@@ -1,7 +1,7 @@
 import IHTTPResponse from '../../utils/interfaces/IHTTPResponse';
 import ProductRepository from './ProductRepository';
 import constants from '../../utils/constants/Constants';
-import { IProduct, IProductUPDATE } from './IProduct';
+import IProduct from './IProduct';
 
 export default {
 
@@ -35,7 +35,6 @@ export default {
   async Add(product: IProduct): Promise<IHTTPResponse> {
     try {
       const _product = { ...product };
-
       await ProductRepository.Add(_product);
 
       return {
@@ -46,12 +45,9 @@ export default {
     }
   },
 
-  async Edit(product: IProductUPDATE): Promise<IHTTPResponse> {
+  async Edit(product: IProduct): Promise<IHTTPResponse> {
     try {
-      const _product: IProduct = { ...product };
-      const { oldProductNumber } = product;
-
-      await ProductRepository.Edit(_product, oldProductNumber);
+      ProductRepository.Edit(product);
 
       return {
         ...constants.HTTP.SUCCESS.UPDATE,
@@ -61,9 +57,9 @@ export default {
     }
   },
 
-  async DeleteByProductNumber(productNumber: string) {
+  async Delete(id: number) {
     try {
-      const affectedRowCount = await ProductRepository.DeleteByProductNumber(productNumber);
+      const affectedRowCount = await ProductRepository.Delete(id);
       return {
         ...constants.HTTP.SUCCESS.DELETE,
         payload: affectedRowCount,
