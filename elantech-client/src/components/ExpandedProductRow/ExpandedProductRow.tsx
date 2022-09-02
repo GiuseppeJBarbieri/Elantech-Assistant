@@ -11,6 +11,7 @@ import { AddInventoryModal } from '../AddInventoryModal/AddInventoryModal';
 import { AddSimpleQuoteModal } from '../AddSimpleQuoteModal/AddSimpleQuoteModal';
 import { InventoryTable } from '../Tables/InventoryTable';
 import { BASE_API_URL } from '../../constants/API';
+import { EditInventoryAlertModal } from '../Modals/EditInventoryAlertModal';
 
 interface ExpandedProductRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     selectedProduct: IProduct
@@ -22,7 +23,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
     const [hideQuotes, setHideQuotes] = useState(true);
     const [viewQuotesLbl, setViewQuotesLbl] = useState('View Quotes');
     const [expandInventoryLbl, setExpandInventoryLbl] = useState('Expand Inventory Table');
-    
+    const [addInventoryAlertSwitch, setAddInventoryAlertSwitch] = useState(false);
     const [factorySealed, setFactorySealed] = useState(0);
     const [newOpenedBox, setNewOpenedBox] = useState(0);
     const [refurbished, setRefurbished] = useState(0);
@@ -141,7 +142,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
     };
     const getAllInventory = (productId: number) => {
         setTimeout(() => {
-            axios.get(`${BASE_API_URL}inventory/${productId}`, { withCredentials: true})
+            axios.get(`${BASE_API_URL}inventory/${productId}`, { withCredentials: true })
                 .then((response) => {
                     setInventory(response?.data?.payload);
                     setConditionAmount(response?.data?.payload);
@@ -154,20 +155,20 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
     useEffect(() => {
         getAllInventory(props.selectedProduct.id);
     }, []);
-    
+
     const setConditionAmount = (inventory: IInventory[]) => {
-        for(const item of inventory){
-            if(item.condition == 'Factory Sealed') {
+        for (const item of inventory) {
+            if (item.condition == 'Factory Sealed') {
                 setFactorySealed((factorySealed + 1))
-            } else if(item.condition == 'New Opened Box') {
+            } else if (item.condition == 'New Opened Box') {
                 setNewOpenedBox((newOpenedBox + 1));
-            } else if(item.condition == 'Refurbished') {
+            } else if (item.condition == 'Refurbished') {
                 setRefurbished((refurbished + 1));
-            } else if(item.condition == 'Renew') {
+            } else if (item.condition == 'Renew') {
                 setRenew((renew + 1));
-            } else if(item.condition == 'Used') {
+            } else if (item.condition == 'Used') {
                 setUsed((used + 1));
-            } else if(item.condition == 'Damaged') {
+            } else if (item.condition == 'Damaged') {
                 setDamaged((damaged + 1));
             }
         }
@@ -197,7 +198,13 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                     }}>
                         Quick Quote
                     </Nav.Link>
-                    <Nav.Link onClick={() => setAddInventorySwitch(true)}>Add Inventory</Nav.Link>
+                    <Nav.Link onClick={() => {
+                        //TODO
+                        // setAddInventorySwitch(true);
+                        setAddInventoryAlertSwitch(true);
+                        setAddInventorySwitch(true);
+                    }
+                    }>Add Inventory</Nav.Link>
                     <Nav.Link onClick={() => {
                         setHideQuotes(!hideQuotes);
                         if (viewQuotesLbl === 'View Quotes') {
@@ -278,7 +285,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                         </Button>
                         <Collapse in={openState}>
                             <div id="example-collapse-text">
-                                <InventoryTable 
+                                <InventoryTable
                                     inventory={inventory}
                                 />
                             </div>
@@ -324,6 +331,17 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                         </PaginationProvider>
                     </div>
                     <hr />
+                </div>
+            }
+            {
+                addInventoryAlertSwitch &&
+                <div className='modal-dialog'>
+                    <EditInventoryAlertModal
+                        modalVisible={addInventoryAlertSwitch}
+                        onClose={async () => {
+                            setAddInventoryAlertSwitch(false);
+                        }}
+                    />
                 </div>
             }
             {

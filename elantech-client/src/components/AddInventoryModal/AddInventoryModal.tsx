@@ -21,7 +21,7 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
         id: 0,
         productId: props.selectedProduct.id,
         removedId: 0,
-        poNumber: undefined,
+        poId: undefined,
         serialNumber: '',
         condition: '',
         warrantyExpiration: '',

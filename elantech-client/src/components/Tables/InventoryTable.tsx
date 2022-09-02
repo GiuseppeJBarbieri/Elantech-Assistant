@@ -1,13 +1,10 @@
-import axios from 'axios';
-import React, { FunctionComponent, HTMLAttributes, useEffect, useState } from 'react';
+import React, { FunctionComponent, HTMLAttributes, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { Pencil, Trash } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { BASE_API_URL } from '../../constants/API';
 
 import IInventory from '../../types/IInventory';
-import IProduct from '../../types/IProduct';
 import { EditInventoryModal } from '../EditInventoryModal/EditInventoryModal';
 import { EditMultipleInventoryModal } from '../EditMultipleInventoryModal/EditMultipleInventoryModal';
 import { RemoveInventoryModal } from '../RemoveInventoryModal/RemoveInventoryModal';
@@ -20,7 +17,21 @@ interface InventoryTableProps extends RouteComponentProps, HTMLAttributes<HTMLDi
 
 const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) => {
     const [selectedInventoryList, setSelectedInventoryList] = useState<IInventory[]>([]);
-    const [selectedInventory, setSelectedInventory] = useState<IInventory>();
+    const [selectedInventory, setSelectedInventory] = useState<IInventory>(
+        {
+            id: 0,
+            productId: 0,
+            removedId: 0,
+            poId: undefined,
+            serialNumber: '',
+            condition: '',
+            warrantyExpiration: '',
+            isTested: false,
+            dateTested: '',
+            comment: '',
+            location: '',
+        }
+    );
     const [editInventorySwitch, setEditInventorySwitch] = useState(false);
     const [removeInventorySwitch, setRemoveInventorySwitch] = useState(false);
     const [removeMultipleInventorySwitch, setRemoveMultipleInventorySwitch] = useState(false);
@@ -69,92 +80,6 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             </div>
         );
     };
-    const fake_data_inner = [
-        {
-            serial_number: 'serial-number-1',
-            condition: 'Used',
-            seller_name: 'Ebay',
-            order_number: '809461-001',
-            date_received: '2021-01-29',
-            warranty_expiration: '2021-01-29',
-            tested: 'Yes',
-            comment: 'N/A',
-            location: 'Aisle 4 Row 2',
-            reserved: 'No'
-        },
-        {
-            serial_number: 'serial-number-2',
-            condition: 'condition',
-            seller_name: 'Ebay',
-            order_number: '809461-001',
-            date_received: '2021-01-29',
-            warranty_expiration: '2021-01-29',
-            tested: 'Yes',
-            comment: 'N/A',
-            location: 'Aisle 4 Row 2',
-            reserved: 'No'
-        },
-        {
-            serial_number: 'serial-number-3',
-            condition: 'condition',
-            seller_name: 'Ebay',
-            order_number: '809461-001',
-            date_received: '2021-01-29',
-            warranty_expiration: '2021-01-29',
-            tested: 'Yes',
-            comment: 'N/A',
-            location: 'Aisle 4 Row 2',
-            reserved: 'No'
-        },
-        {
-            serial_number: 'serial-number-4',
-            condition: 'condition',
-            seller_name: 'Ebay',
-            order_number: '809461-001',
-            date_received: '2021-01-29',
-            warranty_expiration: '2021-01-29',
-            tested: 'Yes',
-            comment: 'N/A',
-            location: 'Aisle 4 Row 2',
-            reserved: 'No'
-        },
-        {
-            serial_number: 'serial-number-5',
-            condition: 'condition',
-            seller_name: 'Ebay',
-            order_number: '809461-001',
-            date_received: '2021-01-29',
-            warranty_expiration: '2021-01-29',
-            tested: 'Yes',
-            comment: 'N/A',
-            location: 'Aisle 4 Row 2',
-            reserved: 'No'
-        },
-        {
-            serial_number: 'serial-number-6',
-            condition: 'condition',
-            seller_name: 'Ebay',
-            order_number: '809461-001',
-            date_received: '2021-01-29',
-            warranty_expiration: '2021-01-29',
-            tested: 'Yes',
-            comment: 'N/A',
-            location: 'Aisle 4 Row 2',
-            reserved: 'No'
-        },
-        {
-            serial_number: 'serial-number-7',
-            condition: 'condition',
-            seller_name: 'Ebay',
-            order_number: '809461-001',
-            date_received: '2021-01-29',
-            warranty_expiration: '2021-01-29',
-            tested: 'Yes',
-            comment: 'N/A',
-            location: 'Aisle 4 Row 2',
-            reserved: 'No'
-        },
-    ];
     const columns = [
         {
             id: 1,
@@ -206,13 +131,19 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
         },
         {
             id: 9,
-            dataField: "tested",
+            dataField: "dateTested",
+            text: "Date Tested",
+            sort: false,
+        },
+        {
+            id: 10,
+            dataField: "isTested",
             text: "Tested",
             sort: false,
             headerAlign: 'center',
         },
         {
-            id: 10,
+            id: 11,
             dataField: "reserved",
             text: "Reserved",
             sort: false,
@@ -224,7 +155,6 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             text: "Edit",
             sort: false,
             formatter: rankFormatterEdit,
-  //          headerAlign: 'center',
         },
         {
             id: 12,
@@ -232,13 +162,8 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             text: "Remove",
             sort: false,
             formatter: rankFormatterRemove,
-//            headerAlign: 'center',
         }
     ];
-    const options = {
-        sizePerPage: 5,
-        totalSize: fake_data_inner.length,
-    };
     const selectRow = {
         mode: 'checkbox',
         clickToSelect: true,

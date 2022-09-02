@@ -75,7 +75,7 @@ export default (sequelize: any, DataTypes: any) => {
       allowNull: false,
     },
     warrantyExpiration: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
       allowNull: true,
     },
     isTested: {
@@ -83,7 +83,7 @@ export default (sequelize: any, DataTypes: any) => {
       allowNull: false,
     },
     dateTested: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
       allowNull: true,
     },
     comment: {

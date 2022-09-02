@@ -1,37 +1,41 @@
+import axios from "axios";
+import moment from "moment";
 import React, { HTMLAttributes, FunctionComponent } from "react";
 import { useState } from "react";
-import { Modal, Spinner, Form, Button } from "react-bootstrap";
+import { Modal, Spinner, Form, Button, InputGroup } from "react-bootstrap";
 import { RouteComponentProps, withRouter } from "react-router-dom";
+import { BASE_API_URL } from "../../constants/API";
 import IInventory from "../../types/IInventory";
 
 interface EditInventoryModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
-    selectedInventory: IInventory | undefined;
+    selectedInventory: IInventory;
     onClose: () => Promise<void>;
     modalVisible: boolean;
 }
 
 const EditInventoryComponent: FunctionComponent<EditInventoryModalProps> = (props) => {
     const [isSaving, setIsSaving] = useState(false);
-    const [editInventory, setEditInventory] = useState<IInventory>(
-        {
-            serial_number: props.selectedInventory?.serial_number,
-            condition: props.selectedInventory?.condition,
-            seller_name: props.selectedInventory?.seller_name,
-            order_number: props.selectedInventory?.order_number,
-            date_received: props.selectedInventory?.date_received,
-            warranty_expiration: props.selectedInventory?.warranty_expiration,
-            tested: props.selectedInventory?.tested,
-            comment: props.selectedInventory?.comment,
-            location: props.selectedInventory?.location,
-            reserved: props.selectedInventory?.reserved
-        },
-    )
+    const [inventoryObj, setInventoryObj] = useState<IInventory>(props.selectedInventory);
+    const finished = () => {
+        setIsSaving(true);
+        setTimeout(() => {
+            axios.put(`${BASE_API_URL}inventory`, inventoryObj, { withCredentials: true })
+                .then((response) => {
+                    setIsSaving(false);
+                    props.onClose();
+                })
+                .catch((err) => {
+                    console.log(err);
+                    setIsSaving(false);
+                });
+        }, 500);
+    };
     return (
         <div>
             <Modal backdrop="static" show={props.modalVisible} onHide={props.onClose} fullscreen={true}>
                 <Modal.Header style={{ background: '#212529', color: 'white', borderBottom: '1px solid rgb(61 66 70)' }} closeButton>
                     <Modal.Title>
-                        <h2 style={{ verticalAlign: '', fontWeight: 300 }} >Add Inventory </h2>
+                        <h2 style={{ verticalAlign: '', fontWeight: 300 }} >Edit Inventory </h2>
                         <p style={{ color: 'darkgray', fontSize: 18, fontWeight: 300 }}>Please enter inventory information.</p>
                     </Modal.Title>
                 </Modal.Header>
@@ -54,15 +58,15 @@ const EditInventoryComponent: FunctionComponent<EditInventoryModalProps> = (prop
                                     <Form.Label>Serial Number</Form.Label>
                                     <Form.Control
                                         id="serialNumber" type="text" placeholder="Serial Number"
-                                        value={editInventory.serial_number}
-                                        onChange={(e) => setEditInventory({ ...editInventory, serial_number: (e.target.value) })}
+                                        value={inventoryObj.serialNumber}
+                                        onChange={(e) => setInventoryObj({ ...inventoryObj, serialNumber: (e.target.value) })}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Condition</Form.Label>
                                     <Form.Select aria-label="Default select example"
-                                        value={editInventory.condition}
-                                        onChange={(e) => setEditInventory({ ...editInventory, condition: (e.target.value) })}
+                                        value={inventoryObj.condition}
+                                        onChange={(e) => setInventoryObj({ ...inventoryObj, condition: (e.target.value) })}
                                     >
                                         <option>Choose Condition</option>
                                         <option value="New Factory Sealed">New Factory Sealed</option>
@@ -73,54 +77,61 @@ const EditInventoryComponent: FunctionComponent<EditInventoryModalProps> = (prop
                                     </Form.Select>
                                 </Form.Group>
                                 <Form.Group className="mb-3">
-                                    <Form.Label>Seller</Form.Label>
-                                    <Form.Select aria-label="Default select example" >
-                                        <option>Choose Seller</option>
-                                        <option value="Ebay">Ebay</option>
-                                        <option value="New Opened Box">Company 1</option>
-                                        <option value="Renew">Company 2</option>
-                                        <option value="Used">Company 3</option>
-                                        <option value="Damaged">Company 4</option>
-                                    </Form.Select>
-                                </Form.Group>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Order Number</Form.Label>
-                                    <Form.Control
-                                        id="orderNumber" type="text" placeholder="Order Number"
-                                        value={editInventory.order_number}
-                                        onChange={(e) => setEditInventory({ ...editInventory, order_number: (e.target.value) })}
+                                    <Form.Label>Warranty Expiration</Form.Label>
+                                    <Form.Control id="orderNumber" type="date"
+                                        value={inventoryObj.warrantyExpiration}
+                                        onChange={(e) => setInventoryObj({ ...inventoryObj, warrantyExpiration: moment(e.target.value).format('YYYY-MM-DD') })}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
-                                    <Form.Label>Date Received</Form.Label>
-                                    <Form.Control id="orderNumber" type="date" />
+                                    <Form.Label>Date Tested</Form.Label>
+                                    <Form.Control id="dateTested" type="date"
+                                        value={inventoryObj.dateTested}
+                                        onChange={(e) => setInventoryObj({ ...inventoryObj, dateTested: moment(e.target.value).format('YYYY-MM-DD') })}
+                                    />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
-                                    <Form.Label>Warranty Expiration</Form.Label>
-                                    <Form.Control id="orderNumber" type="date" />
+                                    <Form.Label>Tested</Form.Label>
+                                    <InputGroup>
+                                        <div key={`inline-radio-2`}>
+                                            <Form.Check
+                                                inline
+                                                defaultChecked
+                                                label="Tested"
+                                                name='group2'
+                                                type={'radio'}
+                                                id={'inline-radio-3'}
+                                                onClick={() => {
+                                                    setInventoryObj({ ...inventoryObj, isTested: (true) })
+                                                }}
+                                            />
+                                            <Form.Check
+                                                inline
+                                                label="Not Tested"
+                                                name='group2'
+                                                type={'radio'}
+                                                id={'inline-radio-4'}
+                                                onClick={() => {
+                                                    setInventoryObj({ ...inventoryObj, isTested: (false) })
+                                                }}
+                                            />
+                                        </div>
+                                    </InputGroup>
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Comments</Form.Label>
                                     <Form.Control
                                         id="comments" type="text" placeholder="Comments"
-                                        value={editInventory.comment}
-                                        onChange={(e) => setEditInventory({ ...editInventory, comment: (e.target.value) })}
+                                        value={inventoryObj.comment}
+                                        onChange={(e) => setInventoryObj({ ...inventoryObj, comment: (e.target.value) })}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Location</Form.Label>
                                     <Form.Control
                                         id="location" type="text" placeholder="Location"
-                                        value={editInventory.location}
-                                        onChange={(e) => setEditInventory({ ...editInventory, location: (e.target.value) })}
-                                    />
-                                </Form.Group>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Tested</Form.Label>
-                                    <Form.Control
-                                        id="tested" type="text" placeholder="Tested"
-                                        value={editInventory.tested}
-                                        onChange={(e) => setEditInventory({ ...editInventory, tested: (e.target.value) })}
+                                        value={inventoryObj.location}
+                                        onChange={(e) => setInventoryObj({ ...inventoryObj, location: (e.target.value) })}
                                     />
                                 </Form.Group>
                             </Form>
@@ -128,15 +139,13 @@ const EditInventoryComponent: FunctionComponent<EditInventoryModalProps> = (prop
                     </div>
                 </Modal.Body>
                 <Modal.Footer style={{ background: '#212529', color: 'white', borderTop: '1px solid rgb(61 66 70)' }}>
-                    <div style={{ textAlign: 'center' }}>
-                        <Button
-                            variant="dark"
-                            onClick={async () => {
-                                console.log('')
-                            }}>
-                            Finish
-                        </Button>
-                    </div>
+                    <Button
+                        variant="dark"
+                        onClick={() => {
+                            finished();
+                        }}>
+                        Finish
+                    </Button>
                 </Modal.Footer>
             </Modal>
         </div>

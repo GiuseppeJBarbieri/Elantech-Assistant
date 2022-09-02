@@ -48,7 +48,7 @@ export default {
   async Edit(inventory: IInventory): Promise<IInventory> {
     try {
       const _inventory = inventory;
-      delete _inventory.poNumber;
+      delete _inventory.poId;
       delete _inventory.removedId;
 
       return await db.inventory.update(inventory, {

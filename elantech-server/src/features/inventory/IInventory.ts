@@ -2,7 +2,7 @@ interface IInventory {
     id: number;
     productId: number;
     removedId?: number;
-    poNumber?: string;
+    poId?: number;
     serialNumber: string;
     condition: string;
     warrantyExpiration: string;

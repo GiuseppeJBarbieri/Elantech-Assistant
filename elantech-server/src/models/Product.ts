@@ -84,32 +84,32 @@ export default (sequelize: any, DataTypes: any) => {
     altNumber1: {
       type: DataTypes.STRING,
       allowNull: true,
-      unique: true,
+      unique: false,
     },
     altNumber2: {
       type: DataTypes.STRING,
       allowNull: true,
-      unique: true,
+      unique: false,
     },
     altNumber3: {
       type: DataTypes.STRING,
       allowNull: true,
-      unique: true,
+      unique: false,
     },
     altNumber4: {
       type: DataTypes.STRING,
       allowNull: true,
-      unique: true,
+      unique: false,
     },
     altNumber5: {
       type: DataTypes.STRING,
       allowNull: true,
-      unique: true,
+      unique: false,
     },
     altNumber6: {
       type: DataTypes.STRING,
       allowNull: true,
-      unique: true,
+      unique: false,
     },
     quantity: {
       type: DataTypes.INTEGER,
