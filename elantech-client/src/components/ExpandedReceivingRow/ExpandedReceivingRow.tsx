@@ -1,23 +1,23 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from 'react';
 import { FunctionComponent, HTMLAttributes, useState } from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
 import { Pencil, Trash, Plus } from 'react-bootstrap-icons';
-import BootstrapTable from 'react-bootstrap-table-next';
+import BootstrapTable, { ColumnDescription } from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { AddInventoryModal } from '../AddInventoryModal/AddInventoryModal';
-import { EditReceivedProductOrderModal } from '../EditReceivedProductInOrderModal/EditReceivedProductOrderModal';
-import { ReceivingAddProductModal } from '../ReceivingAddProductModal/ReceivingAddProductModal';
+import { EditReceivedProductOrderModal } from '../Modals/Receiving/EditReceivedProductOrderModal';
+import { ReceivingAddProductModal } from '../Modals/Receiving/ReceivingAddProductModal';
 
 interface ExpandedReceivingRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
 }
 
-const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps> = (props) => {
+const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps> = () => {
     const [editProductSwitch, setEditProductSwitch] = useState(false);
     const [addInventorySwitch, setAddInventorySwitch] = useState(false);
     const [addProductSwitch, setAddProductSwitch] = useState(false);
 
-    const rankFormatterAdd = (_: any, data: any, index: any) => {
+    const rankFormatterAdd = () => {
         return (
             <div
                 style={{
@@ -28,7 +28,7 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
                 onClick={(e) => {
                     e.stopPropagation()
                 }}>
-                <div onClick={(e) => {
+                <div onClick={() => {
                     // add 3rd switch for adding inventory from here
                     setAddInventorySwitch(true);
                 }}>
@@ -37,7 +37,7 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
             </div>
         );
     };
-    const rankFormatterEdit = (_: any, data: any, index: any) => {
+    const rankFormatterEdit = () => {
         return (
             <div
                 style={{
@@ -49,7 +49,7 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
                 onClick={(e) => {
                     e.stopPropagation()
                 }} >
-                <div onClick={(e) => {
+                <div onClick={() => {
                     setEditProductSwitch(true);
                 }}
                 >
@@ -58,60 +58,52 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
             </div>
         );
     };
-    const rankFormatterRemove = (_: any, data: any, index: any) => {
+    const rankFormatterRemove = () => {
         return (
             <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }} onClick={() => console.log('Remove Column')} >
                 <Trash style={{ fontSize: 20, color: 'white' }} />
             </div>
         );
     };
-    const column_inner = [
+    const column_inner: ColumnDescription<any, any>[] = [
         {
-            id: 1,
-            dataField: "quantity",
-            text: "QTY",
+            dataField: 'quantity',
+            text: 'QTY',
             sort: false,
         },
         {
-            id: 2,
-            dataField: "product_number",
-            text: "Product Number",
+            dataField: 'product_number',
+            text: 'Product Number',
             sort: true,
         },
         {
-            id: 2,
-            dataField: "product_type",
-            text: "Type",
+            dataField: 'product_type',
+            text: 'Type',
             sort: true,
         },
         {
-            id: 2,
-            dataField: "brand",
-            text: "Brand",
+            dataField: 'brand',
+            text: 'Brand',
             sort: true,
         },
         {
-            id: 2,
-            dataField: "description",
-            text: "Description",
+            dataField: 'description',
+            text: 'Description',
             sort: true,
         },
         {
-            id: 3,
-            dataField: "condition_upon_delivery",
-            text: "CUD",
+            dataField: 'condition_upon_delivery',
+            text: 'CUD',
             sort: true,
         },
         {
-            id: 4,
-            dataField: "added_to_inventory",
-            text: "Added",
+            dataField: 'added_to_inventory',
+            text: 'Added',
             sort: true,
         },
         {
-            id: 5,
-            dataField: "Add",
-            text: "Receive Item",
+            dataField: 'Add',
+            text: 'Receive Item',
             sort: false,
             formatter: rankFormatterAdd,
             headerAlign: 'center',
@@ -120,9 +112,8 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
             }
         },
         {
-            id: 6,
-            dataField: "edit",
-            text: "Edit",
+            dataField: 'edit',
+            text: 'Edit',
             sort: false,
             formatter: rankFormatterEdit,
             headerAlign: 'center',
@@ -131,9 +122,8 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
             }
         },
         {
-            id: 7,
-            dataField: "remove",
-            text: "Delete",
+            dataField: 'remove',
+            text: 'Delete',
             sort: false,
             formatter: rankFormatterRemove,
             headerAlign: 'center',
@@ -241,14 +231,14 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
             {
                 addInventorySwitch &&
                 <div className='modal-dialog'>
-                    <AddInventoryModal
+                    {/* <AddInventoryModal
                         modalVisible={addInventorySwitch}
                         onClose={async () => {
                             setAddInventorySwitch(false);
                             // if it was added
                             // set to added for product
                         }}
-                    />
+                    /> */}
                 </div>
             }
             {

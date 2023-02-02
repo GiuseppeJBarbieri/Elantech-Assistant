@@ -18,6 +18,7 @@ interface ProductAttributes {
   websiteLink: string;
   quickSpecsLink: string;
   relatedTags: string;
+  reasonForRemoval: string;
 }
 
 export default (sequelize: any, DataTypes: any) => {
@@ -58,6 +59,8 @@ export default (sequelize: any, DataTypes: any) => {
     quickSpecsLink!: string;
 
     relatedTags!: string;
+
+    reasonForRemoval!: string;
 
     static associate(models: any) {
       Product.belongsTo(models.user, { foreignKey: 'userId' });
@@ -140,6 +143,10 @@ export default (sequelize: any, DataTypes: any) => {
       allowNull: true,
     },
     relatedTags: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    reasonForRemoval: {
       type: DataTypes.STRING,
       allowNull: true,
     },

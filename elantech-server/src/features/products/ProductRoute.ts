@@ -37,13 +37,14 @@ router.get('/', authenticationMiddleware, validate(ProductValidation.GetAllProdu
 /**
  * This route will fetch a product by productNumber
  */
-router.get('/:productNumber', authenticationMiddleware, validate(ProductValidation.GetProduct), (req, res, next) => {
-  logger.info('GET PRODUCT');
+router.get('/:productNumber', authenticationMiddleware, validate(ProductValidation.GetProduct),
+  (req, res, next) => {
+    logger.info('GET PRODUCT');
 
-  ProductController.GetByProductNumber(req.params.productNumber)
-    .then((product) => res.status(200).json(product))
-    .catch((err) => next(err));
-});
+    ProductController.GetByProductNumber(req.params.productNumber)
+      .then((product) => res.status(200).json(product))
+      .catch((err) => next(err));
+  });
 
 /**
  * This route will update a product

@@ -1,25 +1,28 @@
-import axios from 'axios';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { FunctionComponent, HTMLAttributes, useState, useEffect } from 'react';
 import { Button, DropdownButton, Dropdown } from 'react-bootstrap';
 import { Pencil, Plus, Trash } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { CompanyModal } from '../../components/CompanyModal/CompanyModal';
+import { CompanyModal } from '../../components/Modals/Company/CompanyModal';
 import { ExpandedQuoteRow } from '../../components/ExpandedQuoteRow/ExpandedQuoteRow';
-import { BASE_API_URL } from '../../constants/API';
 import ICompany from '../../types/ICompany';
-import IQuote from '../../types/IQuote';
-
+import { requestAllCompanies } from '../../utils/Requests';
+import { defaultCompany } from '../../constants/Defaults';
 import './Quotes.css';
+import { RemoveCompanyModal } from '../../components/Modals/Company/RemoveCompanyModal';
 
 interface QuotesProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> { }
 
 export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
   const [addCompanySwitch, setAddCompanySwitch] = useState(false);
   const [editCompanySwitch, setEditCompanySwitch] = useState(false);
-  const [quoteList, setQuoteList] = useState<IQuote[]>([])
-  const [selectedCompany, setSelectedCompany] = useState<ICompany>();
+  const [removeCompanySwitch, setRemoveCompanySwitch] = useState(false);
+  const [companyList, setCompanyList] = useState<ICompany[]>([]);
+
+  const [selectedCompany, setSelectedCompany] = useState<ICompany>(defaultCompany);
 
   const rankFormatterRemove = (_: any, data: any, index: any) => {
     return (
@@ -32,9 +35,9 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
         onClick={(e) => {
           e.stopPropagation()
         }} >
-        <div onClick={(e) => {
-          //setRemoveProductSwitch(true);
-          //setSelectedProduct(data);
+        <div onClick={() => {
+          setSelectedCompany(data);
+          setRemoveCompanySwitch(true);
         }}
         >
           <Trash style={{ fontSize: 20, color: 'white' }} />
@@ -69,25 +72,25 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
 
     {
       id: 1,
-      dataField: "company_type",
+      dataField: "companyType",
       text: "Type",
       sort: true,
     },
     {
       id: 2,
-      dataField: "company_name",
+      dataField: "companyName",
       text: "Company Name",
       sort: true,
     },
     {
       id: 3,
-      dataField: "company_rep",
+      dataField: "companyRep",
       text: "Company Rep",
       sort: true,
     },
     {
       id: 4,
-      dataField: "phone_number",
+      dataField: "phoneNumber",
       text: "Phone Number",
       sort: false,
       headerAlign: 'center',
@@ -119,86 +122,24 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
       formatter: rankFormatterEdit,
       headerAlign: 'center',
     },
-  ];
-  const fake_data = [
     {
-      company_id: 1,
-      company_type: 'Broker',
-      company_name: 'Kings Collectables',
-      company_rep: 'Giuseppe',
-      phone_number: '631-278-8517',
-      email: 'giuseppe@elantechus.com',
-      location: 'Farmingdale',
-      comments: 'Nothing to be said!',
-    },
-    {
-      company_id: 2,
-      company_type: 'Broker',
-      company_name: 'Kings Collectables',
-      company_rep: 'Giuseppe',
-      phone_number: '631-278-8517',
-      email: 'giuseppe@elantechus.com',
-      location: 'Farmingdale',
-      comments: 'Nothing to be said!',
-    },
-    {
-      company_id: 3,
-      company_type: 'Broker',
-      company_name: 'Kings Collectables',
-      company_rep: 'Giuseppe',
-      phone_number: '631-278-8517',
-      email: 'giuseppe@elantechus.com',
-      location: 'Farmingdale',
-      comments: 'Nothing to be said!',
-    },
-    {
-      company_id: 4,
-      company_type: 'Broker',
-      company_name: 'Kings Collectables',
-      company_rep: 'Giuseppe',
-      phone_number: '631-278-8517',
-      email: 'giuseppe@elantechus.com',
-      location: 'Farmingdale',
-      comments: 'Nothing to be said!',
-    },
-    {
-      company_id: 5,
-      company_type: 'Broker',
-      company_name: 'Kings Collectables',
-      company_rep: 'Giuseppe',
-      phone_number: '631-278-8517',
-      email: 'giuseppe@elantechus.com',
-      location: 'Farmingdale',
-      comments: 'Nothing to be said!',
-    },
-    {
-      company_id: 6,
-      company_type: 'Broker',
-      company_name: 'Kings Collectables',
-      company_rep: 'Giuseppe',
-      phone_number: '631-278-8517',
-      email: 'giuseppe@elantechus.com',
-      location: 'Farmingdale',
-      comments: 'Nothing to be said!',
+      id: 9,
+      dataField: "remove",
+      text: "Remove",
+      sort: false,
+      formatter: rankFormatterRemove,
+      headerAlign: 'center',
     },
   ];
   const options = {
     custom: true,
-    totalSize: fake_data.length
+    totalSize: companyList.length
   };
-  const getAllQuotes = () => {
-    setTimeout(() => {
-      axios.get(`${BASE_API_URL}quotes`, { withCredentials: true })
-        .then((response) => {
-          setQuoteList(response?.data?.payload);
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-    }, 400)
+  const getAllCompanies = async () => {
+    setCompanyList(await requestAllCompanies());
   };
   useEffect(() => {
-    getAllQuotes();
+    getAllCompanies();
   }, []);
   return (
     <section className="text-white main-section overflow-auto">
@@ -244,20 +185,20 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
               }) => (
                 <div>
                   <BootstrapTable
-                    key='product_table'
                     {...paginationTableProps}
-                    keyField="company_id"
+                    keyField="id"
                     bootstrap4
-                    data={quoteList}
+                    data={companyList}
                     columns={column}
                     classes="table table-dark table-hover table-striped table-responsive"
                     noDataIndication="Table is Empty"
                     expandRow={{
                       onlyOneExpanding: true,
-                      renderer: (row, index) => {
+                      // eslint-disable-next-line react/display-name
+                      renderer: (row) => {
                         return (
                           <ExpandedQuoteRow
-                            selectedCompany={selectedCompany}
+                            selectedCompany={row}
                           />
                         )
                       }
@@ -283,7 +224,8 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
           <CompanyModal
             modalVisible={addCompanySwitch}
             modalSwitch={0}
-            selectedCompany={undefined}
+            selectedCompany={defaultCompany()}
+            getAllCompanies={getAllCompanies}
             onClose={async () => {
               setAddCompanySwitch(false);
             }}
@@ -297,8 +239,22 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
             modalVisible={editCompanySwitch}
             modalSwitch={1}
             selectedCompany={selectedCompany}
+            getAllCompanies={getAllCompanies}
             onClose={async () => {
               setEditCompanySwitch(false);
+            }}
+          />
+        </div>
+      }
+      {
+        removeCompanySwitch &&
+        <div className='modal-dialog'>
+          <RemoveCompanyModal
+            modalVisible={removeCompanySwitch}
+            selectedCompany={selectedCompany}
+            getAllCompanies={getAllCompanies}
+            onClose={async () => {
+              setRemoveCompanySwitch(false);
             }}
           />
         </div>

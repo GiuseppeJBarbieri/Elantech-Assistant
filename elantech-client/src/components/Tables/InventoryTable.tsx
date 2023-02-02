@@ -1,21 +1,26 @@
-import React, { FunctionComponent, HTMLAttributes, useState } from 'react';
+import React, { FunctionComponent, HTMLAttributes, useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { Pencil, Trash } from 'react-bootstrap-icons';
-import BootstrapTable from 'react-bootstrap-table-next';
+import BootstrapTable, { SelectRowProps } from 'react-bootstrap-table-next';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 import IInventory from '../../types/IInventory';
-import { EditInventoryModal } from '../EditInventoryModal/EditInventoryModal';
-import { EditMultipleInventoryModal } from '../EditMultipleInventoryModal/EditMultipleInventoryModal';
-import { RemoveInventoryModal } from '../RemoveInventoryModal/RemoveInventoryModal';
-import { RemoveMultipleInventoryModal } from '../RemoveMultipleInventoryModal/RemoveMultipleInventoryModal';
+import IProduct from '../../types/IProduct';
+import { EditInventoryModal } from '../Modals/Inventory/EditInventoryModal';
+import { EditMultipleInventoryModal } from '../Modals/Inventory/EditMultipleInventoryModal';
+import { RemoveInventoryModal } from '../Modals/Inventory/RemoveInventoryModal';
+import { RemoveMultipleInventoryModal } from '../Modals/Inventory/RemoveMultipleInventoryModal';
 
 
 interface InventoryTableProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     inventory: IInventory[];
+    getAllInventory: (productId: number) => void
+    selectedProduct: IProduct;
+    getAllProducts: () => void;
 }
 
 const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) => {
+    const [inventoryList, setInventoryList] = useState<IInventory[]>(props.inventory);
     const [selectedInventoryList, setSelectedInventoryList] = useState<IInventory[]>([]);
     const [selectedInventory, setSelectedInventory] = useState<IInventory>(
         {
@@ -51,6 +56,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                 <div onClick={(e) => {
                     setRemoveInventorySwitch(true);
                     setSelectedInventory(data);
+
                 }}
                 >
                     <Trash style={{ fontSize: 20, color: 'white' }} />
@@ -83,83 +89,83 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
     const columns = [
         {
             id: 1,
-            dataField: "serialNumber",
-            text: "Serial Number",
+            dataField: 'serialNumber',
+            text: 'Serial Number',
             sort: false,
         },
         {
             id: 2,
-            dataField: "condition",
-            text: "Condition",
+            dataField: 'condition',
+            text: 'Condition',
             sort: true,
         },
         {
             id: 3,
-            dataField: "sellerName",
-            text: "Seller Name",
+            dataField: 'sellerName',
+            text: 'Seller Name',
             sort: true
         },
         {
             id: 4,
-            dataField: "orderNumber",
-            text: "Order Number",
+            dataField: 'orderNumber',
+            text: 'Order Number',
             sort: false,
         },
         {
             id: 5,
-            dataField: "dateReceived",
-            text: "Date Received",
+            dataField: 'dateReceived',
+            text: 'Date Received',
             sort: false,
         },
         {
             id: 6,
-            dataField: "warrantyExpiration",
-            text: "Warranty Expiration",
+            dataField: 'warrantyExpiration',
+            text: 'Warranty Expiration',
             sort: false,
         },
         {
             id: 7,
-            dataField: "comment",
-            text: "Comment",
+            dataField: 'comment',
+            text: 'Comment',
             sort: false,
         },
         {
             id: 8,
-            dataField: "location",
-            text: "Location",
+            dataField: 'location',
+            text: 'Location',
             sort: false,
         },
         {
             id: 9,
-            dataField: "dateTested",
-            text: "Date Tested",
+            dataField: 'dateTested',
+            text: 'Date Tested',
             sort: false,
         },
         {
             id: 10,
-            dataField: "isTested",
-            text: "Tested",
+            dataField: 'isTested',
+            text: 'Tested',
             sort: false,
             headerAlign: 'center',
         },
         {
             id: 11,
-            dataField: "reserved",
-            text: "Reserved",
+            dataField: 'reserved',
+            text: 'Reserved',
             sort: false,
             headerAlign: 'center',
         },
         {
             id: 11,
-            dataField: "edit",
-            text: "Edit",
+            dataField: 'edit',
+            text: 'Edit',
             sort: false,
             formatter: rankFormatterEdit,
         },
         {
             id: 12,
-            dataField: "remove",
-            text: "Remove",
+            dataField: 'remove',
+            text: 'Remove',
             sort: false,
             formatter: rankFormatterRemove,
         }
@@ -167,21 +173,22 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
     const selectRow = {
         mode: 'checkbox',
         clickToSelect: true,
-        onSelect: (row: IInventory, isSelect: boolean, rowIndex: Number, e: any) => {
+        bgColor: '#0da7fd73 !important',
+        onSelect: (row: IInventory, isSelect: boolean, rowIndex: number, e: any) => {
             if (isSelect === true) {
                 // Add inventory to list
                 selectedInventoryList.push(row);
                 setSelectedInventoryList([...selectedInventoryList]);
             } else {
                 // Remove Inventory from list
-                var index = selectedInventoryList.indexOf(row);
+                const index = selectedInventoryList.indexOf(row);
                 selectedInventoryList.splice(index, 1);
                 setSelectedInventoryList([...selectedInventoryList]);
             }
         },
         onSelectAll: (isSelect: any, rows: IInventory[], e: any) => {
             if (isSelect === true) {
-                for (var i = 0; i < rows.length; i++) {
+                for (let i = 0; i < rows.length; i++) {
                     selectedInventoryList.push(rows[i]);
                 }
                 setSelectedInventoryList([...selectedInventoryList]);
@@ -190,6 +197,9 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             }
         }
     };
+    useEffect(() => {
+        setInventoryList(props.inventory);
+    });
     return (
         <div>
             <br />
@@ -225,29 +235,34 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                                         setRemoveMultipleInventorySwitch(true);
                                     }}
                                 >
-                                    Remove Inventory
+                                    Remove Multiple
                                 </Button>
                             </div>
                         }
                     </div>
                 </div>
             </div>
-            <BootstrapTable
-                key='inventory_table'
-                bootstrap4
-                condensed
-                data={props.inventory}
-                columns={columns}
-                keyField='serialNumber'
-                classes="table table-dark table-hover table-striped"
-                noDataIndication="Table is Empty"
-            />
+            <div style={{overflowX: 'auto', maxHeight: 500}}>
+                <BootstrapTable
+                    key='inventory_table'
+                    bootstrap4
+                    condensed
+                    selectRow={selectRow as SelectRowProps<IInventory>}
+                    data={inventoryList}
+                    columns={columns}
+                    keyField='serialNumber'
+                    classes="table table-dark table-hover table-striped"
+                    noDataIndication="Table is Empty"
+                />
+            </div>
             {
                 editInventorySwitch &&
                 <div className='modal-dialog'>
                     <EditInventoryModal
                         modalVisible={editInventorySwitch}
                         selectedInventory={selectedInventory}
+                        getAllInventory={props.getAllInventory}
+                        selectedProduct={props.selectedProduct}
                         onClose={async () => {
                             setEditInventorySwitch(false);
                         }}
@@ -260,8 +275,12 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                     <RemoveInventoryModal
                         modalVisible={removeInventorySwitch}
                         selectedInventory={selectedInventory}
+                        getAllInventory={props.getAllInventory}
+                        getAllProducts={props.getAllProducts}
+                        selectedProduct={props.selectedProduct}
                         onClose={async () => {
                             setRemoveInventorySwitch(false);
+                            setSelectedInventoryList([]);
                         }}
                     />
                 </div>
@@ -272,7 +291,13 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                     <RemoveMultipleInventoryModal
                         modalVisible={removeMultipleInventorySwitch}
                         selectedInventory={selectedInventoryList}
+                        getAllProducts={props.getAllProducts}
+                        getAllInventory={props.getAllInventory}
+                        selectedProduct={props.selectedProduct}
                         onClose={async () => {
+                            props.getAllInventory(props.selectedProduct.id as number)
+                            props.getAllProducts();
+                            setSelectedInventoryList([]);
                             setRemoveMultipleInventorySwitch(false);
                         }}
                     />

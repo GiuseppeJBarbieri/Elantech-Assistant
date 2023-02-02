@@ -5,12 +5,40 @@ import IQuote from './IQuote';
 
 export default {
 
-  async GetByID(id: number) {
+  async GetAll() {
     try {
-      const quote = await QuoteRepository.GetByID(id);
+      const quotes = await QuoteRepository.GetAllQuotes();
+
       return {
         ...constants.HTTP.SUCCESS.SELECTED,
-        payload: [...quote],
+        payload: [...quotes],
+      };
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  },
+
+  async Get(id: number): Promise<IQuote> {
+    try {
+      const quote: IQuote = await QuoteRepository.Get(id);
+      if (!quote) {
+        const response = constants.HTTP.ERROR.NOT_FOUND;
+        return Promise.reject(response);
+      }
+
+      return quote;
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  },
+
+  async GetByCompanyId(companyID: number) {
+    try {
+      const quotes = await QuoteRepository.GetByCompanyId(companyID);
+
+      return {
+        ...constants.HTTP.SUCCESS.SELECTED,
+        payload: [...quotes],
       };
     } catch (err) {
       return Promise.reject(err);
@@ -20,7 +48,6 @@ export default {
   async Add(quote: IQuote): Promise<IHTTPResponse> {
     try {
       const _quote = { ...quote };
-
       await QuoteRepository.Add(_quote);
 
       return {
@@ -33,8 +60,7 @@ export default {
 
   async Edit(quote: IQuote): Promise<IHTTPResponse> {
     try {
-      const _quote = { ...quote };
-      await QuoteRepository.Edit(_quote);
+      QuoteRepository.Edit(quote);
 
       return {
         ...constants.HTTP.SUCCESS.UPDATE,
@@ -44,9 +70,9 @@ export default {
     }
   },
 
-  async DeleteByID(id: number) {
+  async Delete(id: number) {
     try {
-      const affectedRowCount = await QuoteRepository.DeleteByID(id);
+      const affectedRowCount = await QuoteRepository.Delete(id);
       return {
         ...constants.HTTP.SUCCESS.DELETE,
         payload: affectedRowCount,

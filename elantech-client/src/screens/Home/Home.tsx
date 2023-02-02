@@ -1,26 +1,29 @@
 import * as React from 'react';
 import { FunctionComponent, HTMLAttributes, useEffect, useState } from 'react';
-import { Button, Dropdown, DropdownButton, Form, InputGroup, Spinner } from 'react-bootstrap';
-import { Pencil, Plus, Search, Trash } from 'react-bootstrap-icons';
+import filterFactory, { selectFilter } from 'react-bootstrap-table2-filter';
+import { Dropdown, DropdownButton, InputGroup } from 'react-bootstrap';
+import { Pencil, Search, Trash } from 'react-bootstrap-icons';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
-import BootstrapTable from 'react-bootstrap-table-next';
+import { DebounceInput } from 'react-debounce-input';
+import BootstrapTable, { ColumnDescription } from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { ExpandedProductRow } from '../../components/ExpandedProductRow/ExpandedProductRow';
-import { ProductModal } from '../../components/ProductModal/ProductModal';
+import { ProductModal } from '../../components/Modals/Product/ProductModal';
 import IProduct from '../../types/IProduct';
-import './Home.css';
-import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
-import { RemoveProductModal } from '../../components/RemoveProductModal/RemoveProductModal';
-import axios from 'axios';
-import { BASE_API_URL } from '../../constants/API';
+import { RemoveProductModal } from '../../components/Modals/Product/RemoveProductModal';
 import { PAGE_ROUTES } from '../../constants/PageRoutes';
 import { clearCookie } from '../../utils/Auth';
+import { TopHomeBar } from '../../components/TopPageBars/TopHomeBar';
+import { SpinnerBlock } from '../../components/LoadingAnimation/SpinnerBlock';
+import { requestAllProducts, requestLogout } from '../../utils/Requests';
+import { defaultProduct } from '../../constants/Defaults';
+import { brandOptionsList, typeOptionsList } from '../../constants/Options';
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+import './Home.css';
 
 interface HomeProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
   loggedIn: boolean;
-
   setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -28,32 +31,14 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
   const [addProductSwitch, setAddProductSwitch] = useState(false);
   const [editProductSwitch, setEditProductSwitch] = useState(false);
   const [removeProductSwitch, setRemoveProductSwitch] = useState(false);
-  const [searchText, setSearchText] = useState('');
-  const [isSearching, setIsSearching] = useState(false);
-  const [filterType, setFilterType] = useState('Filter Type');
-  const [filterBrand, setFilterBrand] = useState('Filter Brand');
+  const [searchHistoryFilterText, setSearchHistoryFilterText] = useState('Search History');
+  const [isSearching] = useState(false);
+  const [searchString, setSearchString] = useState<string>('');
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [productList, setProductList] = useState<IProduct[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<IProduct>({
-    id: 0,
-    productNumber: '',
-    userId: 0,
-    altNumber1: '',
-    altNumber2: '',
-    altNumber3: '',
-    altNumber4: '',
-    altNumber5: '',
-    altNumber6: '',
-    quantity: 0,
-    productType: '',
-    brand: '',
-    description: '',
-    ebayLink: '',
-    websiteLink: '',
-    quickSpecsLink: '',
-    relatedTags: '',
-  });
-  const rankFormatterRemove = (_: any, data: any, index: any) => {
+  const [selectedProduct, setSelectedProduct] = useState<IProduct>(defaultProduct);
+  
+  const rankFormatterRemove = (_: unknown, data: IProduct) => {
     return (
       <div
         style={{
@@ -64,9 +49,9 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
         onClick={(e) => {
           e.stopPropagation()
         }} >
-        <div onClick={(e) => {
+        <div onClick={() => {
+          setSelectedProduct(data);
           setRemoveProductSwitch(true);
-          setSelectedProduct(data)
         }}
         >
           <Trash style={{ fontSize: 20, color: 'white' }} />
@@ -74,7 +59,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
       </div>
     );
   };
-  const rankFormatterEdit = (_: any, data: any, index: any) => {
+  const rankFormatterEdit = (_: unknown, data: IProduct) => {
     return (
       <div
         style={{
@@ -88,7 +73,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
         }} >
         <div onClick={(e) => {
           setEditProductSwitch(true);
-          setSelectedProduct(data)
+          setSelectedProduct(data);
         }}
         >
           <Pencil style={{ fontSize: 20, color: 'white' }} />
@@ -96,162 +81,104 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
       </div>
     );
   };
-
-  const column = [
+  const column: ColumnDescription<any, unknown>[] = [
     {
-      id: 1,
-      dataField: "quantity",
-      text: "QTY",
+      dataField: 'quantity',
+      text: 'QTY',
       sort: true,
       headerAlign: 'center',
     },
     {
-      id: 2,
-      dataField: "productNumber",
-      text: "Product Number",
+      dataField: 'productNumber',
+      text: 'Product Number',
       sort: true,
     },
     {
-      id: 7,
-      dataField: "productType",
-      text: "Type",
+      text: '',
+      dataField: 'productType',
       sort: true,
       headerAlign: 'center',
+      filter: selectFilter({
+        options: typeOptionsList,
+        placeholder: 'Type',
+        className: 'btn btn-dark',
+        style: { height: 25, padding: 0 }
+      }),
     },
     {
-      id: 8,
-      dataField: "brand",
-      text: "Brand",
-      sort: true,
+      text: '',
+      dataField: 'brand',
       headerAlign: 'center',
+      sort: true,
+      filter: selectFilter({
+        options: brandOptionsList,
+        placeholder: 'Brand',
+        className: 'btn btn-dark',
+        style: { height: 25, padding: 0 }
+      }),
     },
     {
-      id: 9,
-      dataField: "description",
-      text: "Description",
+      dataField: 'description',
+      text: 'Description',
       sort: false,
     },
     {
-      id: 12,
-      dataField: "lastAdded",
-      text: "Last Added",
-      sort: true,
-    },
-    {
-      id: 10,
-      dataField: "edit",
-      text: "Edit",
+      dataField: 'edit',
+      text: 'Edit',
       sort: false,
       formatter: rankFormatterEdit,
       headerAlign: 'center',
     },
     {
-      id: 11,
-      dataField: "remove",
-      text: "Remove",
+      dataField: 'remove',
+      text: 'Remove',
       sort: false,
       formatter: rankFormatterRemove,
       headerAlign: 'center',
     }
-
   ];
+  const handleSearch = (input: string, props: { searchText?: string; onSearch: any; onClear?: () => void; }) => {
+    if (input !== '' || input !== undefined) {
+      const result = searchHistory.includes(input);
+      if (!result) { input.length > 0 && searchHistory.push(input) }
 
-  /* FILTERS AND SEARCHES */
-  const MySearch = (props: any) => {
-    const handleSearch = (input: string) => {
-      props.onSearch(input);
-    };
+      searchHistory.length > 5 && setSearchHistory(searchHistory.slice(1, searchHistory.length));
+      setSearchString(input);
+    } else {
+      setSearchHistoryFilterText('Search History');
+    }
+    props.onSearch(input);
+  };
+  const getAllProducts = async () => {
+    const products = await requestAllProducts();
+    setProductList(products)
+  };
+  const logout = async () => {
+    const response = await requestLogout();
+    if (response.status == 200) {
+      history.replace(PAGE_ROUTES.LOGIN);
+      clearCookie();
+      setLoggedIn(false);
+    }
+  };
+  const customTotal = (from: number, to: number, size: number) => {
     return (
-      <InputGroup className="mb-3">
-        <InputGroup.Text id="basic-addon2">
-          <Search />
-        </InputGroup.Text>
-        <Form.Control
-          type="text"
-          placeholder="Search..."
-          onChange={e => handleSearch(e.target.value)}
-        />
-      </InputGroup>
-    )
+      <span className="react-bootstrap-table-pagination-total"
+        style={{ marginLeft: 5 }}>
+        {size} Results
+      </span>)
+  }
+  const options = {
+    showTotal: true,
+    paginationTotalRenderer: customTotal
   };
-  const OnTypeChange = (props: any) => {
-    const handleSearch = (input: string) => {
-      props.onSearch(input);
-    };
-    return (
-      <DropdownButton
-        variant="dark"
-        menuVariant="dark"
-        title={filterType}
-        style={{ marginRight: 5 }}
-        onSelect={(e) => {
-          if (e != null) {
-            if (e == 'Clear') {
-              handleSearch('');
-            } else {
-              handleSearch(e);
-            }
-          }
-        }}
-      >
-        <Dropdown.Item eventKey="CPU">CPU</Dropdown.Item>
-        <Dropdown.Item eventKey="Memory">Memory</Dropdown.Item>
-        <Dropdown.Item eventKey="SSD">SSD</Dropdown.Item>
-        <Dropdown.Item eventKey="HDD">HDD</Dropdown.Item>
-        <Dropdown.Item eventKey="Clear">Clear</Dropdown.Item>
-      </DropdownButton >
-    );
-
-  };
-
-  const getAllProducts = () => {
-    setTimeout(() => {
-      axios.get(`${BASE_API_URL}products`, { withCredentials: true })
-        .then((response) => {
-          setProductList(response?.data?.payload);
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-    }, 400)
-  };
-
   useEffect(() => {
     getAllProducts();
   }, []);
-
-  const logout = () => {
-    setTimeout(() => {
-      axios.get(`${BASE_API_URL}users/logout`, { withCredentials: true })
-        .then((response) => {
-          history.replace(PAGE_ROUTES.LOGIN);
-          clearCookie();
-          setLoggedIn(false);
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-    }, 400)
-  };
-  const options = {
-    custom: true,
-    totalSize: productList.length,
-  };
   return (
     <section className="text-white main-section overflow-auto">
       <div style={{ padding: 20 }}>
-        <div className='d-flex justify-content-between'>
-          <h2 style={{ fontWeight: 300 }}>Products</h2>
-          <div>
-            <Button variant="dark" style={{ marginRight: 5 }}>Export to CSV</Button>
-            <Button variant="dark" onClick={() => { setAddProductSwitch(true) }}>
-              <Plus height="25" width="25" style={{ marginTop: -3, marginLeft: -10 }} />New Product
-            </Button>
-            <Button variant="dark" style={{ marginRight: 5 }} onClick={e => logout()}>
-              Logout
-            </Button>
-          </div>
-        </div>
+        <TopHomeBar logout={logout} setAddProductSwitch={setAddProductSwitch} />
         <hr style={{ marginBottom: 20, height: 3, borderRadius: 5, border: 1 }} />
         <div>
           <ToolkitProvider
@@ -261,100 +188,75 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
             search
           >
             {
-              props => (
-                <div>
-                  {isSearching ?
-                    <div className='spinnerDiv'>
-                      <Spinner
-                        animation="border" role="status" />
-                      <ul>
-
-                        <li style={{ listStyle: 'none' }}>
-
-                        </li>
-                        <li style={{ listStyle: 'none' }}>
-                          <label>Loading Data Table...</label>
-                        </li>
-                      </ul>
-                    </div>
-                    :
-                    <div>
-                      <div className='d-flex justify-content-between'>
-                        <div className='d-flex'>
-                          <MySearch {...props.searchProps} />
+              props => {
+                return (
+                  <div>
+                    {isSearching ?
+                      <SpinnerBlock />
+                      :
+                      <div>
+                        <div className='d-flex justify-content-between'>
+                          <div className='d-flex justify-space-between'>
+                            <InputGroup className="mb-3">
+                              <InputGroup.Text id="basic-addon2">
+                                <Search />
+                              </InputGroup.Text>
+                              <DebounceInput
+                                type="text"
+                                className='debounce'
+                                placeholder="Search..."
+                                debounceTimeout={500}
+                                value={searchString}
+                                onChange={e => {
+                                  handleSearch(e.target.value, { ...props.searchProps });
+                                }} />
+                            </InputGroup>
+                            <InputGroup className="mb-3">
+                              <DropdownButton
+                                key={'dark'}
+                                variant="dark"
+                                menuVariant="dark"
+                                title={searchHistoryFilterText}
+                                onSelect={e => {
+                                  setTimeout(() => handleSearch(e as string, { ...props.searchProps }), 100);
+                                }}
+                              >
+                                {searchHistory.length > 0 ?
+                                  searchHistory.map((o, index) => {
+                                    return <Dropdown.Item key={index} eventKey={o}>{o}</Dropdown.Item>;
+                                  })
+                                  :
+                                  <Dropdown.Item disabled>No History</Dropdown.Item>}
+                                <Dropdown.Item eventKey=''>Clear</Dropdown.Item>
+                              </DropdownButton>
+                            </InputGroup>
+                          </div>
                         </div>
-                        <div className='d-flex'>
-                          <DropdownButton
-                            variant="dark"
-                            menuVariant="dark"
-                            title={filterBrand}
-                            style={{ marginRight: 5 }}
-                            onSelect={(e) => {
-                              if (e !== null) {
-                                if (e.toLowerCase() === 'clear') {
-                                  setProductList(productList); setFilterBrand('Filter Brand');
-                                } else {
-                                  setProductList(productList.filter(product => product.brand.toLowerCase().includes(e.toLowerCase())));
-                                  setFilterBrand(e);
-                                }
-                                console.log(e);
-                              }
-                            }}
-                          >
-                            <Dropdown.Item eventKey="HPE">HPE</Dropdown.Item>
-                            <Dropdown.Item eventKey="Dell">Dell</Dropdown.Item>
-                            <Dropdown.Item eventKey="Cisco">Cisco</Dropdown.Item>
-                            <Dropdown.Item eventKey="Lenovo">Lenovo</Dropdown.Item>
-                            <Dropdown.Item eventKey="IBM">IBM</Dropdown.Item>
-                            <Dropdown.Item eventKey="Clear">Clear</Dropdown.Item>
-                          </DropdownButton>
-
-                          <OnTypeChange />
-
-                          <DropdownButton
-                            key={'dark'}
-                            variant="dark"
-                            menuVariant="dark"
-                            title={'Search History '}
-                            onSelect={(e) => {
-                              if (e !== null) {
-
-                              }
-                            }}
-                          >
-                            {
-                              searchHistory.length > 0 ?
-                                searchHistory.map((o) => {
-                                  return <Dropdown.Item eventKey={o}>{o}</Dropdown.Item>
-                                })
-                                :
-                                <Dropdown.Item eventKey='1'>No History</Dropdown.Item>
+                        <br />
+                        <BootstrapTable
+                          {...props.baseProps}
+                          bootstrap4
+                          striped
+                          hover
+                          noDataIndication='TABLE IS EMPTY'
+                          pagination={paginationFactory(options)}
+                          filter={filterFactory()}
+                          classes="table table-dark table-hover table-striped table-responsive"
+                          expandRow={{
+                            onlyOneExpanding: true,
+                            // eslint-disable-next-line react/display-name
+                            renderer: (row: IProduct) => {
+                              return (
+                                <ExpandedProductRow
+                                  selectedProduct={row}
+                                  getAllProducts={getAllProducts} />
+                              );
                             }
-                          </DropdownButton>
-                        </div>
-                      </div>
-                      <br />
-                      <BootstrapTable
-                        {...props.baseProps}
-                        bootstrap4
-                        striped
-                        hover
-                        noDataIndication='TABLE IS EMPTY'
-                        pagination={paginationFactory(options)}
-                        classes="table table-dark table-hover table-striped table-responsive"
-                        expandRow={{
-                          onlyOneExpanding: true,
-                          renderer: (row, index) => {
-                            return (
-                              <ExpandedProductRow
-                                selectedProduct={row} />
-                            );
-                          }
-                        }} />
-                    </div>
-                  }
-                </div>
-              )
+                          }} />
+                      </div>}
+                  </div>
+                );
+              }
             }
           </ToolkitProvider>
         </div>
@@ -365,25 +267,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
           <ProductModal
             modalVisible={addProductSwitch}
             modalSwitch={0}
-            selectedProduct={{
-              id: 0,
-              productNumber: '',
-              userId: 0,
-              altNumber1: '',
-              altNumber2: '',
-              altNumber3: '',
-              altNumber4: '',
-              altNumber5: '',
-              altNumber6: '',
-              quantity: 0,
-              productType: '',
-              brand: '',
-              description: '',
-              ebayLink: '',
-              websiteLink: '',
-              quickSpecsLink: '',
-              relatedTags: '',
-            }}
+            selectedProduct={defaultProduct()}
             getAllProducts={getAllProducts}
             onClose={async () => {
               setAddProductSwitch(false);
@@ -405,7 +289,6 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
           />
         </div>
       }
-      {/* hEATING UP FOOD BRB */}
       {
         removeProductSwitch &&
         <div className='modal-dialog'>

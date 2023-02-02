@@ -1,12 +1,11 @@
-import { Op } from 'sequelize';
 import db from '../../models';
 import logger from '../../utils/logging/Logger';
 import IRepoError from '../../utils/interfaces/IRepoError';
 import ICompany from './ICompany';
 
-/// /////////////////
-/// / INTERNALS /////
-/// /////////////////
+/// ////////////// ///
+/// / INTERNALS // ///
+/// ////////////// ///
 
 const repoErr: IRepoError = {
   location: 'CompanyRepository.js',
@@ -19,24 +18,7 @@ const standardError = (message: string) => {
 };
 
 export default {
-  async GetByID(id: number): Promise<ICompany[]> {
-    try {
-      return await db.company.findAll({
-        where: {
-          [Op.and]: [
-            {
-              id,
-            },
-          ],
-        },
-      });
-    } catch (err) {
-      standardError(err.message);
-      return Promise.reject(repoErr);
-    }
-  },
-
-  async Add(company): Promise<ICompany> {
+  async Add(company: ICompany): Promise<ICompany> {
     try {
       return await db.company.create(company);
     } catch (err) {
@@ -45,7 +27,27 @@ export default {
     }
   },
 
-  async Edit(company): Promise<ICompany> {
+  async GetAllCompanies(): Promise<ICompany[]> {
+    try {
+      return await db.company.findAll();
+    } catch (err) {
+      standardError(err.message);
+      return Promise.reject(repoErr);
+    }
+  },
+
+  async Get(id: number): Promise<ICompany> {
+    try {
+      return await db.company.findOne({
+        where: { id },
+      });
+    } catch (err) {
+      standardError(err.message);
+      return Promise.reject(repoErr);
+    }
+  },
+
+  async Edit(company: ICompany): Promise<ICompany> {
     try {
       return await db.company.update(company, {
         where: {
@@ -58,10 +60,12 @@ export default {
     }
   },
 
-  async DeleteByID(id: number): Promise<ICompany[]> {
+  async Delete(id: number): Promise<ICompany[]> {
     try {
-      return await db.company.delete({
-        where: { id },
+      return await db.company.destroy({
+        where: {
+          id,
+        },
       });
     } catch (err) {
       standardError(`${err.name} ${err.message}`);

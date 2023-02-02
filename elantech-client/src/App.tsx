@@ -55,7 +55,7 @@ const App: React.FunctionComponent<AppProps> = (props) => {
             <Route exact path="/receiving" component={Receiving} />
             <Route exact path="/procurement" component={Procurement} />
             <Route exact path="/outgoing" component={Outgoing} />
-            <Route exact path="/brokerbin" component={BrokerBin} />
+            <Route exact path="/brokerBin" component={BrokerBin} />
             <Route exact path="/settings" render={() => <Settings loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
 
             <Route component={NotFound} />

@@ -16,7 +16,7 @@ function createWindow() {
   if (externalDisplay) {
     mainWindow = new BrowserWindow({
       webPreferences: {
-        enableRemoteModule: true
+        // enableRemoteModule: true
       },
       width: 1280, height: 1024,
       x: externalDisplay.bounds.x + 50,
@@ -36,7 +36,7 @@ function createWindow() {
   mainWindow.loadURL(
     process.env.ELECTRON_START_URL ||
     url.format({
-      pathname: path.join(__dirname, '../index.html'),
+      pathname: path.join(__dirname, '../../index.html'),
       protocol: 'file:',
       slashes: true
     })

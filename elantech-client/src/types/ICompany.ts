@@ -1,9 +1,9 @@
 interface ICompany {
-    company_id?: Number;
-    company_type?: string;
-    company_name?: string;
-    company_rep?: string;
-    phone_number?: string;
+    id?: number;
+    companyType: string;
+    companyName: string;
+    companyRep?: string;
+    phoneNumber?: string;
     email?: string;
     location?: string;
     comments?: string;

@@ -1,0 +1,32 @@
+.modal-title {
+    font-weight: 300;
+}
+.modal-sub-title {
+    color: darkgray;
+    font-size: 18px;
+    font-weight: 300;
+}
+.modal-header {
+    background: #212529;
+    color: #fff;
+    border-bottom: 1px solid rgb(61 66 70);
+}
+.required-text {
+    color: #ff2f2f;
+    font-size: 16px;
+    font-weight: 300;
+    margin-top: -10px;
+    margin-bottom: -5px;
+}
+.required-text-asterisk {
+    color: #ff2f2f;
+    font-size: 12px;
+    font-weight: 300;
+    margin-left: 5px;
+}
+.modal-footer {
+    background: #212529;
+    color: white;
+    border-top: 1px solid rgb(61 66 70);
+    display: left;
+}

@@ -1,57 +1,49 @@
 import * as React from 'react';
 import { FunctionComponent, HTMLAttributes } from 'react';
-import { Button, DropdownButton, Dropdown } from 'react-bootstrap';
-import { Pencil, Plus } from 'react-bootstrap-icons';
+import { Button } from 'react-bootstrap';
+import { Plus } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 interface BrokerBinProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> { }
 
-export const BrokerBinLayout: FunctionComponent<BrokerBinProps> = ({ history }) => {
+export const BrokerBinLayout: FunctionComponent<BrokerBinProps> = () => {
 
     const column = [
-
         {
-            id: 1,
-            dataField: "order_number",
-            text: "Order Number",
+            dataField: 'order_number',
+            text: 'Order Number',
             sort: false,
         },
         {
-            id: 2,
-            dataField: "shipping_to",
-            text: "Shipping To",
+            dataField: 'shipping_to',
+            text: 'Shipping To',
             sort: false,
         },
         {
-            id: 3,
-            dataField: "added_by",
-            text: "Added By",
+            dataField: 'added_by',
+            text: 'Added By',
             sort: false,
         },
         {
-            id: 4,
-            dataField: "shipping_type",
-            text: "Shipping Type",
+            dataField: 'shipping_type',
+            text: 'Shipping Type',
             sort: true,
         },
         {
-            id: 5,
-            dataField: "order_type",
-            text: "Order Type",
+            dataField: 'order_type',
+            text: 'Order Type',
             sort: false,
         },
         {
-            id: 6,
-            dataField: "tracking_number",
-            text: "Tracking Number",
+            dataField: 'tracking_number',
+            text: 'Tracking Number',
             sort: false,
         },
         {
-            id: 7,
-            dataField: "date_shipped",
-            text: "Date Shipped",
+            dataField: 'date_shipped',
+            text: 'Date Shipped',
             sort: true,
         }
 

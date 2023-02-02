@@ -38,7 +38,21 @@ export default {
 
   async Add(inventory): Promise<IInventory> {
     try {
-      return await db.inventory.create(inventory);
+      await db.inventory.create(inventory);
+      const numOfInventory = await db.inventory.count({
+        where: {
+          productId: inventory.productId,
+        },
+      });
+      await db.product.update(
+        { quantity: numOfInventory },
+        {
+          where: {
+            id: inventory.productId,
+          },
+        },
+      );
+      return;
     } catch (err) {
       standardError(`${err.name} ${err.message}`);
       throw repoErr;
@@ -64,9 +78,30 @@ export default {
 
   async Delete(id: number): Promise<IInventory[]> {
     try {
-      return await db.inventory.delete({
+      // get product id
+      const inventory = await db.inventory.findOne({
         where: { id },
       });
+      // Delete from inventory
+      const result = await db.inventory.destroy({
+        where: { id },
+      });
+      // Get num of entries
+      const numOfInventory = await db.inventory.count({
+        where: {
+          productId: inventory.productId,
+        },
+      });
+      // Update quantity
+      await db.product.update(
+        { quantity: numOfInventory },
+        {
+          where: {
+            id: inventory.productId,
+          },
+        },
+      );
+      return result;
     } catch (err) {
       standardError(`${err.name} ${err.message}`);
       return Promise.reject(repoErr);

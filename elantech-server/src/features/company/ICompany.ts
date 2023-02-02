@@ -1,12 +1,12 @@
-interface IInventory {
-    id: string;
-    customerType: number;
+interface ICompany {
+    id?: number;
+    companyType: string;
     companyName: string;
-    repName: string;
-    phoneNumber: string;
-    emailAddress: string;
-    location: string;
-    comment: string;
+    companyRep?: string;
+    phoneNumber?: string;
+    email?: string;
+    location?: string;
+    comments?: string;
 }
 
-export default IInventory;
+export default ICompany;

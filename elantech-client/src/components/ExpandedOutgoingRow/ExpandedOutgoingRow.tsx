@@ -1,23 +1,23 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
 import { FunctionComponent, HTMLAttributes, useState } from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
-import { Pencil, Trash, Plus, ThreeDots } from 'react-bootstrap-icons';
-import BootstrapTable from 'react-bootstrap-table-next';
+import { ThreeDots } from 'react-bootstrap-icons';
+import BootstrapTable, { ColumnDescription } from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { AddInventoryModal } from '../AddInventoryModal/AddInventoryModal';
-import { EditReceivedProductOrderModal } from '../EditReceivedProductInOrderModal/EditReceivedProductOrderModal';
-import { ReceivingAddProductModal } from '../ReceivingAddProductModal/ReceivingAddProductModal';
+import { EditReceivedProductOrderModal } from '../Modals/Receiving/EditReceivedProductOrderModal';
+import { ReceivingAddProductModal } from '../Modals/Receiving/ReceivingAddProductModal';
 
 interface ExpandedOutgoingRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
 }
 
-const ExpandedOutgoingRowComponent: FunctionComponent<ExpandedOutgoingRowProps> = (props) => {
+const ExpandedOutgoingRowComponent: FunctionComponent<ExpandedOutgoingRowProps> = (_props) => {
     const [editProductSwitch, setEditProductSwitch] = useState(false);
-    const [addInventorySwitch, setAddInventorySwitch] = useState(false);
+    const [addInventorySwitch] = useState(false);
     const [addProductSwitch, setAddProductSwitch] = useState(false);
 
-    const rankFormatterViewMore = (_: any, data: any, index: any) => {
+    const rankFormatterViewMore = (_: any, _data: any, _index: any) => {
         return (
             <div
                 style={{
@@ -29,7 +29,7 @@ const ExpandedOutgoingRowComponent: FunctionComponent<ExpandedOutgoingRowProps> 
                 onClick={(e) => {
                     e.stopPropagation()
                 }} >
-                <div onClick={(e) => {
+                <div onClick={(_e) => {
                     console.log('View More');
                 }}
                 >
@@ -38,47 +38,40 @@ const ExpandedOutgoingRowComponent: FunctionComponent<ExpandedOutgoingRowProps> 
             </div>
         );
     };
-    const column_inner = [
+    const column_inner: ColumnDescription<any, any>[] = [
         {
-            id: 1,
-            dataField: "quantity",
-            text: "QTY",
+            dataField: 'quantity',
+            text: 'QTY',
             sort: false,
         },
         {
-            id: 2,
-            dataField: "product_number",
-            text: "Product Number",
+            dataField: 'product_number',
+            text: 'Product Number',
             sort: true,
         },
         {
-            id: 3,
-            dataField: "condition",
-            text: "Condition",
+            dataField: 'condition',
+            text: 'Condition',
             sort: true,
         },
         {
-            id: 4,
-            dataField: "product_type",
-            text: "Type",
+            dataField: 'product_type',
+            text: 'Type',
             sort: true,
         },
         {
-            id: 5,
-            dataField: "brand",
-            text: "Brand",
+            dataField: 'brand',
+            text: 'Brand',
             sort: true,
         },
         {
-            id: 6,
-            dataField: "description",
-            text: "Description",
+            dataField: 'description',
+            text: 'Description',
             sort: true,
         },
         {
-            id: 7,
-            dataField: "view",
-            text: "View More",
+            dataField: 'view',
+            text: 'View More',
             sort: false,
             formatter: rankFormatterViewMore,
             headerAlign: 'center',
@@ -190,12 +183,12 @@ const ExpandedOutgoingRowComponent: FunctionComponent<ExpandedOutgoingRowProps> 
             {
                 addInventorySwitch &&
                 <div className='modal-dialog'>
-                    <AddInventoryModal
+                    {/* <AddInventoryModal
                         modalVisible={addInventorySwitch}
                         onClose={async () => {
                             setAddInventorySwitch(false);
                         }}
-                    />
+                    /> */}
                 </div>
             }
             {

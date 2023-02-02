@@ -8,23 +8,11 @@ import QuotedProductsValidation from './QuotedProductsValidation';
 const router = express.Router();
 
 /**
- * This route will fetch all Inventory by product number.
+ * This route will add new QuotedProducts
  */
-router.get('/:id',
-  authenticationMiddleware, validate(QuotedProductsValidation.GetQuotedProducts), (req, res, next) => {
-    logger.info('GET ALL QUOTEDPRODUCTSS');
-
-    QuotedProductsController.GetByID(Number(req.params.id))
-      .then((QuotedProducts) => res.status(200).json(QuotedProducts))
-      .catch((err) => next(err));
-  });
-
-/**
- * This route will add new inventory
- */
-router.post('/', validate(QuotedProductsValidation.PostQuotedProducts),
+router.post('/', authenticationMiddleware, validate(QuotedProductsValidation.PostQuotedProducts),
   (req, res, next) => {
-    logger.info('POST QUOTEDPRODUCTS');
+    logger.info('POST QUOTED PRODUCT');
     QuotedProductsController.Add(req.body)
       .then((response) => {
         res.status(201).json(response);
@@ -33,11 +21,58 @@ router.post('/', validate(QuotedProductsValidation.PostQuotedProducts),
   });
 
 /**
-* This route will update a inventory
+* This route will fetch all QuotedProducts.
+*/
+router.get('/', authenticationMiddleware, validate(QuotedProductsValidation.GetAllQuotedProducts),
+  (req, res, next) => {
+    logger.info('GET ALL QUOTED PRODUCTS');
+
+    QuotedProductsController.GetAll()
+      .then((quotedProducts) => res.status(200).json(quotedProducts))
+      .catch((err) => next(err));
+  });
+
+/**
+* This route will fetch a QuotedProducts by id
+*/
+router.get('/:id', authenticationMiddleware, validate(QuotedProductsValidation.GetQuotedProducts),
+  (req, res, next) => {
+    logger.info('GET QUOTED PRODUCT');
+
+    QuotedProductsController.Get(Number(req.params.id))
+      .then((quotedProduct) => res.status(200).json(quotedProduct))
+      .catch((err) => next(err));
+  });
+
+/**
+* This route will fetch all QuotedProducts by quote id
+*/
+router.get('/quote/:quoteID', authenticationMiddleware, validate(QuotedProductsValidation.GetQuotedProductByQuoteId),
+  (req, res, next) => {
+    logger.info('GET QUOTED PRODUCT BY QUOTE ID');
+
+    QuotedProductsController.GetByQuoteId(Number(req.params.companyID))
+      .then((quotedProducts) => res.status(200).json(quotedProducts))
+      .catch((err) => next(err));
+  });
+/**
+ * This route will get quotes in ProductQuotesTable Format
+ */
+router.get('/quote/productQuotes/:productID', authenticationMiddleware,
+  validate(QuotedProductsValidation.GetProductQuotesTable),
+  (req, res, next) => {
+    logger.info('GET PRODUCT QUOTES BY PRODUCT ID');
+
+    QuotedProductsController.GetByProductId(Number(req.params.productID))
+      .then((quotedProducts) => res.status(200).json(quotedProducts))
+      .catch((err) => next(err));
+  });
+/**
+* This route will update a QuotedProducts
 */
 router.put('/', authenticationMiddleware, validate(QuotedProductsValidation.PutQuotedProducts),
   (req, res, next) => {
-    logger.info('PUT QUOTEDPRODUCTS');
+    logger.info('PUT QUOTED PRODUCT');
 
     QuotedProductsController.Edit(req.body)
       .then((response) => {
@@ -45,16 +80,14 @@ router.put('/', authenticationMiddleware, validate(QuotedProductsValidation.PutQ
       })
       .catch((err) => next(err));
   });
-
 /**
-* This route will delete a product by product number
+* This route will delete a quote by id
 */
-router.delete('/:id',
-  authenticationMiddleware,
-  validate(QuotedProductsValidation.DeleteQuotedProducts), (req, res, next) => {
-    logger.info('DELETE QUOTEDPRODUCTS');
+router.delete('/:id', authenticationMiddleware, validate(QuotedProductsValidation.DeleteQuotedProducts),
+  (req, res, next) => {
+    logger.info('DELETE QUOTED PRODUCT');
 
-    QuotedProductsController.DeleteByID(Number(req.params.id))
+    QuotedProductsController.Delete(Number(req.params.id))
       .then((response) => {
         res.status(201).json(response);
       })

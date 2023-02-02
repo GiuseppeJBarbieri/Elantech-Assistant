@@ -8,21 +8,9 @@ import CompanyValidation from './CompanyValidation';
 const router = express.Router();
 
 /**
- * This route will fetch all Inventory by product number.
+ * This route will add new company
  */
-router.get('/:id',
-  authenticationMiddleware, validate(CompanyValidation.GetCompany), (req, res, next) => {
-    logger.info('GET ALL COMPANYS');
-
-    CompanyController.GetByID(Number(req.params.id))
-      .then((Company) => res.status(200).json(Company))
-      .catch((err) => next(err));
-  });
-
-/**
- * This route will add new inventory
- */
-router.post('/', validate(CompanyValidation.PostCompany),
+router.post('/', authenticationMiddleware, validate(CompanyValidation.PostCompany),
   (req, res, next) => {
     logger.info('POST COMPANY');
     CompanyController.Add(req.body)
@@ -33,7 +21,31 @@ router.post('/', validate(CompanyValidation.PostCompany),
   });
 
 /**
-* This route will update a inventory
+* This route will fetch all companies.
+*/
+router.get('/', authenticationMiddleware, validate(CompanyValidation.GetAllCompanies),
+  (req, res, next) => {
+    logger.info('GET ALL COMPANIES');
+
+    CompanyController.GetAll()
+      .then((companies) => res.status(200).json(companies))
+      .catch((err) => next(err));
+  });
+
+/**
+* This route will fetch a company by id
+*/
+router.get('/:id', authenticationMiddleware, validate(CompanyValidation.GetCompany),
+  (req, res, next) => {
+    logger.info('GET COMPANY');
+
+    CompanyController.Get(Number(req.params.id))
+      .then((company) => res.status(200).json(company))
+      .catch((err) => next(err));
+  });
+
+/**
+* This route will update a company
 */
 router.put('/', authenticationMiddleware, validate(CompanyValidation.PutCompany),
   (req, res, next) => {
@@ -47,14 +59,13 @@ router.put('/', authenticationMiddleware, validate(CompanyValidation.PutCompany)
   });
 
 /**
-* This route will delete a product by product number
+* This route will delete a company by id
 */
-router.delete('/:id',
-  authenticationMiddleware,
-  validate(CompanyValidation.DeleteCompany), (req, res, next) => {
+router.delete('/:id', authenticationMiddleware, validate(CompanyValidation.DeleteCompany),
+  (req, res, next) => {
     logger.info('DELETE COMPANY');
 
-    CompanyController.DeleteByID(Number(req.params.id))
+    CompanyController.Delete(Number(req.params.id))
       .then((response) => {
         res.status(201).json(response);
       })

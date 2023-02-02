@@ -5,23 +5,63 @@ import IQuotedProducts from './IQuotedProducts';
 
 export default {
 
-  async GetByID(id: number) {
+  async GetAll() {
     try {
-      const quotedproducts = await QuotedProductsRepository.GetByID(id);
+      const quotedProducts = await QuotedProductsRepository.GetAllQuotes();
+
       return {
         ...constants.HTTP.SUCCESS.SELECTED,
-        payload: [...quotedproducts],
+        payload: [...quotedProducts],
       };
     } catch (err) {
       return Promise.reject(err);
     }
   },
 
-  async Add(quotedproducts: IQuotedProducts): Promise<IHTTPResponse> {
+  async Get(id: number): Promise<IQuotedProducts> {
     try {
-      const _quotedproducts = { ...quotedproducts };
+      const quote: IQuotedProducts = await QuotedProductsRepository.Get(id);
+      if (!quote) {
+        const response = constants.HTTP.ERROR.NOT_FOUND;
+        return Promise.reject(response);
+      }
 
-      await QuotedProductsRepository.Add(_quotedproducts);
+      return quote;
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  },
+
+  async GetByQuoteId(companyID: number) {
+    try {
+      const quotedProducts = await QuotedProductsRepository.GetByQuoteId(companyID);
+
+      return {
+        ...constants.HTTP.SUCCESS.SELECTED,
+        payload: [...quotedProducts],
+      };
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  },
+
+  async GetByProductId(productID: number) {
+    try {
+      const quotedProducts = await QuotedProductsRepository.GetByProductId(productID);
+      // const quotedProducts = [];
+      return {
+        ...constants.HTTP.SUCCESS.SELECTED,
+        payload: [...quotedProducts],
+      };
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  },
+
+  async Add(quotedProduct: IQuotedProducts): Promise<IHTTPResponse> {
+    try {
+      const _quotedProduct = { ...quotedProduct };
+      await QuotedProductsRepository.Add(_quotedProduct);
 
       return {
         ...constants.HTTP.SUCCESS.CREATED,
@@ -31,10 +71,9 @@ export default {
     }
   },
 
-  async Edit(quotedproducts: IQuotedProducts): Promise<IHTTPResponse> {
+  async Edit(quotedProduct: IQuotedProducts): Promise<IHTTPResponse> {
     try {
-      const _quotedproducts = { ...quotedproducts };
-      await QuotedProductsRepository.Edit(_quotedproducts);
+      QuotedProductsRepository.Edit(quotedProduct);
 
       return {
         ...constants.HTTP.SUCCESS.UPDATE,
@@ -44,9 +83,9 @@ export default {
     }
   },
 
-  async DeleteByID(id: number) {
+  async Delete(id: number) {
     try {
-      const affectedRowCount = await QuotedProductsRepository.DeleteByID(id);
+      const affectedRowCount = await QuotedProductsRepository.Delete(id);
       return {
         ...constants.HTTP.SUCCESS.DELETE,
         payload: affectedRowCount,

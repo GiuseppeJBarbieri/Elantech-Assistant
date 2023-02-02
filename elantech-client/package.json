@@ -16,13 +16,13 @@
     "start-electron": "ts-node --skip-project electron/connect-electron.ts",
     "watch-electron": "tsc --watch --project electron/tsconfig.json",
     "start-react": "cross-env BROWSER=none react-scripts start",
-    "dist": "npm run build && npm run build-electron && electron-builder build -c.extraMetadata.main=build/electron/main.js"
+    "dist": "npm run build && npm run build-electron && electron-builder build -c.extraMetadata.main=build/electron/electron/main.js"
   },
   "dependencies": {
     "@types/react-bootstrap-table2-filter": "^1.3.4",
     "@types/react-bootstrap-table2-paginator": "^2.1.1",
     "@types/react-bootstrap-table2-toolkit": "^2.1.7",
-    "axios": "^0.24.0",
+    "axios": "^1.1.3",
     "bootstrap": "^5.1.3",
     "bootstrap-datepicker": "^1.9.0",
     "classnames": "^2.2.6",
@@ -47,7 +47,8 @@
     "react-scripts": "3.4.3",
     "react-sliding-pane": "^7.0.0",
     "react-stack-grid": "^0.7.1",
-    "tslib": "^2.3.1"
+    "tslib": "^2.3.1",
+    "use-lodash-debounce": "^1.3.0"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
@@ -64,7 +65,7 @@
     "@typescript-eslint/eslint-plugin": "^3.10.1",
     "@typescript-eslint/parser": "^3.10.1",
     "cross-env": "^7.0.2",
-    "electron": "^10.0.0",
+    "electron": "^22.2.0",
     "electron-builder": "^22.8.0",
     "eslint-plugin-react": "^7.20.6",
     "foreman": "^3.0.1",
@@ -73,7 +74,7 @@
     "stylelint-config-standard": "^20.0.0",
     "stylelint-order": "^4.1.0",
     "ts-node": "^9.0.0",
-    "typescript": "^4.0.2"
+    "typescript": "^4.9.5"
   },
   "resolutions": {
     "@types/react": "^16.14.10"

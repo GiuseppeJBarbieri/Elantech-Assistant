@@ -1,8 +1,9 @@
-import React, { HTMLAttributes, FunctionComponent } from "react";
-import { useState } from "react";
-import { Modal, Spinner, Form, Button, Col, Row } from "react-bootstrap";
-import BootstrapTable from "react-bootstrap-table-next";
-import { RouteComponentProps, withRouter } from "react-router-dom";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { HTMLAttributes, FunctionComponent } from 'react';
+import { useState } from 'react';
+import { Modal, Spinner, Form, Button, Col, Row } from 'react-bootstrap';
+import BootstrapTable, { ColumnDescription } from 'react-bootstrap-table-next';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 interface ViewQuotedProductsModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
@@ -10,12 +11,11 @@ interface ViewQuotedProductsModalProps extends RouteComponentProps, HTMLAttribut
 }
 
 const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModalProps> = (props) => {
-    const [isSaving, setIsSaving] = useState(false);
-    const column = [
+    const [isSaving] = useState(false);
+    const column: ColumnDescription<any, any>[] = [
         {
-            id: 1,
-            dataField: "quantity",
-            text: "QTY",
+            dataField: 'quantity',
+            text: 'QTY',
             sort: true,
             headerAlign: 'center',
             style: {
@@ -23,54 +23,48 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
             }
         },
         {
-            id: 2,
-            dataField: "product_number",
-            text: "Product Number",
+            dataField: 'product_number',
+            text: 'Product Number',
             sort: true,
             style: {
                 maxWidth: 180
             }
         },
         {
-            id: 3,
-            dataField: "alt_1",
-            text: "Alt 1",
+            dataField: 'alt_1',
+            text: 'Alt 1',
             sort: true,
             style: {
                 maxWidth: 180
             }
         },
         {
-            id: 3,
-            dataField: "alt_2",
-            text: "Alt 2",
+            dataField: 'alt_2',
+            text: 'Alt 2',
             sort: true,
             style: {
                 maxWidth: 180
             }
         },
         {
-            id: 3,
-            dataField: "alt_3",
-            text: "Alt 3",
+            dataField: 'alt_3',
+            text: 'Alt 3',
             sort: true,
             style: {
                 maxWidth: 180
             }
         },
         {
-            id: 3,
-            dataField: "alt_4",
-            text: "Alt 4",
+            dataField: 'alt_4',
+            text: 'Alt 4',
             sort: true,
             style: {
                 maxWidth: 180
             }
         },
         {
-            id: 8,
-            dataField: "brand",
-            text: "Brand",
+            dataField: 'brand',
+            text: 'Brand',
             sort: true,
             headerAlign: 'center',
             style: {
@@ -78,9 +72,8 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
             }
         },
         {
-            id: 9,
-            dataField: "description",
-            text: "Description",
+            dataField: 'description',
+            text: 'Description',
             sort: false,
             style: {
                 maxWidth: 280

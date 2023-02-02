@@ -48,7 +48,6 @@ export default {
   async Edit(product: IProduct): Promise<IHTTPResponse> {
     try {
       ProductRepository.Edit(product);
-
       return {
         ...constants.HTTP.SUCCESS.UPDATE,
       };

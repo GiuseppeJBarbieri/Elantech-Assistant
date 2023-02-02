@@ -1,12 +1,12 @@
-import { Op } from 'sequelize';
 import db from '../../models';
 import logger from '../../utils/logging/Logger';
 import IRepoError from '../../utils/interfaces/IRepoError';
 import IQuote from './IQuote';
+import { where } from 'sequelize/types';
 
-/// /////////////////
-/// / INTERNALS /////
-/// /////////////////
+/// ////////////// ///
+/// / INTERNALS // ///
+/// ////////////// ///
 
 const repoErr: IRepoError = {
   location: 'QuoteRepository.js',
@@ -19,25 +19,9 @@ const standardError = (message: string) => {
 };
 
 export default {
-  async GetByID(id: number): Promise<IQuote[]> {
+  async Add(quote: IQuote): Promise<IQuote> {
     try {
-      return await db.quote.findAll({
-        where: {
-          [Op.and]: [
-            {
-              id,
-            },
-          ],
-        },
-      });
-    } catch (err) {
-      standardError(err.message);
-      return Promise.reject(repoErr);
-    }
-  },
-
-  async Add(quote): Promise<IQuote> {
-    try {
+      logger.info(quote);
       return await db.quote.create(quote);
     } catch (err) {
       standardError(`${err.name} ${err.message}`);
@@ -45,7 +29,59 @@ export default {
     }
   },
 
-  async Edit(quote): Promise<IQuote> {
+  async GetAllQuotes(): Promise<IQuote[]> {
+    try {
+      return await db.quote.findAll();
+    } catch (err) {
+      standardError(err.message);
+      return Promise.reject(repoErr);
+    }
+  },
+
+  async GetByCompanyId(companyId: number): Promise<IQuote[]> {
+    try {
+      const responseList = await db.quote.findAll({
+        include: [
+          {
+            model: db.user,
+            // attributes: ['firstName', 'lastName'],
+          },
+        ],
+        where: { companyId },
+      });
+      const quotesList: IQuote[] = [];
+      responseList.forEach((response) => {
+        const quote: IQuote = {
+          id: response.id,
+          companyId: response.companyId,
+          userId: response.userId,
+          dateQuoted: response.dateQuoted,
+          sold: response.sold,
+          quoter: `${response.user.firstName} ${response.user.lastName}`,
+        };
+        quotesList.push(quote);
+      });
+      logger.info('QUOTE');
+      logger.info(responseList);
+      return quotesList;
+    } catch (err) {
+      standardError(err.message);
+      return Promise.reject(repoErr);
+    }
+  },
+
+  async Get(id: number): Promise<IQuote> {
+    try {
+      return await db.quote.findOne({
+        where: { id },
+      });
+    } catch (err) {
+      standardError(err.message);
+      return Promise.reject(repoErr);
+    }
+  },
+
+  async Edit(quote: IQuote): Promise<IQuote> {
     try {
       return await db.quote.update(quote, {
         where: {
@@ -58,7 +94,7 @@ export default {
     }
   },
 
-  async DeleteByID(id: number): Promise<IQuote[]> {
+  async Delete(id: number): Promise<IQuote[]> {
     try {
       return await db.quote.delete({
         where: { id },

@@ -1,11 +1,14 @@
+/* eslint-disable react/display-name */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
 import { FunctionComponent, HTMLAttributes, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { Pencil, Plus, Trash } from 'react-bootstrap-icons';
-import BootstrapTable from 'react-bootstrap-table-next';
+import BootstrapTable, { ColumnDescription } from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { AddOutgoingOrderModal } from '../../components/AddOutgoingOrderModal/AddOutgoingOrderModel';
+import { AddOutgoingOrderModal } from '../../components/Modals/Outgoing/AddOutgoingOrderModel';
 import { ExpandedOutgoingRow } from '../../components/ExpandedOutgoingRow/ExpandedOutgoingRow';
 
 interface OutgoingProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> { }
@@ -53,53 +56,45 @@ export const OutgoingLayout: FunctionComponent<OutgoingProps> = ({ history }) =>
             </div>
         );
     };
-    const column = [
+    const column: ColumnDescription<any, any>[] = [
         {
-            id: 1,
-            dataField: "order_number",
-            text: "Order Number",
+            dataField: 'order_number',
+            text: 'Order Number',
             sort: false,
         },
         {
-            id: 2,
-            dataField: "shipping_to",
-            text: "Shipping To",
+            dataField: 'shipping_to',
+            text: 'Shipping To',
             sort: false,
         },
         {
-            id: 3,
-            dataField: "added_by",
-            text: "Added By",
+            dataField: 'added_by',
+            text: 'Added By',
             sort: false,
         },
         {
-            id: 4,
-            dataField: "shipping_type",
-            text: "Shipping Type",
+            dataField: 'shipping_type',
+            text: 'Shipping Type',
             sort: true,
         },
         {
-            id: 5,
-            dataField: "order_type",
-            text: "Order Type",
+            dataField: 'order_type',
+            text: 'Order Type',
             sort: false,
         },
         {
-            id: 6,
-            dataField: "tracking_number",
-            text: "Tracking Number",
+            dataField: 'tracking_number',
+            text: 'Tracking Number',
             sort: false,
         },
         {
-            id: 7,
-            dataField: "date_shipped",
-            text: "Date Shipped",
+            dataField: 'date_shipped',
+            text: 'Date Shipped',
             sort: true,
         },
         {
-            id: 8,
-            dataField: "edit",
-            text: "Edit",
+            dataField: 'edit',
+            text: 'Edit',
             sort: false,
             formatter: rankFormatterEdit,
             headerAlign: 'center',
@@ -108,9 +103,8 @@ export const OutgoingLayout: FunctionComponent<OutgoingProps> = ({ history }) =>
             }
         },
         {
-            id: 9,
-            dataField: "remove",
-            text: "Remove",
+            dataField: 'remove',
+            text: 'Remove',
             sort: false,
             formatter: rankFormatterRemove,
             headerAlign: 'center',

@@ -12,7 +12,6 @@ import Company from './Company';
 import Quote from './Quote';
 import QuotedProducts from './QuotedProducts';
 
-
 const db: any = {};
 const DB_PARAMS = config.db;
 

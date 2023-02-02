@@ -22,7 +22,7 @@ const AUTH_PARAMS = config.auth;
  * IMPORTANT to create your first user remove the
  * authenticationMiddleware temporarily
  */
-router.post('/', authenticationMiddleware, validate(UserValidation.PostUser),
+router.post('/', /*authenticationMiddleware,*/ validate(UserValidation.PostUser),
   (req, res, next) => {
     logger.info('POST User');
     UserController.Add(req.body)

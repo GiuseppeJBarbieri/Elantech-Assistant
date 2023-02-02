@@ -1,34 +1,34 @@
 import { Model } from 'sequelize';
 
 interface CompanyAttributes {
-    id: string;
-    customerType: number;
+    id: number;
+    companyType: string;
     companyName: string;
-    repName: string;
+    companyRep: string;
     phoneNumber: string;
-    emailAddress: string;
+    email: string;
     location: string;
-    comment: string;
+    comments: string;
 }
 
 export default (sequelize: any, DataTypes: any) => {
   class Company extends Model<CompanyAttributes>
     implements CompanyAttributes {
-        id: string;
+        id: number;
 
-        customerType: number;
+        companyType: string;
 
         companyName: string;
 
-        repName: string;
+        companyRep!: string;
 
-        phoneNumber: string;
+        phoneNumber!: string;
 
-        emailAddress: string;
+        email!: string;
 
-        location: string;
+        location!: string;
 
-        comment: string;
+        comments!: string;
 
         static associate(models: any) {
           Company.hasMany(models.quote, { foreignKey: 'id' });
@@ -40,8 +40,9 @@ export default (sequelize: any, DataTypes: any) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
+      autoIncrement: true,
     },
-    customerType: {
+    companyType: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -49,25 +50,25 @@ export default (sequelize: any, DataTypes: any) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    repName: {
+    companyRep: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     phoneNumber: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
-    emailAddress: {
+    email: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     location: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
-    comment: {
+    comments: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
   }, {
     sequelize,

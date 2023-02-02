@@ -1,15 +1,14 @@
-import { Op } from 'sequelize';
 import db from '../../models';
 import logger from '../../utils/logging/Logger';
 import IRepoError from '../../utils/interfaces/IRepoError';
 import IQuotedProducts from './IQuotedProducts';
 
-/// /////////////////
-/// / INTERNALS /////
-/// /////////////////
+/// ////////////// ///
+/// / INTERNALS // ///
+/// ////////////// ///
 
 const repoErr: IRepoError = {
-  location: 'QuotedProductsRepository.js',
+  location: 'QuotedProductRepository.js',
   statusCode: 500,
 };
 
@@ -19,16 +18,28 @@ const standardError = (message: string) => {
 };
 
 export default {
-  async GetByID(id: number): Promise<IQuotedProducts[]> {
+  async Add(quotedProduct: IQuotedProducts): Promise<IQuotedProducts> {
     try {
-      return await db.quotedproducts.findAll({
-        where: {
-          [Op.and]: [
-            {
-              id,
-            },
-          ],
-        },
+      return await db.quotedProducts.create(quotedProduct);
+    } catch (err) {
+      standardError(`${err.name} ${err.message}`);
+      throw repoErr;
+    }
+  },
+
+  async GetAllQuotes(): Promise<IQuotedProducts[]> {
+    try {
+      return await db.quotedProducts.findAll();
+    } catch (err) {
+      standardError(err.message);
+      return Promise.reject(repoErr);
+    }
+  },
+
+  async GetByQuoteId(quoteID: number): Promise<IQuotedProducts[]> {
+    try {
+      return await db.quotedProducts.findAll({
+        where: { quoteID },
       });
     } catch (err) {
       standardError(err.message);
@@ -36,20 +47,39 @@ export default {
     }
   },
 
-  async Add(quotedproducts): Promise<IQuotedProducts> {
+  async GetByProductId(productID: number): Promise<any> {
     try {
-      return await db.quotedproducts.create(quotedproducts);
+      return await db.quotedProducts.findAll({
+        where: { productID },
+        include: [
+          { model: db.quotedProducts, attributes: ['id', 'quantity', 'quotedPrice', 'comments', 'orderId'] },
+          { model: db.company, attributes: ['companyName'] },
+          { model: db.quote, attributes: ['dateQuoted'] },
+          { model: db.users, attributes: ['firstName'] },
+        ],
+      });
     } catch (err) {
-      standardError(`${err.name} ${err.message}`);
-      throw repoErr;
+      standardError(err.message);
+      return Promise.reject(repoErr);
     }
   },
 
-  async Edit(quotedproducts): Promise<IQuotedProducts> {
+  async Get(id: number): Promise<IQuotedProducts> {
     try {
-      return await db.quotedproducts.update(quotedproducts, {
+      return await db.quotedProducts.findOne({
+        where: { id },
+      });
+    } catch (err) {
+      standardError(err.message);
+      return Promise.reject(repoErr);
+    }
+  },
+
+  async Edit(quotedProduct: IQuotedProducts): Promise<IQuotedProducts> {
+    try {
+      return await db.quotedProducts.update(quotedProduct, {
         where: {
-          id: quotedproducts.id,
+          id: quotedProduct.id,
         },
       });
     } catch (err) {
@@ -58,9 +88,9 @@ export default {
     }
   },
 
-  async DeleteByID(id: number): Promise<IQuotedProducts[]> {
+  async Delete(id: number): Promise<IQuotedProducts[]> {
     try {
-      return await db.quotedproducts.delete({
+      return await db.quotedProducts.delete({
         where: { id },
       });
     } catch (err) {

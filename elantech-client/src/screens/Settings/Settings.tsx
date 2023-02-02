@@ -1,9 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
 import { FunctionComponent, HTMLAttributes } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-import { PAGE_ROUTES } from '../../constants/PageRoutes';
-import { clearCookie } from '../../utils/Auth';
 
 import './Settings.css';
 
@@ -13,19 +12,26 @@ interface SettingsProps extends RouteComponentProps, HTMLAttributes<HTMLDivEleme
 }
 
 export const SettingsLayout: FunctionComponent<SettingsProps> = ({ history, loggedIn, setLoggedIn }) => {
-  const title = 'Settings';
+  // const title = 'Settings';
 
-  const logoutClicked = (): void => {
-    clearCookie();
-    setLoggedIn(false);
-    history.push(PAGE_ROUTES.LOGIN);
-  };
+  // const logoutClicked = (): void => {
+  //   clearCookie();
+  //   setLoggedIn(false);
+  //   history.push(PAGE_ROUTES.LOGIN);
+  // };
 
   return (
-    <div className="Settings">
-      {title}
-      <button type="button" onClick={logoutClicked}>Logout</button>
-    </div>
+    <section className="text-white main-section overflow-auto">
+      <div style={{ padding: 20 }}>
+        <div className='d-flex justify-content-between'>
+          <h2 style={{ fontWeight: 300 }}>Settings</h2>
+        </div>
+        <hr />
+        <div className='d-flex justify-content-between'>
+
+        </div>
+      </div>
+    </section >
   );
 };
 

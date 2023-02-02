@@ -2,9 +2,10 @@ import { Model } from 'sequelize';
 
 interface QuoteAttributes {
     id: number;
-    companyID: number;
-    userID: number;
+    companyId: number;
+    userId: number;
     dateQuoted: Date;
+    sold: boolean;
 }
 
 export default (sequelize: any, DataTypes: any) => {
@@ -12,14 +13,17 @@ export default (sequelize: any, DataTypes: any) => {
     implements QuoteAttributes {
         id: number;
 
-        companyID: number;
+        companyId: number;
 
-        userID: number;
+        userId: number;
 
         dateQuoted: Date;
 
+        sold: boolean;
+
         static associate(models: any) {
-          Quote.hasOne(models.quoted_products, { foreignKey: 'id' });
+          Quote.hasMany(models.quoted_products, { foreignKey: 'id' });
+          Quote.belongsTo(models.user, { foreignKey: 'userId' });
         }
   }
 
@@ -28,17 +32,22 @@ export default (sequelize: any, DataTypes: any) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
+      autoIncrement: true,
     },
-    companyID: {
+    companyId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    userID: {
+    userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
     dateQuoted: {
       type: DataTypes.DATE,
+      allowNull: false,
+    },
+    sold: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
     },
   }, {

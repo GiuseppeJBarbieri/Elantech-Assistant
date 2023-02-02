@@ -8,54 +8,9 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 interface ProcurementProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> { }
 
-export const ProcurementLayout: FunctionComponent<ProcurementProps> = ({ history }) => {
+export const ProcurementLayout: FunctionComponent<ProcurementProps> = () => {
 
-    const column = [
-
-        {
-            id: 1,
-            dataField: "quantity",
-            text: "Qty",
-            sort: false,
-        },
-        {
-            id: 2,
-            dataField: "product_number",
-            text: "Product Number",
-            sort: false,
-        },
-        {
-            id: 3,
-            dataField: "po_number",
-            text: "PO Number",
-            sort: false,
-        },
-        {
-            id: 4,
-            dataField: "date_needed_by",
-            text: "Needed By",
-            sort: true,
-        },
-        {
-            id: 5,
-            dataField: "sold_for",
-            text: "Price Sold",
-            sort: false,
-        },
-        {
-            id: 6,
-            dataField: "comments",
-            text: "Comments",
-            sort: false,
-        },
-        {
-            id: 7,
-            dataField: "requested_by",
-            text: "Requested By",
-            sort: true,
-        }
-
-    ];
+// https://codesandbox.io/s/github/SpiceyLew12/React-Playground/tree/main/?file=/src/StockTable.js
     const fake_data = [
         {
             order_id: 1,
@@ -132,6 +87,52 @@ export const ProcurementLayout: FunctionComponent<ProcurementProps> = ({ history
         custom: true,
         totalSize: fake_data.length
     };
+
+    const column = [
+
+        {
+            id: 1,
+            dataField: 'quantity',
+            text: 'Qty',
+            sort: false,
+        },
+        {
+            id: 2,
+            dataField: 'product_number',
+            text: 'Product Number',
+            sort: false,
+        },
+        {
+            id: 3,
+            dataField: 'po_number',
+            text: 'PO Number',
+            sort: false,
+        },
+        {
+            id: 4,
+            dataField: 'date_needed_by',
+            text: 'Needed By',
+            sort: true,
+        },
+        {
+            id: 5,
+            dataField: 'sold_for',
+            text: 'Price Sold',
+            sort: false,
+        },
+        {
+            id: 6,
+            dataField: 'comments',
+            text: 'Comments',
+            sort: false,
+        },
+        {
+            dataField: 'requested_by',
+            text: 'Requested By',
+            sort: true,
+        }
+    ];
+
     return (
         <section className="text-white main-section overflow-auto">
             <div style={{ padding: 20 }}>

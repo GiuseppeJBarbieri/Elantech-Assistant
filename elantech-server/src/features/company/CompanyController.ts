@@ -5,13 +5,28 @@ import ICompany from './ICompany';
 
 export default {
 
-  async GetByID(id: number) {
+  async GetAll() {
     try {
-      const company = await CompanyRepository.GetByID(id);
+      const companies = await CompanyRepository.GetAllCompanies();
+
       return {
         ...constants.HTTP.SUCCESS.SELECTED,
-        payload: [...company],
+        payload: [...companies],
       };
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  },
+
+  async Get(id: number): Promise<ICompany> {
+    try {
+      const company: ICompany = await CompanyRepository.Get(id);
+      if (!company) {
+        const response = constants.HTTP.ERROR.NOT_FOUND;
+        return Promise.reject(response);
+      }
+
+      return company;
     } catch (err) {
       return Promise.reject(err);
     }
@@ -20,7 +35,6 @@ export default {
   async Add(company: ICompany): Promise<IHTTPResponse> {
     try {
       const _company = { ...company };
-
       await CompanyRepository.Add(_company);
 
       return {
@@ -33,8 +47,7 @@ export default {
 
   async Edit(company: ICompany): Promise<IHTTPResponse> {
     try {
-      const _company = { ...company };
-      await CompanyRepository.Edit(_company);
+      CompanyRepository.Edit(company);
 
       return {
         ...constants.HTTP.SUCCESS.UPDATE,
@@ -44,9 +57,9 @@ export default {
     }
   },
 
-  async DeleteByID(id: number) {
+  async Delete(id: number) {
     try {
-      const affectedRowCount = await CompanyRepository.DeleteByID(id);
+      const affectedRowCount = await CompanyRepository.Delete(id);
       return {
         ...constants.HTTP.SUCCESS.DELETE,
         payload: affectedRowCount,

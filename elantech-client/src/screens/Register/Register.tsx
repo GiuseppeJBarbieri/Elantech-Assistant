@@ -25,8 +25,8 @@ export const RegisterLayout: FunctionComponent<RegisterProps> = ({ history }) =>
   );
   const registerClicked = () => {
     
-    const PASSWORD_REGEX = /(?=^.{8,32}$)(?=(?:.*?\d){1})(?=.*[a-z])(?=(?:.*?[!@#$%*()_+^&}{:;?.]){1})(?!.*\s)[0-9a-zA-Z!@#$%^&*]*$/;
-    axios.post(`${BASE_API_URL}/users/`, newUser, { withCredentials: True })
+    // const PASSWORD_REGEX = /(?=^.{8,32}$)(?=(?:.*?\d){1})(?=.*[a-z])(?=(?:.*?[!@#$%*()_+^&}{:;?.]){1})(?!.*\s)[0-9a-zA-Z!@#$%^&*]*$/;
+    axios.post(`${BASE_API_URL}users/`, newUser, { withCredentials: true })
         .then(() => {
           history.push(PAGE_ROUTES.HOME);
         })

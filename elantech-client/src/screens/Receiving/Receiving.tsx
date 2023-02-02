@@ -1,12 +1,15 @@
+/* eslint-disable react/display-name */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
 import { FunctionComponent, HTMLAttributes, useState } from 'react';
 import { Button, DropdownButton, Dropdown } from 'react-bootstrap';
 import { Pencil, Plus } from 'react-bootstrap-icons';
-import BootstrapTable from 'react-bootstrap-table-next';
+import BootstrapTable, { ColumnDescription } from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { AddReceivingOrderModal } from '../../components/AddReceivingOrderModal/AddReceivingOrderModal';
-import { EditReceivingOrderModal } from '../../components/EditReceivingOrderModal/EditReceivingOrderModal';
+import { AddReceivingOrderModal } from '../../components/Modals/Receiving/AddReceivingOrderModal';
+import { EditReceivingOrderModal } from '../../components/Modals/Receiving/EditReceivingOrderModal';
 import { ExpandedReceivingRow } from '../../components/ExpandedReceivingRow/ExpandedReceivingRow';
 
 interface ReceivingProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> { }
@@ -36,47 +39,40 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) 
             </div>
         );
     };
-    const column = [
+    const column: ColumnDescription<any, any>[] = [
         {
-            id: 1,
-            dataField: "po_number",
-            text: "PO Number",
+            dataField: 'po_number',
+            text: 'PO Number',
             sort: true,
         },
         {
-            id: 2,
-            dataField: "purchased_from",
-            text: "Purchased From",
+            dataField: 'purchased_from',
+            text: 'Purchased From',
             sort: false,
         },
         {
-            id: 3,
-            dataField: "date_received",
-            text: "Date",
+            dataField: 'date_received',
+            text: 'Date',
             sort: false,
         },
         {
-            id: 4,
-            dataField: "received_by",
-            text: "Received By",
+            dataField: 'received_by',
+            text: 'Received By',
             sort: false,
         },
         {
-            id: 5,
-            dataField: "comments",
-            text: "Comments",
+            dataField: 'comments',
+            text: 'Comments',
             sort: false,
         },
         {
-            id: 6,
-            dataField: "added_to_inventory",
-            text: "Completed",
+            dataField: 'added_to_inventory',
+            text: 'Completed',
             sort: false,
         },
         {
-            id: 7,
-            dataField: "edit",
-            text: "Edit",
+            dataField: 'edit',
+            text: 'Edit',
             sort: false,
             formatter: rankFormatterEdit,
             headerAlign: 'center',

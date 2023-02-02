@@ -16,6 +16,7 @@ interface IProduct {
     websiteLink: string;
     quickSpecsLink: string;
     relatedTags: string;
+    reasonForRemoval: string;
 }
 
 export default IProduct;
