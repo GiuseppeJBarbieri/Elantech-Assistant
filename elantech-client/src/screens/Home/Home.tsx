@@ -5,7 +5,7 @@ import { Dropdown, DropdownButton, InputGroup } from 'react-bootstrap';
 import { Pencil, Search, Trash } from 'react-bootstrap-icons';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import { DebounceInput } from 'react-debounce-input';
-import BootstrapTable, { ColumnDescription } from 'react-bootstrap-table-next';
+import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { ExpandedProductRow } from '../../components/ExpandedProductRow/ExpandedProductRow';
@@ -37,7 +37,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [productList, setProductList] = useState<IProduct[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<IProduct>(defaultProduct);
-  
+
   const rankFormatterRemove = (_: unknown, data: IProduct) => {
     return (
       <div
@@ -81,7 +81,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
       </div>
     );
   };
-  const column: ColumnDescription<any, unknown>[] = [
+  const column = [
     {
       dataField: 'quantity',
       text: 'QTY',
@@ -155,7 +155,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
   };
   const logout = async () => {
     const response = await requestLogout();
-    if (response.status == 200) {
+    if (response.status === 200) {
       history.replace(PAGE_ROUTES.LOGIN);
       clearCookie();
       setLoggedIn(false);
@@ -179,7 +179,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
     <section className="text-white main-section overflow-auto">
       <div style={{ padding: 20 }}>
         <TopHomeBar logout={logout} setAddProductSwitch={setAddProductSwitch} />
-        <hr style={{ marginBottom: 20, height: 3, borderRadius: 5, border: 1 }} />
+        <hr />
         <div>
           <ToolkitProvider
             keyField="id"
@@ -244,7 +244,6 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
                           classes="table table-dark table-hover table-striped table-responsive"
                           expandRow={{
                             onlyOneExpanding: true,
-                            // eslint-disable-next-line react/display-name
                             renderer: (row: IProduct) => {
                               return (
                                 <ExpandedProductRow

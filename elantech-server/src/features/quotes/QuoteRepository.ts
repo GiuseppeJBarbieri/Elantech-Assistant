@@ -2,7 +2,6 @@ import db from '../../models';
 import logger from '../../utils/logging/Logger';
 import IRepoError from '../../utils/interfaces/IRepoError';
 import IQuote from './IQuote';
-import { where } from 'sequelize/types';
 
 /// ////////////// ///
 /// / INTERNALS // ///
