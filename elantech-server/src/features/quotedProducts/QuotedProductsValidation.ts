@@ -36,22 +36,22 @@ export default {
 
   PostQuotedProducts: {
     body: {
-      quoteID: Joi.number().required(),
-      productID: Joi.number().required(),
-      orderID: Joi.number().optional().allow(null),
+      id: Joi.number().optional().allow(null, ''),
+      quoteId: Joi.number().required(),
+      productId: Joi.number().required(),
       quantity: Joi.number().required(),
       quotedPrice: Joi.number().required(),
       productCondition: Joi.string().required(),
-      comment: Joi.string().optional().allow(null),
+      comment: Joi.string().optional().allow(null, ''),
     },
   },
 
   PutQuotedProducts: {
     body: {
       id: Joi.number().required(),
-      quoteID: Joi.number().required(),
-      productID: Joi.number().required(),
-      orderID: Joi.number().optional().allow(null),
+      quoteId: Joi.number().required(),
+      productId: Joi.number().required(),
+      orderId: Joi.number().optional().allow(null),
       quantity: Joi.number().required(),
       quotedPrice: Joi.number().required(),
       productCondition: Joi.string().required(),

@@ -20,8 +20,7 @@ const standardError = (message: string) => {
 export default {
   async Add(quote: IQuote): Promise<IQuote> {
     try {
-      logger.info(quote);
-      return await db.quote.create(quote);
+      return db.quote.create(quote);
     } catch (err) {
       standardError(`${err.name} ${err.message}`);
       throw repoErr;
@@ -43,7 +42,6 @@ export default {
         include: [
           {
             model: db.user,
-            // attributes: ['firstName', 'lastName'],
           },
         ],
         where: { companyId },
@@ -60,8 +58,6 @@ export default {
         };
         quotesList.push(quote);
       });
-      logger.info('QUOTE');
-      logger.info(responseList);
       return quotesList;
     } catch (err) {
       standardError(err.message);

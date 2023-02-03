@@ -1,12 +1,16 @@
-interface IQuotedProducts {
-    id: number;
-    quoteID: number;
-    productID: number;
-    orderID: number;
+interface IQuotedProduct {
+    id?: number;
+    quoteId?: number;
+    productId: number;
+    orderId?: number;
     quantity: number;
-    quotedPrice: string;
+    quotedPrice: number;
     productCondition: string;
     comment: string;
+    productNumber?: string;
+    type?: string;
+    brand?: string;
+    description?: string;
 }
 
-export default IQuotedProducts;
+export default IQuotedProduct;

@@ -72,60 +72,60 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
 
     {
       id: 1,
-      dataField: "companyType",
-      text: "Type",
+      dataField: 'companyType',
+      text: 'Type',
       sort: true,
     },
     {
       id: 2,
-      dataField: "companyName",
-      text: "Company Name",
+      dataField: 'companyName',
+      text: 'Company Name',
       sort: true,
     },
     {
       id: 3,
-      dataField: "companyRep",
-      text: "Company Rep",
+      dataField: 'companyRep',
+      text: 'Company Rep',
       sort: true,
     },
     {
       id: 4,
-      dataField: "phoneNumber",
-      text: "Phone Number",
+      dataField: 'phoneNumber',
+      text: 'Phone Number',
       sort: false,
       headerAlign: 'center',
     },
     {
       id: 5,
-      dataField: "email",
-      text: "Email",
+      dataField: 'email',
+      text: 'Email',
       sort: false,
       headerAlign: 'center',
     },
     {
       id: 6,
-      dataField: "location",
-      text: "Location",
+      dataField: 'location',
+      text: 'Location',
       sort: false,
     },
     {
       id: 7,
-      dataField: "comments",
-      text: "Comments",
+      dataField: 'comments',
+      text: 'Comments',
       sort: false,
     },
     {
       id: 8,
-      dataField: "edit",
-      text: "Edit",
+      dataField: 'edit',
+      text: 'Edit',
       sort: false,
       formatter: rankFormatterEdit,
       headerAlign: 'center',
     },
     {
       id: 9,
-      dataField: "remove",
-      text: "Remove",
+      dataField: 'remove',
+      text: 'Remove',
       sort: false,
       formatter: rankFormatterRemove,
       headerAlign: 'center',
@@ -194,7 +194,6 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
                     noDataIndication="Table is Empty"
                     expandRow={{
                       onlyOneExpanding: true,
-                      // eslint-disable-next-line react/display-name
                       renderer: (row) => {
                         return (
                           <ExpandedQuoteRow

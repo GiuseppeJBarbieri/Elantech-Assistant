@@ -48,10 +48,11 @@ export default {
   async Add(quote: IQuote): Promise<IHTTPResponse> {
     try {
       const _quote = { ...quote };
-      await QuoteRepository.Add(_quote);
+      const response = await QuoteRepository.Add(_quote);
 
       return {
         ...constants.HTTP.SUCCESS.CREATED,
+        id: response.id,
       };
     } catch (err) {
       return Promise.reject(err);

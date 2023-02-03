@@ -20,7 +20,7 @@ const standardError = (message: string) => {
 export default {
   async Add(quotedProduct: IQuotedProducts): Promise<IQuotedProducts> {
     try {
-      return await db.quotedProducts.create(quotedProduct);
+      return await db.quoted_products.create(quotedProduct);
     } catch (err) {
       standardError(`${err.name} ${err.message}`);
       throw repoErr;

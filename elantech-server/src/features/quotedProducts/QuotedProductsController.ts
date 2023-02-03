@@ -60,8 +60,8 @@ export default {
 
   async Add(quotedProduct: IQuotedProducts): Promise<IHTTPResponse> {
     try {
-      const _quotedProduct = { ...quotedProduct };
-      await QuotedProductsRepository.Add(_quotedProduct);
+      // const _quotedProduct = { ...quotedProduct };
+      await QuotedProductsRepository.Add(quotedProduct);
 
       return {
         ...constants.HTTP.SUCCESS.CREATED,

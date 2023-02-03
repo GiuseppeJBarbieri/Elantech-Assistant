@@ -1,30 +1,31 @@
 import { Model } from 'sequelize';
 
 interface QuoteAttributes {
-    id: number;
-    companyId: number;
-    userId: number;
-    dateQuoted: Date;
-    sold: boolean;
+  id: number;
+  companyId: number;
+  userId: number;
+  dateQuoted: Date;
+  sold: boolean;
 }
 
 export default (sequelize: any, DataTypes: any) => {
   class Quote extends Model<QuoteAttributes>
     implements QuoteAttributes {
-        id: number;
+    id: number;
 
-        companyId: number;
+    companyId: number;
 
-        userId: number;
+    userId: number;
 
-        dateQuoted: Date;
+    dateQuoted: Date;
 
-        sold: boolean;
+    sold: boolean;
 
-        static associate(models: any) {
-          Quote.hasMany(models.quoted_products, { foreignKey: 'id' });
-          Quote.belongsTo(models.user, { foreignKey: 'userId' });
-        }
+    static associate(models: any) {
+      Quote.hasMany(models.quoted_products, { foreignKey: 'quoteId' });
+      Quote.belongsTo(models.user, { foreignKey: 'userId' });
+      Quote.belongsTo(models.company, { foreignKey: 'companyId' });
+    }
   }
 
   Quote.init({

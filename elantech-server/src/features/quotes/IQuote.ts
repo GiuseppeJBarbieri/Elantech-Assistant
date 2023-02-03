@@ -1,10 +1,10 @@
 interface IQuote {
-    id: number;
+    id?: number;
     companyId: number;
     userId: number;
     dateQuoted: string;
     sold: boolean;
-    numberOfProducts?: string;
+    numberOfProducts?: number;
     quoter?: string;
     totalQuote?: number;
 }

@@ -2,9 +2,9 @@ import { Model } from 'sequelize';
 
 interface QuotedProductsAttributes {
     id: number;
-    quoteID: number;
-    productID: number;
-    orderID: number;
+    quoteId: number;
+    productId: number;
+    orderId: number;
     quantity: number;
     quotedPrice: number;
     productCondition: string;
@@ -16,11 +16,11 @@ export default (sequelize: any, DataTypes: any) => {
     implements QuotedProductsAttributes {
         id: number;
 
-        quoteID: number;
+        quoteId: number;
 
-        productID: number;
+        productId: number;
 
-        orderID: number;
+        orderId: number;
 
         quantity: number;
 
@@ -31,7 +31,7 @@ export default (sequelize: any, DataTypes: any) => {
         comment: string;
 
         static associate(models: any) {
-          QuotedProducts.belongsTo(models.quote, { foreignKey: 'quoteID' });
+          QuotedProducts.belongsTo(models.quote, { foreignKey: 'quoteId' });
         }
   }
 
@@ -40,16 +40,17 @@ export default (sequelize: any, DataTypes: any) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
+      autoIncrement: true,
     },
-    quoteID: {
+    quoteId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    productID: {
+    productId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    orderID: {
+    orderId: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },

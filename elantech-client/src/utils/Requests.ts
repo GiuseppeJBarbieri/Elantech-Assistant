@@ -59,5 +59,5 @@ export const requestAddQuote = async (quote: IQuote): Promise<any> => {
 }
 // PRODUCT QUOTES
 export const requestAddQuotedProduct = async (quotedProduct: IQuotedProduct): Promise<any> => {
-    return axios.post(`${BASE_API_URL}${ROUTES.QUOTE}`, quotedProduct, { withCredentials: true }).then((response) => response);
+    return axios.post(`${BASE_API_URL}${ROUTES.QUOTED_PRODUCTS}`, quotedProduct, { withCredentials: true }).then((response) => response);
 }

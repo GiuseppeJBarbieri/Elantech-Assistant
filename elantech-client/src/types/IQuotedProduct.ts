@@ -1,8 +1,8 @@
 interface IQuotedProduct {
     id?: number;
-    quoteID?: number;
-    productID: number;
-    orderID?: number;
+    quoteId?: number;
+    productId: number;
+    orderId?: number;
     quantity: number;
     quotedPrice: number;
     productCondition: string;

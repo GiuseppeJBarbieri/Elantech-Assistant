@@ -5,5 +5,5 @@ export enum ROUTES  {
     USERS = 'users',
     INVENTORY = 'inventory',
     QUOTE = 'quotes',
-    QUOTED_PRODUCTS = 'quoted_product'
+    QUOTED_PRODUCTS = 'quotedProducts'
 }

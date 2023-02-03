@@ -1,17 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import axios from 'axios';
 import * as React from 'react';
 import { FunctionComponent, HTMLAttributes, useEffect, useState } from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
-import { Plus, ThreeDots } from 'react-bootstrap-icons';
+import { Pencil, Plus, ThreeDots, Trash } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { BASE_API_URL } from '../../constants/API';
 import ICompany from '../../types/ICompany';
 import IQuote from '../../types/IQuote';
 import IQuotedProduct from '../../types/IQuotedProduct';
+import { requestAllQuotesByCompanyID } from '../../utils/Requests';
 import { AddMultiQuoteModal } from '../Modals/Quote/AddMultiQuoteModal';
 import { EditQuoteModal } from '../Modals/Quote/EditQuoteModal';
 import { ViewQuotedProductsModal } from '../ViewQuotedProductsModal/ViewQuotedProductsModal';
@@ -67,74 +64,67 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
             </div>
         );
     };
-    // const rankFormatterEdit = (_: any, data: any, index: any) => {
-    //     return (
-    //         <div
-    //             style={{
-    //                 textAlign: 'center',
-    //                 cursor: 'pointer',
-    //                 lineHeight: 'normal',
-    //                 zIndex: 0
-    //             }}
-    //             onClick={(e) => {
-    //                 e.stopPropagation()
-    //             }} >
-    //             <div onClick={(e) => {
-    //                 setSelectedQuote(data);
-    //                 setEditQuoteSwitch(true);
-    //             }}
-    //             >
-    //                 <Pencil style={{ fontSize: 20, color: 'white' }} />
-    //             </div>
-    //         </div>
-    //     );
-    // };
-    // const rankFormatterRemove = (_: any, data: any, index: any) => {
-    //     return (
-    //         <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }} onClick={() => console.log('Remove Column')} >
-    //             <Trash style={{ fontSize: 20, color: 'white' }} />
-    //         </div>
-    //     );
-    // };
-    const column_inner = [
+    const rankFormatterEdit = (_: any, data: any, index: any) => {
+        return (
+            <div
+                style={{
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    lineHeight: 'normal',
+                    zIndex: 0
+                }}
+                onClick={(e) => {
+                    e.stopPropagation()
+                }} >
+                <div onClick={(e) => {
+                    setSelectedQuote(data);
+                    setEditQuoteSwitch(true);
+                }}
+                >
+                    <Pencil style={{ fontSize: 20, color: 'white' }} />
+                </div>
+            </div>
+        );
+    };
+    const rankFormatterRemove = (_: any, data: any, index: any) => {
+        return (
+            <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }} onClick={() => console.log('Remove Column')} >
+                <Trash style={{ fontSize: 20, color: 'white' }} />
+            </div>
+        );
+    };
+    const column = [
         {
-            id: 1,
             dataField: 'id',
             text: 'ID',
             sort: false,
         },
         {
-            id: 2,
             dataField: 'numberOfProducts',
             text: 'Number of Products',
             sort: false,
         },
         {
-            id: 3,
             dataField: 'quoter',
             text: 'Quoter',
             sort: true,
         },
         {
-            id: 4,
             dataField: 'dateQuoted',
             text: 'Date',
             sort: true,
         },
         {
-            id: 6,
             dataField: 'totalQuote',
             text: 'Total Quote',
             sort: true,
         },
         {
-            id: 7,
             dataField: 'sold',
             text: 'Sold',
             sort: true,
         },
         {
-            id: 8,
             dataField: 'view',
             text: 'View More',
             sort: false,
@@ -142,7 +132,6 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
             headerAlign: 'center',
         },
         {
-            id: 9,
             dataField: 'Add',
             text: 'Create Order',
             sort: false,
@@ -156,14 +145,13 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
         totalSize: quotes.length
     };
     const getAllQuotes = (companyId: number) => {
-        setTimeout(() => {
-            axios.get(`${BASE_API_URL}quotes/company/${companyId}`, { withCredentials: true })
-                .then((response) => {
-                    setQuotes(response?.data?.payload);
-                })
-                .catch((err) => {
-                    console.log(err);
-                })
+        setTimeout(async () => {
+            try {
+                const quotes = await requestAllQuotesByCompanyID(companyId);
+                setQuotes(quotes);
+            } catch (err) {
+                console.log(err);
+            }
         }, 400)
     };
     useEffect(() => {
@@ -197,12 +185,11 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
                                     bootstrap4
                                     condensed
                                     {...paginationTableProps}
-                                    columns={column_inner}
-                                    keyField="serial_number"
+                                    columns={column}
+                                    keyField="id"
                                     data={quotes}
                                     classes="table table-dark table-hover table-striped"
                                     noDataIndication="Table is Empty"
-
                                 />
                                 <div className='d-flex justify-content-between'>
                                     <SizePerPageDropdownStandalone
@@ -224,6 +211,7 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
                     <AddMultiQuoteModal
                         modalVisible={addQuoteSwitch}
                         selectedCompany={props.selectedCompany}
+                        getAllQuotes={getAllQuotes}
                         onClose={async () => {
                             setAddQuoteSwitch(false);
                         }}
