@@ -47,23 +47,24 @@ router.get('/:id', authenticationMiddleware, validate(QuotedProductsValidation.G
 /**
 * This route will fetch all QuotedProducts by quote id
 */
-router.get('/quote/:quoteID', authenticationMiddleware, validate(QuotedProductsValidation.GetQuotedProductByQuoteId),
+router.get('/quote/:quoteId', authenticationMiddleware, validate(QuotedProductsValidation.GetQuotedProductByQuoteId),
   (req, res, next) => {
     logger.info('GET QUOTED PRODUCT BY QUOTE ID');
 
-    QuotedProductsController.GetByQuoteId(Number(req.params.companyID))
+    QuotedProductsController.GetByQuoteId(Number(req.params.quoteId))
       .then((quotedProducts) => res.status(200).json(quotedProducts))
       .catch((err) => next(err));
   });
 /**
  * This route will get quotes in ProductQuotesTable Format
  */
-router.get('/quote/productQuotes/:productID', authenticationMiddleware,
+router.get('/quote/productQuotes/:productId',
+  authenticationMiddleware,
   validate(QuotedProductsValidation.GetProductQuotesTable),
   (req, res, next) => {
     logger.info('GET PRODUCT QUOTES BY PRODUCT ID');
 
-    QuotedProductsController.GetByProductId(Number(req.params.productID))
+    QuotedProductsController.GetByProductId(Number(req.params.productId))
       .then((quotedProducts) => res.status(200).json(quotedProducts))
       .catch((err) => next(err));
   });

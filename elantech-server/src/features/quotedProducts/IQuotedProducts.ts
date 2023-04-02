@@ -11,6 +11,10 @@ interface IQuotedProduct {
     type?: string;
     brand?: string;
     description?: string;
+    companyName?: string;
+    dateQuoted?: string;
+    quoter?: string;
+    sold?: boolean;
 }
 
 export default IQuotedProduct;

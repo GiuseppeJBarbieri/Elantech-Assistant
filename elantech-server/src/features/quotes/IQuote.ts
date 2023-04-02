@@ -7,6 +7,7 @@ interface IQuote {
     numberOfProducts?: number;
     quoter?: string;
     totalQuote?: number;
+    companyName?: string;
 }
 
 export default IQuote;

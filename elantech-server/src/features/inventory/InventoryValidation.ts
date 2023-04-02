@@ -16,10 +16,10 @@ export default {
   PostInventory: {
     body: {
       id: Joi.number(),
-      serialNumber: Joi.string().optional().allow(null, ''),
       productId: Joi.number().required(),
       removedId: Joi.number().allow(null, ''),
       poId: Joi.number().optional().allow(null, ''),
+      serialNumber: Joi.string().optional().allow(null, ''),
       condition: Joi.string().required(),
       warrantyExpiration: Joi.date(),
       isTested: Joi.boolean().required(),
@@ -32,10 +32,10 @@ export default {
   PutInventory: {
     body: {
       id: Joi.number().required(),
-      serialNumber: Joi.string(),
       productId: Joi.number().required(),
       removedId: Joi.number().allow(null, ''),
       poId: Joi.number().optional().allow(null, ''),
+      serialNumber: Joi.string().optional().allow(null, ''),
       condition: Joi.string().required(),
       warrantyExpiration: Joi.date(),
       isTested: Joi.boolean().required(),
@@ -44,7 +44,7 @@ export default {
       location: Joi.string().optional().allow(null, ''),
       createdAt: Joi.string().optional(),
       updatedAt: Joi.string().optional(),
-      deletedAt: Joi.string().optional().allow(null, ''),
+      deletedAt: Joi.string().optional().allow(null),
     },
   },
 };

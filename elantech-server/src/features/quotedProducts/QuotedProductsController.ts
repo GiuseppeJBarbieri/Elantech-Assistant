@@ -32,9 +32,9 @@ export default {
     }
   },
 
-  async GetByQuoteId(companyID: number) {
+  async GetByQuoteId(quoteId: number) {
     try {
-      const quotedProducts = await QuotedProductsRepository.GetByQuoteId(companyID);
+      const quotedProducts = await QuotedProductsRepository.GetByQuoteId(quoteId);
 
       return {
         ...constants.HTTP.SUCCESS.SELECTED,
@@ -45,10 +45,9 @@ export default {
     }
   },
 
-  async GetByProductId(productID: number) {
+  async GetByProductId(productId: number) {
     try {
-      const quotedProducts = await QuotedProductsRepository.GetByProductId(productID);
-      // const quotedProducts = [];
+      const quotedProducts = await QuotedProductsRepository.GetByProductId(productId);
       return {
         ...constants.HTTP.SUCCESS.SELECTED,
         payload: [...quotedProducts],

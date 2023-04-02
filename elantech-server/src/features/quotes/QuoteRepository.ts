@@ -2,6 +2,7 @@ import db from '../../models';
 import logger from '../../utils/logging/Logger';
 import IRepoError from '../../utils/interfaces/IRepoError';
 import IQuote from './IQuote';
+import IQuotedProduct from '../quotedProducts/IQuotedProducts';
 
 /// ////////////// ///
 /// / INTERNALS // ///
@@ -40,14 +41,17 @@ export default {
     try {
       const responseList = await db.quote.findAll({
         include: [
-          {
-            model: db.user,
-          },
+          { model: db.user, attributes: ['firstName', 'lastName'] },
+          { model: db.quoted_products },
         ],
         where: { companyId },
       });
       const quotesList: IQuote[] = [];
       responseList.forEach((response) => {
+        let totalPrice = 0;
+        response.quoted_products.forEach((product: IQuotedProduct) => {
+          totalPrice += product.quotedPrice;
+        });
         const quote: IQuote = {
           id: response.id,
           companyId: response.companyId,
@@ -55,6 +59,8 @@ export default {
           dateQuoted: response.dateQuoted,
           sold: response.sold,
           quoter: `${response.user.firstName} ${response.user.lastName}`,
+          numberOfProducts: response.quoted_products.length,
+          totalQuote: totalPrice,
         };
         quotesList.push(quote);
       });

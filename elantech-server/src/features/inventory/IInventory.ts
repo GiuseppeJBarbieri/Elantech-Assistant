@@ -10,6 +10,9 @@ interface IInventory {
     dateTested: string;
     comment: string;
     location: string;
+    // sellerName?: string;
+    // orderNumber?: string;
+    // dateReceived?: string;
 }
 
 export default IInventory;

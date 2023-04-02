@@ -23,11 +23,7 @@ export default {
     try {
       return await db.inventory.findAll({
         where: {
-          [Op.and]: [
-            {
-              productId,
-            },
-          ],
+          productId,
         },
       });
     } catch (err) {
