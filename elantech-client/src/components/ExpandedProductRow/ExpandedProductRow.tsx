@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect } from 'react';
 import { FunctionComponent, HTMLAttributes, useState } from 'react';
 import { Navbar, Nav, Button, Collapse } from 'react-bootstrap';
@@ -11,8 +10,8 @@ import { AddInventoryModal } from '../Modals/Inventory/AddInventoryModal';
 import { AddSimpleQuoteModal } from '../Modals/Quote/AddSimpleQuoteModal';
 import { InventoryTable } from '../Tables/InventoryTable';
 import { EditInventoryAlertModal } from '../Modals/EditInventoryAlertModal';
-import { requestAllInventoryByProductID } from '../../utils/Requests';
-import IProductQuotesTable from '../../types/IProductQuotesTable';
+import { requestAllInventoryByProductID, requestAllQuotesByProductId } from '../../utils/Requests';
+import IQuotedProduct from '../../types/IQuotedProduct';
 
 interface ExpandedProductRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     selectedProduct: IProduct
@@ -33,49 +32,35 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
     const [used, setUsed] = useState(0);
     const [damaged, setDamaged] = useState(0);
     const [inventory, setInventory] = useState<IInventory[]>([]);
-    const [quoteList] = useState<IProductQuotesTable[]>([]);
-
+    const [quoteList, setQuoteList] = useState<IQuotedProduct[]>([]);
+    const [displayedQuoteInfo, setDisplayedQuoteInfo] = useState({
+        averageQuote: 0,
+        lastQuotedPrice: 0,
+        quotedBy: '',
+        quotedTo: '',
+    });
     const quotes_column = [
         {
-            id: 1,
             dataField: 'quantity',
             text: 'Qty',
             sort: true,
-        },
-        {
-            id: 2,
-            dataField: 'company_name',
+        }, {
+            dataField: 'companyName',
             text: 'Company Name',
             sort: true,
-        },
-        {
-            id: 3,
-            dataField: 'price',
+        }, {
+            dataField: 'quotedPrice',
             text: 'Price',
             sort: false
-        },
-        {
-            id: 4,
-            dataField: 'date',
+        }, {
+            dataField: 'dateQuoted',
             text: 'Date',
             sort: true,
-        }
-        ,
-        {
-            id: 5,
-            dataField: 'quoted_by',
+        }, {
+            dataField: 'quoter',
             text: 'Quoted By',
             sort: true,
-        }
-        ,
-        {
-            id: 6,
-            dataField: 'comments',
-            text: 'Comments',
-            sort: false,
-        },
-        {
-            id: 7,
+        }, {
             dataField: 'sold',
             text: ' Sold ',
             sort: true,
@@ -85,6 +70,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
     const options = {
         custom: true,
         sizePerPage: 5,
+        totalSize: quoteList.length
     };
     const getAllInventory = (productId: number) => {
         setTimeout(async () => {
@@ -97,8 +83,38 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
             }
         }, 400)
     };
+    const getAllQuotes = async (productId: number) => {
+        setTimeout(async () => {
+            try {
+                const request = await requestAllQuotesByProductId(productId);
+                setQuoteList(request);
+                let avgQuote = 0;
+                let earliestDate = {
+                    date: request[0].dateQuoted,
+                    index: 0,
+                };
+                request.forEach((quote, index) => {
+                    avgQuote += quote.quotedPrice;
+                    if (new Date(earliestDate.date as string) < new Date(quote.dateQuoted as string)) {
+                        earliestDate = {
+                            date: quote.dateQuoted as string, 
+                            index: index
+                        };
+                    }
+                });
+                avgQuote = avgQuote / request.length;
+                setDisplayedQuoteInfo({
+                    averageQuote: avgQuote,
+                    quotedTo: request[earliestDate.index].companyName as string,
+                    quotedBy: request[earliestDate.index].quoter as string,
+                    lastQuotedPrice: request[earliestDate.index].quotedPrice,
+                });
+            } catch (err) {
+                console.log(err);
+            }
+        }, 400)
+    }
     const setConditionAmount = (inventory: IInventory[]) => {
-        console.log(inventory);
         const cond = {
             nob: 0,
             dmg: 0,
@@ -132,6 +148,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
     useEffect(() => {
         if (props.selectedProduct.id !== undefined) {
             getAllInventory(props.selectedProduct.id);
+            getAllQuotes(props.selectedProduct.id);
         }
     }, []);
     return (
@@ -226,10 +243,10 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                                 <p><strong style={{ fontWeight: 500 }}>Quoted To:</strong></p>
                             </div>
                             <div>
-                                <p>$210.00</p>
-                                <p>$200.00</p>
-                                <p>Giuseppe B.</p>
-                                <p>Service Express</p>
+                                <p>$ {displayedQuoteInfo.averageQuote.toFixed(2)}</p>
+                                <p>$ {displayedQuoteInfo.lastQuotedPrice.toFixed(2)}</p>
+                                <p>{displayedQuoteInfo.quotedBy}</p>
+                                <p>{displayedQuoteInfo.quotedTo}</p>
                             </div>
                         </ div>
                     </ div>
@@ -251,7 +268,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                             {expandInventoryLbl}
                         </Button>
                         <Collapse in={openState}>
-                            <div id="example-collapse-text">
+                            <div id="example-collapse-text" style={{height: 'auto'}}>
                                 <InventoryTable
                                     inventory={inventory}
                                     selectedProduct={props.selectedProduct}
@@ -333,6 +350,8 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                 <div className='modal-dialog'>
                     <AddSimpleQuoteModal
                         modalVisible={addSimpleQuoteSwitch}
+                        selectedProduct={props.selectedProduct}
+                        getAllQuotes={getAllQuotes}
                         onClose={async () => {
                             setAddSimpleQuoteSwitch(false);
                         }}

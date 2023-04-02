@@ -84,6 +84,8 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                         axios.post(`${BASE_API_URL}inventory`, addInvObj, { withCredentials: true })
                             .then((response) => {
                                 setIsSaving(false);
+                                props.getAllProducts();
+                                props.getAllInventory(props.selectedProduct.id as number);
                                 props.onClose();
                             })
                             .catch((err) => {

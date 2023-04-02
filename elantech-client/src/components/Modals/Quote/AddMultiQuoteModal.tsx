@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { HTMLAttributes, FunctionComponent } from 'react';
 import { useState, useEffect } from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
@@ -25,9 +26,9 @@ interface AddMultiQuoteModalProps extends RouteComponentProps, HTMLAttributes<HT
 
 const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = (props) => {
     const [isSaving, setIsSaving] = useState(false);
-    const [rowSelected, setRowSelected] = useState(false);
+    // const [setRowSelected] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<IProduct>({});
-    const [quote, setQuote] = useState<IQuote>({ companyId: props.selectedCompany.id as number, userId: 0, dateQuoted: new Date().toString(), sold: false });
+    // const [quote] = useState<IQuote>({ companyId: props.selectedCompany.id as number, userId: 0, dateQuoted: new Date().toString(), sold: false });
     const [quotedProducts, setQuotedProducts] = useState<IQuotedProduct[]>([]);
     const [products, setProducts] = useState<IProduct[]>([]);
     const [alert, setAlert] = useState(defaultAlert);
@@ -159,10 +160,10 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
         clickToSelect: true,
         onSelect: (row: IProduct, isSelect: boolean) => {
             if (isSelect === true) {
-                setRowSelected(true);
+                // setRowSelected(true);
                 setSelectedProduct(row);
             } else {
-                setRowSelected(false);
+                // setRowSelected(false);
             }
         },
     };
@@ -216,19 +217,18 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
         } else {
             setTimeout(async () => {
                 try {
-                    console.log(quote);
                     const response = await requestAddQuote({ companyId: props.selectedCompany.id as number, userId: 0, dateQuoted: new Date().toString(), sold: false } as IQuote);
                     quotedProducts.forEach(async product => {
                         product.quoteId = response.data.id;
-                        const copyProd: IQuotedProduct = {
-                            id: 0,
-                            quoteId: response.data.id,
-                            productId: product.productId,
-                            quantity: product.quantity,
-                            quotedPrice: product.quotedPrice,
-                            productCondition: product.productCondition,
-                            comment: product.comment,
-                        }
+                        // const copyProd: IQuotedProduct = {
+                        //     id: 0,
+                        //     quoteId: response.data.id,
+                        //     productId: product.productId,
+                        //     quantity: product.quantity,
+                        //     quotedPrice: product.quotedPrice,
+                        //     productCondition: product.productCondition,
+                        //     comment: product.comment,
+                        // }
                         await requestAddQuotedProduct({
                             id: 0,
                             quoteId: response.data.id,
@@ -240,7 +240,7 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
                         });
                     });
                     setIsSaving(false);
-                    props.getAllQuotes();
+                    props.getAllQuotes(props.selectedCompany.id as number);
                     props.onClose();
                 } catch (err) {
                     setAlert({ ...alert, label: `${err}`, show: true });

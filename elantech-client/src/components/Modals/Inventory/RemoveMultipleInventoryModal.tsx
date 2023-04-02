@@ -35,22 +35,22 @@ const RemoveMultipleInventoryModalComponent: FunctionComponent<RemoveMultipleInv
             setTimeout(async () => {
                 await axios.delete(`${BASE_API_URL}inventory/${inventory.id}`, { withCredentials: true })
                     .then((response) => {
-                        console.log(response);
-                        if(index === (props.selectedInventory?.length as number) - 1 ) {
-                            console.log('here')
-                            props.getAllInventory(props.selectedProduct.id as number);
-                            props.getAllProducts();
-                        }
+                        // if(index === (props.selectedInventory?.length as number) - 1 ) {                            
+                        //     props.getAllInventory(props.selectedProduct.id as number);
+                        //     props.getAllProducts();
+                        // }
                     })
                     .catch((err) => {
                         setIsSaving(false);
                         handleAlert(err);
+                        return;
                     })
             }, 600);
             
         });
         setIsSaving(false);
-
+        props.getAllInventory(props.selectedProduct.id as number);
+        props.getAllProducts();
         props.onClose();
     };
     return (

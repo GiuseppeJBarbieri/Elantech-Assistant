@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
 import { FunctionComponent, HTMLAttributes, useEffect, useState } from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
-import { Pencil, Plus, ThreeDots, Trash } from 'react-bootstrap-icons';
+import { Plus, ThreeDots } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
@@ -11,7 +13,7 @@ import IQuotedProduct from '../../types/IQuotedProduct';
 import { requestAllQuotesByCompanyID } from '../../utils/Requests';
 import { AddMultiQuoteModal } from '../Modals/Quote/AddMultiQuoteModal';
 import { EditQuoteModal } from '../Modals/Quote/EditQuoteModal';
-import { ViewQuotedProductsModal } from '../ViewQuotedProductsModal/ViewQuotedProductsModal';
+import { ViewQuotedProductsModal } from '../Modals/ViewQuotedProductsModal/ViewQuotedProductsModal';
 
 interface ExpandedQuoteRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     selectedCompany: ICompany
@@ -24,7 +26,7 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
     const [selectedQuote] = useState<IQuotedProduct>();
     const [viewMoreSwitch, setViewMoreSwitch] = useState(false);
 
-    const rankFormatterAdd = (_: any, data: any, index: any) => {
+    const rankFormatterAdd = (_: any, _data: any, _index: any) => {
         return (
             <div
                 style={{
@@ -35,7 +37,7 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
                 onClick={(e) => {
                     e.stopPropagation()
                 }}>
-                <div onClick={(e) => {
+                <div onClick={(_e) => {
                     console.log('Create Order');
                 }}>
                     <Plus style={{ fontSize: 20, color: 'white' }} />
@@ -43,7 +45,7 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
             </div>
         );
     };
-    const rankFormatterViewMore = (_: any, data: any, index: any) => {
+    const rankFormatterViewMore = (_: any, _data: any, _index: any) => {
         return (
             <div
                 style={{
@@ -55,7 +57,7 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
                 onClick={(e) => {
                     e.stopPropagation()
                 }} >
-                <div onClick={(e) => {
+                <div onClick={(_e) => {
                     setViewMoreSwitch(true);
                 }}
                 >
@@ -64,35 +66,35 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
             </div>
         );
     };
-    const rankFormatterEdit = (_: any, data: any, index: any) => {
-        return (
-            <div
-                style={{
-                    textAlign: 'center',
-                    cursor: 'pointer',
-                    lineHeight: 'normal',
-                    zIndex: 0
-                }}
-                onClick={(e) => {
-                    e.stopPropagation()
-                }} >
-                <div onClick={(e) => {
-                    setSelectedQuote(data);
-                    setEditQuoteSwitch(true);
-                }}
-                >
-                    <Pencil style={{ fontSize: 20, color: 'white' }} />
-                </div>
-            </div>
-        );
-    };
-    const rankFormatterRemove = (_: any, data: any, index: any) => {
-        return (
-            <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }} onClick={() => console.log('Remove Column')} >
-                <Trash style={{ fontSize: 20, color: 'white' }} />
-            </div>
-        );
-    };
+    // const rankFormatterEdit = (_: any, data: any, _index: any) => {
+    //     return (
+    //         <div
+    //             style={{
+    //                 textAlign: 'center',
+    //                 cursor: 'pointer',
+    //                 lineHeight: 'normal',
+    //                 zIndex: 0
+    //             }}
+    //             onClick={(e) => {
+    //                 e.stopPropagation()
+    //             }} >
+    //             <div onClick={(_e) => {
+    //                 setSelectedQuote(data);
+    //                 setEditQuoteSwitch(true);
+    //             }}
+    //             >
+    //                 <Pencil style={{ fontSize: 20, color: 'white' }} />
+    //             </div>
+    //         </div>
+    //     );
+    // };
+    // const rankFormatterRemove = (_: any, _data: any, _index: any) => {
+    //     return (
+    //         <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }} onClick={() => console.log('Remove Column')} >
+    //             <Trash style={{ fontSize: 20, color: 'white' }} />
+    //         </div>
+    //     );
+    // };
     const column = [
         {
             dataField: 'id',
@@ -238,7 +240,8 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
                         onClose={async () => {
                             setViewMoreSwitch(false);
                         }}
-                    />
+                        selectedCompany={props.selectedCompany}
+                        selectedQuote={selectedQuote as unknown as IQuote} />
                 </div>
             }
         </ div>
