@@ -42,6 +42,8 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
     const [removeMultipleInventorySwitch, setRemoveMultipleInventorySwitch] = useState(false);
     const [editMultipleInventorySwitch, setEditMultipleInventorySwitch] = useState(false);
 
+    const [tempSelected, setTempSelected] = useState<string[]>([]);
+
     const rankFormatterRemove = (_: any, data: any, index: any) => {
         return (
             <div
@@ -86,6 +88,17 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             </div>
         );
     };
+    const handleConditionSort = (order: string) => {
+        if(order === 'desc') {
+            console.log('Handle Sort: ' + order);
+            inventoryList.sort((a, b) => b.condition.localeCompare(a.condition));
+            console.log(inventoryList);
+        } else {
+            console.log('Handle Sort: ' + order);
+            inventoryList.sort((a, b) => a.condition.localeCompare(b.condition));
+            console.log(inventoryList);
+        }
+    }
     const columns = [
         {
             id: 1,
@@ -98,12 +111,15 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             dataField: 'condition',
             text: 'Condition',
             sort: true,
+            onSort: (field: any, order: string) => {
+                handleConditionSort(order);
+            }
         },
         {
             id: 3,
             dataField: 'sellerName',
             text: 'Seller Name',
-            sort: true
+            sort: false
         },
         {
             id: 4,
@@ -170,30 +186,60 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             formatter: rankFormatterRemove,
         }
     ];
+    const [lastSelected, setLastSelected] = useState(-1);
     const selectRow = {
         mode: 'checkbox',
         clickToSelect: true,
         bgColor: '#0da7fd73 !important',
+        selected: tempSelected,
         onSelect: (row: IInventory, isSelect: boolean, rowIndex: number, e: any) => {
+            if(e.shiftKey) {
+                if (isSelect === true && lastSelected !== -1) {
+                    if(lastSelected > rowIndex) {
+                        for(let i = lastSelected; i > rowIndex ; i--){
+                            if (!selectedInventoryList.includes(inventoryList[i])) selectedInventoryList.push(inventoryList[i]);
+                            if (!tempSelected.includes(inventoryList[i].serialNumber)) tempSelected.push(inventoryList[i].serialNumber);
+                            setLastSelected(-1);
+                        }
+                    } else {
+                        for(let i = lastSelected; i < rowIndex; i++){
+                            if (!selectedInventoryList.includes(inventoryList[i])) selectedInventoryList.push(inventoryList[i]);
+                            if (!tempSelected.includes(inventoryList[i].serialNumber)) tempSelected.push(inventoryList[i].serialNumber);
+                            setLastSelected(-1);
+                        }
+                    }
+                }
+                if(lastSelected === -1) {
+                    setLastSelected(rowIndex);
+                    console.log('HERE');
+                }
+            }
             if (isSelect === true) {
                 // Add inventory to list
                 selectedInventoryList.push(row);
+                tempSelected.push(row.serialNumber);
                 setSelectedInventoryList([...selectedInventoryList]);
+                setLastSelected(rowIndex);
             } else {
                 // Remove Inventory from list
                 const index = selectedInventoryList.indexOf(row);
                 selectedInventoryList.splice(index, 1);
+                tempSelected.splice(index, 1);
                 setSelectedInventoryList([...selectedInventoryList]);
             }
         },
         onSelectAll: (isSelect: any, rows: IInventory[], e: any) => {
+            setLastSelected(-1);
             if (isSelect === true) {
                 for (let i = 0; i < rows.length; i++) {
                     selectedInventoryList.push(rows[i]);
+                    tempSelected.push(rows[i].serialNumber);
                 }
                 setSelectedInventoryList([...selectedInventoryList]);
+                
             } else {
                 setSelectedInventoryList([]);
+                setTempSelected([]);
             }
         }
     };
@@ -242,7 +288,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                     </div>
                 </div>
             </div>
-            <div style={{overflowX: 'auto', maxHeight: 500}}>
+            <div style={{overflowX: 'auto', maxHeight: 500}} className='no-highlight'>
                 <BootstrapTable
                     key='inventory_table'
                     bootstrap4

@@ -33,7 +33,7 @@ export default (sequelize: any, DataTypes: any) => {
 
     isTested: boolean;
 
-    dateTested: Date;
+    dateTested!: Date;
 
     comment!: string;
 

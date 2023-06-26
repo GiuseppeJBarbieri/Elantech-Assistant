@@ -294,9 +294,9 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
           <RemoveProductModal
             modalVisible={removeProductSwitch}
             selectedProduct={selectedProduct}
-            getAllProducts={getAllProducts}
             onClose={async () => {
               setRemoveProductSwitch(false);
+              getAllProducts();
             }}
           />
         </div>

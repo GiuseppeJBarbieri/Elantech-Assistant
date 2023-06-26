@@ -32,6 +32,9 @@ export const requestAllInventoryByProductID = async (productId: number): Promise
 export const requestUpdateInventory = async (inventory: IInventory): Promise<any> => {
     axios.put(`${BASE_API_URL}${ROUTES.INVENTORY}`, inventory, { withCredentials: true }).then((response) => response);
 }
+export const requestAddInventory = async (inventory: IInventory): Promise<any> => {
+    return axios.post(`${BASE_API_URL}${ROUTES.INVENTORY}`, inventory, { withCredentials: true }).then((response) => response);
+}
 
 
 // COMPANY

@@ -22,6 +22,8 @@ const EditInventoryComponent: FunctionComponent<EditInventoryModalProps> = (prop
     const [inventoryObj, setInventoryObj] = useState<IInventory>(props.selectedInventory);
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState('Missing Required Information');
+    const [warrantyDate, setWarrantyDate] = useState(moment().format('YYYY-MM-DD'));
+    const [dateTested, setDateTested] = useState(moment().format('YYYY-MM-DD'));
 
     const handleAlert = (message: string) => {
         setAlertMessage(message);
@@ -100,19 +102,25 @@ const EditInventoryComponent: FunctionComponent<EditInventoryModalProps> = (prop
                                     </Form.Select>
                                 </Form.Group>
                                 <Form.Group className="mb-3">
-                                    <Form.Label>Warranty Expiration</Form.Label>
-                                    <Form.Control id="orderNumber" type="date"
-                                        value={inventoryObj.warrantyExpiration}
-                                        onChange={(e) => setInventoryObj({ ...inventoryObj, warrantyExpiration: moment(e.target.value).format('YYYY-MM-DD') })}
-                                    />
-                                </Form.Group>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Date Tested</Form.Label>
-                                    <Form.Control id="dateTested" type="date"
-                                        value={inventoryObj.dateTested}
-                                        onChange={(e) => setInventoryObj({ ...inventoryObj, dateTested: moment(e.target.value).format('YYYY-MM-DD') })}
-                                    />
-                                </Form.Group>
+                                        <Form.Label>Warranty Expiration<Form.Label style={{ color: '#ff2f2f', fontSize: 12, fontWeight: 300, marginLeft: 5 }}>*</Form.Label></Form.Label>
+                                        <Form.Control id="orderNumber" type="date"
+                                            value={warrantyDate}
+                                            onChange={(e) => {
+                                                setWarrantyDate(moment(e.target.value).format('YYYY-MM-DD'));
+                                                setInventoryObj({ ...inventoryObj, warrantyExpiration: moment(e.target.value).format() });
+                                            }}
+                                        />
+                                    </Form.Group>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Date Tested</Form.Label>
+                                        <Form.Control id="dateTested" type="date"
+                                            value={dateTested}
+                                            onChange={(e) => {
+                                                setDateTested(moment(e.target.value).format('YYYY-MM-DD'));
+                                                setInventoryObj({ ...inventoryObj, dateTested: moment(e.target.value).format() })
+                                            }}
+                                        />
+                                    </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Tested</Form.Label>
                                     <InputGroup>

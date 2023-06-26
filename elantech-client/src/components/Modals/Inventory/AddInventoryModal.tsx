@@ -1,35 +1,35 @@
-import axios from 'axios';
 import moment from 'moment';
 import React, { HTMLAttributes, FunctionComponent } from 'react';
 import { useState } from 'react';
 import { Modal, Spinner, Form, Button, InputGroup, Col, Row } from 'react-bootstrap';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { BASE_API_URL } from '../../../constants/API';
 import IInventory from '../../../types/IInventory';
 import IProduct from '../../../types/IProduct';
 import { CustomAlert } from '../../Alerts/CustomAlert';
-import { uuid } from 'uuidv4';
+import { v4 } from 'uuid';
+import { defaultAlert } from '../../../constants/Defaults';
+import { requestAddInventory } from '../../../utils/Requests';
 
 interface AddInventoryModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
     modalVisible: boolean;
     selectedProduct: IProduct;
-    getAllProducts: () => void;
     getAllInventory: (productId: number) => void
 }
 const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props) => {
-    const [showAlert, setShowAlert] = useState(false);
-    const [alertMessage, setAlertMessage] = useState('Missing Required Information');
+    const [alert, setAlert] = useState(defaultAlert);
     const [isSaving, setIsSaving] = useState(false);
     const [radioSwitch, setRadioSwitch] = useState(false);
     const [quantity, setQuantity] = useState(0);
+    const [warrantyDate, setWarrantyDate] = useState(moment().format('YYYY-MM-DD'));
+    const [dateTested, setDateTested] = useState(moment().format('YYYY-MM-DD'));
     const [inventoryObj, setInventoryObj] = useState<IInventory>({
         id: 0,
         productId: props.selectedProduct.id || 0,
         removedId: undefined,
         poId: undefined,
         serialNumber: '',
-        condition: '',
+        condition: 'Choose Condition',
         warrantyExpiration: '',
         isTested: false,
         dateTested: '',
@@ -37,79 +37,92 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
         location: '',
     });
 
-    const addInventoryObj = (addInvObj: IInventory) => {
-        axios.post(`${BASE_API_URL}inventory`, addInvObj, { withCredentials: true })
-            .then((response) => { '' })
-            .catch((err) => {
+    const addNextInventory = () => {
+        setTimeout(async () => {
+            try {
+                setInventoryObj({ ...inventoryObj, productId: props.selectedProduct.id as number });
+                const addInvObj: IInventory = inventoryObj;
+                await requestAddInventory(addInvObj);
+                setInventoryObj({ ...inventoryObj, serialNumber: '' });
                 setIsSaving(false);
-                handleAlert(err)
-            });
-    };
-    const handleAlert = (message: string) => {
-        setAlertMessage(message);
-        setShowAlert(true);
-        setTimeout(() => {
-            setShowAlert(false);
-        }, 2000)
-    }
-    const finish = async () => {
-        setIsSaving(true);
-        if (inventoryObj.condition !== '' || inventoryObj.warrantyExpiration !== '') {
-            if (!radioSwitch) {
-                if (quantity === 0) {
-                    setIsSaving(false);
-                    handleAlert('Quantity Cannot Be Zero!');
-                } else {
-                    setInventoryObj({ ...inventoryObj, productId: props.selectedProduct.id || 0 });
-                    setTimeout(() => {
-                        for (let i = 0; i < quantity; i++) {
-                            const addInvObj: IInventory = inventoryObj;
-                            addInvObj.serialNumber = uuid();
-                            addInventoryObj(addInvObj);
-                        }
-                        setIsSaving(false);
-                        props.getAllProducts();
-                        props.getAllInventory(props.selectedProduct.id as number);
-                        props.onClose();
-                    }, 400);
-                }
-            } else {
-                if (inventoryObj.serialNumber === '') {
-                    setIsSaving(false);
-                    handleAlert('Serial Number Cannot be Blank!')
-                } else {
-                    setInventoryObj({ ...inventoryObj, productId: props.selectedProduct.id as number });
-                    const addInvObj: IInventory = inventoryObj;
-                    setTimeout(() => {
-                        axios.post(`${BASE_API_URL}inventory`, addInvObj, { withCredentials: true })
-                            .then((response) => {
-                                setIsSaving(false);
-                                props.getAllProducts();
-                                props.getAllInventory(props.selectedProduct.id as number);
-                                props.onClose();
-                            })
-                            .catch((err) => {
-                                console.log(err);
-                                setIsSaving(false);
-                            });
-                        setIsSaving(false);
-                        props.getAllProducts();
-                        props.getAllInventory(props.selectedProduct.id as number);
-                        props.onClose();
-                    }, 400);
-                }
+            } catch (err) {
+                setAlert({ ...alert, label: `${err}`, show: true });
+                setTimeout(() => setAlert({ ...alert, show: false }), 3000);
+                setIsSaving(false);
             }
-        } else {
-            setIsSaving(false);
-            handleAlert('Missing Required Information!');
-        }
+        }, 500);
     };
     const addInventory = () => {
-        setInventoryObj({ ...inventoryObj, productId: props.selectedProduct.id as number });
-        const copyInvObj = inventoryObj;
-        copyInvObj.productId = props.selectedProduct.id as number;
-        addInventoryObj(copyInvObj);
-        setInventoryObj({ ...inventoryObj, serialNumber: '' });
+        setTimeout(async () => {
+            try {
+                setInventoryObj({ ...inventoryObj, productId: props.selectedProduct.id as number });
+                const addInvObj: IInventory = inventoryObj;
+                await requestAddInventory(addInvObj);
+                setIsSaving(false);
+                props.onClose();
+            } catch (err) {
+                setAlert({ ...alert, label: `${err}`, show: true });
+                setTimeout(() => setAlert({ ...alert, show: false }), 3000);
+                setIsSaving(false);
+            }
+        }, 500);
+    };
+    const addMultipleInventory = () => {
+        setTimeout(async () => {
+            try {
+                for (let i = 0; i < quantity; i++) {
+                    const addInvObj: IInventory = inventoryObj;
+                    addInvObj.serialNumber = v4();
+                    await requestAddInventory(addInvObj);
+                }
+                setIsSaving(false);
+                props.onClose();
+            } catch (err) {
+                setAlert({ ...alert, label: `${err}`, show: true });
+                setTimeout(() => setAlert({ ...alert, show: false }), 3000);
+                setIsSaving(false);
+            }
+        }, 500);
+    };
+    const inventoryValidation = (): boolean => {
+        if (inventoryObj.condition === 'Choose Condition') {
+            setIsSaving(false);
+            setAlert({ ...alert, label: 'Please select a condition!', show: true });
+            return false;
+        } else if (inventoryObj.warrantyExpiration === '') {
+            setIsSaving(false);
+            setAlert({ ...alert, label: 'Warranty Expiration cannot be empty!', show: true });
+            return false;
+        }
+
+        if (radioSwitch) {
+            if (inventoryObj.serialNumber === '') {
+                setIsSaving(false);
+                setAlert({ ...alert, label: 'Serial Number Cannot be Blank!', show: true });
+                return false;
+            }
+        } else {
+            if (quantity === 0) {
+                setIsSaving(false);
+                setAlert({ ...alert, label: 'Quantity Cannot Be Zero!', show: true });
+                return false;
+            }
+        }
+        return true;
+    };
+    const finish = async () => {
+        setIsSaving(true);
+        if (inventoryValidation()) {
+            if (radioSwitch) {
+                addInventory();
+            } else {
+                setInventoryObj({ ...inventoryObj, productId: props.selectedProduct.id || 0 });
+                addMultipleInventory();
+            }
+        }
+    };
+    const submitInventory = () => {
+        addNextInventory();
     };
     return (
         <div>
@@ -136,11 +149,10 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                             </div>
                             :
                             <Form>
-                                <CustomAlert label={alertMessage} type={'danger'} showAlert={showAlert} />
+                                <CustomAlert label={alert.label} type={alert.type} showAlert={alert.show} />
                                 <Form.Group className="mb-3">
                                     <Form.Label>Choose one</Form.Label>
                                     <InputGroup key={'inline-radio'}>
-
                                         <Form.Check
                                             inline
                                             defaultChecked
@@ -164,7 +176,6 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                                                 setQuantity(0);
                                             }}
                                         />
-
                                     </InputGroup>
                                 </Form.Group>
                                 <Row className="mb-3">
@@ -196,14 +207,14 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                                         <Form.Label>Condition<Form.Label style={{ color: '#ff2f2f', fontSize: 12, fontWeight: 300, marginLeft: 5 }}>*</Form.Label></Form.Label>
                                         <Form.Select aria-label="Default select example"
                                             value={inventoryObj.condition}
-                                            onChange={(e) => setInventoryObj({ ...inventoryObj, condition: (e.target.value) })}
+                                            onChange={(e) => setInventoryObj({ ...inventoryObj, condition: e.target.value })}
                                         >
-                                            <option>Choose Condition</option>
-                                            <option value="New Factory Sealed">New Factory Sealed</option>
-                                            <option value="New Opened Box">New Opened Box</option>
-                                            <option value="Renew">Renew</option>
-                                            <option value="Used">Used</option>
-                                            <option value="Damaged">Damaged</option>
+                                            <option value='Choose Condition'>Choose Condition</option>
+                                            <option value='New Factory Sealed'>New Factory Sealed</option>
+                                            <option value='New Opened Box'>New Opened Box</option>
+                                            <option value='Renew'>Renew</option>
+                                            <option value='Used'>Used</option>
+                                            <option value='Damaged'>Damaged</option>
                                         </Form.Select>
                                     </Form.Group>
                                 </Row>
@@ -211,15 +222,21 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                                     <Form.Group as={Col}>
                                         <Form.Label>Warranty Expiration<Form.Label style={{ color: '#ff2f2f', fontSize: 12, fontWeight: 300, marginLeft: 5 }}>*</Form.Label></Form.Label>
                                         <Form.Control id="orderNumber" type="date"
-                                            value={inventoryObj.warrantyExpiration}
-                                            onChange={(e) => setInventoryObj({ ...inventoryObj, warrantyExpiration: moment(e.target.value).format('YYYY-MM-DD') })}
+                                            value={warrantyDate}
+                                            onChange={(e) => {
+                                                setWarrantyDate(moment(e.target.value).format('YYYY-MM-DD'));
+                                                setInventoryObj({ ...inventoryObj, warrantyExpiration: moment(e.target.value).format() });
+                                            }}
                                         />
                                     </Form.Group>
                                     <Form.Group as={Col}>
                                         <Form.Label>Date Tested</Form.Label>
                                         <Form.Control id="dateTested" type="date"
-                                            value={inventoryObj.dateTested}
-                                            onChange={(e) => setInventoryObj({ ...inventoryObj, dateTested: moment(e.target.value).format('YYYY-MM-DD') })}
+                                            value={dateTested}
+                                            onChange={(e) => {
+                                                setDateTested(moment(e.target.value).format('YYYY-MM-DD'));
+                                                setInventoryObj({ ...inventoryObj, dateTested: moment(e.target.value).format() })
+                                            }}
                                         />
                                     </Form.Group>
                                 </Row>
@@ -286,7 +303,7 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                             <Button
                                 variant="dark"
                                 onClick={() => {
-                                    addInventory();
+                                    submitInventory();
                                 }}>
                                 Add Next
                             </Button>

@@ -9,7 +9,6 @@ import IProduct from '../../../types/IProduct';
 interface RemoveProductModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     modalVisible: boolean;
     selectedProduct: IProduct;
-    getAllProducts: () => void;
     onClose: () => Promise<void>;
 }
 
@@ -17,12 +16,13 @@ const RemoveProductModalComponent: FunctionComponent<RemoveProductModalProps> = 
     const [isSaving, setIsSaving] = useState(false);
     const [displaySerialText, setDisplaySerialText] = useState(false);
     const [otherReason, setOtherReason] = useState('');
-    const [reasonForRemoval, setReasonForRemoval] = useState('');
+    const [reasonForRemoval, setReasonForRemoval] = useState('Duplicate Listing');
     const [alert, setAlert] = useState(defaultAlert);
 
     const removeProduct = async () => {
         setIsSaving(true);
         const copyProduct: IProduct = JSON.parse(JSON.stringify(props.selectedProduct));
+        console.log(otherReason, reasonForRemoval);
         if (reasonForRemoval === 'Other') {
             copyProduct.reasonForRemoval = otherReason;
         } else {
@@ -32,7 +32,6 @@ const RemoveProductModalComponent: FunctionComponent<RemoveProductModalProps> = 
             try {
                 await requestUpdateProduct(copyProduct)
                 await requestDeleteProduct(props.selectedProduct.id as number);
-                props.getAllProducts();
                 props.onClose();
 
             } catch (err) {
@@ -98,14 +97,6 @@ const RemoveProductModalComponent: FunctionComponent<RemoveProductModalProps> = 
                                         />
                                     </Form.Group>
                                 }
-                                <Form.Group className="mb-3">
-                                    <Form.Label htmlFor="inputPassword5">Password</Form.Label>
-                                    <Form.Control
-                                        type="password"
-                                        id="inputPassword5"
-                                        aria-describedby="passwordHelpBlock"
-                                    />
-                                </Form.Group>
                             </Form>
                         }
                     </div>

@@ -337,10 +337,11 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                     <AddInventoryModal
                         modalVisible={addInventorySwitch}
                         selectedProduct={props.selectedProduct}
-                        getAllProducts={props.getAllProducts}
                         getAllInventory={getAllInventory}
                         onClose={async () => {
                             setAddInventorySwitch(false);
+                            props.getAllProducts();
+                            getAllInventory(props.selectedProduct.id as number);
                         }}
                     />
                 </div>

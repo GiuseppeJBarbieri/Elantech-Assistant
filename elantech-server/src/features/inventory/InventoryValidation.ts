@@ -23,7 +23,7 @@ export default {
       condition: Joi.string().required(),
       warrantyExpiration: Joi.date(),
       isTested: Joi.boolean().required(),
-      dateTested: Joi.date().optional().allow(null, ''),
+      dateTested: Joi.date().optional().allow(''),
       comment: Joi.string().optional().allow(null, ''),
       location: Joi.string().optional().allow(null, ''),
     },

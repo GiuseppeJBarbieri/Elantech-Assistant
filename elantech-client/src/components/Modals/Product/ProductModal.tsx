@@ -22,15 +22,15 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
     const [title, setTitle] = useState('Create Product');
     const [product, setProduct] = useState<IProduct>(props.selectedProduct);
     const [alert, setAlert] = useState(defaultAlert);
-    
+
     const handleProduct = (productObj: IProduct) => {
         setIsSaving(true);
         setTimeout(async () => {
             try {
                 props.modalSwitch === 0 ?
-                await requestAddProduct(productObj)
-                :
-                await requestUpdateProduct(productObj);
+                    await requestAddProduct(productObj)
+                    :
+                    await requestUpdateProduct(productObj);
                 setIsSaving(false);
                 props.getAllProducts();
                 props.onClose();
@@ -41,11 +41,44 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
             }
         }, 500);
     };
-    const submitProduct = () => {
-        if (product.productNumber === '' || product.productType === '' || product.brand === '' || product.description === '') {
+    const validateProduct = (): boolean => {
+        /*
+        * 1. Check if Product Number, Product Type, Brand, or Description are empty
+        * 2. Check if there are any duplicate product numbers
+        */
+        let isEmpty = false;
+        if (product.productNumber === '') isEmpty = true;
+        if (product.productType === '') isEmpty = true;
+        if (product.brand === '') isEmpty = true;
+        if (product.description === '') isEmpty = true;
+
+        let isDuplicate = false;
+        let compareList = [
+            product.productNumber,
+            product.altNumber1,
+            product.altNumber2,
+            product.altNumber3,
+            product.altNumber4,
+            product.altNumber5,
+            product.altNumber6
+        ];
+        compareList = compareList.filter((str) => str != '');
+        if (new Set(compareList).size !== compareList.length) isDuplicate = true;
+
+        if (isEmpty) {
             setAlert({ ...alert, label: 'Please enter required information.', show: true });
             setTimeout(() => setAlert({ ...alert, show: false }), 5000);
-        } else {
+            return false;
+        } else if(isDuplicate){
+            setAlert({ ...alert, label: 'Cannot contain duplicate product numbers.', show: true });
+            setTimeout(() => setAlert({ ...alert, show: false }), 5000);
+            return false;
+        }
+
+        return true;
+    }
+    const submitProduct = () => {
+        if (validateProduct()) {
             handleProduct(product);
         }
     };

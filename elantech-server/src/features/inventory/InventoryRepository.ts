@@ -1,4 +1,3 @@
-import { Op } from 'sequelize';
 import db from '../../models';
 import logger from '../../utils/logging/Logger';
 import IRepoError from '../../utils/interfaces/IRepoError';
@@ -32,12 +31,15 @@ export default {
     }
   },
 
-  async Add(inventory): Promise<IInventory> {
+  async Add(inventory: IInventory): Promise<IInventory> {
     try {
-      await db.inventory.create(inventory);
+      const _inventory = inventory;
+      delete _inventory.dateTested;
+      logger.info(_inventory);
+      await db.inventory.create(_inventory);
       const numOfInventory = await db.inventory.count({
         where: {
-          productId: inventory.productId,
+          productId: _inventory.productId,
         },
       });
       await db.product.update(
@@ -61,9 +63,9 @@ export default {
       delete _inventory.poId;
       delete _inventory.removedId;
 
-      return await db.inventory.update(inventory, {
+      return await db.inventory.update(_inventory, {
         where: {
-          id: inventory.id,
+          id: _inventory.id,
         },
       });
     } catch (err) {

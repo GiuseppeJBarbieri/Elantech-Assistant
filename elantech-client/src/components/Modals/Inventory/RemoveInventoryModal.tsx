@@ -83,14 +83,6 @@ const RemoveInventoryModalComponent: FunctionComponent<RemoveInventoryModalProps
                                         <option value="Other">Other</option>
                                     </Form.Select>
                                 </Form.Group>
-                                <Form.Group className="mb-3">
-                                    <Form.Label htmlFor="inputPassword5">Password</Form.Label>
-                                    <Form.Control
-                                        type="password"
-                                        id="inputPassword5"
-                                        aria-describedby="passwordHelpBlock"
-                                    />
-                                </Form.Group>
                             </Form>
                         }
                     </div>

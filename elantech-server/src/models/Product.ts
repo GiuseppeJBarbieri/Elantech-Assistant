@@ -82,7 +82,7 @@ export default (sequelize: any, DataTypes: any) => {
     productNumber: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      unique: false,
     },
     altNumber1: {
       type: DataTypes.STRING,
