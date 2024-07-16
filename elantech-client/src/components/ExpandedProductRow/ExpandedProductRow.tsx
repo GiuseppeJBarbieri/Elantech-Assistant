@@ -12,6 +12,7 @@ import { InventoryTable } from '../Tables/InventoryTable';
 import { EditInventoryAlertModal } from '../Modals/EditInventoryAlertModal';
 import { requestAllInventoryByProductID, requestAllQuotesByProductId } from '../../utils/Requests';
 import IQuotedProduct from '../../types/IQuotedProduct';
+import { AddOrEditOrderModal } from '../Modals/Inventory/AddOrEditOrderModal';
 
 interface ExpandedProductRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     selectedProduct: IProduct
@@ -20,6 +21,8 @@ interface ExpandedProductRowProps extends RouteComponentProps, HTMLAttributes<HT
 const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = (props) => {
     const [openState, setOpenState] = useState(false);
     const [addInventorySwitch, setAddInventorySwitch] = useState(false);
+    const [showHasOrderAlert, setShowHasOrderAlert] = useState(false);
+
     const [addSimpleQuoteSwitch, setAddSimpleQuoteSwitch] = useState(false);
     const [hideQuotes, setHideQuotes] = useState(true);
     const [addInventoryAlertSwitch, setAddInventoryAlertSwitch] = useState(false);
@@ -97,7 +100,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                     avgQuote += quote.quotedPrice;
                     if (new Date(earliestDate.date as string) < new Date(quote.dateQuoted as string)) {
                         earliestDate = {
-                            date: quote.dateQuoted as string, 
+                            date: quote.dateQuoted as string,
                             index: index
                         };
                     }
@@ -184,6 +187,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                     </Nav.Link>
                     <Nav.Link onClick={() => {
                         setAddInventorySwitch(true);
+                        setShowHasOrderAlert(true);
                     }
                     }>Add Inventory</Nav.Link>
                     <Nav.Link onClick={() => {
@@ -268,7 +272,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                             {expandInventoryLbl}
                         </Button>
                         <Collapse in={openState}>
-                            <div id="example-collapse-text" style={{height: 'auto'}}>
+                            <div id="example-collapse-text" style={{ height: 'auto' }}>
                                 <InventoryTable
                                     inventory={inventory}
                                     selectedProduct={props.selectedProduct}
@@ -342,6 +346,18 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                             setAddInventorySwitch(false);
                             props.getAllProducts();
                             getAllInventory(props.selectedProduct.id as number);
+                        }}
+                    />
+                </div>
+            }
+            {
+                /// TODO
+                showHasOrderAlert &&
+                <div className='modal-dialog'>
+                    <AddOrEditOrderModal
+                        modalVisible={showHasOrderAlert}
+                        onClose={async () => {
+                            setShowHasOrderAlert(false);
                         }}
                     />
                 </div>

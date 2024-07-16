@@ -5,10 +5,11 @@ interface ReceivingAttributes {
   poNumber: string;
   companyId: number;
   userId: number;
-  shippingType: string;
+  shippingId: number;
   orderType: string;
   trackingNumber: string;
   dateReceived: Date;
+  shippedVia: string;
 }
 
 export default (sequelize: any, DataTypes: any) => {
@@ -20,18 +21,21 @@ export default (sequelize: any, DataTypes: any) => {
 
     companyId: number;
 
-    userId!: number;
+    userId: number;
 
-    shippingType!: string;
+    shippingId: number;
 
     orderType: string;
 
     trackingNumber: string;
 
-    dateReceived!: Date;
+    dateReceived: Date;
+
+    shippedVia: string;
 
     static associate(models: any) {
       Receiving.belongsTo(models.inventory, { foreignKey: 'poId' });
+      // Receiving.hasMany(models.Merchandise, { foreignKey: 'shippingId' });
     }
   }
 
@@ -52,12 +56,12 @@ export default (sequelize: any, DataTypes: any) => {
       allowNull: false,
     },
     userId: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
-    shippingType: {
-      type: DataTypes.STRING,
-      allowNull: true,
+    shippingId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     orderType: {
       type: DataTypes.STRING,
@@ -69,7 +73,11 @@ export default (sequelize: any, DataTypes: any) => {
     },
     dateReceived: {
       type: DataTypes.DATE,
-      allowNull: true,
+      allowNull: false,
+    },
+    shippedVia: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
   }, {
     sequelize,

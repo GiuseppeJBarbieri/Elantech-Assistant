@@ -1,5 +1,5 @@
 import moment from 'moment';
-import React, { HTMLAttributes, FunctionComponent } from 'react';
+import React, { HTMLAttributes, FunctionComponent, useEffect } from 'react';
 import { useState } from 'react';
 import { Modal, Spinner, Form, Button, InputGroup, Col, Row } from 'react-bootstrap';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
@@ -21,8 +21,8 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
     const [isSaving, setIsSaving] = useState(false);
     const [radioSwitch, setRadioSwitch] = useState(false);
     const [quantity, setQuantity] = useState(0);
-    const [warrantyDate, setWarrantyDate] = useState(moment().format('YYYY-MM-DD'));
-    const [dateTested, setDateTested] = useState(moment().format('YYYY-MM-DD'));
+    const [warrantyDate, setWarrantyDate] = useState(moment(new Date()).format('YYYY-MM-DD'));
+    const [dateTested, setDateTested] = useState(moment(new Date()).format('YYYY-MM-DD'));
     const [inventoryObj, setInventoryObj] = useState<IInventory>({
         id: 0,
         productId: props.selectedProduct.id || 0,
@@ -30,9 +30,9 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
         poId: undefined,
         serialNumber: '',
         condition: 'Choose Condition',
-        warrantyExpiration: '',
+        warrantyExpiration: warrantyDate,
         isTested: false,
-        dateTested: '',
+        dateTested: dateTested,
         comment: '',
         location: '',
     });
@@ -124,6 +124,11 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
     const submitInventory = () => {
         addNextInventory();
     };
+    useEffect(() => {
+        setWarrantyDate(moment(new Date()).format('YYYY-MM-DD'));
+        setDateTested(moment(new Date()).format('YYYY-MM-DD'));
+    });
+        
     return (
         <div>
             <Modal backdrop="static" show={props.modalVisible} onHide={props.onClose} fullscreen={true}>
@@ -137,7 +142,7 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                 <Modal.Body style={{ background: '#2c3034', color: 'white' }}>
                     <div className='container d-grid gap-2' style={{ marginBottom: 15 }}>
                         {isSaving ?
-                            <div className='spinnerDiv' >
+                            <div className='spinnerDiv'>
                                 <ul>
                                     <li key='1' style={{ listStyle: 'none' }}>
                                         <Spinner animation="border" role="status" />

@@ -1,0 +1,111 @@
+﻿userId,productNumber,altNumber1,altNumber2,altNumber3,altNumber4,altNumber5,productType,brand,description
+1,HPE-CPU-1001,Xy3a1,B1CpW9,C1h2Rd,D10FgY,E1zF3a,CPU,Intel, High-performance Intel CPU for gaming and tasks   
+1,HPE-RAM-1002,A2VpL1,B2QfW7,C2dJ9X,D2bO4y,E2kP8n,RAM,Corsair, Corsair Vengeance RGB RAM for smooth multitasking 
+1,HPE-Storage-1003,A3sK5t,B3xJ6q,C3mN1u,D3lF2b,E3hP7s,Storage,Seagate, High-capacity Seagate HDD for data storage       
+1,HPE-GPU-1004,A4gH6m,B4tL8p,C4dN3w,D4sJ9r,E4yP2q,GPU,NVIDIA, NVIDIA GeForce RTX 3080 for high-end graphics    
+1,HPE-Motherboard-1005,A5vG7n,B5sT2p,C5fJ4r,D5xN9w,E5dM1u,Motherboard,ASUS, ASUS ROG Strix Z590-E GamingMotherboard
+1,HPE-SSD-1006,A6sK5t,B6xJ6q,C6dN1u,D6lF2b,E6hP7s,SSD,Samsung, Samsung 970 EVO Plus SSD for fast storage       
+1,HPE-Cooler-1007,A7gH6m,B7tL8p,C7dN3w,D7sJ9r,E7yP2q,Cooler,NZXT, NZXT Kraken X63 Liquid Cooler for temperature control 
+1,HPE-PSU-1008,A8vG7n,B8sT2p,C8fJ4r,D8xN9w,E8dM1u,PowerSupplyUnit,EVGA, EVGA SuperNOVA 850 G5 PSU for reliable power     
+1,HPE-Case-1009,A9sK5t,B9xJ6q,C9dN1u,D9lF2b,E9hP7s,PCCase,FractalDesign, Fractal Design Meshify C Case for stylish builds 
+1,HPE-Monitor-1010,A10gH6m,B10tL8p,C10dN3w,D10sJ9r,E10yP2q,Monitor,Dell, Dell Alienware AW3420DW Ultrawide Gaming Monitor 
+1,HPE-CPU-1002,Xy3a2,B1CpW10,C1h2Rd,D10FgY,E1zF3a,CPU,Intel, High-performance Intel CPU for gaming and tasks   
+1,HPE-RAM-1003,A2VpL2,B2QfW8,C2dJ9X,D2bO4y,E2kP8n,RAM,Corsair, Corsair Vengeance RGB RAM for smooth multitasking 
+1,HPE-Storage-1004,A3sK5t,B3xJ6q,C3mN1u,D3lF2b,E3hP7s,Storage,Seagate, High-capacity Seagate HDD for data storage       
+1,HPE-GPU-1005,A4gH6m,B4tL8p,C4dN3w,D4sJ9r,E4yP2q,GPU,NVIDIA, NVIDIA GeForce RTX 3080 for high-end graphics    
+1,HPE-Motherboard-1006,A5vG7n,B5sT2p,C5fJ4r,D5xN9w,E5dM1u,Motherboard,ASUS, ASUS ROG Strix Z590-E GamingMotherboard
+1,HPE-SSD-1007,A6sK5t,B6xJ6q,C6dN1u,D6lF2b,E6hP7s,SSD,Samsung, Samsung 970 EVO Plus SSD for fast storage       
+1,HPE-Cooler-1008,A7gH6m,B7tL8p,C7dN3w,D7sJ9r,E7yP2q,Cooler,NZXT, NZXT Kraken X63 Liquid Cooler for temperature control 
+1,HPE-PSU-1009,A8vG7n,B8sT2p,C8fJ4r,D8xN9w,E8dM1u,PowerSupplyUnit,EVGA, EVGA SuperNOVA 850 G5 PSU for reliable power     
+1,HPE-Case-1010,A9sK5t,B9xJ6q,C9dN1u,D9lF2b,E9hP7s,PCCase,FractalDesign, Fractal Design Meshify C Case for stylish builds 
+1,HPE-Monitor-1011,A10gH6m,B10tL8p,C10dN3w,D10sJ9r,E10yP2q,Monitor,Dell, Dell Alienware AW3420DW Ultrawide Gaming Monitor 
+1,HPE-CPU-1003,Xy3a3,B1CpW11,C1h2Rd,D10FgY,E1zF3a,CPU,Intel, High-performance Intel CPU for gaming and tasks   
+1,HPE-RAM-1004,A2VpL3,B2QfW9,C2dJ9X,D2bO4y,E2kP8n,RAM,Corsair, Corsair Vengeance RGB RAM for smooth multitasking 
+1,HPE-Storage-1005,A3sK5t,B3xJ6q,C3mN1u,D3lF2b,E3hP7s,Storage,Seagate, High-capacity Seagate HDD for data storage       
+1,HPE-GPU-1006,A4gH6m,B4tL8p,C4dN3w,D4sJ9r,E4yP2q,GPU,NVIDIA, NVIDIA GeForce RTX 3080 for high-end graphics    
+1,HPE-Motherboard-1007,A5vG7n,B5sT2p,C5fJ4r,D5xN9w,E5dM1u,Motherboard,ASUS, ASUS ROG Strix Z590-E GamingMotherboard
+1,HPE-SSD-1008,A6sK5t,B6xJ6q,C6dN1u,D6lF2b,E6hP7s,SSD,Samsung, Samsung 970 EVO Plus SSD for fast storage       
+1,HPE-Cooler-1009,A7gH6m,B7tL8p,C7dN3w,D7sJ9r,E7yP2q,Cooler,NZXT, NZXT Kraken X63 Liquid Cooler for temperature control 
+1,HPE-PSU-1010,A8vG7n,B8sT2p,C8fJ4r,D8xN9w,E8dM1u,PowerSupplyUnit,EVGA, EVGA SuperNOVA 850 G5 PSU for reliable power     
+1,HPE-Case-1011,A9sK5t,B9xJ6q,C9dN1u,D9lF2b,E9hP7s,PCCase,FractalDesign, Fractal Design Meshify C Case for stylish builds 
+1,HPE-Monitor-1012,A10gH6m,B10tL8p,C10dN3w,D10sJ9r,E10yP2q,Monitor,Dell, Dell Alienware AW3420DW Ultrawide Gaming Monitor 
+1,HPE-CPU-1002,Xy3a2,B1CpW10,C1h2Rd,D10FgY,E1zF3a,CPU,Intel, High-performance Intel CPU for gaming and tasks   
+1,HPE-RAM-1003,A2VpL2,B2QfW8,C2dJ9X,D2bO4y,E2kP8n,RAM,Corsair, Corsair Vengeance RGB RAM for smooth multitasking 
+1,HPE-Storage-1004,A3sK5t,B3xJ6q,C3mN1u,D3lF2b,E3hP7s,Storage,Seagate, High-capacity Seagate HDD for data storage       
+1,HPE-GPU-1005,A4gH6m,B4tL8p,C4dN3w,D4sJ9r,E4yP2q,GPU,NVIDIA, NVIDIA GeForce RTX 3080 for high-end graphics    
+1,HPE-Motherboard-1006,A5vG7n,B5sT2p,C5fJ4r,D5xN9w,E5dM1u,Motherboard,ASUS, ASUS ROG Strix Z590-E GamingMotherboard
+1,HPE-SSD-1007,A6sK5t,B6xJ6q,C6dN1u,D6lF2b,E6hP7s,SSD,Samsung, Samsung 970 EVO Plus SSD for fast storage       
+1,HPE-Cooler-1008,A7gH6m,B7tL8p,C7dN3w,D7sJ9r,E7yP2q,Cooler,NZXT, NZXT Kraken X63 Liquid Cooler for temperature control 
+1,HPE-PSU-1009,A8vG7n,B8sT2p,C8fJ4r,D8xN9w,E8dM1u,PowerSupplyUnit,EVGA, EVGA SuperNOVA 850 G5 PSU for reliable power     
+1,HPE-Case-1010,A9sK5t,B9xJ6q,C9dN1u,D9lF2b,E9hP7s,PCCase,FractalDesign, Fractal Design Meshify C Case for stylish builds 
+1,HPE-Monitor-1011,A10gH6m,B10tL8p,C10dN3w,D10sJ9r,E10yP2q,Monitor,Dell, Dell Alienware AW3420DW Ultrawide Gaming Monitor 
+1,HPE-CPU-1003,Xy3a3,B1CpW11,C1h2Rd,D10FgY,E1zF3a,CPU,Intel, High-performance Intel CPU for gaming and tasks   
+1,HPE-RAM-1004,A2VpL3,B2QfW9,C2dJ9X,D2bO4y,E2kP8n,RAM,Corsair, Corsair Vengeance RGB RAM for smooth multitasking 
+1,HPE-Storage-1005,A3sK5t,B3xJ6q,C3mN1u,D3lF2b,E3hP7s,Storage,Seagate, High-capacity Seagate HDD for data storage       
+1,HPE-GPU-1006,A4gH6m,B4tL8p,C4dN3w,D4sJ9r,E4yP2q,GPU,NVIDIA, NVIDIA GeForce RTX 3080 for high-end graphics    
+1,HPE-Motherboard-1007,A5vG7n,B5sT2p,C5fJ4r,D5xN9w,E5dM1u,Motherboard,ASUS, ASUS ROG Strix Z590-E GamingMotherboard
+1,HPE-SSD-1008,A6sK5t,B6xJ6q,C6dN1u,D6lF2b,E6hP7s,SSD,Samsung, Samsung 970 EVO Plus SSD for fast storage       
+1,HPE-Cooler-1009,A7gH6m,B7tL8p,C7dN3w,D7sJ9r,E7yP2q,Cooler,NZXT, NZXT Kraken X63 Liquid Cooler for temperature control 
+1,HPE-PSU-1010,A8vG7n,B8sT2p,C8fJ4r,D8xN9w,E8dM1u,PowerSupplyUnit,EVGA, EVGA SuperNOVA 850 G5 PSU for reliable power     
+1,HPE-Case-1011,A9sK5t,B9xJ6q,C9dN1u,D9lF2b,E9hP7s,PCCase,FractalDesign, Fractal Design Meshify C Case for stylish builds 
+1,HPE-Monitor-1012,A10gH6m,B10tL8p,C10dN3w,D10sJ9r,E10yP2q,Monitor,Dell, Dell Alienware AW3420DW Ultrawide Gaming Monitor 
+1,HPE-CPU-1004,Xy3a4,B1CpW12,C1h2Rd,D10FgY,E1zF3a,CPU,Intel, High-performance Intel CPU for gaming and tasks   
+1,HPE-RAM-1005,A2VpL4,B2QfW10,C2dJ9X,D2bO4y,E2kP8n,RAM,Corsair, Corsair Vengeance RGB RAM for smooth multitasking 
+1,HPE-Storage-1006,A3sK5t,B3xJ6q,C3mN1u,D3lF2b,E3hP7s,Storage,Seagate, High-capacity Seagate HDD for data storage       
+1,HPE-GPU-1007,A4gH6m,B4tL8p,C4dN3w,D4sJ9r,E4yP2q,GPU,NVIDIA, NVIDIA GeForce RTX 3080 for high-end graphics    
+1,HPE-Motherboard-1008,A5vG7n,B5sT2p,C5fJ4r,D5xN9w,E5dM1u,Motherboard,ASUS, ASUS ROG Strix Z590-E GamingMotherboard
+1,HPE-SSD-1009,A6sK5t,B6xJ6q,C6dN1u,D6lF2b,E6hP7s,SSD,Samsung, Samsung 970 EVO Plus SSD for fast storage       
+1,HPE-Cooler-1010,A7gH6m,B7tL8p,C7dN3w,D7sJ9r,E7yP2q,Cooler,NZXT, NZXT Kraken X63 Liquid Cooler for temperature control 
+1,HPE-PSU-1011,A8vG7n,B8sT2p,C8fJ4r,D8xN9w,E8dM1u,PowerSupplyUnit,EVGA, EVGA SuperNOVA 850 G5 PSU for reliable power     
+1,HPE-CPU-1002,Xy3a2,B1CpW10,C1h2Rd,D10FgY,E1zF3a,CPU,Intel, High-performance Intel CPU for gaming and tasks   
+1,HPE-RAM-1003,A2VpL2,B2QfW8,C2dJ9X,D2bO4y,E2kP8n,RAM,Corsair, Corsair Vengeance RGB RAM for smooth multitasking 
+1,HPE-Storage-1004,A3sK5t,B3xJ6q,C3mN1u,D3lF2b,E3hP7s,Storage,Seagate, High-capacity Seagate HDD for data storage       
+1,HPE-GPU-1005,A4gH6m,B4tL8p,C4dN3w,D4sJ9r,E4yP2q,GPU,NVIDIA, NVIDIA GeForce RTX 3080 for high-end graphics    
+1,HPE-Motherboard-1006,A5vG7n,B5sT2p,C5fJ4r,D5xN9w,E5dM1u,Motherboard,ASUS, ASUS ROG Strix Z590-E GamingMotherboard
+1,HPE-SSD-1007,A6sK5t,B6xJ6q,C6dN1u,D6lF2b,E6hP7s,SSD,Samsung, Samsung 970 EVO Plus SSD for fast storage       
+1,HPE-Cooler-1008,A7gH6m,B7tL8p,C7dN3w,D7sJ9r,E7yP2q,Cooler,NZXT, NZXT Kraken X63 Liquid Cooler for temperature control 
+1,HPE-PSU-1009,A8vG7n,B8sT2p,C8fJ4r,D8xN9w,E8dM1u,PowerSupplyUnit,EVGA, EVGA SuperNOVA 850 G5 PSU for reliable power     
+1,HPE-Case-1010,A9sK5t,B9xJ6q,C9dN1u,D9lF2b,E9hP7s,PCCase,FractalDesign, Fractal Design Meshify C Case for stylish builds 
+1,HPE-Monitor-1011,A10gH6m,B10tL8p,C10dN3w,D10sJ9r,E10yP2q,Monitor,Dell, Dell Alienware AW3420DW Ultrawide Gaming Monitor 
+1,HPE-CPU-1003,Xy3a3,B1CpW11,C1h2Rd,D10FgY,E1zF3a,CPU,Intel, High-performance Intel CPU for gaming and tasks   
+1,HPE-RAM-1004,A2VpL3,B2QfW9,C2dJ9X,D2bO4y,E2kP8n,RAM,Corsair, Corsair Vengeance RGB RAM for smooth multitasking 
+1,HPE-Storage-1005,A3sK5t,B3xJ6q,C3mN1u,D3lF2b,E3hP7s,Storage,Seagate, High-capacity Seagate HDD for data storage       
+1,HPE-GPU-1006,A4gH6m,B4tL8p,C4dN3w,D4sJ9r,E4yP2q,GPU,NVIDIA, NVIDIA GeForce RTX 3080 for high-end graphics    
+1,HPE-Motherboard-1007,A5vG7n,B5sT2p,C5fJ4r,D5xN9w,E5dM1u,Motherboard,ASUS, ASUS ROG Strix Z590-E GamingMotherboard
+1,HPE-SSD-1008,A6sK5t,B6xJ6q,C6dN1u,D6lF2b,E6hP7s,SSD,Samsung, Samsung 970 EVO Plus SSD for fast storage       
+1,HPE-Cooler-1009,A7gH6m,B7tL8p,C7dN3w,D7sJ9r,E7yP2q,Cooler,NZXT, NZXT Kraken X63 Liquid Cooler for temperature control 
+1,HPE-PSU-1010,A8vG7n,B8sT2p,C8fJ4r,D8xN9w,E8dM1u,PowerSupplyUnit,EVGA, EVGA SuperNOVA 850 G5 PSU for reliable power     
+1,HPE-Case-1011,A9sK5t,B9xJ6q,C9dN1u,D9lF2b,E9hP7s,PCCase,FractalDesign, Fractal Design Meshify C Case for stylish builds 
+1,HPE-Monitor-1012,A10gH6m,B10tL8p,C10dN3w,D10sJ9r,E10yP2q,Monitor,Dell, Dell Alienware AW3420DW Ultrawide Gaming Monitor 
+1,HPE-CPU-1004,Xy3a4,B1CpW12,C1h2Rd,D10FgY,E1zF3a,CPU,Intel, High-performance Intel CPU for gaming and tasks   
+1,HPE-RAM-1005,A2VpL4,B2QfW10,C2dJ9X,D2bO4y,E2kP8n,RAM,Corsair, Corsair Vengeance RGB RAM for smooth multitasking 
+1,HPE-Storage-1006,A3sK5t,B3xJ6q,C3mN1u,D3lF2b,E3hP7s,Storage,Seagate, High-capacity Seagate HDD for data storage       
+1,HPE-GPU-1007,A4gH6m,B4tL8p,C4dN3w,D4sJ9r,E4yP2q,GPU,NVIDIA, NVIDIA GeForce RTX 3080 for high-end graphics    
+1,HPE-Motherboard-1008,A5vG7n,B5sT2p,C5fJ4r,D5xN9w,E5dM1u,Motherboard,ASUS, ASUS ROG Strix Z590-E GamingMotherboard
+1,HPE-SSD-1009,A6sK5t,B6xJ6q,C6dN1u,D6lF2b,E6hP7s,SSD,Samsung, Samsung 970 EVO Plus SSD for fast storage       
+1,HPE-Cooler-1010,A7gH6m,B7tL8p,C7dN3w,D7sJ9r,E7yP2q,Cooler,NZXT, NZXT Kraken X63 Liquid Cooler for temperature control 
+1,HPE-PSU-1011,A8vG7n,B8sT2p,C8fJ4r,D8xN9w,E8dM1u,PowerSupplyUnit,EVGA, EVGA SuperNOVA 850 G5 PSU for reliable power     
+1,HPE-Case-1012,A9sK5t,B9xJ6q,C9dN1u,D9lF2b,E9hP7s,PCCase,FractalDesign, Fractal Design Meshify C Case for stylish builds 
+1,HPE-Monitor-1013,A10gH6m,B10tL8p,C10dN3w,D10sJ9r,E10yP2q,Monitor,Dell, Dell Alienware AW3420DW Ultrawide Gaming Monitor 
+1,HPE-CPU-1002,Xy3a2,B1CpW10,C1h2Rd,D10FgY,E1zF3a,CPU,Intel, High-performance Intel CPU for gaming and tasks   
+1,HPE-RAM-1003,A2VpL2,B2QfW8,C2dJ9X,D2bO4y,E2kP8n,RAM,Corsair, Corsair Vengeance RGB RAM for smooth multitasking 
+1,HPE-Storage-1004,A3sK5t,B3xJ6q,C3mN1u,D3lF2b,E3hP7s,Storage,Seagate, High-capacity Seagate HDD for data storage       
+1,HPE-GPU-1005,A4gH6m,B4tL8p,C4dN3w,D4sJ9r,E4yP2q,GPU,NVIDIA, NVIDIA GeForce RTX 3080 for high-end graphics    
+1,HPE-Motherboard-1006,A5vG7n,B5sT2p,C5fJ4r,D5xN9w,E5dM1u,Motherboard,ASUS, ASUS ROG Strix Z590-E GamingMotherboard
+1,HPE-SSD-1007,A6sK5t,B6xJ6q,C6dN1u,D6lF2b,E6hP7s,SSD,Samsung, Samsung 970 EVO Plus SSD for fast storage       
+1,HPE-Networking-2095,A95gH6m,B95tL8p,C95dN3w,D95sJ9r,E95yP2q,Networking,Cisco, Cisco Networking Switch for fast and secure data  
+1,HPE-CPU-2096,A96sK5t,B96xJ6q,C96dN1u,D96lF2b,E96hP7s,CPU,AMD, AMD Ryzen 9 5950X Processor for high-end performance 
+1,HPE-RAM-2097,A97gH6m,B97tL8p,C97dN3w,D97sJ9r,E97yP2q,RAM,Kingston, Kingston HyperX Fury RAM for reliable memory     
+1,HPE-Storage-2098,A98vG7n,B98sT2p,C98fJ4r,D98xN9w,E98dM1u,Storage,WesternDigital, WD Black 4TB HDD for storage and backup           
+1,HPE-GPU-2099,A99sK5t,B99xJ6q,C99dN1u,D99lF2b,E99hP7s,GPU,ASUS, ASUS ROG Strix GeForce RTX 3080 for gaming      
+1,HPE-Motherboard-2100,A100gH6m,B100tL8p,C100dN3w,D100sJ9r,E100yP2q,Motherboard,MSI, MSI MPG B550 Gaming Edge WiFi Motherboard       
+1,HPE-SSD-2101,A101sK5t,B101xJ6q,C101dN1u,D101lF2b,E101hP7s,SSD,Crucial, Crucial MX500 SSD for fast and reliable storage   
+1,HPE-Cooler-2102,A102gH6m,B102tL8p,C102dN3w,D102sJ9r,E102yP2q,Cooler,Noctua, Noctua NH-D15 Chromax Black Cooler for cooling efficiency 
+1,HPE-PSU-2103,A103vG7n,B103sT2p,C103fJ4r,D103xN9w,E103dM1u,PowerSupplyUnit,Seasonic, Seasonic Focus GX-750 PSU for stable power       
+1,HPE-Case-2104,A104sK5t,B104xJ6q,C104dN1u,D104lF2b,E104hP7s,PCCase,NZXT, NZXT H510i Compact ATX Mid-Tower Case           
+1,HPE-Monitor-2105,A105gH6m,B105tL8p,C105dN3w,D105sJ9r,E105yP2q,Monitor,LG, LG 27GL83A-B 27 Inch Ultragear QHD Gaming Monitor 
+1,HPE-Networking-2106,A106gH6m,B106tL8p,C106dN3w,D106sJ9r,E106yP2q,Networking,Netgear, Netgear Nighthawk AX12 WiFi 6 Router for high-speed internet 
+1,HPE-CPU-2107,A107sK5t,B107xJ6q,C107dN1u,D107lF2b,E107hP7s,CPU,AMD, AMD Ryzen 7 5800X Processor for smooth multitasking 
+1,HPE-RAM-2108,A108gH6m,B108tL8p,C108dN3w,D108sJ9r,E108yP2q,RAM,G.Skill, G.Skill Ripjaws V Series RAM for high-speed memory 
+1,HPE-Storage-2109,A109vG7n,B109sT2p,C109fJ4r,D109xN9w,E109dM1u,Storage,Toshiba, Toshiba X300 4TB HDD for desktop storage         
+1,HPE-GPU-2110,A110sK5t,B110xJ6q,C110dN1u,D110lF2b,E110hP7s,GPU,MSI, MSI GeForce GTX 1660 Ti Gaming X GPU for budget gaming 

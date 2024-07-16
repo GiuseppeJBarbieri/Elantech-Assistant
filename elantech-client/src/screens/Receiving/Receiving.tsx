@@ -1,6 +1,3 @@
-/* eslint-disable react/display-name */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
 import { FunctionComponent, HTMLAttributes, useState } from 'react';
 import { Button, DropdownButton, Dropdown } from 'react-bootstrap';
@@ -51,13 +48,28 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) 
             sort: false,
         },
         {
-            dataField: 'date_received',
-            text: 'Date',
+            dataField: 'received_by',
+            text: 'Received By',
             sort: false,
         },
         {
-            dataField: 'received_by',
-            text: 'Received By',
+            dataField: 'order_type',
+            text: 'Order Type',
+            sort: false,
+        },
+        {
+            dataField: 'tracking_number',
+            text: 'Tracking Number',
+            sort: false,
+        },
+        {
+            dataField: 'shipped_via',
+            text: 'Shipped Via',
+            sort: false,
+        },
+        {
+            dataField: 'date_received',
+            text: 'Date Received',
             sort: false,
         },
         {
@@ -66,10 +78,11 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) 
             sort: false,
         },
         {
-            dataField: 'added_to_inventory',
+            dataField: 'completed',
             text: 'Completed',
             sort: false,
         },
+
         {
             dataField: 'edit',
             text: 'Edit',
@@ -84,58 +97,52 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) 
     const fake_data = [
         {
             order_id: 1,
-            po_number: '87509212',
-            date_received: '2022-03-07',
-            purchased_from: 'Service Express',
-            received_by: 'Giuseppe',
-            comments: 'Nothing to be said!',
-            added_to_inventory: 'Yes',
+            po_number: '93847562',
+            date_received: '2022-04-15',
+            purchased_from: 'Tech Solutions',
+            received_by: 'Sophia',
+            comments: 'Updated comments!',
+            completed: false,
+            shipped_via: 'FedEx',
+            tracking_number: '782910463728194738',
+            order_type: 'Exchange'
         },
         {
             order_id: 2,
-            po_number: '87509212',
-            date_received: '2022-03-07',
-            purchased_from: 'Service Express',
-            received_by: 'Giuseppe',
-            comments: 'Nothing to be said!',
-            added_to_inventory: 'Yes',
+            po_number: '56473829',
+            date_received: '2022-05-22',
+            purchased_from: 'Electro World',
+            received_by: 'Alex',
+            comments: 'Revised comments!',
+            completed: false,
+            shipped_via: 'DHL',
+            tracking_number: '495671023847563829',
+            order_type: 'Repair'
         },
         {
             order_id: 3,
-            po_number: '87509212',
-            date_received: '2022-03-07',
-            purchased_from: 'Service Express',
-            received_by: 'Giuseppe',
-            comments: 'Nothing to be said!',
-            added_to_inventory: 'Yes',
+            po_number: '10928374',
+            date_received: '2022-06-10',
+            purchased_from: 'Gadget Galaxy',
+            received_by: 'Emma',
+            comments: 'Updated information!',
+            completed: true,
+            shipped_via: 'USPS',
+            tracking_number: '612345678901234567',
+            order_type: 'Return'
         },
         {
             order_id: 4,
             po_number: '87509212',
-            date_received: '2022-03-07',
+            date_received: '2022-07-05',
             purchased_from: 'Service Express',
             received_by: 'Giuseppe',
-            comments: 'Nothing to be said!',
-            added_to_inventory: 'Yes',
-        },
-        {
-            order_id: 5,
-            po_number: '87509212',
-            date_received: '2022-03-07',
-            purchased_from: 'Service Express',
-            received_by: 'Giuseppe',
-            comments: 'Nothing to be said!',
-            added_to_inventory: 'Yes',
-        },
-        {
-            order_id: 6,
-            po_number: '87509212',
-            date_received: '2022-03-07',
-            purchased_from: 'Service Express',
-            received_by: 'Giuseppe',
-            comments: 'Nothing to be said!',
-            added_to_inventory: 'Yes',
-        },
+            comments: 'New comments here!',
+            completed: true,
+            shipped_via: 'UPS',
+            tracking_number: '345678901234567890',
+            order_type: 'RMA'
+        }        
     ];
     const options = {
         custom: true,

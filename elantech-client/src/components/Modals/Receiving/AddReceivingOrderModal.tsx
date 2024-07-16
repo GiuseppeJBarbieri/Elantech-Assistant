@@ -1,13 +1,20 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { HTMLAttributes, FunctionComponent } from 'react';
+import React, { HTMLAttributes, FunctionComponent, useEffect } from 'react';
 import { useState } from 'react';
-import { Modal, Spinner, Form, Button, Row, Col, Container } from 'react-bootstrap';
+import { Modal, Spinner, Form, Button, Row, Col, Container, Collapse, InputGroup, Dropdown, DropdownButton } from 'react-bootstrap';
 import BootstrapTable, { SelectRowProps } from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+import ICompany from '../../../types/ICompany';
+import { requestAllCompanies, requestAllProducts } from '../../../utils/Requests';
+import IProduct from '../../../types/IProduct';
+import ISelectedProductListReceivedOrder from '../../../types/ISelectedProductListReceivedOrder';
+import moment from 'moment';
+import { Search } from 'react-bootstrap-icons';
+import { DebounceInput } from 'react-debounce-input';
+import filterFactory from 'react-bootstrap-table2-filter';
+import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import { ExpandedProductRow } from '../../ExpandedProductRow/ExpandedProductRow';
-
+import { SpinnerBlock } from '../../LoadingAnimation/SpinnerBlock';
 
 interface AddReceivingOrderModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
@@ -16,288 +23,217 @@ interface AddReceivingOrderModalProps extends RouteComponentProps, HTMLAttribute
 
 const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalProps> = (props) => {
     const [isSaving] = useState(false);
+    const [companyList, setCompanyList] = useState<ICompany[]>([]);
+    const [productList, setProductList] = useState<IProduct[]>([]);
+    const [isSearching] = useState(false);
+    const [searchCompanyString, setSearchCompanyString] = useState<string>('');
+    const [searchProductString, setSearchProductString] = useState<string>('');
+    const [selectedProductList, setSelectedProductList] = useState<ISelectedProductListReceivedOrder[]>([]);
+    const [currentProduct, setCurrentProduct] = useState<ISelectedProductListReceivedOrder>({
+        quantity: 0,
+        condition: '',
+        product: {},
+        comments: '',
+    });
+    const [expanderState, setExpanderState] = useState({
+        orderInfoExpander: true,
+        sellerInfoExpander: false,
+        productInfoExpander: false,
+        productsInOrderExpander: false,
+    });
+    const companyColumn = [
 
-    // const rankFormatterRemove = (_: any, data: any, index: any) => {
-    //     // return (
-    //     //     <div
-    //     //         style={{
-    //     //             textAlign: 'center',
-    //     //             cursor: 'pointer',
-    //     //             lineHeight: 'normal'
-    //     //         }}
-    //     //         onClick={(e) => {
-    //     //             e.stopPropagation()
-    //     //         }} >
-    //     //         <div onClick={(e) => {
-    //     //             for (var i = 0; i < setQuotedProducts.length; i++) {
-    //     //                 if (quotedProducts[i] === data) {
-    //     //                     quotedProducts.splice(i, 1);
-    //     //                     setQuotedProducts([...quotedProducts]);
-    //     //                     break;
-    //     //                 }
-    //     //             }
-    //     //         }}
-    //     //         >
-    //     //             <Trash style={{ fontSize: 20, color: 'white' }} />
-    //     //         </div>
-    //     //     </div>
-    //     // );
-    // };
-    const column = [
         {
             id: 1,
+            dataField: 'companyType',
+            text: 'Type',
+            sort: true,
+        },
+        {
+            id: 2,
+            dataField: 'companyName',
+            text: 'Company Name',
+            sort: true,
+        },
+        {
+            id: 3,
+            dataField: 'companyRep',
+            text: 'Company Rep',
+            sort: true,
+        },
+        {
+            id: 4,
+            dataField: 'phoneNumber',
+            text: 'Phone Number',
+            sort: false,
+            headerAlign: 'center',
+        },
+        {
+            id: 5,
+            dataField: 'email',
+            text: 'Email',
+            sort: false,
+            headerAlign: 'center',
+        },
+        {
+            id: 6,
+            dataField: 'location',
+            text: 'Location',
+            sort: false,
+        },
+        {
+            id: 7,
+            dataField: 'comments',
+            text: 'Comments',
+            sort: false,
+        },
+    ];
+    const productColumn = [
+        {
             dataField: 'quantity',
             text: 'QTY',
             sort: true,
             headerAlign: 'center',
         },
         {
-            id: 2,
-            dataField: 'product_number',
+            dataField: 'productNumber',
             text: 'Product Number',
             sort: true,
         },
         {
-            id: 2,
-            dataField: 'alt_1',
+            dataField: 'altNumber1',
             text: 'Alt 1',
             sort: true,
         },
         {
-            id: 2,
-            dataField: 'alt_2',
+            dataField: 'altNumber2',
             text: 'Alt 2',
             sort: true,
         },
         {
-            id: 2,
-            dataField: 'alt_3',
+            dataField: 'altNumber3',
             text: 'Alt 3',
             sort: true,
         },
         {
-            id: 2,
-            dataField: 'alt_4',
+            dataField: 'altNumber4',
             text: 'Alt 4',
             sort: true,
         },
         {
-            id: 3,
-            dataField: 'product_type',
+            dataField: 'altNumber5',
+            text: 'Alt 5',
+            sort: true,
+        },
+        {
+            dataField: 'altNumber6',
+            text: 'Alt 6',
+            sort: true,
+        },
+        {
             text: 'Type',
+            dataField: 'productType',
             sort: true,
             headerAlign: 'center',
         },
         {
-            id: 4,
-            dataField: 'brand',
             text: 'Brand',
-            sort: true,
+            dataField: 'brand',
             headerAlign: 'center',
+            sort: true,
         },
         {
-            id: 5,
             dataField: 'description',
             text: 'Description',
             sort: false,
-        }
-    ];
-    // const column_inner = [
-    //     {
-    //         id: 1,
-    //         dataField: 'quantity',
-    //         text: 'QTY',
-    //         sort: true,
-    //         headerAlign: 'center',
-    //     },
-    //     {
-    //         id: 2,
-    //         dataField: 'product_number',
-    //         text: 'Product Number',
-    //         sort: true,
-    //     },
-    //     {
-    //         id: 3,
-    //         dataField: 'product_type',
-    //         text: 'Type',
-    //         sort: true,
-    //         headerAlign: 'center',
-    //     },
-    //     {
-    //         id: 4,
-    //         dataField: 'brand',
-    //         text: 'Brand',
-    //         sort: true,
-    //         headerAlign: 'center',
-    //     },
-    //     {
-    //         id: 5,
-    //         dataField: 'description',
-    //         text: 'Description',
-    //         sort: false,
-    //     },
-    //     {
-    //         id: 6,
-    //         dataField: 'condition',
-    //         text: 'Condition',
-    //         sort: false,
-    //     },
-    //     {
-    //         id: 7,
-    //         dataField: 'price',
-    //         text: 'Price',
-    //         sort: false,
-    //     },
-    //     {
-    //         id: 8,
-    //         dataField: 'remove',
-    //         text: 'Remove',
-    //         sort: false,
-    //         formatter: rankFormatterRemove,
-    //         headerAlign: 'center',
-    //         style: {
-    //             textAlign: 'center'
-    //         }
-    //     }
-    // ];
-    const fake_data = [
-        {
-            quantity: 130,
-            product_number: '804331-B21',
-            product_type: 'Raid Controller',
-            brand: 'HPE',
-            description: 'HPE Smart Array P408i-a SR Gen10 Controller',
-            last_added: '2022-01-29',
-            alt_1: '99999999',
-            alt_2: '809461-001',
-            alt_3: '875056-002',
-            alt_4: '871820-003',
-            ebay_link: 'https://www.ebay.com/itm/294851127729?hash=item44a67f29b1:g:nnYAAOSw6RdiJlYX',
-            website_link: 'https://elantechit.com/hpe-804331-b21',
-            quick_specs: 'https://www.hpe.com/psnow/doc/a00008200enw?jumpid=in_lit-psnow-red',
-            related_tags: 'DL380G10',
-        },
-        {
-            quantity: 130,
-            product_number: 'search 2',
-            product_type: 'CPU',
-            brand: 'Dell',
-            description: 'HPE Smart Array P408i-a SR Gen10 Controller',
-            last_added: '2022-01-29',
-            alt_1: '88888888',
-            alt_2: '809461-001',
-            alt_3: '875056-001',
-            alt_4: '871820-001',
-            ebay_link: 'https://www.ebay.com/itm/294851127729?hash=item44a67f29b1:g:nnYAAOSw6RdiJlYX',
-            website_link: 'https://elantechit.com/hpe-804331-b21',
-            quick_specs: 'https://www.hpe.com/psnow/doc/a00008200enw?jumpid=in_lit-psnow-red',
-            related_tags: 'DL380G10',
-        },
-        {
-            quantity: 130,
-            product_number: 'Search 1',
-            product_type: 'Memory',
-            brand: 'Lenovo',
-            description: 'HPE Smart Array P408i-a SR Gen10 Controller',
-            last_added: '2022-01-29',
-            alt_1: '7777777777',
-            alt_2: '809461-001',
-            alt_3: '875056-001',
-            alt_4: '871820-001',
-            ebay_link: 'https://www.ebay.com/itm/294851127729?hash=item44a67f29b1:g:nnYAAOSw6RdiJlYX',
-            website_link: 'https://elantechit.com/hpe-804331-b21',
-            quick_specs: 'https://www.hpe.com/psnow/doc/a00008200enw?jumpid=in_lit-psnow-red',
-            related_tags: 'DL380G10',
-        },
-        {
-            quantity: 130,
-            product_number: 'text 1',
-            product_type: 'SSD',
-            brand: 'IBM',
-            description: 'HPE Smart Array P408i-a SR Gen10 Controller',
-            last_added: '2022-01-29',
-            alt_1: '877946-001',
-            alt_2: '809461-001',
-            alt_3: '875056-001',
-            alt_4: '871820-001',
-            ebay_link: 'https://www.ebay.com/itm/294851127729?hash=item44a67f29b1:g:nnYAAOSw6RdiJlYX',
-            website_link: 'https://elantechit.com/hpe-804331-b21',
-            quick_specs: 'https://www.hpe.com/psnow/doc/a00008200enw?jumpid=in_lit-psnow-red',
-            related_tags: 'DL380G10',
-        },
-        {
-            quantity: 130,
-            product_number: 'text 2',
-            product_type: 'HDD',
-            brand: 'Cisco',
-            description: 'HPE Smart Array P408i-a SR Gen10 Controller',
-            last_added: '2022-01-29',
-            alt_1: '877946-001',
-            alt_2: '809461-001',
-            alt_3: '875056-001',
-            alt_4: '871820-001',
-            ebay_link: 'https://www.ebay.com/itm/294851127729?hash=item44a67f29b1:g:nnYAAOSw6RdiJlYX',
-            website_link: 'https://elantechit.com/hpe-804331-b21',
-            quick_specs: 'https://www.hpe.com/psnow/doc/a00008200enw?jumpid=in_lit-psnow-red',
-            related_tags: 'DL380G10',
-        },
-        {
-            quantity: 130,
-            product_number: 'Apples',
-            product_type: 'Raid Controller',
-            brand: 'HPE',
-            description: 'HPE Smart Array P408i-a SR Gen10 Controller',
-            last_added: '2022-01-29',
-            alt_1: '877946-001',
-            alt_2: '809461-001',
-            alt_3: '875056-001',
-            alt_4: '871820-001',
-            ebay_link: 'https://www.ebay.com/itm/294851127729?hash=item44a67f29b1:g:nnYAAOSw6RdiJlYX',
-            website_link: 'https://elantechit.com/hpe-804331-b21',
-            quick_specs: 'https://www.hpe.com/psnow/doc/a00008200enw?jumpid=in_lit-psnow-red',
-            related_tags: 'DL380G10',
-        },
-        {
-            quantity: 130,
-            product_number: 'Oranges',
-            product_type: 'Raid Controller',
-            brand: 'HPE',
-            description: 'HPE Smart Array P408i-a SR Gen10 Controller',
-            last_added: '2022-01-29',
-            alt_1: '877946-001',
-            alt_2: '809461-001',
-            alt_3: '875056-001',
-            alt_4: '871820-001',
-            ebay_link: 'https://www.ebay.com/itm/294851127729?hash=item44a67f29b1:g:nnYAAOSw6RdiJlYX',
-            website_link: 'https://elantechit.com/hpe-804331-b21',
-            quick_specs: 'https://www.hpe.com/psnow/doc/a00008200enw?jumpid=in_lit-psnow-red',
-            related_tags: 'DL380G10',
-        },
-        {
-            quantity: 130,
-            product_number: 'Pears',
-            product_type: 'Raid Controller',
-            brand: 'HPE',
-            description: 'HPE Smart Array P408i-a SR Gen10 Controller',
-            last_added: '2022-01-29',
-            alt_1: '877946-001',
-            alt_2: '809461-001',
-            alt_3: '875056-001',
-            alt_4: '871820-001',
-            ebay_link: 'https://www.ebay.com/itm/294851127729?hash=item44a67f29b1:g:nnYAAOSw6RdiJlYX',
-            website_link: 'https://elantechit.com/hpe-804331-b21',
-            quick_specs: 'https://www.hpe.com/psnow/doc/a00008200enw?jumpid=in_lit-psnow-red',
-            related_tags: 'DL380G10',
         },
     ];
+    const selectedProductColumn = [
+        {
+            dataField: 'quantity',
+            text: 'QTY',
+            sort: true,
+            headerAlign: 'center',
+        },
+        {
+            dataField: 'condition',
+            text: 'Condition',
+            sort: true,
+            headerAlign: 'center',
+        },
+        {
+            dataField: 'product.productNumber',
+            text: 'Product Number',
+            sort: true,
+        },
+        {
+            text: 'Type',
+            dataField: 'product.productType',
+            sort: true,
+            headerAlign: 'center',
+        },
+        {
+            text: 'Brand',
+            dataField: 'product.brand',
+            headerAlign: 'center',
+            sort: true,
+        },
+        {
+            dataField: 'comments',
+            text: 'Comments',
+            sort: false,
+        },
+    ]
     const options = {
-        custom: true,
-        totalSize: fake_data.length
+        productOptions: {
+            custom: true,
+            totalSize: productList.length
+        },
+        companyOptions: {
+            custom: true,
+            totalSize: companyList.length
+        }
     };
-    const selectRow:SelectRowProps<any> = {
+    const selectProductRow: SelectRowProps<IProduct> = {
         mode: 'radio',
-        clickToSelect: true
+        clickToSelect: true,
+        onSelect: (row: IProduct) => {
+            setCurrentProduct({ ...currentProduct, product: row });
+        },
     };
+    const selectCompanyRow: SelectRowProps<ICompany> = {
+        mode: 'radio',
+        clickToSelect: true,
+        onSelect: (row: ICompany) => {
+            setReceivingOrderState({ ...receivingOrderState, sellerId: row.id as number });
+        },
+    };
+    const [receivingOrderState, setReceivingOrderState] = useState({
+        poNumber: '',
+        orderType: '',
+        dateReceived: moment().format('YYYY-MM-DD'),
+        comments: '',
+        sellerId: 0,
+        productsInOrder: {}
+    });
+    const getAllCompanies = async () => {
+        setCompanyList(await requestAllCompanies());
+        setProductList(await requestAllProducts());
+    };
+    const handleCompanySearch = (input: string, props: { searchText?: string; onSearch: any; onClear?: () => void; }) => {
+        setSearchCompanyString(input);
+        props.onSearch(input);
+    };
+    const handleProductSearch = (input: string, props: { searchText?: string; onSearch: any; onClear?: () => void; }) => {
+        setSearchProductString(input);
+        props.onSearch(input);
+    };
+    const onSubmit = () => {
+        // Check for 
+    }
+    useEffect(() => {
+        getAllCompanies();
+    }, []);
     return (
         <div>
             <Modal backdrop="static" show={props.modalVisible} onHide={props.onClose} fullscreen={true}>
@@ -326,161 +262,294 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
                                 </ul>
                             </div>
                             :
-                            <Form className="d-grid" >
-                                <h3 style={{ fontWeight: 300 }}>Order Information</h3>
-                                <hr />
-                                <p style={{ fontWeight: 300 }}>
-                                    Please enter all information below, as it is required.
-                                </p>
-                                <Container>
-                                    <Row>
-                                        <Col>
-                                            <Form.Group className="mb-3" style={{ marginRight: 5 }}>
-                                                <Form.Label style={{ fontWeight: 300 }}>PO Number</Form.Label>
-                                                <Form.Control id="comments" type="text" placeholder="PO Number" />
-                                            </Form.Group>
-                                        </Col>
-                                        <Col>
-                                            <Form.Group className="mb-3" style={{ marginRight: 5 }}>
-                                                <Form.Label style={{ fontWeight: 300 }}>Order Type</Form.Label>
-                                                <Form.Select aria-label="Default select example">
-                                                    <option>Choose Order Type</option>
-                                                    <option value="Order">Order</option>
-                                                    <option value="RMA">RMA</option>
-                                                </Form.Select>
-                                            </Form.Group>
-                                        </Col>
-                                        <Col>
-                                            <Form.Group className="mb-3" style={{ marginRight: 5 }}>
-                                                <Form.Label style={{ fontWeight: 300 }}>Seller</Form.Label>
-                                                <Form.Select aria-label="Default select example">
-                                                    <option>Choose Seller</option>
-                                                    <option value="New Factory Sealed">Company 1</option>
-                                                    <option value="New Opened Box">Company 2</option>
-                                                    <option value="Renew">Company 3</option>
-                                                    <option value="Used">Company 4</option>
-                                                    <option value="Damaged">Company 5</option>
-                                                </Form.Select>
-                                            </Form.Group>
-                                        </Col>
-                                        <Col>
-                                            <Form.Group className="mb-3" style={{ marginRight: 5 }}>
-                                                <Form.Label style={{ fontWeight: 300 }}>Date Received</Form.Label>
-                                                <Form.Control id="dateReceived" type="date" />
-                                            </Form.Group>
-                                        </Col>
-                                        <Col>
-                                            <Form.Group className="mb-3">
-                                                <Form.Label style={{ fontWeight: 300 }}>Comments</Form.Label>
-                                                <Form.Control id="comments" type="text" placeholder="Comments" />
-                                            </Form.Group>
-                                        </Col>
-                                    </Row>
-                                </Container>
-                                <br />
-                                <br />
-                                <h3 style={{ fontWeight: 300 }}>Product Information</h3>
-                                <hr />
-                                <p style={{ fontWeight: 300 }}>Please select all products in this order.</p>
-                                <div>
-                                    <Container>
-                                        <div className='d-flex justify-content-between'>
-                                            <div className="d-flex">
-                                                <Form.Group className="mb-1" style={{ marginRight: 5 }}>
-                                                    <Form.Control id="quantity" type="text" placeholder="Quantity" />
-                                                </Form.Group>
-                                                <Form.Group className="mb-3" style={{ marginRight: 5 }}>
-                                                    <Form.Select aria-label="Default select example">
-                                                        <option>Choose Condition</option>
-                                                        <option value="New Factory Sealed">New Factory Sealed</option>
-                                                        <option value="New Opened Box">New Opened Box</option>
-                                                        <option value="Renew">Renew</option>
-                                                        <option value="Used">Used</option>
-                                                        <option value="Damaged">Damaged</option>
-                                                    </Form.Select>
-                                                </Form.Group>
-                                            </div>
-                                            <div style={{ float: 'right' }}>
-                                                <Form.Group className="mb-3">
-                                                    <Button variant="secondary">Submit</Button>
-                                                </Form.Group>
-                                            </div>
+                            <Form className="d-grid">
+                                {/* Order Information Block */}
+                                <>
+                                    <div>
+                                        <div style={{ display: 'flex', gap: '15px' }}>
+                                            <h3 style={{ fontWeight: 300 }}>Order Information</h3>
+                                            <Button variant="dark"
+                                                onClick={() => {
+                                                    setExpanderState({ ...expanderState, orderInfoExpander: !expanderState.orderInfoExpander })
+                                                }}>{expanderState.orderInfoExpander ? '^' : 'V'}</Button>
                                         </div>
-                                    </Container>
-                                </div>
-                                <br />
-                                <p style={{ fontWeight: 300 }}>Please select a product and enter the information above.</p>
-                                <Container>
-                                    <div style={{ width: 200 }}>
-                                        <Form.Group className="md-2">
-                                            <Form.Control id="search" type="text" placeholder="Search Product" />
-                                        </Form.Group>
-                                        <br />
+                                        <hr />
                                     </div>
+                                    <Collapse in={expanderState.orderInfoExpander}>
+                                        <Container>
+                                            <p style={{ fontWeight: 300 }}> Please enter all information below, as it is required.</p>
+                                            <Row>
+                                                <Col>
+                                                    <Form.Group className="mb-3" style={{ marginRight: 5 }}>
+                                                        <Form.Label style={{ fontWeight: 300 }}>PO Number</Form.Label>
+                                                        <Form.Control id="comments" type="text" placeholder="PO Number" onChange={(e) => setReceivingOrderState({ ...receivingOrderState, poNumber: e.target.value })} />
+                                                    </Form.Group>
+                                                </Col>
+                                                <Col>
+                                                    <Form.Group className="mb-3" style={{ marginRight: 5 }}>
+                                                        <Form.Label style={{ fontWeight: 300 }}>Order Type</Form.Label>
+                                                        <Form.Select aria-label="Default select example" onChange={(e) => setReceivingOrderState({ ...receivingOrderState, orderType: e.target.value })}>
+                                                            <option>Choose Order Type</option>
+                                                            <option value="Order">Order</option>
+                                                            <option value="RMA">RMA</option>
+                                                        </Form.Select>
+                                                    </Form.Group>
+                                                </Col>
+                                                <Col>
+                                                    <Form.Group className="mb-3" style={{ marginRight: 5 }}>
+                                                        <Form.Label style={{ fontWeight: 300 }}>Date Received</Form.Label>
+                                                        <Form.Control id="dateReceived" type="date"
+                                                            value={receivingOrderState.dateReceived}
+                                                            onChange={(e) => {
+                                                                setReceivingOrderState({ ...receivingOrderState, dateReceived: moment(e.target.value).format('YYYY-MM-DD') });
+                                                            }} />
+                                                    </Form.Group>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col>
+                                                    <Form.Group className="mb-3" style={{ marginRight: 5 }}>
+                                                        <Form.Label style={{ fontWeight: 300 }}>Tracking Number</Form.Label>
+                                                        <Form.Control id="comments" type="text" placeholder="PO Number" onChange={(e) => setReceivingOrderState({ ...receivingOrderState, poNumber: e.target.value })} />
+                                                    </Form.Group>
+                                                </Col>
+                                                <Col>
+                                                    <Form.Group className="mb-3" style={{ marginRight: 5 }}>
+                                                        <Form.Label style={{ fontWeight: 300 }}>Shipped Via</Form.Label>
+                                                        <Form.Select aria-label="Default select example" onChange={(e) => setReceivingOrderState({ ...receivingOrderState, orderType: e.target.value })}>
+                                                            <option>Choose Order Type</option>
+                                                            <option value="DHL">DHL</option>
+                                                            <option value="FedEx">FedEx</option>
+                                                            <option value="UPS">UPS</option>
+                                                            <option value="USPS">USPS</option>
+                                                        </Form.Select>
+                                                    </Form.Group>
+                                                </Col>
+                                                <Col>
+                                                    <Form.Group className="mb-3">
+                                                        <Form.Label style={{ fontWeight: 300 }}>Comments</Form.Label>
+                                                        <Form.Control id="comments" type="text" placeholder="Comments" onChange={(e) => setReceivingOrderState({ ...receivingOrderState, comments: e.target.value })} />
+                                                    </Form.Group>
+                                                </Col>
+                                            </Row>
+                                        </Container>
+                                    </Collapse>
 
-                                    <PaginationProvider
-                                        pagination={paginationFactory(options)}
-                                    >
-                                        {
-                                            ({
-                                                paginationProps,
-                                                paginationTableProps
-                                            }) => (
-                                                <div>
-                                                    <BootstrapTable
-                                                        key='product_table'
-                                                        {...paginationTableProps}
-                                                        keyField="product_number"
-                                                        bootstrap4
-                                                        condensed
-                                                        data={fake_data}
-                                                        columns={column}
-                                                        selectRow={selectRow}
-                                                        classes="table table-dark table-hover table-striped table-responsive"
-                                                        noDataIndication="Table is Empty"
-                                                        expandRow={{
-                                                            onlyOneExpanding: true,
-                                                            // eslint-disable-next-line react/display-name
-                                                            renderer: (row, index) => {
-                                                                return (
-                                                                    <ExpandedProductRow
-                                                                        selectedProduct={row} getAllProducts={function (): void {
-                                                                            throw new Error('Function not implemented.');
-                                                                        } } />
-                                                                )
-                                                            }
-                                                        }}
-                                                    />
-                                                    <div className='d-flex justify-content-between'>
-                                                        <SizePerPageDropdownStandalone
-                                                            {...paginationProps}
-                                                        />
-                                                        <PaginationListStandalone
-                                                            {...paginationProps}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            )
-                                        }
-                                    </PaginationProvider>
-                                </Container>
-                                <br />
-                                <h3 style={{ fontWeight: 300 }}>Products in Order</h3>
-                                <hr />
-                                <p style={{ fontWeight: 300 }}>Review all products below.</p>
-                                <div>
-                                    <Container>
-                                        <BootstrapTable
-                                            keyField='product_number'
-                                            data={fake_data}
-                                            columns={column}
-                                            bootstrap4
-                                            classes="table table-dark table-hover table-striped"
-                                            noDataIndication="Table is Empty"
-                                        />
-                                    </Container>
-                                </div>
+                                </>
+                                {/* Seller Information Block */}
+                                <>
+                                    <div>
+                                        <br />
+                                        <br />
+                                        <div style={{ display: 'flex', gap: '15px' }}>
+                                            <h3 style={{ fontWeight: 300 }}>Seller Information</h3>
+                                            <Button variant="dark"
+                                                onClick={() => {
+                                                    setExpanderState({ ...expanderState, sellerInfoExpander: !expanderState.sellerInfoExpander })
+                                                }}>
+                                                {expanderState.sellerInfoExpander ? '^' : 'V'}
+                                            </Button>
+                                        </div>
+                                        <hr />
+                                    </div>
+                                    <Collapse in={expanderState.sellerInfoExpander}>
+                                        <Container>
+                                            {/* TODO Search Functionality of Quote Table */}
+                                            <p style={{ fontWeight: 300 }}>Please select a seller from the table below. Hit the select button when finished.</p>
+                                            {/* <Form.Group className="mb-3" style={{ marginRight: 5, width: '150px' }}>
+                                                <Form.Control id="comments" type="text" placeholder="Search" />
+                                            </Form.Group> */}
+                                            <ToolkitProvider
+                                                keyField="id"
+                                                data={companyList}
+                                                columns={companyColumn}
+                                                search
+                                            >
+                                                {
+                                                    props => {
+                                                        return (
+                                                            <div>
+                                                                {isSearching ?
+                                                                    <SpinnerBlock />
+                                                                    :
+                                                                    <div>
+                                                                        <div className='d-flex justify-content-between'>
+                                                                            <div className='d-flex justify-space-between'>
+                                                                                <InputGroup className="mb-3">
+                                                                                    <InputGroup.Text id="basic-addon2">
+                                                                                        <Search />
+                                                                                    </InputGroup.Text>
+                                                                                    <DebounceInput
+                                                                                        type="text"
+                                                                                        className='debounce'
+                                                                                        placeholder="Search..."
+                                                                                        debounceTimeout={500}
+                                                                                        value={searchCompanyString}
+                                                                                        onChange={e => {
+                                                                                            handleCompanySearch(e.target.value, { ...props.searchProps });
+                                                                                        }} />
+                                                                                </InputGroup>
+                                                                            </div>
+                                                                        </div>
+                                                                        <BootstrapTable
+                                                                            {...props.baseProps}
+                                                                            bootstrap4
+                                                                            striped
+                                                                            hover
+                                                                            selectRow={selectCompanyRow}
+                                                                            noDataIndication='TABLE IS EMPTY'
+                                                                            pagination={paginationFactory(options.companyOptions)}
+                                                                            filter={filterFactory()}
+                                                                            classes="table table-dark table-hover table-striped table-responsive"
+                                                                        />
+                                                                    </div>}
+                                                            </div>
+                                                        );
+                                                    }
+                                                }
+                                            </ToolkitProvider>
+                                        </Container>
+                                    </Collapse>
+                                </>
+                                {/* Product Information Block */}
+                                <>
+                                    <div>
+                                        <br />
+                                        <br />
+                                        <div style={{ display: 'flex', gap: '15px' }}>
+                                            <h3 style={{ fontWeight: 300 }}>Product Information</h3>
+                                            <Button variant="dark"
+                                                onClick={() => {
+                                                    setExpanderState({ ...expanderState, productInfoExpander: !expanderState.productInfoExpander })
+                                                }}>
+                                                {expanderState.productInfoExpander ? '^' : 'V'}
+                                            </Button>
+                                        </div>
+                                        <hr />
+                                    </div>
+                                    <Collapse in={expanderState.productInfoExpander}>
+                                        <Container>
+                                            <p style={{ fontWeight: 300 }}>Enter in the info below. Then select a product from the table. Click submit when your finished.</p>
+                                            <ToolkitProvider
+                                                keyField="id"
+                                                data={productList}
+                                                columns={productColumn}
+                                                search
+                                            >
+                                                {
+                                                    props => {
+                                                        return (
+                                                            <div>
+                                                                {isSearching ?
+                                                                    <SpinnerBlock />
+                                                                    :
+                                                                    <div>
+                                                                        <div className='d-flex justify-content-between'>
+                                                                            <div className="d-flex" style={{ gap: '10px' }}>
+                                                                                <Form.Group>
+                                                                                    <InputGroup className="mb-3">
+                                                                                        <InputGroup.Text id="basic-addon2">
+                                                                                            <Search />
+                                                                                        </InputGroup.Text>
+                                                                                        <DebounceInput
+                                                                                            type="text"
+                                                                                            className='debounce'
+                                                                                            placeholder="Search..."
+                                                                                            debounceTimeout={500}
+                                                                                            value={searchProductString}
+                                                                                            onChange={e => {
+                                                                                                handleProductSearch(e.target.value, { ...props.searchProps });
+                                                                                            }} />
+                                                                                    </InputGroup>
+                                                                                </Form.Group>
+                                                                                <Form.Group className="mb-4">
+                                                                                    <Form.Control id="quantity" type="number" placeholder="Quantity"
+                                                                                        onChange={(e) => {
+                                                                                            setCurrentProduct({ ...currentProduct, quantity: e.target.value as unknown as number })
+                                                                                        }} />
+                                                                                </Form.Group>
+                                                                                <Form.Group className="mb-3">
+                                                                                    <Form.Select aria-label="Default select example"
+                                                                                        onChange={(e) => {
+                                                                                            setCurrentProduct({ ...currentProduct, condition: e.target.value })
+                                                                                        }}>
+                                                                                        <option>Choose Condition</option>
+                                                                                        <option value="New_Factory_Sealed">New Factory Sealed</option>
+                                                                                        <option value="New_Opened_Box">New Opened Box</option>
+                                                                                        <option value="Renew">Renew</option>
+                                                                                        <option value="Used">Used</option>
+                                                                                        <option value="Damaged">Damaged</option>
+                                                                                    </Form.Select>
+                                                                                </Form.Group>
+                                                                                <Form.Group className="mb-1">
+                                                                                    <Form.Control id="comment" placeholder="Comments"
+                                                                                        onChange={(e) => {
+                                                                                            setCurrentProduct({ ...currentProduct, comment: e.target.value })
+                                                                                        }} />
+                                                                                </Form.Group>
+                                                                            </div>
+                                                                            <div style={{ float: 'right' }}>
+                                                                                <Form.Group className="mb-3">
+                                                                                    {/* TODO */}
+                                                                                    <Button variant="secondary" onClick={() => {
+                                                                                        console.log(currentProduct);
+                                                                                        selectedProductList.push(currentProduct);
+                                                                                        setSelectedProductList(JSON.parse(JSON.stringify(selectedProductList)));
+                                                                                    }}>Submit</Button>
+                                                                                </Form.Group>
+                                                                            </div>
+                                                                        </div>
 
+                                                                        <BootstrapTable
+                                                                            {...props.baseProps}
+                                                                            bootstrap4
+                                                                            striped
+                                                                            hover
+                                                                            selectRow={selectProductRow}
+                                                                            noDataIndication='TABLE IS EMPTY'
+                                                                            pagination={paginationFactory(options.productOptions)}
+                                                                            filter={filterFactory()}
+                                                                            classes="table table-dark table-hover table-striped table-responsive"
+                                                                        />
+                                                                    </div>}
+                                                            </div>
+                                                        );
+                                                    }
+                                                }
+                                            </ToolkitProvider>
+                                        </Container>
+                                    </Collapse>
+                                </>
+                                {/* Products In Order Block */}
+                                <>
+                                    <div>
+                                        <br />
+                                        <br />
+                                        <div style={{ display: 'flex', gap: '15px' }}>
+                                            <h3 style={{ fontWeight: 300 }}>Products in Order</h3>
+                                            <Button variant="dark"
+                                                onClick={() => {
+                                                    setExpanderState({ ...expanderState, productsInOrderExpander: !expanderState.productsInOrderExpander })
+                                                }}>
+                                                {expanderState.productsInOrderExpander ? '^' : 'V'}
+                                            </Button>
+                                        </div>
+                                        <hr />
+                                    </div>
+                                    <Collapse in={expanderState.productsInOrderExpander}>
+                                        <Container>
+                                            <p style={{ fontWeight: 300 }}>Review all products below.</p>
+                                            <BootstrapTable
+                                                keyField='productNumber'
+                                                data={selectedProductList}
+                                                columns={selectedProductColumn}
+                                                bootstrap4
+                                                classes="table table-dark table-hover table-striped"
+                                                noDataIndication="Table is Empty"
+                                            />
+                                        </Container>
+                                    </Collapse>
+                                </>
                             </Form>
                         }
                     </div>
@@ -490,7 +559,9 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
                         <Button
                             variant="dark"
                             onClick={async () => {
-                                console.log('')
+                                console.log(receivingOrderState);
+                                console.log(selectedProductList);
+                                onSubmit();
                             }}>
                             Finish
                         </Button>

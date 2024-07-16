@@ -40,7 +40,7 @@ const SideNavBarComponent: FunctionComponent<SideNavBarProps> = (props: SideNavB
         </div>
         <hr />
         <ul className="nav nav-pills flex-column mb-auto">
-          <li className="nav-item ">
+          <li className="nav-item">
             <div className="btn btn-dark"
               style={{
                 display: 'flex',
@@ -79,7 +79,7 @@ const SideNavBarComponent: FunctionComponent<SideNavBarProps> = (props: SideNavB
               <h4 className='font-weight-300' style={{ marginTop: 3 }}>Receiving</h4>
             </div>
           </li>
-          <li>
+          {/* <li>
             <div className="btn btn-dark"
               style={{
                 display: 'flex',
@@ -91,8 +91,8 @@ const SideNavBarComponent: FunctionComponent<SideNavBarProps> = (props: SideNavB
               <CartPlus className="bi me-2" width="25" height="25" style={{ 'verticalAlign': 'middle' }} />
               <h4 className='font-weight-300' style={{ marginTop: 3 }}>Outgoing</h4>
             </div>
-          </li>
-          <li>
+          </li> */}
+          {/* <li>
             <div className="btn btn-dark"
               style={{
                 display: 'flex',
@@ -104,8 +104,8 @@ const SideNavBarComponent: FunctionComponent<SideNavBarProps> = (props: SideNavB
               <CartPlus className="bi me-2" width="25" height="25" style={{ 'verticalAlign': 'middle' }} />
               <h4 className='font-weight-300' style={{ marginTop: 3 }}>Procurement</h4>
             </div>
-          </li>
-          <li>
+          </li> */}
+          {/* <li>
             <div className="btn btn-dark"
               style={{
                 display: 'flex',
@@ -117,7 +117,7 @@ const SideNavBarComponent: FunctionComponent<SideNavBarProps> = (props: SideNavB
               <CartPlus className="bi me-2" width="25" height="25" style={{ 'verticalAlign': 'middle' }} />
               <h4 className='font-weight-300' style={{ marginTop: 3 }}>Broker Bin</h4>
             </div>
-          </li>
+          </li> */}
           <li>
             <div className="btn btn-dark"
               style={{
@@ -131,7 +131,7 @@ const SideNavBarComponent: FunctionComponent<SideNavBarProps> = (props: SideNavB
               <h4 className='font-weight-300' style={{ marginTop: 3 }}>Removed</h4>
             </div>
           </li>
-          <li>
+          {/* <li>
             <div className="btn btn-dark"
               style={{
                 display: 'flex',
@@ -156,7 +156,7 @@ const SideNavBarComponent: FunctionComponent<SideNavBarProps> = (props: SideNavB
               <CartPlus className="bi me-2" width="25" height="25" style={{ 'verticalAlign': 'middle' }} />
               <h4 className='font-weight-300' style={{ marginTop: 3 }}>Current Orders</h4>
             </div>
-          </li>
+          </li> */}
           <li>
             <div className="btn btn-dark"
               style={{

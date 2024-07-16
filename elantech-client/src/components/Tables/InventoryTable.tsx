@@ -192,6 +192,10 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
         clickToSelect: true,
         bgColor: '#0da7fd73 !important',
         selected: tempSelected,
+        selectColumnStyle:
+        {
+
+        },
         onSelect: (row: IInventory, isSelect: boolean, rowIndex: number, e: any) => {
             if(e.shiftKey) {
                 if (isSelect === true && lastSelected !== -1) {
@@ -341,8 +345,6 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                         getAllInventory={props.getAllInventory}
                         selectedProduct={props.selectedProduct}
                         onClose={async () => {
-                            props.getAllInventory(props.selectedProduct.id as number)
-                            props.getAllProducts();
                             setSelectedInventoryList([]);
                             setRemoveMultipleInventorySwitch(false);
                         }}

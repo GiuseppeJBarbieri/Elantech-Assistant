@@ -175,7 +175,7 @@ export default class Server {
     } catch (err) {
       logger.error(`${'error occurred starting express: '
         + '\n('}${err.toString()
-        }).\nrestart the app when the database is ready to connect to`);
+      }).\nrestart the app when the database is ready to connect to`);
       onServerClosed();
     }
 

@@ -1,4 +1,4 @@
-interface IReceiving {
+interface IReceivedOrder {
     id?: number;
     poNumber: number;
     companyId: number;
@@ -10,4 +10,4 @@ interface IReceiving {
     shippedVia: string;
 }
 
-export default IReceiving;
+export default IReceivedOrder;

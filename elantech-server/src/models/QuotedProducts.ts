@@ -4,7 +4,6 @@ interface QuotedProductsAttributes {
     id: number;
     quoteId: number;
     productId: number;
-    orderId: number;
     quantity: number;
     quotedPrice: number;
     productCondition: string;
@@ -19,8 +18,6 @@ export default (sequelize: any, DataTypes: any) => {
         quoteId: number;
 
         productId: number;
-
-        orderId: number;
 
         quantity: number;
 
@@ -49,10 +46,6 @@ export default (sequelize: any, DataTypes: any) => {
     productId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-    },
-    orderId: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
     },
     quantity: {
       type: DataTypes.INTEGER,

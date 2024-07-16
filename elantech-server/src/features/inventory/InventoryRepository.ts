@@ -99,6 +99,7 @@ export default {
           },
         },
       );
+
       return result;
     } catch (err) {
       standardError(`${err.name} ${err.message}`);

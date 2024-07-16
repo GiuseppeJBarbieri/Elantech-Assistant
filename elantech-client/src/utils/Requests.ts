@@ -5,6 +5,7 @@ import IInventory from '../types/IInventory';
 import IProduct from '../types/IProduct';
 import IQuote from '../types/IQuote';
 import IQuotedProduct from '../types/IQuotedProduct';
+import IRemovedInventory from '../types/IRemovedInventory';
 
 // USERS
 export const requestLogout = async (): Promise<AxiosResponse<unknown, unknown>> => {
@@ -35,6 +36,10 @@ export const requestUpdateInventory = async (inventory: IInventory): Promise<any
 export const requestAddInventory = async (inventory: IInventory): Promise<any> => {
     return axios.post(`${BASE_API_URL}${ROUTES.INVENTORY}`, inventory, { withCredentials: true }).then((response) => response);
 }
+export const requestRemoveInventory = async (id: number): Promise<any> => {
+    return axios.delete(`${BASE_API_URL}${ROUTES.INVENTORY}/${id}`, { withCredentials: true }).then((response) => response);
+}
+
 
 
 // COMPANY
@@ -73,4 +78,9 @@ export const requestGetQuotedProductsByQuoteId = async (quoteId: number): Promis
 }
 export const requestAllQuotesByProductId = async (productId: number): Promise<IQuotedProduct[]> => {
     return axios.get(`${BASE_API_URL}${ROUTES.QUOTED_PRODUCTS}/quote/productQuotes/${productId}`, { withCredentials: true }).then((response) => response?.data?.payload);
+}
+
+// REMOVED INVENTORY
+export const requestAddRemovedInventory = async (removedInventory: IRemovedInventory): Promise<any> => {
+    return axios.post(`${BASE_API_URL}${ROUTES.REMOVED_INVENTORY}`, removedInventory, { withCredentials: true}).then((response)=> response);
 }
