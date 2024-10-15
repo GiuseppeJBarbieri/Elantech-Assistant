@@ -159,21 +159,21 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
             <Navbar bg="dark" variant="dark">
                 <Navbar.Brand>More Info</Navbar.Brand>
                 <Nav className="me-auto">
-                    {(props.selectedProduct.ebayLink as string).length > 1 &&
+                    {(props.selectedProduct.ebayLink as string) != null &&
                         <Nav.Link onClick={async () => {
                             window.open(props.selectedProduct.ebayLink)
                         }}>
                             Ebay Listing
                         </Nav.Link>
                     }
-                    {(props.selectedProduct.websiteLink as string).length > 1 &&
+                    {(props.selectedProduct.websiteLink as string) != null &&
                         <Nav.Link onClick={async () => {
                             window.open(props.selectedProduct.websiteLink)
                         }}>
                             Website Listing
                         </Nav.Link>
                     }
-                    {(props.selectedProduct.quickSpecsLink as string).length > 1 &&
+                    {(props.selectedProduct.quickSpecsLink as string) != null &&
                         <Nav.Link onClick={async () => {
                             window.open(props.selectedProduct.quickSpecsLink)
                         }}>
