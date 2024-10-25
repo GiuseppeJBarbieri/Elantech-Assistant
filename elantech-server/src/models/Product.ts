@@ -136,7 +136,7 @@ export default (sequelize: any, DataTypes: any) => {
       validate: { len: [0, 10000] },
     },
     description: {
-      type: DataTypes.STRING(10000),
+      type: DataTypes.STRING(20000),
       allowNull: false,
       validate: { len: [0, 10000] },
     },
