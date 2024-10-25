@@ -2,10 +2,10 @@ import { Model } from 'sequelize';
 
 interface SessionAttributes {
   uuid: string; // TODO: Sequelize.DataTypes.UUID?
-  expiresAt: Date;
+  userId: number;
   active: boolean;
   expired: boolean;
-  userId: number
+  expiresAt: Date;
 }
 
 export default (sequelize: any, DataTypes: any) => {
@@ -18,17 +18,17 @@ export default (sequelize: any, DataTypes: any) => {
      */
      uuid!: string; // TODO: Sequelize.DataTypes.UUID?
 
-     expiresAt!: Date;
+     userId!: number
 
      active!: boolean;
 
      expired!: boolean;
 
-     userId!: number
+     expiresAt!: Date;
 
      static associate(models: any) {
        Session.belongsTo(models.user, {
-         foreignKey: 'userId',
+         foreignKey: 'id',
        });
      }
   }
@@ -39,8 +39,8 @@ export default (sequelize: any, DataTypes: any) => {
       allowNull: false,
       primaryKey: true,
     },
-    expiresAt: {
-      type: DataTypes.DATE,
+    userId: {
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     active: {
@@ -51,12 +51,13 @@ export default (sequelize: any, DataTypes: any) => {
       type: DataTypes.BOOLEAN,
       allowNull: true,
     },
-    userId: {
-      type: DataTypes.INTEGER,
+    expiresAt: {
+      type: DataTypes.DATE,
       allowNull: true,
     },
   }, {
     sequelize,
+    paranoid: true,
     modelName: 'session',
   });
 

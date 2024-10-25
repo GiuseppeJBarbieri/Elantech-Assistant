@@ -1,6 +1,6 @@
 import { Model } from 'sequelize';
 
-interface QuotedProductsAttributes {
+interface QuotedProductAttributes {
     id: number;
     quoteId: number;
     productId: number;
@@ -11,8 +11,8 @@ interface QuotedProductsAttributes {
 }
 
 export default (sequelize: any, DataTypes: any) => {
-  class QuotedProducts extends Model<QuotedProductsAttributes>
-    implements QuotedProductsAttributes {
+  class QuotedProduct extends Model<QuotedProductAttributes>
+    implements QuotedProductAttributes {
         id: number;
 
         quoteId: number;
@@ -28,11 +28,11 @@ export default (sequelize: any, DataTypes: any) => {
         comment: string;
 
         static associate(models: any) {
-          QuotedProducts.belongsTo(models.quote, { foreignKey: 'quoteId' });
+          QuotedProduct.belongsTo(models.quote, { foreignKey: 'quoteId' });
         }
   }
 
-  QuotedProducts.init({
+  QuotedProduct.init({
     id: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -65,9 +65,9 @@ export default (sequelize: any, DataTypes: any) => {
     },
   }, {
     sequelize,
-    modelName: 'quoted_products',
+    modelName: 'quotedProduct',
     paranoid: true,
   });
 
-  return QuotedProducts;
+  return QuotedProduct;
 };

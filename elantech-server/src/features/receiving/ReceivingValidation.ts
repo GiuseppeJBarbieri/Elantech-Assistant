@@ -33,6 +33,7 @@ export default {
       trackingNumber: Joi.string().required(),
       dateReceived: Joi.date(),
       shippedVia: Joi.string().required(),
+      comments: Joi.string(),
     },
   },
 
@@ -47,6 +48,7 @@ export default {
       trackingNumber: Joi.string().required(),
       dateReceived: Joi.date(),
       shippedVia: Joi.string().required(),
+      comments: Joi.string(),
       createdAt: Joi.string().optional(),
       updatedAt: Joi.string().optional(),
       deletedAt: Joi.string().optional().allow(null),

@@ -58,7 +58,7 @@ export default (sequelize: any, DataTypes: any) => {
     },
   }, {
     sequelize,
-    modelName: 'removed_inventory',
+    modelName: 'removedInventory',
     paranoid: true,
   });
 

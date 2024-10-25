@@ -64,7 +64,7 @@ export default (sequelize: any, DataTypes: any) => {
 
     static associate(models: any) {
       Product.belongsTo(models.user, { foreignKey: 'userId' });
-      Product.hasMany(models.inventory, { foreignKey: 'productId' });
+      // Product.hasMany(models.inventory, { foreignKey: 'productId' });
     }
   }
 

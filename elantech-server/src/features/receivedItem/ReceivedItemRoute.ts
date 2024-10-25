@@ -8,11 +8,11 @@ import ReceivedItemValidation from './ReceivedItemValidation';
 const router = express.Router();
 
 /**
- * This route will add new quote
+ * This route will add new ReceivedItem
  */
 router.post('/', authenticationMiddleware, validate(ReceivedItemValidation.PostReceivedItem),
   (req, res, next) => {
-    logger.info('POST RECEIVING');
+    logger.info('POST Received Item');
     const copy = JSON.parse(JSON.stringify(req.body));
     // eslint-disable-next-line dot-notation
     req.body.userId = req.session['userId'];
@@ -24,35 +24,35 @@ router.post('/', authenticationMiddleware, validate(ReceivedItemValidation.PostR
   });
 
 /**
-* This route will fetch all order.
+* This route will fetch all ReceivedItem.
 */
-router.get('/', authenticationMiddleware, validate(ReceivedItemValidation.GetAllReceivedItems),
+router.get('/', authenticationMiddleware, validate(ReceivedItemValidation.GetAllReceivedItem),
   (req, res, next) => {
-    logger.info('GET ALL RECEIVING');
+    logger.info('GET ALL Received Item');
 
     ReceivedItemController.GetAll()
-      .then((quotes) => res.status(200).json(quotes))
+      .then((ReceivedItem) => res.status(200).json(ReceivedItem))
       .catch((err) => next(err));
   });
 
 /**
-* This route will fetch a order by id
+* This route will fetch a ReceivedItem by id
 */
 router.get('/:id', authenticationMiddleware, validate(ReceivedItemValidation.GetReceivedItem),
   (req, res, next) => {
-    logger.info('GET RECEIVING');
+    logger.info('GET Received Item');
 
     ReceivedItemController.Get(Number(req.params.id))
-      .then((quote) => res.status(200).json(quote))
+      .then((ReceivedItem) => res.status(200).json(ReceivedItem))
       .catch((err) => next(err));
   });
 
 /**
-* This route will update a order
+* This route will update a ReceivedItem
 */
 router.put('/', authenticationMiddleware, validate(ReceivedItemValidation.PutReceivedItem),
   (req, res, next) => {
-    logger.info('PUT RECEIVING');
+    logger.info('PUT Received Item');
 
     ReceivedItemController.Edit(req.body)
       .then((response) => {
@@ -62,11 +62,11 @@ router.put('/', authenticationMiddleware, validate(ReceivedItemValidation.PutRec
   });
 
 /**
-* This route will delete a order by id
+* This route will delete a ReceivedItem by id
 */
 router.delete('/:id', authenticationMiddleware, validate(ReceivedItemValidation.DeleteReceivedItem),
   (req, res, next) => {
-    logger.info('DELETE QUOTE');
+    logger.info('DELETE Received Item');
 
     ReceivedItemController.Delete(Number(req.params.id))
       .then((response) => {

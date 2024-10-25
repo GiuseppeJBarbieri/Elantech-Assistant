@@ -2,9 +2,8 @@ import { Model } from 'sequelize';
 
 interface UserTypeAttributes {
   id: number;
-  value: string;
   createdBy: number;
-  editedBy: number;
+  type: string;
 }
 
 export default (sequelize: any, DataTypes: any) => {
@@ -17,7 +16,7 @@ export default (sequelize: any, DataTypes: any) => {
        */
     id!: number;
 
-    value!: string;
+    type!: string;
 
     createdBy!: number;
 
@@ -39,11 +38,7 @@ export default (sequelize: any, DataTypes: any) => {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
-    editedBy: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
-    value: {
+    type: {
       type: DataTypes.STRING,
       allowNull: true,
     },

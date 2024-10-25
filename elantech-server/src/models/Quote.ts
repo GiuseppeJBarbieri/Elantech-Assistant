@@ -22,9 +22,9 @@ export default (sequelize: any, DataTypes: any) => {
     sold: boolean;
 
     static associate(models: any) {
-      Quote.hasMany(models.quoted_products, { foreignKey: 'quoteId' });
       Quote.belongsTo(models.user, { foreignKey: 'userId' });
       Quote.belongsTo(models.company, { foreignKey: 'companyId' });
+      Quote.hasMany(models.quotedProduct, { foreignKey: 'quoteId' });
     }
   }
 

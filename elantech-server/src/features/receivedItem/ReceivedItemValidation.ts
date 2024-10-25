@@ -1,7 +1,7 @@
 import * as Joi from 'joi';
 
 export default {
-  GetAllReceivedItems: {
+  GetAllReceivedItem: {
     params: {
 
     },
@@ -25,18 +25,22 @@ export default {
   PostReceivedItem: {
     body: {
       id: Joi.number().optional().allow(null, ''),
+      shippingId: Joi.number().required(),
       productId: Joi.number().required(),
-      quantity: Joi.number().required(),
       cud: Joi.string().required(),
+      comment: Joi.string(),
+      finishedAdding: Joi.boolean().required(),
     },
   },
 
   PutReceivedItem: {
     body: {
       id: Joi.number().optional().allow(null, ''),
+      shippingId: Joi.number().required(),
       productId: Joi.number().required(),
-      quantity: Joi.number().required(),
       cud: Joi.string().required(),
+      comment: Joi.string(),
+      finishedAdding: Joi.boolean().required(),
       createdAt: Joi.string().optional(),
       updatedAt: Joi.string().optional(),
       deletedAt: Joi.string().optional().allow(null),

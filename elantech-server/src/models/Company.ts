@@ -2,19 +2,22 @@ import { Model } from 'sequelize';
 
 interface CompanyAttributes {
     id: number;
+    userId: number;
     companyType: string;
     companyName: string;
     companyRep: string;
     phoneNumber: string;
     email: string;
     location: string;
-    comments: string;
+    comment: string;
 }
 
 export default (sequelize: any, DataTypes: any) => {
   class Company extends Model<CompanyAttributes>
     implements CompanyAttributes {
         id: number;
+
+        userId: number;
 
         companyType: string;
 
@@ -28,10 +31,11 @@ export default (sequelize: any, DataTypes: any) => {
 
         location!: string;
 
-        comments!: string;
+        comment!: string;
 
         static associate(models: any) {
           Company.hasMany(models.quote, { foreignKey: 'companyId' });
+          // Company.hasMany(models.user, { foreignKey: 'userId' });
         }
   }
 
@@ -41,6 +45,10 @@ export default (sequelize: any, DataTypes: any) => {
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     companyType: {
       type: DataTypes.STRING,
@@ -66,7 +74,7 @@ export default (sequelize: any, DataTypes: any) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    comments: {
+    comment: {
       type: DataTypes.STRING,
       allowNull: true,
     },

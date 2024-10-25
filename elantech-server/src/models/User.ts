@@ -2,13 +2,12 @@ import { Model } from 'sequelize';
 
 interface UserAttributes {
   id: number;
-  createdBy: number;
+  userTypeId: number;
   email: string;
   firstName: string;
   lastName: string;
   password: string;
   phoneNumber: string;
-  userTypeId: number;
 }
 
 export default (sequelize: any, DataTypes: any) => {
@@ -21,7 +20,7 @@ export default (sequelize: any, DataTypes: any) => {
      */
     id!: number;
 
-    createdBy!: number;
+    userTypeId!: number;
 
     email!: string;
 
@@ -32,8 +31,6 @@ export default (sequelize: any, DataTypes: any) => {
     password!: string;
 
     phoneNumber!: string;
-
-    userTypeId!: number;
 
     static associate(models: any) {
       User.belongsTo(models.userType, {
@@ -57,10 +54,6 @@ export default (sequelize: any, DataTypes: any) => {
       autoIncrement: true,
     },
     userTypeId: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
-    createdBy: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
