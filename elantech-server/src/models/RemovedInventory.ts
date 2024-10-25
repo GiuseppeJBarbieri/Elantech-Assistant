@@ -1,6 +1,6 @@
 import { Model } from 'sequelize';
 
-interface RemovedAttributes {
+interface RemovedInventoryAttributes {
   id: number;
   userId: number;
   orderId: number;
@@ -10,8 +10,8 @@ interface RemovedAttributes {
 }
 
 export default (sequelize: any, DataTypes: any) => {
-  class Removed extends Model<RemovedAttributes>
-    implements RemovedAttributes {
+  class RemovedInventory extends Model<RemovedInventoryAttributes>
+    implements RemovedInventoryAttributes {
     id: number;
 
     userId: number;
@@ -25,11 +25,11 @@ export default (sequelize: any, DataTypes: any) => {
     dateRemoved: Date;
 
     static associate(models: any) {
-      Removed.belongsTo(models.inventory, { foreignKey: 'removedId' });
+      RemovedInventory.belongsTo(models.inventory, { foreignKey: 'removedId' });
     }
   }
 
-  Removed.init({
+  RemovedInventory.init({
     id: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -62,5 +62,5 @@ export default (sequelize: any, DataTypes: any) => {
     paranoid: true,
   });
 
-  return Removed;
+  return RemovedInventory;
 };

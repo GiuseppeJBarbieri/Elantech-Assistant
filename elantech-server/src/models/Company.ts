@@ -34,6 +34,7 @@ export default (sequelize: any, DataTypes: any) => {
         comment!: string;
 
         static associate(models: any) {
+          Company.belongsTo(models.user, { foreignKey: 'userId' });
           Company.hasMany(models.quote, { foreignKey: 'companyId' });
           // Company.hasMany(models.user, { foreignKey: 'userId' });
         }

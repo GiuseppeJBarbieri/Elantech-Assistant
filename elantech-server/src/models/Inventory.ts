@@ -41,8 +41,8 @@ export default (sequelize: any, DataTypes: any) => {
 
     static associate(models: any) {
       Inventory.belongsTo(models.product, { foreignKey: 'productId' });
-      Inventory.hasMany(models.removed_inventory, { foreignKey: 'removedId' });
-      Inventory.hasMany(models.receiving, { foreignKey: 'poId' });
+      Inventory.hasMany(models.removedInventory, { foreignKey: 'removedId' });
+      // Inventory.hasMany(models.receiving, { foreignKey: 'poId' });
     }
   }
 

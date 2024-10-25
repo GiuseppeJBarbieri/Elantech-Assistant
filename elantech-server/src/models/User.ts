@@ -36,14 +36,18 @@ export default (sequelize: any, DataTypes: any) => {
       User.belongsTo(models.userType, {
         foreignKey: 'userTypeId',
       });
-
-      // User.hasMany(models.product, {
-      //   as: 'products',
-      //   foreignKey: 'userId',
-      // });
-      // User.hasMany(models.quote, {
-      //   foreignKey: 'userId',
-      // });
+      User.hasMany(models.product, {
+        as: 'product',
+        foreignKey: 'userId',
+      });
+      User.hasMany(models.quote, {
+        as: 'quote',
+        foreignKey: 'userId',
+      });
+      User.hasMany(models.company, {
+        as: 'company',
+        foreignKey: 'userId',
+      });
     }
   }
 

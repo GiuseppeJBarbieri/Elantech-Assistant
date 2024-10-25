@@ -29,6 +29,7 @@ export default (sequelize: any, DataTypes: any) => {
 
         static associate(models: any) {
           QuotedProduct.belongsTo(models.quote, { foreignKey: 'quoteId' });
+          QuotedProduct.belongsTo(models.product, { foreignKey: 'productId' });
         }
   }
 
