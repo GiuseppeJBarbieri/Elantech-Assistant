@@ -23,7 +23,7 @@ export default (sequelize: any, DataTypes: any) => {
     editedBy: number;
 
     static associate(models: any) {
-      UserType.hasMany(models.user, { foreignKey: 'id' });
+      UserType.hasMany(models.user, { foreignKey: 'userTypeId' });
     }
   }
 

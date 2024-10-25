@@ -28,7 +28,7 @@ export default (sequelize: any, DataTypes: any) => {
 
      static associate(models: any) {
        Session.belongsTo(models.user, {
-         foreignKey: 'id',
+         foreignKey: 'userId',
        });
      }
   }

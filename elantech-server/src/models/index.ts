@@ -30,23 +30,6 @@ const sequelize = new Sequelize.Sequelize(DB_PARAMS.NAME, DB_PARAMS.USER, DB_PAR
   },
 });
 
-const company = Company(sequelize, Sequelize.DataTypes);
-db[company.name] = company;
-
-const quote = Quote(sequelize, Sequelize.DataTypes);
-db[quote.name] = quote;
-
-// quote.associate = (models) => {
-//   quote.hasMany(models.quotedProducts, { as: 'quotedProduct', foreignKey: 'quoteId' });
-// };
-
-const quotedProducts = QuotedProduct(sequelize, Sequelize.DataTypes);
-db[quotedProducts.name] = quotedProducts;
-
-// quotedProducts.associate = (models) => {
-//   quotedProducts.belongsTo(models.quote, { foreignKey: 'quoteId', as: 'Quote' });
-// };
-
 const session = Session(sequelize, Sequelize.DataTypes);
 db[session.name] = session;
 
@@ -55,6 +38,23 @@ db[user.name] = user;
 
 const userType = UserType(sequelize, Sequelize.DataTypes);
 db[userType.name] = userType;
+
+// const company = Company(sequelize, Sequelize.DataTypes);
+// db[company.name] = company;
+
+// const quote = Quote(sequelize, Sequelize.DataTypes);
+// db[quote.name] = quote;
+
+// quote.associate = (models) => {
+//   quote.hasMany(models.quotedProducts, { as: 'quotedProduct', foreignKey: 'quoteId' });
+// };
+
+// const quotedProducts = QuotedProduct(sequelize, Sequelize.DataTypes);
+// db[quotedProducts.name] = quotedProducts;
+
+// quotedProducts.associate = (models) => {
+//   quotedProducts.belongsTo(models.quote, { foreignKey: 'quoteId', as: 'Quote' });
+// };
 
 // const product = Product(sequelize, Sequelize.DataTypes);
 // db[product.name] = product;
