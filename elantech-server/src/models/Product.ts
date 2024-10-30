@@ -66,6 +66,7 @@ export default (sequelize: any, DataTypes: any) => {
       Product.belongsTo(models.user, { foreignKey: 'userId' });
       Product.hasMany(models.quotedProduct, { foreignKey: 'productId' });
       Product.hasMany(models.inventory, { foreignKey: 'productId' });
+      Product.hasMany(models.receivedItem, { foreignKey: 'productId' });
     }
   }
 

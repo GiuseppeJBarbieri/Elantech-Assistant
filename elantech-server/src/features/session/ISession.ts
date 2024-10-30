@@ -6,5 +6,4 @@ export default interface ISession {
     active?: boolean
     expired?: boolean
     userId?: number
-    UserType?: {value: any}
 };

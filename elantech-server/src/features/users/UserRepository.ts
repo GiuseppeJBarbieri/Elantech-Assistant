@@ -38,7 +38,7 @@ export default {
         where: { id },
         attributes: { exclude: ['password'] },
         include: [
-          { model: db.userType, attributes: ['value'] },
+          { model: db.userType },
         ],
       });
     } catch (err) {
@@ -53,7 +53,7 @@ export default {
         where: { email },
         attributes: { exclude: ['password'] },
         include: [
-          { model: db.userType, attributes: ['value'] },
+          { model: db.userType },
         ],
       });
     } catch (err) {
@@ -85,7 +85,7 @@ export default {
       const users = await db.user.findAll({
         where: sequelize.where(sequelize.fn('lower', sequelize.col('email')), sequelize.fn('lower', email)),
         include: [
-          { model: db.userType, attributes: ['value'] },
+          { model: db.userType },
         ],
       });
 

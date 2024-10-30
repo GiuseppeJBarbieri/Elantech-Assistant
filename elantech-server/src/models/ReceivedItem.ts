@@ -28,7 +28,8 @@ export default (sequelize: any, DataTypes: any) => {
       finishedAdding: boolean;
 
       static associate(models: any) {
-        ReceivedItem.belongsTo(models.Receiving, { foreignKey: 'poId' });
+        ReceivedItem.belongsTo(models.product, { foreignKey: 'productId' });
+        ReceivedItem.belongsTo(models.receiving, { foreignKey: 'orderId' });
       }
   }
 

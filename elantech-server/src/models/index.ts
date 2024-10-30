@@ -57,27 +57,11 @@ db[inventory.name] = inventory;
 const removedInventory = Removed(sequelize, Sequelize.DataTypes);
 db[removedInventory.name] = removedInventory;
 
-// quote.associate = (models) => {
-//   quote.hasMany(models.quotedProducts, { as: 'quotedProduct', foreignKey: 'quoteId' });
-// };
+const receiving = Receiving(sequelize, Sequelize.DataTypes);
+db[receiving.name] = receiving;
 
-// quotedProducts.associate = (models) => {
-//   quotedProducts.belongsTo(models.quote, { foreignKey: 'quoteId', as: 'Quote' });
-// };
-
-// const receiving = Receiving(sequelize, Sequelize.DataTypes);
-// db[receiving.name] = receiving;
-
-// const receivedItem = ReceivedItem(sequelize, Sequelize.DataTypes);
-// db[receivedItem.name] = receivedItem;
-
-// receivedItem.associate = (models) => {
-//   receivedItem.belongsTo(models.receiving, { foreignKey: 'shippingId', as: 'ReceivedItem' });
-// };
-
-// inventory.associate = (models) => {
-//   inventory.belongsTo(models.product, { foreignKey: 'productId', as: 'Inventory' });
-// };
+const receivedItem = ReceivedItem(sequelize, Sequelize.DataTypes);
+db[receivedItem.name] = receivedItem;
 
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {

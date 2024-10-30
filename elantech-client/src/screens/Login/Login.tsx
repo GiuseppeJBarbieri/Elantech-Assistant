@@ -21,22 +21,13 @@ export const LoginLayout: FunctionComponent<LoginProps> = ({ history, setLoggedI
     const PASSWORD_REGEX = /(?=^.{8,32}$)(?=(?:.*?\d){1})(?=.*[a-z])(?=(?:.*?[!@#$%*()_+^&}{:;?.]){1})(?!.*\s)[0-9a-zA-Z!@#$%^&*]*$/;
     if (!email) {
       // alert('email cannot be empty!');
-    } else if (!PASSWORD_REGEX.exec(password)) {
-      // alert(`Passwords must have at least:
-      // \n8 characters
-      // \nOne upper case
-      // \nOne lower case
-      // \nOne number
-      // \nOne special character
-      // `);
-
     } else {
       const data = {
         username: email,
         password,
       };
 
-      axios.post(`${BASE_API_URL}users/login`, data, { withCredentials: true })
+      axios.post(`${BASE_API_URL}users/login`, data, { withCredentials: false })
         .then(() => {
           setLoggedIn(true);
           history.push(PAGE_ROUTES.HOME);

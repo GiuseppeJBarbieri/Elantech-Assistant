@@ -15,7 +15,6 @@ interface RegisterProps extends RouteComponentProps, HTMLAttributes<HTMLDivEleme
 export const RegisterLayout: FunctionComponent<RegisterProps> = ({ history }) => {
   const [newUser, setNewUser] = useState<IUser>(
     {
-      userTypeId: 1,
       email: 'giuseppe@elantechus.com',
       firstName: 'Giuseppe',
       lastName: 'Barbieri',
@@ -26,7 +25,7 @@ export const RegisterLayout: FunctionComponent<RegisterProps> = ({ history }) =>
   const registerClicked = () => {
     
     // const PASSWORD_REGEX = /(?=^.{8,32}$)(?=(?:.*?\d){1})(?=.*[a-z])(?=(?:.*?[!@#$%*()_+^&}{:;?.]){1})(?!.*\s)[0-9a-zA-Z!@#$%^&*]*$/;
-    axios.post(`${BASE_API_URL}users/`, newUser, { withCredentials: true })
+    axios.post(`${BASE_API_URL}users/`, newUser, { withCredentials: false })
         .then(() => {
           history.push(PAGE_ROUTES.HOME);
         })
