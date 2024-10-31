@@ -27,7 +27,7 @@ export const LoginLayout: FunctionComponent<LoginProps> = ({ history, setLoggedI
         password,
       };
 
-      axios.post(`${BASE_API_URL}users/login`, data, { withCredentials: false })
+      axios.post(`${BASE_API_URL}user/login`, data, { withCredentials: true })
         .then(() => {
           setLoggedIn(true);
           history.push(PAGE_ROUTES.HOME);

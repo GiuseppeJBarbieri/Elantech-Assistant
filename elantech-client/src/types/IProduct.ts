@@ -1,7 +1,7 @@
 interface IProduct {
     id?: number;
-    productNumber?: string;
     userId?: number;
+    productNumber?: string;
     altNumber1?: string;
     altNumber2?: string;
     altNumber3?: string;

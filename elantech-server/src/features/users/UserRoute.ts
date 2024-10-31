@@ -7,7 +7,6 @@ import logger from '../../utils/logging/Logger';
 import authenticationMiddleware from '../../middleware/Auth';
 import UserController from './UserController';
 import config from '../../config';
-import { resolve } from 'path';
 
 const router = express.Router();
 
@@ -22,7 +21,7 @@ const AUTH_PARAMS = config.auth;
  * IMPORTANT to create your first user remove the
  * authenticationMiddleware temporarily
  */
-router.post('/', /*authenticationMiddleware,*/ validate(UserValidation.PostUser),
+router.post('/', authenticationMiddleware, validate(UserValidation.PostUser),
   (req, res, next) => {
     logger.info('POST User');
     UserController.Add(req.body)

@@ -6,6 +6,7 @@ interface IUser {
     lastName?: string
     password?: string
     phoneNumber?: string
+    UserType?: {value: string}
 }
 
 export default IUser;

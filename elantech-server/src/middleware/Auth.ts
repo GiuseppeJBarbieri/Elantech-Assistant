@@ -91,6 +91,7 @@ passport.serializeUser(async (user: IUser, done) => {
   };
   try {
     await UserRepository.NewSession(session);
+    session.UserType = user.UserType;
     return done(null, session);
   } catch (err) {
     return done(err, null);
