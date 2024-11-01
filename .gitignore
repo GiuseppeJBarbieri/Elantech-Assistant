@@ -1,5 +1,5 @@
 elantech-client/node_modules
 elantech-server/node_modules
-MigrationScript/NewDBDump/__pycache__
-MigrationScript/NewDBSchema/__pycache__
-MigrationScript/OldDBSchema/__pycache__
+MigrationScript/NewDBDump/__pycache__/*
+MigrationScript/NewDBSchema/__pycache__/*
+MigrationScript/OldDBSchema/__pycache__/*
