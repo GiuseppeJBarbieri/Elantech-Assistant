@@ -18,3 +18,4 @@ MigrationScript/NewDBSchema/__pycache__/NewProduct.cpython-310.pyc
 MigrationScript/NewDBSchema/__pycache__/NewInventory.cpython-310.pyc
 MigrationScript/NewDBSchema/__pycache__/NewCompany.cpython-310.pyc
 MigrationScript/NewDBSchema/__pycache__/__init__.cpython-310.pyc
+MigrationScript/NewDBDump/New_Product_List.csv
