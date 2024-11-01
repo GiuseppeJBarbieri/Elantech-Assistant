@@ -1,31 +1,31 @@
-import { Model } from 'sequelize';
+import { Model, DataTypes, Sequelize } from 'sequelize';
 
 interface CompanyAttributes {
     id: number;
     userId: number;
-    companyType: string;
-    companyName: string;
-    companyRep: string;
-    phoneNumber: string;
+    type: string;
+    name: string;
+    representative: string;
+    phone: string;
     email: string;
     location: string;
     comment: string;
 }
 
-export default (sequelize: any, DataTypes: any) => {
+export default (sequelize: Sequelize) => {
   class Company extends Model<CompanyAttributes>
     implements CompanyAttributes {
         id: number;
 
         userId: number;
 
-        companyType: string;
+        type: string;
 
-        companyName: string;
+        name: string;
 
-        companyRep!: string;
+        representative!: string;
 
-        phoneNumber!: string;
+        phone!: string;
 
         email!: string;
 
@@ -51,19 +51,19 @@ export default (sequelize: any, DataTypes: any) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    companyType: {
+    type: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    companyName: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    companyRep: {
+    representative: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    phoneNumber: {
+    phone: {
       type: DataTypes.STRING,
       allowNull: true,
     },

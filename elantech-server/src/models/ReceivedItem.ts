@@ -44,19 +44,15 @@ export default (sequelize: any, DataTypes: any) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
-      unique: true,
     },
     productId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
-      unique: true,
     },
     quantity: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      primaryKey: true,
-      unique: true,
     },
     cud: {
       type: DataTypes.STRING,
