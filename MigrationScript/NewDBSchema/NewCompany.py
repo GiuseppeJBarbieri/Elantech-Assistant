@@ -3,14 +3,14 @@
 # Created Date: October 2024
 # =========================================================================================
 class NewCompany:
-    def __init__(self, id: int, userId: int, companyType: str, companyName: str, companyRep: str, 
-                 phoneNumber: str, email: str, location: str, comments: str, createdAt: str, updatedAt: str):
+    def __init__(self, id: int, userId: int, type: str, name: str, representative: str, 
+                 phone: str, email: str, location: str, comments: str, createdAt: str, updatedAt: str):
         self.id = id
         self.userId = userId
-        self.companyType = companyType
-        self.companyName = companyName
-        self.companyRep = companyRep
-        self.phoneNumber = phoneNumber
+        self.type = type
+        self.name = name
+        self.representative = representative
+        self.phone = phone
         self.email = email
         self.location = location
         self.comments = comments

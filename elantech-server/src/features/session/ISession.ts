@@ -1,9 +1,9 @@
 interface ISession {
     uuid: string
-    expiresAt?: Date
+    userId?: number
     active?: boolean
     expired?: boolean
-    userId?: number
+    expiresAt?: Date
     UserType?: {value: any}
 }
 

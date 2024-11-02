@@ -1,4 +1,4 @@
-import { Model } from 'sequelize';
+import { Model, DataTypes, Sequelize } from 'sequelize';
 
 interface RemovedInventoryAttributes {
   id: number;
@@ -9,7 +9,7 @@ interface RemovedInventoryAttributes {
   dateRemoved: Date;
 }
 
-export default (sequelize: any, DataTypes: any) => {
+export default (sequelize: Sequelize) => {
   class RemovedInventory extends Model<RemovedInventoryAttributes>
     implements RemovedInventoryAttributes {
     id: number;

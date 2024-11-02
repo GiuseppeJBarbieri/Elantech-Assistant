@@ -1,10 +1,10 @@
-import { Model } from 'sequelize';
+import { Model, DataTypes, Sequelize } from 'sequelize';
 
 interface ReceivingAttributes {
   id: number;
-  poNumber: string;
   companyId: number;
   userId: number;
+  purchaseOrderNumber: string;
   orderType: string;
   trackingNumber: string;
   dateReceived: Date;
@@ -12,16 +12,16 @@ interface ReceivingAttributes {
   comment: string;
 }
 
-export default (sequelize: any, DataTypes: any) => {
+export default (sequelize: Sequelize) => {
   class Receiving extends Model<ReceivingAttributes>
     implements ReceivingAttributes {
     id: number;
 
-    poNumber: string;
-
     companyId: number;
 
     userId: number;
+
+    purchaseOrderNumber: string;
 
     orderType: string;
 
@@ -48,11 +48,6 @@ export default (sequelize: any, DataTypes: any) => {
       primaryKey: true,
       unique: true,
     },
-    poNumber: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-    },
     companyId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -60,6 +55,11 @@ export default (sequelize: any, DataTypes: any) => {
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+    },
+    purchaseOrderNumber: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
     },
     orderType: {
       type: DataTypes.STRING,

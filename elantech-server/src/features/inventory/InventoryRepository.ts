@@ -34,7 +34,7 @@ export default {
   async Add(inventory: IInventory): Promise<IInventory> {
     try {
       const _inventory = inventory;
-      delete _inventory.dateTested;
+      delete _inventory.testedDate;
       logger.info(_inventory);
       await db.inventory.create(_inventory);
       const numOfInventory = await db.inventory.count({
@@ -60,7 +60,7 @@ export default {
   async Edit(inventory: IInventory): Promise<IInventory> {
     try {
       const _inventory = inventory;
-      delete _inventory.poId;
+      delete _inventory.purchaseOrderId;
       delete _inventory.removedId;
 
       return await db.inventory.update(_inventory, {

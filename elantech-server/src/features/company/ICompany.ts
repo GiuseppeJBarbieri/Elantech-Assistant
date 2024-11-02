@@ -1,12 +1,13 @@
 interface ICompany {
     id?: number;
-    companyType: string;
-    companyName: string;
-    companyRep?: string;
-    phoneNumber?: string;
+    userId: number;
+    type: string;
+    name: string;
+    representative?: string;
+    phone?: string;
     email?: string;
     location?: string;
-    comments?: string;
+    comment?: string;
 }
 
 export default ICompany;

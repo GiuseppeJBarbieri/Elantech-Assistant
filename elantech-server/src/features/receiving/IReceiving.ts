@@ -1,13 +1,13 @@
 interface IReceiving {
     id?: number;
-    poNumber: number;
     companyId: number;
     userId: number;
-    shippingId: number;
+    purchaseOrderNumber: string;
     orderType: string;
     trackingNumber: string;
     dateReceived: Date;
     shippedVia: string;
+    comment: string;
 }
 
 export default IReceiving;

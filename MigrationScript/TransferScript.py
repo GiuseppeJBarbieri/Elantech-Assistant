@@ -109,10 +109,10 @@ def convert_company_to_new():
         tmpProd = NewCompany(
             id=x.company_id,
             userId=1,
-            companyType='',
-            companyName=x.company_name,
-            companyRep='',
-            phoneNumber=x.phone_number,
+            type='',
+            name=x.company_name,
+            representative='',
+            phone=x.phone_number,
             email='',
             location=x.address.replace('\x9f', '').replace('\x91', '').replace('\ufffd', ''),
             comments=x.company_comments,
@@ -243,10 +243,10 @@ def create_company_from_received(order: ReceivedOrder):
     tmpProd = NewCompany(
             id=new_id,
             userId=1,
-            companyType='',
-            companyName=order.purchased_from,
-            companyRep='',
-            phoneNumber='',
+            type='',
+            name=order.purchased_from,
+            representative='',
+            phone='',
             email='',
             location='',
             comments='',
@@ -281,14 +281,14 @@ def convert_received_order_to_new():
         s+=1
         tmpProd = NewReceivedOrder(
             id = s,
-            poNumber = x.poNumber,
+            purchaseOrderNumber = x.poNumber,
             companyId = company_id,
             userId = user_id,
             orderType = '',
             trackingNumber = '',
             dateReceived = x.time,
             shippedVia='',
-            comments=x.comments,
+            comment=x.comments,
             createdAt=x.time,
             updatedAt=x.time 
         )
@@ -318,7 +318,7 @@ def create_received_item():
         s+=1
         tmp = NewReceivedItem(
             id=s,
-            orderId=orderId,
+            receivingId=orderId,
             quantity=x.quantity,
             productId=productId,
             cud=x.cud,
@@ -337,7 +337,7 @@ def save_received_order_file():
         spam_writer = csv.writer(csv_file, delimiter=',', quotechar='"',  quoting=csv.QUOTE_MINIMAL)
         spam_writer.writerow(inv_header)
         for x in new_received_order_list:
-            spam_writer.writerow([x.id, x.poNumber, x.companyId, x.userId, x.orderType, x.trackingNumber, x.dateReceived, x.shippedVia, x.comments, x.createdAt, x.updatedAt])  
+            spam_writer.writerow([x.id, x.poNumber, x.companyId, x.userId, x.orderType, x.trackingNumber, x.dateReceived, x.shippedVia, x.comment, x.createdAt, x.updatedAt])  
 
 def save_received_item_file():
     inv_header = ['id', 'orderId', 'productId', 'quantity', 'cud', 'comment', 'finishedAdding', 'createdAt', 'updatedAt']
@@ -393,13 +393,13 @@ def covert_inventory_to_new():
             tmpProd = NewInventory(
                 id=0,
                 productId=x.new_product_id,
-                removeId=0,
-                poId=0,
+                removedInventoryId=0,
+                purchaseOrderId=0,
                 serialNumber=x.serial_number,
                 condition=x.product_condition,
                 warrantyExpiration=x.warranty_exp,
-                isTested=x.new_is_tested,
-                dateTested="2022-01-03 20:38:35.5-05",
+                tested=x.new_is_tested,
+                testedDate="2022-01-03 20:38:35.5-05",
                 comment=x.comment,
                 location=x.location,
                 createdAt="2022-01-03 20:38:35.5-05",

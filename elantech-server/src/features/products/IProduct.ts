@@ -12,9 +12,9 @@ interface IProduct {
     productType: string;
     brand: string;
     description: string;
-    ebayLink: string;
-    websiteLink: string;
-    quickSpecsLink: string;
+    ebayUrl: string;
+    websiteUrl: string;
+    quickSpecsUrl: string;
     relatedTags: string;
     reasonForRemoval: string;
 }

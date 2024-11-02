@@ -1,8 +1,8 @@
-import { Model } from 'sequelize';
+import { Model, DataTypes, Sequelize } from 'sequelize';
 
 interface ReceivedItemAttributes {
   id: number;
-  orderId: number;
+  receivingId: number;
   productId: number;
   quantity: number;
   cud: string;
@@ -10,12 +10,12 @@ interface ReceivedItemAttributes {
   finishedAdding: boolean;
 }
 
-export default (sequelize: any, DataTypes: any) => {
+export default (sequelize: Sequelize) => {
   class ReceivedItem extends Model<ReceivedItemAttributes>
     implements ReceivedItemAttributes {
       id: number;
 
-      orderId: number;
+      receivingId: number;
 
       productId: number;
 
@@ -40,7 +40,7 @@ export default (sequelize: any, DataTypes: any) => {
       primaryKey: true,
       unique: true,
     },
-    orderId: {
+    receivingId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,

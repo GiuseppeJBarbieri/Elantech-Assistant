@@ -30,37 +30,37 @@ const sequelize = new Sequelize.Sequelize(DB_PARAMS.NAME, DB_PARAMS.USER, DB_PAR
   },
 });
 
-const session = Session(sequelize, Sequelize.DataTypes);
+const session = Session(sequelize);
 db[session.name] = session;
 
-const user = User(sequelize, Sequelize.DataTypes);
+const user = User(sequelize);
 db[user.name] = user;
 
-const userType = UserType(sequelize, Sequelize.DataTypes);
+const userType = UserType(sequelize);
 db[userType.name] = userType;
 
-const product = Product(sequelize, Sequelize.DataTypes);
+const product = Product(sequelize);
 db[product.name] = product;
 
-const company = Company(sequelize, Sequelize.DataTypes);
+const company = Company(sequelize);
 db[company.name] = company;
 
-const quote = Quote(sequelize, Sequelize.DataTypes);
+const quote = Quote(sequelize);
 db[quote.name] = quote;
 
-const quotedProducts = QuotedProduct(sequelize, Sequelize.DataTypes);
+const quotedProducts = QuotedProduct(sequelize);
 db[quotedProducts.name] = quotedProducts;
 
-const inventory = Inventory(sequelize, Sequelize.DataTypes);
+const inventory = Inventory(sequelize);
 db[inventory.name] = inventory;
 
-const removedInventory = Removed(sequelize, Sequelize.DataTypes);
+const removedInventory = Removed(sequelize);
 db[removedInventory.name] = removedInventory;
 
-const receiving = Receiving(sequelize, Sequelize.DataTypes);
+const receiving = Receiving(sequelize);
 db[receiving.name] = receiving;
 
-const receivedItem = ReceivedItem(sequelize, Sequelize.DataTypes);
+const receivedItem = ReceivedItem(sequelize);
 db[receivedItem.name] = receivedItem;
 
 Object.keys(db).forEach((modelName) => {

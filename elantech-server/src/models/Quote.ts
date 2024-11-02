@@ -1,4 +1,4 @@
-import { Model } from 'sequelize';
+import { Model, DataTypes, Sequelize } from 'sequelize';
 
 interface QuoteAttributes {
   id: number;
@@ -8,7 +8,7 @@ interface QuoteAttributes {
   sold: boolean;
 }
 
-export default (sequelize: any, DataTypes: any) => {
+export default (sequelize: Sequelize) => {
   class Quote extends Model<QuoteAttributes>
     implements QuoteAttributes {
     id: number;

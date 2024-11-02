@@ -3,9 +3,10 @@
 # Created Date: October 2024
 # =========================================================================================
 class NewReceivedItem:
-    def __init__(self, id: int, orderId: int, productId: int, quantity: int, cud: str, comment: str, finishedAdding: bool, createdAt: str, updatedAt: str):
+    def __init__(self, id: int, receivingId: int, productId: int, quantity: int, cud: str, 
+                 comment: str, finishedAdding: bool, createdAt: str, updatedAt: str):
         self.id = id
-        self.orderId = orderId
+        self.receivingId = receivingId
         self.productId = productId
         self.quantity = quantity
         self.cud = cud

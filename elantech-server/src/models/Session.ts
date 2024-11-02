@@ -1,4 +1,4 @@
-import { Model } from 'sequelize';
+import { Model, DataTypes, Sequelize } from 'sequelize';
 
 interface SessionAttributes {
   uuid: string; // TODO: Sequelize.DataTypes.UUID?
@@ -8,7 +8,7 @@ interface SessionAttributes {
   expiresAt: Date;
 }
 
-export default (sequelize: any, DataTypes: any) => {
+export default (sequelize: Sequelize) => {
   class Session extends Model<SessionAttributes>
     implements SessionAttributes {
     /**
@@ -41,19 +41,19 @@ export default (sequelize: any, DataTypes: any) => {
     },
     userId: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
     },
     active: {
       type: DataTypes.BOOLEAN,
-      allowNull: true,
+      allowNull: false,
     },
     expired: {
       type: DataTypes.BOOLEAN,
-      allowNull: true,
+      allowNull: false,
     },
     expiresAt: {
       type: DataTypes.DATE,
-      allowNull: true,
+      allowNull: false,
     },
   }, {
     sequelize,

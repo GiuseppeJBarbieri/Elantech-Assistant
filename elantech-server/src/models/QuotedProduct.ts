@@ -1,4 +1,4 @@
-import { Model } from 'sequelize';
+import { Model, DataTypes, Sequelize } from 'sequelize';
 
 interface QuotedProductAttributes {
     id: number;
@@ -10,7 +10,7 @@ interface QuotedProductAttributes {
     comment: string;
 }
 
-export default (sequelize: any, DataTypes: any) => {
+export default (sequelize: Sequelize) => {
   class QuotedProduct extends Model<QuotedProductAttributes>
     implements QuotedProductAttributes {
         id: number;

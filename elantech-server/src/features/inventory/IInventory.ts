@@ -1,18 +1,15 @@
 interface IInventory {
     id: number;
     productId: number;
-    removedId?: number;
-    poId?: number;
+    removedInventoryId: number;
+    purchaseOrderId: number;
     serialNumber: string;
     condition: string;
-    warrantyExpiration: string;
-    isTested: boolean;
-    dateTested: string;
+    warrantyExpiration: Date;
+    tested: boolean;
+    testedDate: Date;
     comment: string;
     location: string;
-    // sellerName?: string;
-    // orderNumber?: string;
-    // dateReceived?: string;
 }
 
 export default IInventory;

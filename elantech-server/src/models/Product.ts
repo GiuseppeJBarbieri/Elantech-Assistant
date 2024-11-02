@@ -1,4 +1,4 @@
-import { Model } from 'sequelize';
+import { Model, DataTypes, Sequelize } from 'sequelize';
 
 interface ProductAttributes {
   id: number;
@@ -14,14 +14,14 @@ interface ProductAttributes {
   productType: string;
   brand: string;
   description: string;
-  ebayLink: string;
-  websiteLink: string;
-  quickSpecsLink: string;
+  ebayUrl: string;
+  websiteUrl: string;
+  quickSpecsUrl: string;
   relatedTags: string;
   reasonForRemoval: string;
 }
 
-export default (sequelize: any, DataTypes: any) => {
+export default (sequelize: Sequelize) => {
   class Product extends Model<ProductAttributes>
     implements ProductAttributes {
     id: number;
@@ -52,11 +52,11 @@ export default (sequelize: any, DataTypes: any) => {
 
     updatedAt: Date
 
-    ebayLink!: string;
+    ebayUrl: string;
 
-    websiteLink!: string;
+    websiteUrl: string;
 
-    quickSpecsLink!: string;
+    quickSpecsUrl: string;
 
     relatedTags!: string;
 
@@ -142,16 +142,16 @@ export default (sequelize: any, DataTypes: any) => {
       allowNull: false,
       validate: { len: [0, 10000] },
     },
-    ebayLink: {
+    ebayUrl: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    websiteLink: {
+    websiteUrl: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    quickSpecsLink: {
-      type: DataTypes.STRING(10000),
+    quickSpecsUrl: {
+      type: DataTypes.STRING,
       allowNull: true,
     },
     relatedTags: {

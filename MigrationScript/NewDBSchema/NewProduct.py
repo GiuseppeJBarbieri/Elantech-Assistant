@@ -3,7 +3,10 @@
 # Created Date: October 2024
 # =========================================================================================
 class NewProduct:
-    def __init__(self, id: int, userId: int, productNumber: str, altNumber1: str, altNumber2: str, altNumber3: str, altNumber4: str, altNumber5: str, altNumber6: str, quantity: int, productType: str, brand: str, description: str, relatedTags: str, createdAt: str, updatedAt: str):
+    def __init__(self, id: int, userId: int, productNumber: str, altNumber1: str, altNumber2: str, 
+                 altNumber3: str, altNumber4: str, altNumber5: str, altNumber6: str, quantity: int, 
+                 productType: str, brand: str, description: str, relatedTags: str, createdAt: str, 
+                 updatedAt: str):
         self.id = id
         self.userId = userId
         self.productNumber = productNumber

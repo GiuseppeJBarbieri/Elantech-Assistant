@@ -1,29 +1,29 @@
-import { Model } from 'sequelize';
+import { Model, DataTypes, Sequelize } from 'sequelize';
 
 interface InventoryAttributes {
   id: number;
   productId: number;
-  removedId: number;
-  poId: number;
+  removedInventoryId: number;
+  purchaseOrderId: number;
   serialNumber: string;
   condition: string;
   warrantyExpiration: Date;
-  isTested: boolean;
-  dateTested: Date;
+  tested: boolean;
+  testedDate: Date;
   comment: string;
   location: string;
 }
 
-export default (sequelize: any, DataTypes: any) => {
+export default (sequelize: Sequelize) => {
   class Inventory extends Model<InventoryAttributes>
     implements InventoryAttributes {
     id: number;
 
     productId: number;
 
-    removedId!: number;
+    removedInventoryId!: number;
 
-    poId!: number;
+    purchaseOrderId!: number;
 
     serialNumber: string;
 
@@ -31,9 +31,9 @@ export default (sequelize: any, DataTypes: any) => {
 
     warrantyExpiration!: Date;
 
-    isTested: boolean;
+    tested: boolean;
 
-    dateTested!: Date;
+    testedDate!: Date;
 
     comment!: string;
 
@@ -41,8 +41,8 @@ export default (sequelize: any, DataTypes: any) => {
 
     static associate(models: any) {
       Inventory.belongsTo(models.product, { foreignKey: 'productId' });
-      Inventory.hasOne(models.removedInventory, { foreignKey: 'removedId' });
-      Inventory.belongsTo(models.receiving, { foreignKey: 'poId' });
+      Inventory.hasOne(models.removedInventory, { foreignKey: 'removedInventoryId' });
+      Inventory.belongsTo(models.receiving, { foreignKey: 'purchaseOrderId' });
     }
   }
 
@@ -57,11 +57,11 @@ export default (sequelize: any, DataTypes: any) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    removedId: {
+    removedInventoryId: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
-    poId: {
+    purchaseOrderId: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
@@ -78,11 +78,11 @@ export default (sequelize: any, DataTypes: any) => {
       type: DataTypes.DATEONLY,
       allowNull: true,
     },
-    isTested: {
+    tested: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
     },
-    dateTested: {
+    testedDate: {
       type: DataTypes.DATEONLY,
       allowNull: true,
     },
