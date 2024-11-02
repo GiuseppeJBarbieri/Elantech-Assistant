@@ -1,7 +1,7 @@
 import IHTTPResponse from '../../utils/interfaces/IHTTPResponse';
 import QuotedProductsRepository from './QuotedProductsRepository';
 import constants from '../../utils/constants/Constants';
-import IQuotedProducts from './IQuotedProducts';
+import IQuotedProducts from './IQuotedProduct';
 
 export default {
 

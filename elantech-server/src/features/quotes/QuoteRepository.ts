@@ -2,7 +2,7 @@ import db from '../../models';
 import logger from '../../utils/logging/Logger';
 import IRepoError from '../../utils/interfaces/IRepoError';
 import IQuote from './IQuote';
-import IQuotedProduct from '../quotedProducts/IQuotedProducts';
+import IQuotedProduct from '../quotedProducts/IQuotedProduct';
 
 /// ////////////// ///
 /// / INTERNALS // ///
@@ -58,7 +58,7 @@ export default {
           userId: response.userId,
           dateQuoted: response.dateQuoted,
           sold: response.sold,
-          quoter: `${response.user.firstName} ${response.user.lastName}`,
+          User: { firstName: response.user.firstName, lastName: response.user.lastName },
           numberOfProducts: response.quoted_products.length,
           totalQuote: totalPrice,
         };

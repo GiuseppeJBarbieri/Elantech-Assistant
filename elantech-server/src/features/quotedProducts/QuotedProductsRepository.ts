@@ -1,7 +1,7 @@
 import db from '../../models';
 import logger from '../../utils/logging/Logger';
 import IRepoError from '../../utils/interfaces/IRepoError';
-import IQuotedProducts from './IQuotedProducts';
+import IQuotedProducts from './IQuotedProduct';
 
 /// ////////////// ///
 /// / INTERNALS // ///
@@ -70,15 +70,14 @@ export default {
           id: quotedProduct.id,
           quoteId: quotedProduct.quoteId,
           productId: quotedProduct.productId,
-          orderId: quotedProduct.orderId,
           quantity: quotedProduct.quantity,
           quotedPrice: quotedProduct.quotedPrice,
           productCondition: quotedProduct.productCondition,
           comment: quotedProduct.comment,
-          companyName: quotedProduct.quote.company.companyName,
-          dateQuoted: quotedProduct.quote.dateQuoted,
-          quoter: quotedProduct.quote.user.firstName,
-          sold: (quotedProduct.orderId !== null),
+          // companyName: quotedProduct.quote.company.companyName,
+          // dateQuoted: quotedProduct.quote.dateQuoted,
+          // quoter: quotedProduct.quote.user.firstName,
+          // sold: (quotedProduct.orderId !== null),
         });
       });
       return quotedProducts;
