@@ -6,7 +6,7 @@
 # =========================================================================================
 import json, csv
 from typing import List
-from NewDBSchema import NewProduct, NewInventory, NewCompany, NewQuotes, NewProductQuote, NewReceivedOrder, NewReceivedItem
+from NewDBSchema import NewProduct, NewInventory, NewCompany, NewQuote, NewProductQuote, NewReceivedOrder, NewReceivedItem
 from OldDBSchema import Product, Inventory, Company, Quotes, ReceivedOrder, ProductQuote, User
 # =========================================================================================
 # Start
@@ -18,7 +18,7 @@ old_inventory_list: List[Inventory] = []
 new_inventory_list: List[NewInventory] = []
 
 old_quotes_list: List[Quotes] = []
-new_quotes_list: List[NewQuotes] = []
+new_quotes_list: List[NewQuote] = []
 
 old_product_quotes_list: List[ProductQuote] = []
 new_product_quotes_list: List[NewProductQuote] = []
@@ -81,7 +81,9 @@ def convert_to_new_product_schema():
         new_product_list.append(tmpProd)
 
 def save_products_to_file():
-    product_header = ['userId', 'productNumber', 'altNumber1', 'altNumber2', 'altNumber3', 'altNumber4', 'altNumber5', 'altNumber6', 'quantity', 'productType', 'brand', 'description', 'relatedTags', 'createdAt', 'updatedAt']
+    product_header = ['userId', 'productNumber', 'altNumber1', 'altNumber2', 'altNumber3', 
+                      'altNumber4', 'altNumber5', 'altNumber6', 'quantity', 'productType', 
+                      'brand', 'description', 'relatedTags', 'createdAt', 'updatedAt']
     print('Saving Product List...')
     with open('NewDBDump/New_Product_List.csv', 'w', newline='') as csv_file:
         spam_writer = csv.writer(csv_file, delimiter=',', quotechar='"',  quoting=csv.QUOTE_MINIMAL)
@@ -115,21 +117,21 @@ def convert_company_to_new():
             phone=x.phone_number,
             email='',
             location=x.address.replace('\x9f', '').replace('\x91', '').replace('\ufffd', ''),
-            comments=x.company_comments,
+            comment=x.company_comments,
             createdAt="2022-01-03 20:38:35.5-05",
             updatedAt="2022-01-03 20:38:35.5-05",
         )
         new_company_list.append(tmpProd)
 
 def save_company_to_file():
-    company_header = ['id', 'userId', 'companyType', 'companyName', 'companyRep', 'phoneNumber', 'email', 'location', 'comments', 'createdAt', 'updatedAt']
+    company_header = ['id', 'userId', 'type', 'name', 'representative', 'phone', 'email', 'location', 'comment', 'createdAt', 'updatedAt']
     print('Saving Company List...')
     with open('NewDBDump/New_Company_List.csv', 'w', newline='', encoding='utf-8') as csv_file:
         spam_writer = csv.writer(csv_file, delimiter=',', quotechar='"',  quoting=csv.QUOTE_MINIMAL)
         spam_writer.writerow(company_header)
         for x in new_company_list:
-            spam_writer.writerow([x.id, x.userId, x.companyType, x.companyName, x.companyRep, x.phoneNumber, 
-                                  x.email, x.location, x.comments, x.createdAt, x.updatedAt])  
+            spam_writer.writerow([x.id, x.userId, x.type, x.name, x.representative, x.phone, 
+                                  x.email, x.location, x.comment, x.createdAt, x.updatedAt])  
 
 def get_quotes_json():
     global old_quotes_list
@@ -160,7 +162,7 @@ def convert_quotes_to_new():
         if(x.sold.lower() == "yes"):
             sold = True
 
-        tmpProd = NewQuotes(
+        tmpProd = NewQuote(
             id=x.quote_id,
             companyId=x.companyID,
             userId=user_id,
@@ -217,13 +219,15 @@ def convert_quoted_products_to_new():
         new_product_quotes_list.append(tmpProd)
 
 def save_quoted_products_file():
-    product_quote_header = ['id', 'quoteId', 'productId', 'quantity', 'quotedPrice', 'productCondition', 'comment', 'createdAt', 'updatedAt']
+    product_quote_header = ['id', 'quoteId', 'productId', 'quantity', 'quotedPrice', 
+                            'productCondition', 'comment', 'createdAt', 'updatedAt']
     print('Saving upload list...')
     with open('NewDBDump/New_Quoted_Product.csv', 'w', newline='') as csv_file:
         spam_writer = csv.writer(csv_file, delimiter=',', quotechar='"',  quoting=csv.QUOTE_MINIMAL)
         spam_writer.writerow(product_quote_header)
         for x in new_product_quotes_list:
-            spam_writer.writerow([x.id, x.quoteId, x.productId, x.quantity, x.quotedPrice, x.productCondition, x.comment, x.createdAt, x.updatedAt])  
+            spam_writer.writerow([x.id, x.quoteId, x.productId, x.quantity, x.quotedPrice, 
+                                  x.productCondition, x.comment, x.createdAt, x.updatedAt])  
 
 def get_received_order_json():
     global old_received_order_list
@@ -249,7 +253,7 @@ def create_company_from_received(order: ReceivedOrder):
             phone='',
             email='',
             location='',
-            comments='',
+            comment='',
             createdAt="2022-01-03 20:38:35.5-05",
             updatedAt="2022-01-03 20:38:35.5-05",
         )
@@ -270,7 +274,7 @@ def convert_received_order_to_new():
 
         company_id=0
         for c in new_company_list:
-            if(x.purchased_from.lower() == c.companyName.lower()):
+            if(x.purchased_from.lower() == c.name.lower()):
                 company_id=c.id
                 break
         
@@ -294,7 +298,7 @@ def convert_received_order_to_new():
         )
         exists = False
         for r in new_received_order_list:
-            if r.poNumber == x.poNumber:
+            if r.purchaseOrderNumber == x.poNumber:
                 exists = True
                 break
 
@@ -307,7 +311,7 @@ def create_received_item():
     for x in old_received_order_list:
         orderId = 0
         for y in new_received_order_list:
-            if (x.poNumber == y.poNumber):
+            if (x.poNumber == y.purchaseOrderNumber):
                 orderId = y.id
                 break
         productId = 0
@@ -331,22 +335,25 @@ def create_received_item():
             new_received_item_list.append(tmp)
 
 def save_received_order_file():
-    inv_header = ['id', 'poNumber', 'companyId', 'userId', 'orderType', 'trackingNumber', 'dateReceived', 'shippedVia', 'comments', 'createdAt', 'updatedAt']
+    inv_header = ['id', 'purchaseOrderNumber', 'companyId', 'userId', 'orderType', 
+                  'trackingNumber', 'dateReceived', 'shippedVia', 'comment', 'createdAt', 'updatedAt']
     print('Saving upload list...')
     with open('NewDBDump/New_Received_Order.csv', 'w', newline='') as csv_file:
         spam_writer = csv.writer(csv_file, delimiter=',', quotechar='"',  quoting=csv.QUOTE_MINIMAL)
         spam_writer.writerow(inv_header)
         for x in new_received_order_list:
-            spam_writer.writerow([x.id, x.poNumber, x.companyId, x.userId, x.orderType, x.trackingNumber, x.dateReceived, x.shippedVia, x.comment, x.createdAt, x.updatedAt])  
+            spam_writer.writerow([x.id, x.purchaseOrderNumber, x.companyId, x.userId, x.orderType, x.trackingNumber, 
+                                  x.dateReceived, x.shippedVia, x.comment, x.createdAt, x.updatedAt])  
 
 def save_received_item_file():
-    inv_header = ['id', 'orderId', 'productId', 'quantity', 'cud', 'comment', 'finishedAdding', 'createdAt', 'updatedAt']
+    inv_header = ['id', 'receivingId', 'productId', 'quantity', 'cud', 'comment', 'finishedAdding', 'createdAt', 'updatedAt']
     print('Saving upload list...')
     with open('NewDBDump/New_Received_Item.csv', 'w', newline='') as csv_file:
         spam_writer = csv.writer(csv_file, delimiter=',', quotechar='"',  quoting=csv.QUOTE_MINIMAL)
         spam_writer.writerow(inv_header)
         for x in new_received_item_list:
-            spam_writer.writerow([x.id, x.orderId, x.productId, x.quantity, x.cud, x.comment, x.finishedAdding, x.createdAt, x.updatedAt])  
+            spam_writer.writerow([x.id, x.receivingId, x.productId, x.quantity, x.cud, x.comment, x.finishedAdding, 
+                                  x.createdAt, x.updatedAt])  
 
 def get_inventory_json():
     global old_inventory_list
@@ -409,14 +416,15 @@ def covert_inventory_to_new():
                 new_inventory_list.append(tmpProd)
 
 def save_inventory_file():
-    inv_header = ['productId', 'serialNumber', 'condition', 'warrantyExpiration', 'isTested', 'dateTested', 'comment', 'location', 'createdAt', 'updatedAt']
+    inv_header = ['productId', 'serialNumber', 'condition', 'warrantyExpiration', 
+                  'tested', 'testedDate', 'comment', 'location', 'createdAt', 'updatedAt']
     print('Saving upload list...')
     with open('NewDBDump/New_Inventory_List.csv', 'w', newline='') as csv_file:
         spam_writer = csv.writer(csv_file, delimiter=',', quotechar='"',  quoting=csv.QUOTE_MINIMAL)
         spam_writer.writerow(inv_header)
         for x in new_inventory_list:
-            spam_writer.writerow([x.productId, x.serialNumber, x.condition, x.warrantyExpiration, x.isTested, 
-                                  x.dateTested, x.comment, x.location,  x.createdAt, x.updatedAt])  
+            spam_writer.writerow([x.productId, x.serialNumber, x.condition, x.warrantyExpiration, x.tested, 
+                                  x.testedDate, x.comment, x.location,  x.createdAt, x.updatedAt])  
 
 def run():
     get_users_json()
@@ -425,28 +433,21 @@ def run():
     get_quotes_json()
     get_company_json()
     get_received_order_json()
-
     convert_to_new_product_schema()
     save_products_to_file()
-
     convert_old_inventory_fields()
     covert_inventory_to_new()
     save_inventory_file()
-
     convert_company_to_new()
-     
     convert_quotes_to_new()
     save_quotes_file()
-
     get_quoted_products()
     convert_quoted_products_to_new()
     save_quoted_products_file()
-
     convert_received_order_to_new()
     create_received_item()
     save_received_order_file()
     save_received_item_file()
-    # Do this last
     save_company_to_file()
 
 run()

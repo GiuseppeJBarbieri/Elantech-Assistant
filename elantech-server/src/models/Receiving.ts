@@ -35,7 +35,7 @@ export default (sequelize: Sequelize) => {
 
     static associate(models: any) {
       Receiving.hasMany(models.receivedItem, { foreignKey: 'orderId' });
-      Receiving.hasMany(models.inventory, { foreignKey: 'receivingId' });
+      Receiving.hasMany(models.inventory, { foreignKey: 'purchaseOrderId' });
       Receiving.belongsTo(models.company, { foreignKey: 'companyId' });
       Receiving.belongsTo(models.user, { foreignKey: 'userId' });
     }

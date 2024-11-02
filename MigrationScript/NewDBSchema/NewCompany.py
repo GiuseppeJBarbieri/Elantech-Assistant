@@ -4,7 +4,7 @@
 # =========================================================================================
 class NewCompany:
     def __init__(self, id: int, userId: int, type: str, name: str, representative: str, 
-                 phone: str, email: str, location: str, comments: str, createdAt: str, updatedAt: str):
+                 phone: str, email: str, location: str, comment: str, createdAt: str, updatedAt: str):
         self.id = id
         self.userId = userId
         self.type = type
@@ -13,7 +13,7 @@ class NewCompany:
         self.phone = phone
         self.email = email
         self.location = location
-        self.comments = comments
+        self.comment = comment
         self.createdAt = createdAt
         self.updatedAt = updatedAt
 # =========================================================================================
