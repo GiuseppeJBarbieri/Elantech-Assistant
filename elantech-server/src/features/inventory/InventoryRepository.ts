@@ -61,7 +61,7 @@ export default {
     try {
       const _inventory = inventory;
       delete _inventory.purchaseOrderId;
-      delete _inventory.removedId;
+      delete _inventory.removedInventoryId;
 
       return await db.inventory.update(_inventory, {
         where: {

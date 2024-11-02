@@ -51,8 +51,8 @@ export default class Server {
         // Create default user types if there are none
         const userTypes = await db.userType.findAll({});
         if (userTypes.length === 0) {
-          await db.userType.create({ value: 'Admin' });
-          await db.userType.create({ value: 'User' });
+          await db.userType.create({ createdBy: 1, type: 'Admin' });
+          await db.userType.create({ createdBy: 1, value: 'User' });
         }
       }
     } catch (e) {

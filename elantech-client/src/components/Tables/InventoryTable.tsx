@@ -26,7 +26,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
         {
             id: 0,
             productId: 0,
-            removedId: 0,
+            removedInventoryId: 0,
             poId: undefined,
             serialNumber: '',
             condition: '',

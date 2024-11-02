@@ -103,6 +103,7 @@ export default {
   DB: {
     USER_TYPE: {
       ADMIN: 'Admin',
+      USER: 'User',
     },
   },
   USER: {

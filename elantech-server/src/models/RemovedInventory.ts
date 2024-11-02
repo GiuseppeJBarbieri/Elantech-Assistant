@@ -25,7 +25,7 @@ export default (sequelize: Sequelize) => {
     dateRemoved: Date;
 
     static associate(models: any) {
-      RemovedInventory.belongsTo(models.inventory, { foreignKey: 'removedId' });
+      RemovedInventory.belongsTo(models.inventory, { foreignKey: 'removedInventoryId' });
       RemovedInventory.belongsTo(models.user, { foreignKey: 'userId' });
     }
   }

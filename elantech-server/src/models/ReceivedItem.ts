@@ -29,7 +29,7 @@ export default (sequelize: Sequelize) => {
 
       static associate(models: any) {
         ReceivedItem.belongsTo(models.product, { foreignKey: 'productId' });
-        ReceivedItem.belongsTo(models.receiving, { foreignKey: 'orderId' });
+        ReceivedItem.belongsTo(models.receiving, { foreignKey: 'receivingId' });
       }
   }
 

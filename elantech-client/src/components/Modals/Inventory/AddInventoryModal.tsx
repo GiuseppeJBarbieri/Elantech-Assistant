@@ -26,7 +26,7 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
     const [inventoryObj, setInventoryObj] = useState<IInventory>({
         id: 0,
         productId: props.selectedProduct.id || 0,
-        removedId: undefined,
+        removedInventoryId: undefined,
         poId: undefined,
         serialNumber: '',
         condition: 'Choose Condition',

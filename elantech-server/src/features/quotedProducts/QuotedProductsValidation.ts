@@ -12,7 +12,7 @@ export default {
 
   GetQuotedProductByQuoteId: {
     params: {
-      companyID: Joi.number().required(),
+      companyId: Joi.number().required(),
     },
   },
 

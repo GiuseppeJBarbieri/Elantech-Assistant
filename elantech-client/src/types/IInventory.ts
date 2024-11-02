@@ -1,7 +1,7 @@
 interface IInventory {
     id: number;
     productId: number;
-    removedId?: number;
+    removedInventoryId?: number;
     poId?: number;
     serialNumber: string;
     condition: string;

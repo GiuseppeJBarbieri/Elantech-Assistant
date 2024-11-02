@@ -4,7 +4,7 @@ import constants from '../../utils/constants/Constants';
 export default {
   PostUser: {
     body: {
-      createdBy: Joi.number(),
+      userTypeId: Joi.number().required(),
       email: Joi.string().lowercase().email().required(),
       firstName: Joi.string(),
       lastName: Joi.string(),
@@ -15,7 +15,6 @@ export default {
       // One Number
       // One Special character
       password: Joi.string().regex(constants.USER.PASSWORD.REGEX).required(),
-      userTypeId: Joi.number().required(),
       phoneNumber: Joi.string(),
     },
   },

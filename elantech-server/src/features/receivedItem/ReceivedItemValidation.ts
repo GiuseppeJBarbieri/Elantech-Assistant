@@ -25,7 +25,7 @@ export default {
   PostReceivedItem: {
     body: {
       id: Joi.number().optional().allow(null, ''),
-      shippingId: Joi.number().required(),
+      receivingId: Joi.number().required(),
       productId: Joi.number().required(),
       cud: Joi.string().required(),
       comment: Joi.string(),
@@ -36,7 +36,7 @@ export default {
   PutReceivedItem: {
     body: {
       id: Joi.number().optional().allow(null, ''),
-      shippingId: Joi.number().required(),
+      receivingId: Joi.number().required(),
       productId: Joi.number().required(),
       cud: Joi.string().required(),
       comment: Joi.string(),
