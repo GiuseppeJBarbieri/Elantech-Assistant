@@ -7,7 +7,6 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import IInventory from '../../types/IInventory';
 import IProduct from '../../types/IProduct';
 import { EditInventoryModal } from '../Modals/Inventory/EditInventoryModal';
-import { EditMultipleInventoryModal } from '../Modals/Inventory/EditMultipleInventoryModal';
 import { RemoveInventoryModal } from '../Modals/Inventory/RemoveInventoryModal';
 import { RemoveMultipleInventoryModal } from '../Modals/Inventory/RemoveMultipleInventoryModal';
 
@@ -40,7 +39,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
     const [editInventorySwitch, setEditInventorySwitch] = useState(false);
     const [removeInventorySwitch, setRemoveInventorySwitch] = useState(false);
     const [removeMultipleInventorySwitch, setRemoveMultipleInventorySwitch] = useState(false);
-    const [editMultipleInventorySwitch, setEditMultipleInventorySwitch] = useState(false);
+    // const [editMultipleInventorySwitch, setEditMultipleInventorySwitch] = useState(false);
 
     const [tempSelected, setTempSelected] = useState<string[]>([]);
 
@@ -275,7 +274,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                                 </Button>
                                 <Button variant='dark' style={{ marginLeft: 5 }}
                                     onClick={() => {
-                                        setEditMultipleInventorySwitch(true);
+                                        // setEditMultipleInventorySwitch(true);
                                     }}
                                 >
                                     Edit Multiple Inventory
@@ -351,7 +350,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                     />
                 </div>
             }
-            {
+            {/* {
                 editMultipleInventorySwitch &&
                 <div className='modal-dialog'>
                     <EditMultipleInventoryModal
@@ -362,7 +361,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                         }}
                     />
                 </div>
-            }
+            } */}
         </div >
     );
 };

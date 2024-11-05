@@ -1,5 +1,5 @@
 import React, { HTMLAttributes, FunctionComponent } from 'react';
-import { Modal, Spinner, Form, Button } from 'react-bootstrap';
+import { Modal, Form, Button } from 'react-bootstrap';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { PAGE_ROUTES } from '../../../constants/PageRoutes';
 
