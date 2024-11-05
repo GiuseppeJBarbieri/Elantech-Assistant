@@ -85,43 +85,36 @@ export default (sequelize: Sequelize) => {
       type: DataTypes.STRING,
       allowNull: false,
       unique: false,
-      validate: { len: [0, 10000] },
     },
     altNumber1: {
       type: DataTypes.STRING(10000),
       allowNull: true,
       unique: false,
-      validate: { len: [0, 10000] },
     },
     altNumber2: {
       type: DataTypes.STRING(10000),
       allowNull: true,
       unique: false,
-      validate: { len: [0, 10000] },
     },
     altNumber3: {
       type: DataTypes.STRING(10000),
       allowNull: true,
       unique: false,
-      validate: { len: [0, 10000] },
     },
     altNumber4: {
       type: DataTypes.STRING(10000),
       allowNull: true,
       unique: false,
-      validate: { len: [0, 10000] },
     },
     altNumber5: {
       type: DataTypes.STRING(10000),
       allowNull: true,
       unique: false,
-      validate: { len: [0, 10000] },
     },
     altNumber6: {
       type: DataTypes.STRING(10000),
       allowNull: true,
       unique: false,
-      validate: { len: [0, 10000] },
     },
     quantity: {
       type: DataTypes.INTEGER,
@@ -130,17 +123,14 @@ export default (sequelize: Sequelize) => {
     productType: {
       type: DataTypes.STRING(10000),
       allowNull: true,
-      validate: { len: [0, 10000] },
     },
     brand: {
       type: DataTypes.STRING(10000),
       allowNull: true,
-      validate: { len: [0, 10000] },
     },
     description: {
       type: DataTypes.STRING(20000),
-      allowNull: false,
-      validate: { len: [0, 10000] },
+      allowNull: true,
     },
     ebayUrl: {
       type: DataTypes.STRING,

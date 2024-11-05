@@ -216,7 +216,8 @@ def convert_quoted_products_to_new():
             createdAt="2022-01-03 20:38:35.5-05",
             updatedAt="2022-01-03 20:38:35.5-05"
         )
-        new_product_quotes_list.append(tmpProd)
+        if (product_id != 0):
+            new_product_quotes_list.append(tmpProd)
 
 def save_quoted_products_file():
     product_quote_header = ['id', 'quoteId', 'productId', 'quantity', 'quotedPrice', 
@@ -335,14 +336,14 @@ def create_received_item():
             new_received_item_list.append(tmp)
 
 def save_received_order_file():
-    inv_header = ['id', 'purchaseOrderNumber', 'companyId', 'userId', 'orderType', 
+    inv_header = ['id', 'companyId', 'userId', 'purchaseOrderNumber', 'orderType', 
                   'trackingNumber', 'dateReceived', 'shippedVia', 'comment', 'createdAt', 'updatedAt']
     print('Saving upload list...')
     with open('NewDBDump/New_Received_Order.csv', 'w', newline='') as csv_file:
         spam_writer = csv.writer(csv_file, delimiter=',', quotechar='"',  quoting=csv.QUOTE_MINIMAL)
         spam_writer.writerow(inv_header)
         for x in new_received_order_list:
-            spam_writer.writerow([x.id, x.purchaseOrderNumber, x.companyId, x.userId, x.orderType, x.trackingNumber, 
+            spam_writer.writerow([x.id, x.companyId, x.userId, x.purchaseOrderNumber, x.orderType, x.trackingNumber, 
                                   x.dateReceived, x.shippedVia, x.comment, x.createdAt, x.updatedAt])  
 
 def save_received_item_file():

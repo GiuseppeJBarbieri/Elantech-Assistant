@@ -53,7 +53,7 @@ export default (sequelize: Sequelize) => {
     },
     type: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     name: {
       type: DataTypes.STRING,

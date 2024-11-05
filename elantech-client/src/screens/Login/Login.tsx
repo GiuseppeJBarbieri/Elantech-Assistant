@@ -47,33 +47,26 @@ export const LoginLayout: FunctionComponent<LoginProps> = ({ history, setLoggedI
   return (
     <div className="Login login-section text-white" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', bottom: 0, position: 'absolute' }}>
       <CustomAlert label={alert.label} type={alert.type} showAlert={alert.show} />
-      <div className='bg-dark' style={{ margin: 'auto' }}>
-        <div style={{ borderWidth: 50, borderColor: 'white' }}>
-          <div className='container rounded border-white border' style={{ textAlign: 'center', padding: 50 }}>
-
-            <h1 className='neonText' style={{ 'marginBottom': 30, fontWeight: 300 }}>Elantech Assistant</h1>
-            <h2 style={{ 'marginBottom': 25, fontWeight: 300 }}>Sign In</h2>
-
+      <div className='' style={{ margin: 'auto' }}>
+        <div className='bow-shadow' style={{ borderWidth: 50, 'borderColor': '#252525' }}>
+          <div className='container rounded  frame' style={{ textAlign: 'center', padding: 100 }}>
+            <h2 className='' style={{ 'marginBottom': 10, fontWeight: 400 }}>Welcome Back</h2>
+            <p style={{ 'marginBottom': 25, fontWeight: 300 }}></p>
             <div className='container' style={{ 'maxWidth': 350 }}>
-
-              <input required type='text' className="form-control" placeholder="Enter Email" style={{ 'marginBottom': 15, 'textAlign': 'center' }} value={email} onChange={(e) => setEmail(e.target.value)} />
-              <input type='password' className="form-control" placeholder="Password" style={{ 'marginBottom': 15, 'textAlign': 'center' }} value={password} onChange={(e) => setPassword(e.target.value)} onKeyDown={handleKeyDown} />
-
+              <input required type='text' className="form-control" placeholder="Enter Email" style={{ 'marginBottom': 15, 'textAlign': 'center', 'backgroundColor': '#0f0f0f', 'borderColor': '#202020', 'color': '#fff' }} value={email} onChange={(e) => setEmail(e.target.value)} />
+              <input type='password' className="form-control" placeholder="Password" style={{ 'marginBottom': 15, 'textAlign': 'center', 'backgroundColor': '#0f0f0f', 'borderColor': '#202020', 'color': '#fff' }} value={password} onChange={(e) => setPassword(e.target.value)} onKeyDown={handleKeyDown} />
               <hr style={{ 'maxWidth': '80%', 'margin': 'auto', 'marginBottom': 15 }} />
               <button type='button' className='btn btn-primary form-control' style={{ 'marginBottom': 5 }} onClick={loginClicked} >Login</button>
-
               <div className='d-flex justify-content-between'>
                 <Link to="/forgotPassword" style={{ textDecoration: 'none' }}>
                   <p className="forgotPassword">Forgot password?</p>
                 </Link>
-                <p>|</p>
+                <p style={{ 'marginLeft': 10, 'marginRight': 10 }}>|</p>
                 <Link to="/register" style={{ textDecoration: 'none' }} >
                   <p className="rtd">Create an account</p>
                 </Link>
               </div>
-
             </div>
-
           </div>
         </div>
       </div>

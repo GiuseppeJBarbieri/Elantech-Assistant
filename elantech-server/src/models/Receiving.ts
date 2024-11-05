@@ -34,7 +34,7 @@ export default (sequelize: Sequelize) => {
     comment: string;
 
     static associate(models: any) {
-      Receiving.hasMany(models.receivedItem, { foreignKey: 'orderId' });
+      Receiving.hasMany(models.receivedItem, { foreignKey: 'receivingId' });
       Receiving.hasMany(models.inventory, { foreignKey: 'purchaseOrderId' });
       Receiving.belongsTo(models.company, { foreignKey: 'companyId' });
       Receiving.belongsTo(models.user, { foreignKey: 'userId' });
@@ -63,11 +63,11 @@ export default (sequelize: Sequelize) => {
     },
     orderType: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     trackingNumber: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     dateReceived: {
       type: DataTypes.DATE,
@@ -75,7 +75,7 @@ export default (sequelize: Sequelize) => {
     },
     shippedVia: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     comment: {
       type: DataTypes.STRING,

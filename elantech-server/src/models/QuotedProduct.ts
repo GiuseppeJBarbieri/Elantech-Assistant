@@ -58,7 +58,7 @@ export default (sequelize: Sequelize) => {
     },
     productCondition: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     comment: {
       type: DataTypes.STRING,

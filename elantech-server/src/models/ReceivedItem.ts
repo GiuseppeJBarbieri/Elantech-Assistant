@@ -42,7 +42,7 @@ export default (sequelize: Sequelize) => {
     },
     receivingId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       primaryKey: true,
     },
     productId: {
@@ -56,7 +56,7 @@ export default (sequelize: Sequelize) => {
     },
     cud: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     comment: {
       type: DataTypes.STRING,

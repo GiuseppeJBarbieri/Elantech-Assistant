@@ -4,6 +4,7 @@
     margin: 0;
     width: -webkit-fill-available;
     border-radius: 5px;
+    background-color: #0f0f0f;
   }
 .border-white {
   border-width: 2px !important;
@@ -11,6 +12,9 @@
 .neonText {
   animation: flicker 2.0s infinite alternate;
   color: rgb(186, 150, 209);
+}
+.frame {
+  background-color: #191919;
 }
 /* Flickering animation */
 @keyframes flicker {

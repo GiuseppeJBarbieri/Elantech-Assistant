@@ -43,7 +43,7 @@ export default (sequelize: Sequelize) => {
     },
     orderId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     reasonType: {
       type: DataTypes.STRING,
