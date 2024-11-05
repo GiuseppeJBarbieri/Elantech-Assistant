@@ -1,4 +1,3 @@
-import { ROUTES } from './API'
 import { PAGE_ROUTES } from './PageRoutes'
 
 export const brandOptionsList = {

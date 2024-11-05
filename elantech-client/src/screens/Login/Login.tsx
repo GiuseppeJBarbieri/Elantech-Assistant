@@ -21,6 +21,15 @@ export const LoginLayout: FunctionComponent<LoginProps> = ({ history, setLoggedI
     const PASSWORD_REGEX = /(?=^.{8,32}$)(?=(?:.*?\d){1})(?=.*[a-z])(?=(?:.*?[!@#$%*()_+^&}{:;?.]){1})(?!.*\s)[0-9a-zA-Z!@#$%^&*]*$/;
     if (!email) {
       // alert('email cannot be empty!');
+    } else if (!PASSWORD_REGEX.exec(password)) {
+      // alert(`Passwords must have at least:
+      // \n8 characters
+      // \nOne upper case
+      // \nOne lower case
+      // \nOne number
+      // \nOne special character
+      // `);
+
     } else {
       const data = {
         username: email,
@@ -48,7 +57,7 @@ export const LoginLayout: FunctionComponent<LoginProps> = ({ history, setLoggedI
     <div className="Login login-section text-white" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', bottom: 0, position: 'absolute' }}>
       <CustomAlert label={alert.label} type={alert.type} showAlert={alert.show} />
       <div className='' style={{ margin: 'auto' }}>
-        <div className='bow-shadow' style={{ borderWidth: 50, 'borderColor': '#252525' }}>
+        <div className='bow-shadow' style={{ borderWidth: 50, 'borderColor': '#252525', borderRadius: 50 }}>
           <div className='container rounded  frame' style={{ textAlign: 'center', padding: 100 }}>
             <h2 className='' style={{ 'marginBottom': 10, fontWeight: 400 }}>Welcome Back</h2>
             <p style={{ 'marginBottom': 25, fontWeight: 300 }}></p>
