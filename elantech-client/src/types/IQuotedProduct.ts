@@ -1,20 +1,30 @@
+// Objective: Define the interface for the QuotedProduct entity.
 interface IQuotedProduct {
     id?: number;
-    quoteId?: number;
+    quoteId: number;
     productId: number;
-    orderId?: number;
     quantity: number;
     quotedPrice: number;
     productCondition: string;
     comment: string;
-    productNumber?: string;
-    type?: string;
-    brand?: string;
-    description?: string;
-    companyName?: string;
-    dateQuoted?: string;
-    quoter?: string;
-    sold?: boolean;
+    Product?: {
+        productNumber: string,
+        productType: string,
+        brand: string,
+        description: string
+    };
+    Quote: {
+        dateQuoted: string,
+        sold: boolean,
+        Company?: {
+            name: string,
+            representative: string
+        },
+        User?: {
+            firstName: string,
+            lastName: string
+        }
+    };
 }
 
 export default IQuotedProduct;

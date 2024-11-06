@@ -1,7 +1,7 @@
 import IHTTPResponse from '../../utils/interfaces/IHTTPResponse';
 import QuotedProductsRepository from './QuotedProductsRepository';
 import constants from '../../utils/constants/Constants';
-import IQuotedProducts from './IQuotedProduct';
+import IQuotedProduct from './IQuotedProduct';
 
 export default {
 
@@ -18,9 +18,9 @@ export default {
     }
   },
 
-  async Get(id: number): Promise<IQuotedProducts> {
+  async Get(id: number): Promise<IQuotedProduct> {
     try {
-      const quote: IQuotedProducts = await QuotedProductsRepository.Get(id);
+      const quote: IQuotedProduct = await QuotedProductsRepository.Get(id);
       if (!quote) {
         const response = constants.HTTP.ERROR.NOT_FOUND;
         return Promise.reject(response);
@@ -45,9 +45,9 @@ export default {
     }
   },
 
-  async GetByProductId(productId: number) {
+  async GetByProductId(productId: number): Promise<IHTTPResponse> {
     try {
-      const quotedProducts = await QuotedProductsRepository.GetByProductId(productId);
+      const quotedProducts: IQuotedProduct[] = await QuotedProductsRepository.GetByProductId(productId);
       return {
         ...constants.HTTP.SUCCESS.SELECTED,
         payload: [...quotedProducts],
@@ -57,7 +57,7 @@ export default {
     }
   },
 
-  async Add(quotedProduct: IQuotedProducts): Promise<IHTTPResponse> {
+  async Add(quotedProduct: IQuotedProduct): Promise<IHTTPResponse> {
     try {
       // const _quotedProduct = { ...quotedProduct };
       await QuotedProductsRepository.Add(quotedProduct);
@@ -70,7 +70,7 @@ export default {
     }
   },
 
-  async Edit(quotedProduct: IQuotedProducts): Promise<IHTTPResponse> {
+  async Edit(quotedProduct: IQuotedProduct): Promise<IHTTPResponse> {
     try {
       QuotedProductsRepository.Edit(quotedProduct);
 

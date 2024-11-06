@@ -2,12 +2,12 @@ interface IInventory {
     id: number;
     productId: number;
     removedInventoryId?: number;
-    poId?: number;
+    purchaseOrderId?: number;
     serialNumber: string;
     condition: string;
     warrantyExpiration: string;
-    isTested: boolean;
-    dateTested: string;
+    tested: boolean;
+    testedDate: string;
     comment: string;
     location: string;
 }

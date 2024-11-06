@@ -10,7 +10,7 @@ import { AddInventoryModal } from '../Modals/Inventory/AddInventoryModal';
 import { AddSimpleQuoteModal } from '../Modals/Quote/AddSimpleQuoteModal';
 import { InventoryTable } from '../Tables/InventoryTable';
 import { EditInventoryAlertModal } from '../Modals/EditInventoryAlertModal';
-import { requestAllInventoryByProductID, requestAllQuotesByProductId } from '../../utils/Requests';
+import { requestAllInventoryByProductID, requestAllQuotesByProductId as requestAllQuotedProductsByProductId } from '../../utils/Requests';
 import IQuotedProduct from '../../types/IQuotedProduct';
 import { AddOrEditOrderModal } from '../Modals/Inventory/AddOrEditOrderModal';
 
@@ -22,7 +22,6 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
     const [openState, setOpenState] = useState(false);
     const [addInventorySwitch, setAddInventorySwitch] = useState(false);
     const [showHasOrderAlert, setShowHasOrderAlert] = useState(false);
-
     const [addSimpleQuoteSwitch, setAddSimpleQuoteSwitch] = useState(false);
     const [hideQuotes, setHideQuotes] = useState(true);
     const [addInventoryAlertSwitch, setAddInventoryAlertSwitch] = useState(false);
@@ -35,7 +34,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
     const [used, setUsed] = useState(0);
     const [damaged, setDamaged] = useState(0);
     const [inventory, setInventory] = useState<IInventory[]>([]);
-    const [quoteList, setQuoteList] = useState<IQuotedProduct[]>([]);
+    const [quoteProductsList, setQuotedProductsList] = useState<IQuotedProduct[]>([]);
     const [displayedQuoteInfo, setDisplayedQuoteInfo] = useState({
         averageQuote: 0,
         lastQuotedPrice: 0,
@@ -48,24 +47,27 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
             text: 'Qty',
             sort: true,
         }, {
-            dataField: 'companyName',
+            dataField: 'Quote.Company.name',
             text: 'Company Name',
+            sort: true,
+        }, {
+            dataField: 'quotedBy',
+            text: 'Quoted By',
+            formatter: (cell: any, row: any) => {
+                return `${row.Quote.User.firstName}  ${row.Quote.User.lastName}`;
+            },
             sort: true,
         }, {
             dataField: 'quotedPrice',
             text: 'Price',
             sort: false
         }, {
-            dataField: 'dateQuoted',
+            dataField: 'Quote.dateQuoted',
             text: 'Date',
             sort: true,
         }, {
-            dataField: 'quoter',
-            text: 'Quoted By',
-            sort: true,
-        }, {
-            dataField: 'sold',
-            text: ' Sold ',
+            dataField: 'Quote.sold',
+            text: 'Sold ',
             sort: true,
             headerAlign: 'center',
         }
@@ -73,7 +75,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
     const options = {
         custom: true,
         sizePerPage: 5,
-        totalSize: quoteList.length
+        totalSize: quoteProductsList.length
     };
     const getAllInventory = (productId: number) => {
         setTimeout(async () => {
@@ -86,21 +88,22 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
             }
         }, 400)
     };
-    const getAllQuotes = async (productId: number) => {
+    const getAllQuotedProducts = async (productId: number) => {
         setTimeout(async () => {
             try {
-                const request = await requestAllQuotesByProductId(productId);
-                setQuoteList(request);
+                const request = await requestAllQuotedProductsByProductId(productId);
+                console.log(request);
+                setQuotedProductsList(request);
                 let avgQuote = 0;
                 let earliestDate = {
-                    date: request[0].dateQuoted,
+                    date: request[0].Quote?.dateQuoted as string,
                     index: 0,
                 };
                 request.forEach((quote, index) => {
                     avgQuote += quote.quotedPrice;
-                    if (new Date(earliestDate.date as string) < new Date(quote.dateQuoted as string)) {
+                    if (new Date(earliestDate.date as string) < new Date(quote.Quote?.dateQuoted as string)) {
                         earliestDate = {
-                            date: quote.dateQuoted as string,
+                            date: quote.Quote?.dateQuoted as string,
                             index: index
                         };
                     }
@@ -108,8 +111,8 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                 avgQuote = avgQuote / request.length;
                 setDisplayedQuoteInfo({
                     averageQuote: avgQuote,
-                    quotedTo: request[earliestDate.index].companyName as string,
-                    quotedBy: request[earliestDate.index].quoter as string,
+                    quotedTo: request[earliestDate.index].Quote?.Company?.name as string,
+                    quotedBy: request[earliestDate.index].Quote?.User?.firstName as string,
                     lastQuotedPrice: request[earliestDate.index].quotedPrice,
                 });
             } catch (err) {
@@ -151,7 +154,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
     useEffect(() => {
         if (props.selectedProduct.id !== undefined) {
             getAllInventory(props.selectedProduct.id);
-            getAllQuotes(props.selectedProduct.id);
+            getAllQuotedProducts(props.selectedProduct.id);
         }
     }, []);
     return (
@@ -159,23 +162,23 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
             <Navbar bg="dark" variant="dark">
                 <Navbar.Brand>More Info</Navbar.Brand>
                 <Nav className="me-auto">
-                    {(props.selectedProduct.ebayLink as string) != null &&
+                    {(props.selectedProduct.ebayUrl as string) != null &&
                         <Nav.Link onClick={async () => {
-                            window.open(props.selectedProduct.ebayLink)
+                            window.open(props.selectedProduct.ebayUrl)
                         }}>
                             Ebay Listing
                         </Nav.Link>
                     }
-                    {(props.selectedProduct.websiteLink as string) != null &&
+                    {(props.selectedProduct.websiteUrl as string) != null &&
                         <Nav.Link onClick={async () => {
-                            window.open(props.selectedProduct.websiteLink)
+                            window.open(props.selectedProduct.websiteUrl)
                         }}>
                             Website Listing
                         </Nav.Link>
                     }
-                    {(props.selectedProduct.quickSpecsLink as string) != null &&
+                    {(props.selectedProduct.quickSpecsUrl as string) != null &&
                         <Nav.Link onClick={async () => {
-                            window.open(props.selectedProduct.quickSpecsLink)
+                            window.open(props.selectedProduct.quickSpecsUrl)
                         }}>
                             HPE Quick Specs
                         </Nav.Link>
@@ -304,7 +307,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                                             {...paginationTableProps}
                                             columns={quotes_column}
                                             keyField="serial_number"
-                                            data={quoteList}
+                                            data={quoteProductsList}
                                             classes="table table-dark table-hover table-striped"
                                             noDataIndication="Table is Empty"
                                         />
@@ -368,7 +371,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                     <AddSimpleQuoteModal
                         modalVisible={addSimpleQuoteSwitch}
                         selectedProduct={props.selectedProduct}
-                        getAllQuotes={getAllQuotes}
+                        getAllQuotes={getAllQuotedProducts}
                         onClose={async () => {
                             setAddSimpleQuoteSwitch(false);
                         }}

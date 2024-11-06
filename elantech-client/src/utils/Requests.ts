@@ -40,8 +40,6 @@ export const requestRemoveInventory = async (id: number): Promise<any> => {
     return axios.delete(`${BASE_API_URL}${ROUTES.INVENTORY}/${id}`, { withCredentials: true }).then((response) => response);
 }
 
-
-
 // COMPANY
 export const requestAllCompanies = async (): Promise<ICompany[]> => {
     return axios.get(`${BASE_API_URL}${ROUTES.COMPANY}`, { withCredentials: true }).then((response) => response?.data?.payload);
@@ -69,7 +67,7 @@ export const requestAddQuote = async (quote: IQuote): Promise<any> => {
     return axios.post(`${BASE_API_URL}${ROUTES.QUOTE}`, quote, { withCredentials: true }).then((response) => response);
 }
 
-// PRODUCT QUOTES
+// QUOTED PRODUCTS
 export const requestAddQuotedProduct = async (quotedProduct: IQuotedProduct): Promise<any> => {
     return axios.post(`${BASE_API_URL}${ROUTES.QUOTED_PRODUCTS}`, quotedProduct, { withCredentials: true }).then((response) => response);
 }
@@ -82,5 +80,5 @@ export const requestAllQuotesByProductId = async (productId: number): Promise<IQ
 
 // REMOVED INVENTORY
 export const requestAddRemovedInventory = async (removedInventory: IRemovedInventory): Promise<any> => {
-    return axios.post(`${BASE_API_URL}${ROUTES.REMOVED_INVENTORY}`, removedInventory, { withCredentials: true}).then((response)=> response);
+    return axios.post(`${BASE_API_URL}${ROUTES.REMOVED_INVENTORY}`, removedInventory, { withCredentials: true }).then((response) => response);
 }

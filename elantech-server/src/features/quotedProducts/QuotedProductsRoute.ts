@@ -63,11 +63,11 @@ router.get('/quote/productQuotes/:productId',
   validate(QuotedProductsValidation.GetProductQuotesTable),
   (req, res, next) => {
     logger.info('GET PRODUCT QUOTES BY PRODUCT ID');
-
     QuotedProductsController.GetByProductId(Number(req.params.productId))
       .then((quotedProducts) => res.status(200).json(quotedProducts))
       .catch((err) => next(err));
   });
+
 /**
 * This route will update a QuotedProducts
 */

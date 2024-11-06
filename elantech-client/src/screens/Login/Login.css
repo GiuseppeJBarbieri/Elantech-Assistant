@@ -15,6 +15,7 @@
 }
 .frame {
   background-color: #191919;
+  border-radius: 15px !important;
 }
 /* Flickering animation */
 @keyframes flicker {

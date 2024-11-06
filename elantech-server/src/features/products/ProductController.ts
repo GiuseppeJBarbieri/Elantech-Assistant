@@ -5,7 +5,7 @@ import IProduct from './IProduct';
 
 export default {
 
-  async GetAll() {
+  async GetAll(): Promise<IHTTPResponse> {
     try {
       const products = await ProductRepository.GetAllProducts();
 

@@ -4,10 +4,6 @@ interface IQuote {
     userId: number;
     dateQuoted: string;
     sold: boolean;
-    numberOfProducts?: number;
-    quoter?: string;
-    totalQuote?: number;
-    companyName?: string;
 }
 
 export default IQuote;

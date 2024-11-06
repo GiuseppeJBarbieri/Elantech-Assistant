@@ -1,7 +1,7 @@
 import db from '../../models';
 import logger from '../../utils/logging/Logger';
 import IRepoError from '../../utils/interfaces/IRepoError';
-import IQuotedProducts from './IQuotedProduct';
+import IQuotedProduct from './IQuotedProduct';
 
 /// ////////////// ///
 /// / INTERNALS // ///
@@ -18,7 +18,7 @@ const standardError = (message: string) => {
 };
 
 export default {
-  async Add(quotedProduct: IQuotedProducts): Promise<IQuotedProducts> {
+  async Add(quotedProduct: IQuotedProduct): Promise<IQuotedProduct> {
     try {
       return await db.quoted_products.create(quotedProduct);
     } catch (err) {
@@ -27,7 +27,7 @@ export default {
     }
   },
 
-  async GetAllQuotes(): Promise<IQuotedProducts[]> {
+  async GetAllQuotes(): Promise<IQuotedProduct[]> {
     try {
       return await db.quoted_products.findAll();
     } catch (err) {
@@ -36,7 +36,7 @@ export default {
     }
   },
 
-  async GetByQuoteId(quoteId: number): Promise<IQuotedProducts[]> {
+  async GetByQuoteId(quoteId: number): Promise<IQuotedProduct[]> {
     try {
       return await db.quoted_products.findAll({
         where: { quoteId },
@@ -47,47 +47,76 @@ export default {
     }
   },
 
-  async GetByProductId(productId: number): Promise<IQuotedProducts[]> {
+  async GetByProductId(productId: number): Promise<IQuotedProduct[]> {
     try {
-      logger.info(productId);
-      const response = await db.quoted_products.findAll({
+      const qp = await db.quotedProduct.findAll({
+        where: { productId },
         include: [
           {
+            model: db.product,
+            attributes: ['productNumber', 'productType', 'brand', 'description'],
+          },
+          {
             model: db.quote,
-            attributes: ['dateQuoted'],
+            attributes: ['dateQuoted', 'sold'],
             include: [
-              { model: db.company, attributes: ['companyName'] },
-              { model: db.user, attributes: ['firstName'] },
+              {
+                model: db.company,
+                attributes: ['name', 'representative'],
+                required: true,
+                as: 'company',
+              },
+              {
+                model: db.user,
+                attributes: ['firstName', 'lastName'],
+                required: true,
+                as: 'user',
+              },
             ],
           },
         ],
-        where: { productId },
       });
-      const quotedProducts: IQuotedProducts[] = [];
-      response.forEach((quotedProduct) => {
-        // Map response to quoted product format
-        quotedProducts.push({
-          id: quotedProduct.id,
-          quoteId: quotedProduct.quoteId,
-          productId: quotedProduct.productId,
-          quantity: quotedProduct.quantity,
-          quotedPrice: quotedProduct.quotedPrice,
-          productCondition: quotedProduct.productCondition,
-          comment: quotedProduct.comment,
-          // companyName: quotedProduct.quote.company.companyName,
-          // dateQuoted: quotedProduct.quote.dateQuoted,
-          // quoter: quotedProduct.quote.user.firstName,
-          // sold: (quotedProduct.orderId !== null),
-        });
+
+      const list: IQuotedProduct[] = [];
+
+      qp.forEach((element) => {
+        const quoteProduct: IQuotedProduct = {
+          id: element.id,
+          quoteId: element.quoteId,
+          productId: element.productId,
+          quantity: element.quantity,
+          quotedPrice: element.quotedPrice,
+          productCondition: element.productCondition,
+          comment: element.comment,
+          Product: {
+            productNumber: element.product.productNumber,
+            productType: element.product.productType,
+            brand: element.product.brand,
+            description: element.product.description,
+          },
+          Quote: {
+            dateQuoted: element.quote.dateQuoted,
+            sold: element.quote.sold,
+            Company: {
+              name: element.quote.company.name,
+              representative: element.quote.company.representative,
+            },
+            User: {
+              firstName: element.quote.user.firstName,
+              lastName: element.quote.user.lastName,
+            },
+          },
+        };
+        list.push(quoteProduct);
       });
-      return quotedProducts;
+      return list;
     } catch (err) {
       standardError(err.message);
       return Promise.reject(repoErr);
     }
   },
 
-  async Get(id: number): Promise<IQuotedProducts> {
+  async Get(id: number): Promise<IQuotedProduct> {
     try {
       return await db.quoted_products.findOne({
         where: { id },
@@ -98,7 +127,7 @@ export default {
     }
   },
 
-  async Edit(quotedProduct: IQuotedProducts): Promise<IQuotedProducts> {
+  async Edit(quotedProduct: IQuotedProduct): Promise<IQuotedProduct> {
     try {
       return await db.quoted_products.update(quotedProduct, {
         where: {
@@ -111,7 +140,7 @@ export default {
     }
   },
 
-  async Delete(id: number): Promise<IQuotedProducts[]> {
+  async Delete(id: number): Promise<IQuotedProduct[]> {
     try {
       return await db.quoted_products.delete({
         where: { id },
