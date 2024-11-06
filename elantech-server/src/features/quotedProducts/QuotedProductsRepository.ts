@@ -20,7 +20,8 @@ const standardError = (message: string) => {
 export default {
   async Add(quotedProduct: IQuotedProduct): Promise<IQuotedProduct> {
     try {
-      return await db.quoted_products.create(quotedProduct);
+      logger.info(quotedProduct);
+      return await db.quotedProduct.create(quotedProduct);
     } catch (err) {
       standardError(`${err.name} ${err.message}`);
       throw repoErr;
@@ -29,7 +30,7 @@ export default {
 
   async GetAllQuotes(): Promise<IQuotedProduct[]> {
     try {
-      return await db.quoted_products.findAll();
+      return await db.quotedProduct.findAll();
     } catch (err) {
       standardError(err.message);
       return Promise.reject(repoErr);
@@ -38,7 +39,7 @@ export default {
 
   async GetByQuoteId(quoteId: number): Promise<IQuotedProduct[]> {
     try {
-      return await db.quoted_products.findAll({
+      return await db.quotedProduct.findAll({
         where: { quoteId },
       });
     } catch (err) {
@@ -118,7 +119,7 @@ export default {
 
   async Get(id: number): Promise<IQuotedProduct> {
     try {
-      return await db.quoted_products.findOne({
+      return await db.quotedProduct.findOne({
         where: { id },
       });
     } catch (err) {
@@ -129,7 +130,7 @@ export default {
 
   async Edit(quotedProduct: IQuotedProduct): Promise<IQuotedProduct> {
     try {
-      return await db.quoted_products.update(quotedProduct, {
+      return await db.quotedProduct.update(quotedProduct, {
         where: {
           id: quotedProduct.id,
         },
@@ -142,7 +143,7 @@ export default {
 
   async Delete(id: number): Promise<IQuotedProduct[]> {
     try {
-      return await db.quoted_products.delete({
+      return await db.quotedProduct.delete({
         where: { id },
       });
     } catch (err) {

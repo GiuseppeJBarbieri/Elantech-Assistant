@@ -36,7 +36,6 @@ export default {
 
   PostQuotedProducts: {
     body: {
-      id: Joi.number().optional().allow(null, ''),
       quoteId: Joi.number().required(),
       productId: Joi.number().required(),
       quantity: Joi.number().required(),

@@ -1,7 +1,7 @@
 import React, { HTMLAttributes, FunctionComponent, useEffect, useState } from 'react';
 import { Modal, Form, Button, Col, InputGroup } from 'react-bootstrap';
 import BootstrapTable, { SelectRowProps } from 'react-bootstrap-table-next';
-import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
+import paginationFactory from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { requestAddQuote, requestAddQuotedProduct, requestAllCompanies } from '../../../utils/Requests';
 import { defaultAlert, defaultQuote, defaultQuotedProduct } from '../../../constants/Defaults';
@@ -12,6 +12,9 @@ import { SpinnerBlock } from '../../LoadingAnimation/SpinnerBlock';
 import { CustomAlert } from '../../Alerts/CustomAlert';
 import IQuotedProduct from '../../../types/IQuotedProduct';
 import moment from 'moment';
+import { Search } from 'react-bootstrap-icons';
+import { DebounceInput } from 'react-debounce-input';
+import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 
 interface AddSimpleQuoteModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
@@ -26,29 +29,38 @@ const AddSimpleQuoteModalComponent: FunctionComponent<AddSimpleQuoteModalProps> 
     const [alert, setAlert] = useState(defaultAlert);
     const [quote, setQuote] = useState(defaultQuote);
     const [quotedProduct, setQuotedProduct] = useState(defaultQuotedProduct);
+    const [searchString] = useState<string>('');
+    const [isSearching] = useState(false);
 
+    const customTotal = (from: number, to: number, size: number) => {
+        return (
+            <span className="react-bootstrap-table-pagination-total"
+                style={{ marginLeft: 5 }}>
+                {size} Results
+            </span>)
+    };
     const options = {
-        custom: true,
-        totalSize: companyList.length
+        showTotal: true,
+        paginationTotalRenderer: customTotal,
     };
     const column = [
         {
-            dataField: 'companyType',
+            dataField: 'type',
             text: 'Type',
             sort: true,
         },
         {
-            dataField: 'companyName',
-            text: 'Company Name',
+            dataField: 'name',
+            text: 'Name',
             sort: true,
         },
         {
-            dataField: 'companyRep',
-            text: 'Company Rep',
+            dataField: 'representative',
+            text: 'Representative',
             sort: true,
         },
         {
-            dataField: 'phoneNumber',
+            dataField: 'phone',
             text: 'Phone Number',
             sort: false,
             headerAlign: 'center',
@@ -72,7 +84,7 @@ const AddSimpleQuoteModalComponent: FunctionComponent<AddSimpleQuoteModalProps> 
     ];
     const getCompanyList = async () => {
         const req = await requestAllCompanies();
-        setCompanyList(JSON.parse(JSON.stringify(req)));
+        setCompanyList(req);
     }
     const selectRow = {
         mode: 'radio',
@@ -96,10 +108,11 @@ const AddSimpleQuoteModalComponent: FunctionComponent<AddSimpleQuoteModalProps> 
             } else {
                 try {
                     const req = await requestAddQuote(quote);
-                    const quotedProductCopy: IQuotedProduct = JSON.parse(JSON.stringify(quotedProduct));
-                    quotedProductCopy.productId = props.selectedProduct.id as number;
-                    quotedProductCopy.quoteId = req.data.id;
-                    await requestAddQuotedProduct(quotedProductCopy);
+                    quotedProduct.productId = props.selectedProduct.id as number;
+                    console.log(req.data.id);
+                    quotedProduct.quoteId = req.data.id;
+                    console.log(quotedProduct);
+                    await requestAddQuotedProduct(quotedProduct);
                     props.getAllQuotes(props.selectedProduct.id as number);
                     setIsSaving(false);
                     props.onClose();
@@ -110,6 +123,11 @@ const AddSimpleQuoteModalComponent: FunctionComponent<AddSimpleQuoteModalProps> 
                 }
             }
         }, 500);
+    };
+    const handleSearch = (input: string, props: { searchText?: string; onSearch: any; onClear?: () => void; }) => {
+        if (input !== undefined) {
+            props.onSearch(input);
+        }
     };
     useEffect(() => {
         getCompanyList();
@@ -207,38 +225,57 @@ const AddSimpleQuoteModalComponent: FunctionComponent<AddSimpleQuoteModalProps> 
                                 <Form.Group className="mb-3">
                                     <Form.Label>Select a Company</Form.Label>
                                     <div>
-                                        <PaginationProvider
-                                            pagination={paginationFactory(options)}
-                                        >
-                                            {
-                                                ({
-                                                    paginationProps,
-                                                    paginationTableProps
-                                                }) => (
-                                                    <div>
-                                                        <BootstrapTable
-                                                            {...paginationTableProps}
-                                                            keyField="id"
-                                                            bootstrap4
-                                                            condensed
-                                                            selectRow={selectRow as SelectRowProps<ICompany>}
-                                                            data={companyList}
-                                                            columns={column}
-                                                            classes="table table-dark table-hover table-striped"
-                                                            noDataIndication="Table is Empty"
-                                                        />
-                                                        <div className='d-flex justify-content-between'>
-                                                            <SizePerPageDropdownStandalone
-                                                                {...paginationProps}
-                                                            />
-                                                            <PaginationListStandalone
-                                                                {...paginationProps}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                )
-                                            }
-                                        </PaginationProvider>
+                                        <div>
+                                            <ToolkitProvider
+                                                keyField="id"
+                                                data={companyList}
+                                                columns={column}
+                                                search >
+                                                {
+                                                    props => {
+                                                        return (
+                                                            <div>
+                                                                {isSearching ?
+                                                                    <SpinnerBlock />
+                                                                    :
+                                                                    <div>
+                                                                        <InputGroup className="mb-3">
+                                                                            <InputGroup.Text id="basic-addon2">
+                                                                                <Search />
+                                                                            </InputGroup.Text>
+                                                                            <DebounceInput
+                                                                                type="text"
+                                                                                className='debounce'
+                                                                                placeholder="Search..."
+                                                                                debounceTimeout={500}
+                                                                                value={searchString}
+                                                                                onChange={e => {
+                                                                                    handleSearch(e.target.value, { ...props.searchProps });
+                                                                                }} />
+                                                                        </InputGroup>
+
+                                                                        <BootstrapTable
+                                                                            {...props.baseProps}
+                                                                            keyField="id"
+                                                                            bootstrap4
+                                                                            condensed
+                                                                            striped
+                                                                            hover
+                                                                            selectRow={selectRow as SelectRowProps<ICompany>}
+                                                                            pagination={paginationFactory(options)}
+                                                                            data={companyList}
+                                                                            columns={column}
+                                                                            classes="table table-dark table-hover table-striped"
+                                                                            noDataIndication='TABLE IS EMPTY'
+                                                                        />
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                        );
+                                                    }
+                                                }
+                                            </ToolkitProvider>
+                                        </div>
                                     </div>
                                 </Form.Group>
                             </Form>

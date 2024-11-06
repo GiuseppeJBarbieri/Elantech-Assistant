@@ -17,7 +17,10 @@ router.post('/', authenticationMiddleware, validate(QuotedProductsValidation.Pos
       .then((response) => {
         res.status(201).json(response);
       })
-      .catch((err) => next(err));
+      .catch((err) => {
+        next(err);
+        console.log(err, req.body);
+      });
   });
 
 /**

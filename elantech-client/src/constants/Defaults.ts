@@ -51,7 +51,6 @@ export const defaultQuote = (): IQuote => {
 
 export const defaultQuotedProduct = (): IQuotedProduct => {
     return JSON.parse(JSON.stringify({
-        id: 0,
         quoteId: 0,
         productId: 0,
         quantity: 0,

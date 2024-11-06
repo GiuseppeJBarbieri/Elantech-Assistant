@@ -14,12 +14,16 @@ router.post('/', authenticationMiddleware, validate(QuoteValidation.PostQuote),
   (req, res, next) => {
     logger.info('POST QUOTE');
     const copy = JSON.parse(JSON.stringify(req.body));
+    // eslint-disable-next-line dot-notation
     copy.userId = req.session['userId'];
     QuoteController.Add(copy)
       .then((response) => {
         res.status(201).json(response);
       })
-      .catch((err) => next(err));
+      .catch((err) => {
+        next(err);
+        console.log(err, req.body);
+      });
   });
 
 /**

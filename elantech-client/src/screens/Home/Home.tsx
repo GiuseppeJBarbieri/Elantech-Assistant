@@ -167,7 +167,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
         style={{ marginLeft: 5 }}>
         {size} Results
       </span>)
-  }
+  };
   const options = {
     showTotal: true,
     paginationTotalRenderer: customTotal

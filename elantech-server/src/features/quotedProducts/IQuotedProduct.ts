@@ -8,16 +8,16 @@ interface IQuotedProduct {
     productCondition: string;
     comment: string;
     Product?: { productNumber: string, productType: string, brand: string, description: string };
-    Quote: {
-        dateQuoted: string,
-        sold: boolean,
+    Quote?: {
+        dateQuoted?: string,
+        sold?: boolean,
         Company?: {
-            name: string,
-            representative: string
+            name?: string,
+            representative?: string
         },
         User?: {
-            firstName: string,
-            lastName: string
+            firstName?: string,
+            lastName?: string
         }
     };
 }
