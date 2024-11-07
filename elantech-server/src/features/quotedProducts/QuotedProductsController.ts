@@ -59,11 +59,10 @@ export default {
 
   async Add(quotedProduct: IQuotedProduct): Promise<IHTTPResponse> {
     try {
-      const _quotedProduct = { ...quotedProduct };
-      await QuotedProductsRepository.Add(_quotedProduct);
-
+      const _quotedProduct = await QuotedProductsRepository.Add(quotedProduct);
       return {
         ...constants.HTTP.SUCCESS.CREATED,
+        id: _quotedProduct.id,
       };
     } catch (err) {
       return Promise.reject(err);

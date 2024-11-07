@@ -1,3 +1,5 @@
+import IQuotedProduct from '../quotedProducts/IQuotedProduct';
+
 interface IQuote {
     id?: number;
     companyId: number;
@@ -6,8 +8,7 @@ interface IQuote {
     sold: boolean;
     /// Extra fields
     User?: {firstName: string, lastName: string};
-    numberOfProducts?: number;
-    totalQuote?: number;
+    QuotedProducts?: IQuotedProduct[];
 }
 
 export default IQuote;

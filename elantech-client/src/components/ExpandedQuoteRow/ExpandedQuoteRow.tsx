@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
 import { FunctionComponent, HTMLAttributes, useEffect, useState } from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
@@ -16,7 +14,7 @@ import { EditQuoteModal } from '../Modals/Quote/EditQuoteModal';
 import { ViewQuotedProductsModal } from '../Modals/ViewQuotedProductsModal/ViewQuotedProductsModal';
 
 interface ExpandedQuoteRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
-    selectedCompany: ICompany
+    selectedCompany: ICompany;
 }
 
 const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (props) => {
@@ -97,18 +95,24 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
     // };
     const column = [
         {
-            dataField: 'id',
-            text: 'ID',
-            sort: false,
-        },
-        {
-            dataField: 'numberOfProducts',
+            dataField: 'quantity',
             text: 'Number of Products',
+            formatter: (cell: any, row: any) => {
+                var total = 0;
+                row.quotedProducts.forEach((element: IQuotedProduct) => {
+                    total += element.quantity;
+                });
+                return `${total}`;
+            },
             sort: false,
         },
         {
-            dataField: 'quoter',
-            text: 'Quoter',
+            dataField: 'quotedBy',
+            text: 'Quoted By',
+            formatter: (cell: any, row: any) => {
+                console.log(row);
+                return `${row.user.firstName}  ${row.user.lastName}`;
+            },
             sort: true,
         },
         {
@@ -119,6 +123,13 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
         {
             dataField: 'totalQuote',
             text: 'Total Quote',
+            formatter: (cell: any, row: any) => {
+                var total = 0;
+                row.quotedProducts.forEach((element: IQuotedProduct) => {
+                    total += element.quotedPrice;;
+                });
+                return `$${total}`;
+            },
             sort: true,
         },
         {
@@ -150,6 +161,7 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
         setTimeout(async () => {
             try {
                 const quotes = await requestAllQuotesByCompanyID(companyId);
+                console.log(quotes);
                 setQuotes(quotes);
             } catch (err) {
                 console.log(err);

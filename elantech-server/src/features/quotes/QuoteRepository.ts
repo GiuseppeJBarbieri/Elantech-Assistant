@@ -1,3 +1,4 @@
+import { Transaction } from 'sequelize';
 import db from '../../models';
 import logger from '../../utils/logging/Logger';
 import IRepoError from '../../utils/interfaces/IRepoError';
@@ -20,9 +21,22 @@ const standardError = (message: string) => {
 
 export default {
   async Add(quote: IQuote): Promise<IQuote> {
+    const transaction: Transaction = await db.sequelize.transaction();
     try {
-      return db.quote.create(quote);
+      // Create the quote
+      const createdQuote = await db.quote.create(quote, { transaction });
+      // Create the quoted products using the quote ID
+      const quotedProducts = quote.QuotedProducts.map((product: IQuotedProduct) => ({
+        ...product,
+        quoteId: createdQuote.id,
+      }));
+      await db.quotedProduct.bulkCreate(quotedProducts, { transaction });
+      // Commit the transaction
+      await transaction.commit();
+      return createdQuote;
     } catch (err) {
+      // Rollback the transaction in case of error
+      await transaction.rollback();
       standardError(`${err.name} ${err.message}`);
       throw repoErr;
     }
@@ -40,31 +54,37 @@ export default {
   async GetByCompanyId(companyId: number): Promise<IQuote[]> {
     try {
       const responseList = await db.quote.findAll({
-        include: [
-          { model: db.user, attributes: ['firstName', 'lastName'] },
-          { model: db.quoted_products },
-        ],
         where: { companyId },
+        include: [
+          {
+            model: db.quotedProduct,
+            required: true,
+            attributes: ['quantity', 'quotedPrice', 'productCondition', 'comment'],
+            as: 'quotedProducts',
+          },
+          {
+            model: db.user,
+            attributes: ['firstName', 'lastName'],
+            required: true,
+            as: 'user',
+          },
+        ],
       });
-      const quotesList: IQuote[] = [];
-      responseList.forEach((response) => {
-        let totalPrice = 0;
-        response.quoted_products.forEach((product: IQuotedProduct) => {
-          totalPrice += product.quotedPrice;
-        });
-        const quote: IQuote = {
-          id: response.id,
-          companyId: response.companyId,
-          userId: response.userId,
-          dateQuoted: response.dateQuoted,
-          sold: response.sold,
-          User: { firstName: response.user.firstName, lastName: response.user.lastName },
-          numberOfProducts: response.quoted_products.length,
-          totalQuote: totalPrice,
+
+      const list: IQuote[] = [];
+      responseList.forEach((element) => {
+        const tmp: IQuote = {
+          id: element.id,
+          companyId: element.companyId,
+          userId: element.userId,
+          dateQuoted: element.dateQuoted,
+          sold: element.sold,
+          User: element.user,
+          QuotedProducts: element.quotedProducts,
         };
-        quotesList.push(quote);
+        list.push(tmp);
       });
-      return quotesList;
+      return responseList;
     } catch (err) {
       standardError(err.message);
       return Promise.reject(repoErr);

@@ -8,6 +8,10 @@ interface ICompany {
     email?: string;
     location?: string;
     comment?: string;
+    User?: {
+        firstName: string,
+        lastName: string,
+    };
 }
 
 export default ICompany;

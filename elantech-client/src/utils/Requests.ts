@@ -61,7 +61,7 @@ export const requestAllProductQuotes = async (): Promise<any> => {
 
 // QUOTES
 export const requestAllQuotesByCompanyID = async (companyId: number): Promise<IQuote[]> => {
-    return axios.get(`${BASE_API_URL}quotes/company/${companyId}`, { withCredentials: true }).then((response) => response?.data?.payload);
+    return axios.get(`${BASE_API_URL}${ROUTES.QUOTE}/${ROUTES.COMPANY}/${companyId}`, { withCredentials: true }).then((response) => response?.data?.payload);
 };
 export const requestAddQuote = async (quote: IQuote): Promise<any> => {
     return axios.post(`${BASE_API_URL}${ROUTES.QUOTE}`, quote, { withCredentials: true }).then((response) => response);

@@ -15,7 +15,7 @@ import IQuotedProduct from '../../types/IQuotedProduct';
 import { AddOrEditOrderModal } from '../Modals/Inventory/AddOrEditOrderModal';
 
 interface ExpandedProductRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
-    selectedProduct: IProduct
+    selectedProduct: IProduct;
     getAllProducts: () => void;
 }
 const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = (props) => {

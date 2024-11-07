@@ -43,7 +43,7 @@ const CompanyModalComponent: FunctionComponent<CompanyModalProps> = (props) => {
         }, 500);
     };
     const submit = () => {
-        if (company.companyName === '' || company.companyType === '' || company.companyRep === '') {
+        if (company.name === '' || company.type === '' || company.representative === '') {
             setAlert({ ...alert, label: 'Please enter required information.', show: true });
             setTimeout(() => setAlert({ ...alert, show: false }), 5000);
         } else {
@@ -73,8 +73,8 @@ const CompanyModalComponent: FunctionComponent<CompanyModalProps> = (props) => {
                                 <Form.Group className="mb-3">
                                     <Form.Label>Customer Type<Form.Label className={'required-text-asterisk'}>*</Form.Label></Form.Label>
                                     <Form.Select aria-label="Default select example"
-                                        value={company.companyType}
-                                        onChange={(e) => setCompany({ ...company, companyType: (e.target.value) })}
+                                        value={company.type}
+                                        onChange={(e) => setCompany({ ...company, type: (e.target.value) })}
                                     >
                                         <option>Customer Type</option>
                                         <option value="Broker">Broker</option>
@@ -87,8 +87,8 @@ const CompanyModalComponent: FunctionComponent<CompanyModalProps> = (props) => {
                                         id="company_name"
                                         type="text"
                                         placeholder="Company Name"
-                                        value={company.companyName}
-                                        onChange={(e) => setCompany({ ...company, companyName: (e.target.value) })}
+                                        value={company.name}
+                                        onChange={(e) => setCompany({ ...company, name: (e.target.value) })}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
@@ -97,8 +97,8 @@ const CompanyModalComponent: FunctionComponent<CompanyModalProps> = (props) => {
                                         id="company_rep"
                                         type="text"
                                         placeholder="Rep Name"
-                                        value={company.companyRep}
-                                        onChange={(e) => setCompany({ ...company, companyRep: (e.target.value) })}
+                                        value={company.representative}
+                                        onChange={(e) => setCompany({ ...company, representative: (e.target.value) })}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
@@ -107,8 +107,8 @@ const CompanyModalComponent: FunctionComponent<CompanyModalProps> = (props) => {
                                         id="phone_number"
                                         type="text"
                                         placeholder="Phone Number"
-                                        value={company.phoneNumber}
-                                        onChange={(e) => setCompany({ ...company, phoneNumber: (e.target.value) })}
+                                        value={company.phone}
+                                        onChange={(e) => setCompany({ ...company, phone: (e.target.value) })}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
@@ -137,8 +137,8 @@ const CompanyModalComponent: FunctionComponent<CompanyModalProps> = (props) => {
                                         id="comments"
                                         type="text"
                                         placeholder="Comments"
-                                        value={company.comments}
-                                        onChange={(e) => setCompany({ ...company, comments: (e.target.value) })}
+                                        value={company.comment}
+                                        onChange={(e) => setCompany({ ...company, comment: (e.target.value) })}
                                     />
                                 </Form.Group>
                             </Form>

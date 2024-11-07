@@ -29,13 +29,14 @@ export const defaultProduct = (): IProduct => {
 export const defaultCompany = (): ICompany => {
     return JSON.parse(JSON.stringify({
         id: 0,
-        companyType: '',
-        companyName: '',
-        companyRep: '',
-        phoneNumber: '',
+        userId: 0,
+        type: '',
+        name: '',
+        representative: '',
+        phone: '',
         email: '',
         location: '',
-        comments: '',
+        comment: '',
     }))
 }
 

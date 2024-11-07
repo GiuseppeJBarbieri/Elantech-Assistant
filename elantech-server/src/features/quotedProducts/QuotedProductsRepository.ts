@@ -20,7 +20,6 @@ const standardError = (message: string) => {
 export default {
   async Add(quotedProduct: IQuotedProduct): Promise<IQuotedProduct> {
     try {
-      logger.info(quotedProduct);
       return await db.quotedProduct.create(quotedProduct);
     } catch (err) {
       standardError(`${err.name} ${err.message}`);

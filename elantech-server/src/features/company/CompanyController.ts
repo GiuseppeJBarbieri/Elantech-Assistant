@@ -34,9 +34,7 @@ export default {
 
   async Add(company: ICompany): Promise<IHTTPResponse> {
     try {
-      const _company = { ...company };
-      await CompanyRepository.Add(_company);
-
+      await CompanyRepository.Add(company);
       return {
         ...constants.HTTP.SUCCESS.CREATED,
       };

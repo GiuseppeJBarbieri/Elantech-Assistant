@@ -3,14 +3,13 @@ import { Modal, Form, Button, Col, InputGroup } from 'react-bootstrap';
 import BootstrapTable, { SelectRowProps } from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { requestAddQuote, requestAddQuotedProduct, requestAllCompanies } from '../../../utils/Requests';
+import { requestAddQuote, requestAllCompanies } from '../../../utils/Requests';
 import { defaultAlert, defaultQuote, defaultQuotedProduct } from '../../../constants/Defaults';
 import { conditionList } from '../../../constants/Options';
 import ICompany from '../../../types/ICompany';
 import IProduct from '../../../types/IProduct';
 import { SpinnerBlock } from '../../LoadingAnimation/SpinnerBlock';
 import { CustomAlert } from '../../Alerts/CustomAlert';
-import IQuotedProduct from '../../../types/IQuotedProduct';
 import moment from 'moment';
 import { Search } from 'react-bootstrap-icons';
 import { DebounceInput } from 'react-debounce-input';
@@ -107,12 +106,9 @@ const AddSimpleQuoteModalComponent: FunctionComponent<AddSimpleQuoteModalProps> 
                 setIsSaving(false);
             } else {
                 try {
-                    const req = await requestAddQuote(quote);
                     quotedProduct.productId = props.selectedProduct.id as number;
-                    console.log(req.data.id);
-                    quotedProduct.quoteId = req.data.id;
-                    console.log(quotedProduct);
-                    await requestAddQuotedProduct(quotedProduct);
+                    quote.QuotedProducts = [quotedProduct];
+                    await requestAddQuote(quote);
                     props.getAllQuotes(props.selectedProduct.id as number);
                     setIsSaving(false);
                     props.onClose();

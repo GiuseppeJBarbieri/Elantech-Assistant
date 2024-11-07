@@ -48,8 +48,8 @@ db[company.name] = company;
 const quote = Quote(sequelize);
 db[quote.name] = quote;
 
-const quotedProducts = QuotedProduct(sequelize);
-db[quotedProducts.name] = quotedProducts;
+const quotedProduct = QuotedProduct(sequelize);
+db[quotedProduct.name] = quotedProduct;
 
 const inventory = Inventory(sequelize);
 db[inventory.name] = inventory;

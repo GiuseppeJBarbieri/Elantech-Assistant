@@ -1,18 +1,22 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { FunctionComponent, HTMLAttributes, useState, useEffect } from 'react';
-import { Button, DropdownButton, Dropdown } from 'react-bootstrap';
-import { Pencil, Plus, Trash } from 'react-bootstrap-icons';
+import { Button, DropdownButton, Dropdown, InputGroup } from 'react-bootstrap';
+import { Pencil, Plus, Search, Trash } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { CompanyModal } from '../../components/Modals/Company/CompanyModal';
 import { ExpandedQuoteRow } from '../../components/ExpandedQuoteRow/ExpandedQuoteRow';
 import ICompany from '../../types/ICompany';
-import { requestAllCompanies } from '../../utils/Requests';
+import { requestAllCompanies, requestAllQuotesByCompanyID } from '../../utils/Requests';
 import { defaultCompany } from '../../constants/Defaults';
 import './Quotes.css';
 import { RemoveCompanyModal } from '../../components/Modals/Company/RemoveCompanyModal';
+import { DebounceInput } from 'react-debounce-input';
+import ToolkitProvider from 'react-bootstrap-table2-toolkit';
+import { SpinnerBlock } from '../../components/LoadingAnimation/SpinnerBlock';
+import IQuote from '../../types/IQuote';
 
 interface QuotesProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> { }
 
@@ -21,8 +25,10 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
   const [editCompanySwitch, setEditCompanySwitch] = useState(false);
   const [removeCompanySwitch, setRemoveCompanySwitch] = useState(false);
   const [companyList, setCompanyList] = useState<ICompany[]>([]);
-
   const [selectedCompany, setSelectedCompany] = useState<ICompany>(defaultCompany);
+  const [searchString] = useState<string>('');
+  const [isSearching] = useState(false);
+  const [quotes, setQuotes] = useState<IQuote[]>([]);
 
   const rankFormatterRemove = (_: any, data: any, index: any) => {
     return (
@@ -68,29 +74,36 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
       </div>
     );
   };
+  const customTotal = (from: number, to: number, size: number) => {
+    return (
+        <span className="react-bootstrap-table-pagination-total"
+            style={{ marginLeft: 5 }}>
+            {size} Results
+        </span>)
+};
   const column = [
 
     {
       id: 1,
-      dataField: 'companyType',
+      dataField: 'type',
       text: 'Type',
       sort: true,
     },
     {
       id: 2,
-      dataField: 'companyName',
+      dataField: 'name',
       text: 'Company Name',
       sort: true,
     },
     {
       id: 3,
-      dataField: 'companyRep',
-      text: 'Company Rep',
+      dataField: 'representative',
+      text: 'Representative',
       sort: true,
     },
     {
       id: 4,
-      dataField: 'phoneNumber',
+      dataField: 'phone',
       text: 'Phone Number',
       sort: false,
       headerAlign: 'center',
@@ -110,7 +123,7 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
     },
     {
       id: 7,
-      dataField: 'comments',
+      dataField: 'comment',
       text: 'Comments',
       sort: false,
     },
@@ -132,11 +145,16 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
     },
   ];
   const options = {
-    custom: true,
-    totalSize: companyList.length
-  };
+    showTotal: true,
+    paginationTotalRenderer: customTotal,
+};
   const getAllCompanies = async () => {
     setCompanyList(await requestAllCompanies());
+  };
+  const handleSearch = (input: string, props: { searchText?: string; onSearch: any; onClear?: () => void; }) => {
+    if (input !== undefined) {
+      props.onSearch(input);
+    }
   };
   useEffect(() => {
     getAllCompanies();
@@ -153,70 +171,77 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
           </div>
         </div>
         <hr />
-        <div className='d-flex justify-content-between'>
-          <input type='text'
-            className="form-control custom-input"
-            placeholder="Search Company"
-            style={{ width: 200 }}
-          />
-          <div className='d-flex'>
-            <DropdownButton
-              key={'dark'}
-              variant="dark"
-              menuVariant="dark"
-              title={'Search History '}
-            >
-              <Dropdown.Item eventKey="1">---------</Dropdown.Item>
-              <Dropdown.Item eventKey="2">---------</Dropdown.Item>
-              <Dropdown.Item eventKey="3" active>---------</Dropdown.Item>
-              <Dropdown.Item eventKey="4">---------</Dropdown.Item>
-            </DropdownButton>
-          </div>
-        </div>
-        <br />
-        <div>
-          <PaginationProvider
-            pagination={paginationFactory(options)}
-          >
-            {
-              ({
-                paginationProps,
-                paginationTableProps
-              }) => (
+        <ToolkitProvider
+          keyField="id"
+          data={companyList}
+          columns={column}
+          search >
+          {
+            props => {
+              return (
                 <div>
-                  <BootstrapTable
-                    {...paginationTableProps}
-                    keyField="id"
-                    bootstrap4
-                    data={companyList}
-                    columns={column}
-                    classes="table table-dark table-hover table-striped table-responsive"
-                    noDataIndication="Table is Empty"
-                    expandRow={{
-                      onlyOneExpanding: true,
-                      renderer: (row) => {
-                        return (
-                          <ExpandedQuoteRow
-                            selectedCompany={row}
-                          />
-                        )
-                      }
-                    }}
-                  />
-                  <div className='d-flex justify-content-between'>
-                    <SizePerPageDropdownStandalone
-                      {...paginationProps}
-                    />
-                    <PaginationListStandalone
-                      {...paginationProps}
-                    />
-                  </div>
+                  {isSearching ?
+                    <SpinnerBlock />
+                    :
+                    <div>
+                      <div className='d-flex justify-content-between'>
+                        <InputGroup className="mb-3">
+                          <InputGroup.Text id="basic-addon2">
+                            <Search />
+                          </InputGroup.Text>
+                          <DebounceInput
+                            type="text"
+                            className='debounce'
+                            placeholder="Search..."
+                            debounceTimeout={500}
+                            value={searchString}
+                            onChange={e => {
+                              handleSearch(e.target.value, { ...props.searchProps });
+                            }} />
+                        </InputGroup>
+                        <div className='d-flex'>
+                          <DropdownButton
+                            key={'dark'}
+                            variant="dark"
+                            menuVariant="dark"
+                            title={'Search History '}
+                          >
+                            <Dropdown.Item eventKey="1">---------</Dropdown.Item>
+                            <Dropdown.Item eventKey="2">---------</Dropdown.Item>
+                            <Dropdown.Item eventKey="3" active>---------</Dropdown.Item>
+                            <Dropdown.Item eventKey="4">---------</Dropdown.Item>
+                          </DropdownButton>
+                        </div>
+                      </div>
+                      <br />
+                      <BootstrapTable
+                        {...props.baseProps}
+                        keyField="id"
+                        bootstrap4
+                        data={companyList}
+                        columns={column}
+                        classes="table table-dark table-hover table-striped table-responsive"
+                        noDataIndication="Table is Empty"
+                        pagination={paginationFactory(options)}
+                        expandRow={{
+                          onlyOneExpanding: true,
+                          renderer: (row) => {
+                            return (
+                              <ExpandedQuoteRow
+                                selectedCompany={row}
+                              />
+                            )
+                          }
+                        }}
+                      />
+                    </div>
+                  }
                 </div>
-              )
+              );
             }
-          </PaginationProvider>
-        </div>
-      </div>
+          }
+        </ToolkitProvider>
+      </div >
       {
         addCompanySwitch &&
         <div className='modal-dialog'>

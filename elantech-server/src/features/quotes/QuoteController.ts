@@ -35,7 +35,6 @@ export default {
   async GetByCompanyId(companyID: number) {
     try {
       const quotes = await QuoteRepository.GetByCompanyId(companyID);
-
       return {
         ...constants.HTTP.SUCCESS.SELECTED,
         payload: [...quotes],
@@ -47,12 +46,9 @@ export default {
 
   async Add(quote: IQuote): Promise<IHTTPResponse> {
     try {
-      const _quote = { ...quote };
-      const response = await QuoteRepository.Add(_quote);
-
+      await QuoteRepository.Add(quote);
       return {
         ...constants.HTTP.SUCCESS.CREATED,
-        id: response.id,
       };
     } catch (err) {
       return Promise.reject(err);

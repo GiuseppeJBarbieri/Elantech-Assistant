@@ -20,10 +20,7 @@ router.post('/', authenticationMiddleware, validate(QuoteValidation.PostQuote),
       .then((response) => {
         res.status(201).json(response);
       })
-      .catch((err) => {
-        next(err);
-        console.log(err, req.body);
-      });
+      .catch((err) => next(err));
   });
 
 /**
@@ -56,7 +53,6 @@ router.get('/:id', authenticationMiddleware, validate(QuoteValidation.GetQuote),
 router.get('/company/:companyId', authenticationMiddleware, validate(QuoteValidation.GetQuoteByCompanyId),
   (req, res, next) => {
     logger.info('GET QUOTE BY COMPANY ID');
-
     QuoteController.GetByCompanyId(Number(req.params.companyId))
       .then((quotes) => res.status(200).json(quotes))
       .catch((err) => next(err));
