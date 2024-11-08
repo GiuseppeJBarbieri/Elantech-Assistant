@@ -52,7 +52,7 @@ export default class Server {
         const userTypes = await db.userType.findAll({});
         if (userTypes.length === 0) {
           await db.userType.create({ createdBy: 1, type: 'Admin' });
-          await db.userType.create({ createdBy: 1, value: 'User' });
+          await db.userType.create({ createdBy: 1, type: 'User' });
         }
       }
     } catch (e) {

@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { HTMLAttributes, FunctionComponent } from 'react';
 import { useState, useEffect } from 'react';
-import { Modal, Form, Button } from 'react-bootstrap';
-import { Plus, Trash } from 'react-bootstrap-icons';
+import { Modal, Form, Button, InputGroup } from 'react-bootstrap';
+import { Plus, Search, Trash } from 'react-bootstrap-icons';
 import BootstrapTable, { ColumnDescription, SelectRowProps } from 'react-bootstrap-table-next';
-import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
+import paginationFactory from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { defaultAlert } from '../../../constants/Defaults';
 import { conditionList } from '../../../constants/Options';
@@ -16,6 +15,8 @@ import { requestAddQuote, requestAddQuotedProduct, requestAllProducts } from '..
 import { CustomAlert } from '../../Alerts/CustomAlert';
 import { SpinnerBlock } from '../../LoadingAnimation/SpinnerBlock';
 import '../modal.css';
+import ToolkitProvider from 'react-bootstrap-table2-toolkit';
+import { DebounceInput } from 'react-debounce-input';
 
 interface AddMultiQuoteModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
@@ -26,16 +27,21 @@ interface AddMultiQuoteModalProps extends RouteComponentProps, HTMLAttributes<HT
 
 const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = (props) => {
     const [isSaving, setIsSaving] = useState(false);
-    // const [setRowSelected] = useState(false);
+    const [alert, setAlert] = useState(defaultAlert);
+
+    const [searchString] = useState<string>('');
+    const [isSearching] = useState(false);
+
     const [selectedProduct, setSelectedProduct] = useState<IProduct>({});
-    // const [quote] = useState<IQuote>({ companyId: props.selectedCompany.id as number, userId: 0, dateQuoted: new Date().toString(), sold: false });
     const [quotedProducts, setQuotedProducts] = useState<IQuotedProduct[]>([]);
     const [products, setProducts] = useState<IProduct[]>([]);
-    const [alert, setAlert] = useState(defaultAlert);
+
     const [condition, setCondition] = useState('');
     const [quantity, setQuantity] = useState(0);
     const [price, setPrice] = useState(0);
     const [comment] = useState('');
+
+
 
     const rankFormatterRemove = (_: unknown, data: IQuotedProduct) => {
         return (
@@ -56,7 +62,7 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
             </div>
         );
     };
-    const column: ColumnDescription<any, any>[] = [
+    const product_column: ColumnDescription<any, any>[] = [
         {
             dataField: 'quantity',
             text: 'QTY',
@@ -101,7 +107,7 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
             sort: false,
         },
     ];
-    const column_inner: ColumnDescription<any, any>[] = [
+    const quoted_product_column: ColumnDescription<any, any>[] = [
         {
             dataField: 'quantity',
             text: 'QTY',
@@ -109,24 +115,24 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
             headerAlign: 'center',
         },
         {
-            dataField: 'productNumber',
+            dataField: 'Product.productNumber',
             text: 'Product Number',
             sort: true,
         },
         {
-            dataField: 'type',
+            dataField: 'Product.productType',
             text: 'Type',
             sort: true,
             headerAlign: 'center',
         },
         {
-            dataField: 'brand',
+            dataField: 'Product.brand',
             text: 'Brand',
             sort: true,
             headerAlign: 'center',
         },
         {
-            dataField: 'description',
+            dataField: 'Product.description',
             text: 'Description',
             sort: false,
         },
@@ -151,19 +157,23 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
             }
         }
     ];
+    const customTotal = (from: number, to: number, size: number) => {
+        return (
+            <span className="react-bootstrap-table-pagination-total"
+                style={{ marginLeft: 5 }}>
+                {size} Results
+            </span>)
+    };
     const options = {
-        custom: true,
-        totalSize: products.length
+        showTotal: true,
+        paginationTotalRenderer: customTotal,
     };
     const selectRow: SelectRowProps<IProduct> = {
         mode: 'radio',
         clickToSelect: true,
         onSelect: (row: IProduct, isSelect: boolean) => {
             if (isSelect === true) {
-                // setRowSelected(true);
                 setSelectedProduct(row);
-            } else {
-                // setRowSelected(false);
             }
         },
     };
@@ -194,10 +204,12 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
                     quotedPrice: price,
                     productCondition: condition,
                     comment: comment,
-                    productNumber: selectedProduct.productNumber,
-                    type: selectedProduct.productType,
-                    brand: selectedProduct.brand,
-                    description: selectedProduct.description
+                    Product: {
+                        productNumber: selectedProduct.productNumber || '',
+                        productType: selectedProduct.productType || '',
+                        brand: selectedProduct.brand || '',
+                        description: selectedProduct.description || '',
+                    },
                 }
                 quotedProducts.push(quotedProduct);
                 setQuotedProducts(JSON.parse(JSON.stringify(quotedProducts)));
@@ -217,28 +229,18 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
         } else {
             setTimeout(async () => {
                 try {
-                    const response = await requestAddQuote({ companyId: props.selectedCompany.id as number, userId: 0, dateQuoted: new Date().toString(), sold: false } as IQuote);
-                    quotedProducts.forEach(async product => {
-                        product.quoteId = response.data.id;
-                        // const copyProd: IQuotedProduct = {
-                        //     id: 0,
-                        //     quoteId: response.data.id,
-                        //     productId: product.productId,
-                        //     quantity: product.quantity,
-                        //     quotedPrice: product.quotedPrice,
-                        //     productCondition: product.productCondition,
-                        //     comment: product.comment,
-                        // }
-                        await requestAddQuotedProduct({
-                            id: 0,
-                            quoteId: response.data.id,
-                            productId: product.productId,
-                            quantity: product.quantity,
-                            quotedPrice: product.quotedPrice,
-                            productCondition: product.productCondition,
-                            comment: product.comment,
-                        });
-                    });
+                    // Remove Product object from this object
+                    const quotedProductCopy: IQuotedProduct[] = quotedProducts.map(({ Product, ...rest }) => rest);
+
+                    const quote: IQuote = {
+                        companyId: props.selectedCompany.id as number,
+                        userId: 0,
+                        dateQuoted: new Date().toString(),
+                        sold: false,
+                        QuotedProducts: quotedProductCopy,
+                    };
+                    console.log(quote);
+                    await requestAddQuote(quote);
                     setIsSaving(false);
                     props.getAllQuotes(props.selectedCompany.id as number);
                     props.onClose();
@@ -250,9 +252,14 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
             }, 500);
         }
     }
+    const handleSearch = (input: string, props: { searchText?: string; onSearch: any; onClear?: () => void; }) => {
+        if (input !== undefined) {
+            props.onSearch(input);
+        }
+    };
     useEffect(() => {
         getAllProducts();
-    }, []);
+    }, [setProducts]);
     return (
         <div>
             <Modal backdrop="static" show={props.modalVisible} onHide={props.onClose} fullscreen={true}>
@@ -270,23 +277,13 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
                             <Form className="container d-grid" >
                                 <CustomAlert label={alert.label} type={alert.type} showAlert={alert.show} />
                                 <Form.Group className="mb-3">
-                                    <h3 style={{ fontWeight: 300 }}>Select Products</h3>
+                                    <h3 style={{ fontWeight: 300 }}>Select Product</h3>
                                     <p style={{ fontWeight: 300 }}>
                                         First select a product, add the quote information, then click add quote when finished.
                                     </p>
                                 </Form.Group>
                                 <div className='d-flex justify-content-between'>
-                                    <Form.Group className="mb-3">
-                                        <div className='d-flex'>
-                                            <div>
-                                                <input type='text'
-                                                    className="form-control custom-input"
-                                                    placeholder="Search Product"
-                                                    style={{ width: 200 }}
-                                                />
-                                            </div>
-                                        </div>
-                                    </Form.Group>
+
                                     <div className='d-flex'>
                                         <div style={{ marginRight: 5 }}>
                                             <Form.Label style={{ display: 'flex' }}>Condition</Form.Label>
@@ -348,39 +345,54 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
                                 </div>
                                 <hr />
                                 <div>
-                                    <PaginationProvider
-                                        pagination={paginationFactory(options)}
-                                    >
+                                    <ToolkitProvider
+                                        keyField="id"
+                                        data={products}
+                                        columns={product_column}
+                                        search >
                                         {
-                                            ({
-                                                paginationProps,
-                                                paginationTableProps
-                                            }) => (
-                                                <div>
-                                                    <BootstrapTable
-                                                        key='product_table'
-                                                        {...paginationTableProps}
-                                                        keyField="id"
-                                                        bootstrap4
-                                                        condensed
-                                                        data={products}
-                                                        columns={column}
-                                                        selectRow={selectRow}
-                                                        classes="table table-dark table-hover table-striped table-responsive"
-                                                        noDataIndication="Table is Empty"
-                                                    />
-                                                    <div className='d-flex justify-content-between'>
-                                                        <SizePerPageDropdownStandalone
-                                                            {...paginationProps}
-                                                        />
-                                                        <PaginationListStandalone
-                                                            {...paginationProps}
-                                                        />
+                                            props => {
+                                                return (
+                                                    <div>
+                                                        {isSearching ?
+                                                            <SpinnerBlock />
+                                                            :
+                                                            <div>
+                                                                <InputGroup className="mb-3">
+                                                                    <InputGroup.Text id="basic-addon2">
+                                                                        <Search />
+                                                                    </InputGroup.Text>
+                                                                    <DebounceInput
+                                                                        type="text"
+                                                                        className='debounce'
+                                                                        placeholder="Search..."
+                                                                        debounceTimeout={500}
+                                                                        value={searchString}
+                                                                        onChange={e => {
+                                                                            handleSearch(e.target.value, { ...props.searchProps });
+                                                                        }} />
+                                                                </InputGroup>
+
+                                                                <BootstrapTable
+                                                                    {...props.baseProps}
+                                                                    key='product_table'
+                                                                    keyField="id"
+                                                                    bootstrap4
+                                                                    condensed
+                                                                    data={products}
+                                                                    columns={product_column}
+                                                                    selectRow={selectRow as SelectRowProps<IProduct>}
+                                                                    pagination={paginationFactory(options)}
+                                                                    classes="table table-dark table-hover table-striped table-responsive"
+                                                                    noDataIndication="Table is Empty"
+                                                                />
+                                                            </div>
+                                                        }
                                                     </div>
-                                                </div>
-                                            )
+                                                );
+                                            }
                                         }
-                                    </PaginationProvider>
+                                    </ToolkitProvider>
                                 </div>
                                 <hr />
                                 <br />
@@ -390,7 +402,7 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
                                     <BootstrapTable
                                         keyField='id'
                                         data={quotedProducts}
-                                        columns={column_inner}
+                                        columns={quoted_product_column}
                                         bootstrap4
                                         condensed
                                         classes="table table-dark table-hover table-striped"

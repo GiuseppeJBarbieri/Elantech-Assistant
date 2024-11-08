@@ -13,7 +13,7 @@ interface IQuotedProduct {
         brand: string,
         description: string
     };
-    Quote: {
+    Quote?: {
         dateQuoted: string,
         sold: boolean,
         Company?: {

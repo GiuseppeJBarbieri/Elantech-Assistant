@@ -81,7 +81,7 @@ def convert_to_new_product_schema():
         new_product_list.append(tmpProd)
 
 def save_products_to_file():
-    product_header = ['userId', 'productNumber', 'altNumber1', 'altNumber2', 'altNumber3', 
+    product_header = ['id','userId', 'productNumber', 'altNumber1', 'altNumber2', 'altNumber3', 
                       'altNumber4', 'altNumber5', 'altNumber6', 'quantity', 'productType', 
                       'brand', 'description', 'relatedTags', 'createdAt', 'updatedAt']
     print('Saving Product List...')
@@ -89,7 +89,7 @@ def save_products_to_file():
         spam_writer = csv.writer(csv_file, delimiter=',', quotechar='"',  quoting=csv.QUOTE_MINIMAL)
         spam_writer.writerow(product_header)
         for x in new_product_list:
-            spam_writer.writerow([x.userId, x.productNumber, x.altNumber1, x.altNumber2, x.altNumber3, 
+            spam_writer.writerow([x.id, x.userId, x.productNumber, x.altNumber1, x.altNumber2, x.altNumber3, 
                                   x.altNumber4, x.altNumber5, x.altNumber6, x.quantity, x.productType, x.brand, 
                                   x.description, x.relatedTags, x.createdAt, x.updatedAt])  
 
