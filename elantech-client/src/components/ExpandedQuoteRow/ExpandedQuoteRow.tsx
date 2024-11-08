@@ -126,7 +126,7 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
             formatter: (cell: any, row: any) => {
                 var total = 0;
                 row.quotedProducts.forEach((element: IQuotedProduct) => {
-                    total += element.quotedPrice;;
+                    total += element.quotedPrice;
                 });
                 return `$${total}`;
             },
