@@ -21,6 +21,7 @@ const standardError = (message: string) => {
 
 export default {
   async Add(quote: IQuote): Promise<IQuote> {
+    logger.info(quote);
     const transaction: Transaction = await db.sequelize.transaction();
     try {
       // Create the quote
@@ -47,6 +48,7 @@ export default {
       return await db.quote.findAll();
     } catch (err) {
       standardError(err.message);
+      logger.error(err);
       return Promise.reject(repoErr);
     }
   },

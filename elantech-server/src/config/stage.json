@@ -9,7 +9,7 @@
     "HTTP": "http"
   },
   "auth": {
-    "cookieLife": 24,
+    "cookieLife": 1,
     "bcrypt": {
       "costFactor": 8
     },

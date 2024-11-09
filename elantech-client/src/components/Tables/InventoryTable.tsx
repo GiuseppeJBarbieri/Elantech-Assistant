@@ -89,13 +89,13 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
     };
     const handleConditionSort = (order: string) => {
         if(order === 'desc') {
-            console.log('Handle Sort: ' + order);
+            // console.log('Handle Sort: ' + order);
             inventoryList.sort((a, b) => b.condition.localeCompare(a.condition));
-            console.log(inventoryList);
+            // console.log(inventoryList);
         } else {
-            console.log('Handle Sort: ' + order);
+            // console.log('Handle Sort: ' + order);
             inventoryList.sort((a, b) => a.condition.localeCompare(b.condition));
-            console.log(inventoryList);
+            // console.log(inventoryList);
         }
     }
     const columns = [

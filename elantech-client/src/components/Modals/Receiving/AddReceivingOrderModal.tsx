@@ -492,7 +492,6 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
                                                                                 <Form.Group className="mb-3">
                                                                                     {/* TODO */}
                                                                                     <Button variant="secondary" onClick={() => {
-                                                                                        console.log(currentProduct);
                                                                                         selectedProductList.push(currentProduct);
                                                                                         setSelectedProductList(JSON.parse(JSON.stringify(selectedProductList)));
                                                                                     }}>Submit</Button>
@@ -559,8 +558,6 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
                         <Button
                             variant="dark"
                             onClick={async () => {
-                                console.log(receivingOrderState);
-                                console.log(selectedProductList);
                                 onSubmit();
                             }}>
                             Finish

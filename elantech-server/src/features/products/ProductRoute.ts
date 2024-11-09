@@ -62,16 +62,18 @@ router.put('/', authenticationMiddleware, validate(ProductValidation.PutProduct)
 /**
 * This route will delete a product by product number
 */
-router.delete('/:id',
-  authenticationMiddleware,
-  validate(ProductValidation.DeleteProduct), (req, res, next) => {
-    logger.info('DELETE PRODUCT');
-
+router.delete('/:id', authenticationMiddleware, validate(ProductValidation.DeleteProduct), (req, res, next) => {
+  logger.info('DELETE PRODUCT');
+  // eslint-disable-next-line dot-notation
+  if (req.session['userType'] === 2) {
     ProductController.Delete(Number(req.params.id))
       .then((response) => {
         res.status(201).json(response);
       })
       .catch((err) => next(err));
-  });
+  } else {
+    res.status(401).json({ message: 'Unauthorized' });
+  }
+});
 
 export default router;

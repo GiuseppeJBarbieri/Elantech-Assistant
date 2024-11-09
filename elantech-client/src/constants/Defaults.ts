@@ -68,3 +68,11 @@ export const defaultAlert = (): IAlert => {
         show: false
     }))
 }
+
+export const defaultAlertUnauthorized = (): IAlert => {
+    return JSON.parse(JSON.stringify({
+        label: 'Account does not have the permissions to delete a company. Please log into a user account that has the required permissions.',
+        type: 'danger',
+        show: false
+    }))
+}

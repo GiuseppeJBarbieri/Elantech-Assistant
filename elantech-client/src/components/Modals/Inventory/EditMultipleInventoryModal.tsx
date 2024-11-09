@@ -133,7 +133,6 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
             }
             found = false;
         });
-        console.log(newInventoryList);
         setInventoryTableList([]);
         setTimeout(async () => {
             setInventoryTableList(JSON.parse(JSON.stringify(newInventoryList)));

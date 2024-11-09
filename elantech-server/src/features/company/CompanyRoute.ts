@@ -66,13 +66,16 @@ router.put('/', authenticationMiddleware, validate(CompanyValidation.PutCompany)
 */
 router.delete('/:id', authenticationMiddleware, validate(CompanyValidation.DeleteCompany),
   (req, res, next) => {
-    logger.info('DELETE COMPANY');
-
-    CompanyController.Delete(Number(req.params.id))
-      .then((response) => {
-        res.status(201).json(response);
-      })
-      .catch((err) => next(err));
+    // eslint-disable-next-line dot-notation
+    if (req.session['userType'] === 1) {
+      CompanyController.Delete(Number(req.params.id))
+        .then((response) => {
+          res.status(201).json(response);
+        })
+        .catch((err) => next(err));
+    } else {
+      res.status(401).json({ message: 'Unauthorized' });
+    }
   });
 
 export default router;

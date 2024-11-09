@@ -41,8 +41,6 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
     const [price, setPrice] = useState(0);
     const [comment] = useState('');
 
-
-
     const rankFormatterRemove = (_: unknown, data: IQuotedProduct) => {
         return (
             <div
@@ -182,8 +180,17 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
             setAlert({ ...alert, label: 'Please select a product.', show: true });
             setTimeout(() => setAlert({ ...alert, show: false }), 5000);
         }
-        else if (condition === 'condition' || quantity === 0 || price === 0) {
-            setAlert({ ...alert, label: 'Please enter required information.', show: true });
+        else if (condition == '' || quantity === 0 || price === 0) {
+            const errorMessage = JSON.stringify(selectedProduct) === '{}'
+                ? 'Please select a product.'
+                : condition === ''
+                    ? 'Please select a condition.'
+                    : quantity === 0
+                        ? 'Please enter a quantity.'
+                        : price === 0
+                            ? 'Please enter a price.'
+                            : '';
+            setAlert({ ...alert, label: errorMessage, show: true });
             setTimeout(() => setAlert({ ...alert, show: false }), 5000);
         } else {
             let found = false;
@@ -223,15 +230,13 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
         // Save Quote
         setIsSaving(true);
         if (quotedProducts.length === 0) {
-            setAlert({ ...alert, label: 'Please select a product.', show: true });
+            setAlert({ ...alert, label: 'Please quote a product before continuing.', show: true });
             setTimeout(() => setAlert({ ...alert, show: false }), 5000);
             setIsSaving(false);
         } else {
             setTimeout(async () => {
                 try {
-                    // Remove Product object from this object
-                    const quotedProductCopy: IQuotedProduct[] = quotedProducts.map(({ Product, ...rest }) => rest);
-
+                    const quotedProductCopy: IQuotedProduct[] = quotedProducts.map(({ id, Product, ...rest }) => rest);
                     const quote: IQuote = {
                         companyId: props.selectedCompany.id as number,
                         userId: 0,
@@ -239,7 +244,7 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
                         sold: false,
                         QuotedProducts: quotedProductCopy,
                     };
-                    console.log(quote);
+                    
                     await requestAddQuote(quote);
                     setIsSaving(false);
                     props.getAllQuotes(props.selectedCompany.id as number);
@@ -283,7 +288,6 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
                                     </p>
                                 </Form.Group>
                                 <div className='d-flex justify-content-between'>
-
                                     <div className='d-flex'>
                                         <div style={{ marginRight: 5 }}>
                                             <Form.Label style={{ display: 'flex' }}>Condition</Form.Label>

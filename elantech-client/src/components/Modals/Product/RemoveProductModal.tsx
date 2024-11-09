@@ -22,7 +22,6 @@ const RemoveProductModalComponent: FunctionComponent<RemoveProductModalProps> = 
     const removeProduct = async () => {
         setIsSaving(true);
         const copyProduct: IProduct = JSON.parse(JSON.stringify(props.selectedProduct));
-        console.log(otherReason, reasonForRemoval);
         if (reasonForRemoval === 'Other') {
             copyProduct.reasonForRemoval = otherReason;
         } else {
@@ -30,7 +29,7 @@ const RemoveProductModalComponent: FunctionComponent<RemoveProductModalProps> = 
         }
         setTimeout(async () => {
             try {
-                await requestUpdateProduct(copyProduct)
+                // await requestUpdateProduct(copyProduct)
                 await requestDeleteProduct(props.selectedProduct.id as number);
                 props.onClose();
 

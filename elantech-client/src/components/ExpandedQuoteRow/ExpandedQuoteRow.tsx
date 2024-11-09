@@ -110,7 +110,6 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
             dataField: 'quotedBy',
             text: 'Quoted By',
             formatter: (cell: any, row: any) => {
-                console.log(row);
                 return `${row.user.firstName}  ${row.user.lastName}`;
             },
             sort: true,
@@ -161,7 +160,6 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
         setTimeout(async () => {
             try {
                 const quotes = await requestAllQuotesByCompanyID(companyId);
-                console.log(quotes);
                 setQuotes(quotes);
             } catch (err) {
                 console.log(err);

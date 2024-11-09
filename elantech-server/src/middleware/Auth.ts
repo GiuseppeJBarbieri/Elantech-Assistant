@@ -64,6 +64,7 @@ const authenticationMiddleware = async (req, res, next) => {
     if (!req.session) {
       req.session = {
         userId: session.userId,
+        userType: session.User.userTypeId,
       };
     } else {
       req.session.userId = session.userId;
@@ -91,7 +92,6 @@ passport.serializeUser(async (user: IUser, done) => {
   };
   try {
     await UserRepository.NewSession(session);
-    session.UserType = user.UserType;
     return done(null, session);
   } catch (err) {
     return done(err, null);

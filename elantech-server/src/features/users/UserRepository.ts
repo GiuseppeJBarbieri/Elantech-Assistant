@@ -118,13 +118,29 @@ export default {
 
   async GetSession(uuid: string): Promise<ISession> {
     try {
-      return await db.session.findOne({
+      const session = await db.session.findOne({
         where: {
           uuid,
           active: true,
           expired: false,
         },
+        include: [
+          {
+            model: db.user,
+            attributes: ['userTypeId'],
+            required: true,
+            as: 'user',
+          },
+        ],
       });
+      return {
+        uuid: session.uuid,
+        userId: session.userId,
+        active: session.active,
+        expired: session.expired,
+        expiresAt: session.expiresAt,
+        User: session.user,
+      };
     } catch (err) {
       standardError(err.message);
       return Promise.reject(repoErr);

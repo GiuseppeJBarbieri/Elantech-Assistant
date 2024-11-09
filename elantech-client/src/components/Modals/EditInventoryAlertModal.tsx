@@ -42,7 +42,6 @@ const EditInventoryAlertModalComponent: FunctionComponent<EditInventoryAlertModa
                         <Button
                             variant="dark"
                             onClick={async () => {
-                                console.log('CLOSING')
                                 props.onClose();
                             }}>
                             Finish

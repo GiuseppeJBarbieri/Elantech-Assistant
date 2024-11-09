@@ -66,7 +66,6 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
         <div onClick={(e) => {
           setSelectedCompany(data);
           setEditCompanySwitch(true);
-
         }}
         >
           <Pencil style={{ fontSize: 20, color: 'white' }} />
@@ -76,11 +75,11 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
   };
   const customTotal = (from: number, to: number, size: number) => {
     return (
-        <span className="react-bootstrap-table-pagination-total"
-            style={{ marginLeft: 5 }}>
-            {size} Results
-        </span>)
-};
+      <span className="react-bootstrap-table-pagination-total"
+        style={{ marginLeft: 5 }}>
+        {size} Results
+      </span>)
+  };
   const column = [
 
     {
@@ -147,7 +146,7 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
   const options = {
     showTotal: true,
     paginationTotalRenderer: customTotal,
-};
+  };
   const getAllCompanies = async () => {
     setCompanyList(await requestAllCompanies());
   };

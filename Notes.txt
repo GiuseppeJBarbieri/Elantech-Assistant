@@ -1,0 +1,15 @@
+Ask sam if
+
+1. Make is so that only Admin accounts are allowed to remove companies
+2. Make is so that only Admin accounts are allowed to remove a quote from a company
+3. Make it so that only Admin accounts are allowed to remove products from the system
+
+
+
+
+Eventually
+4. Make it so that only warehouse admin accounts can remove items from inventory or remove products
+
+
+
+Figure out proper cookie life

@@ -1,8 +1,8 @@
 import React, { HTMLAttributes, FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { Modal, Form, Button } from 'react-bootstrap';
-import { requestDeleteCompany} from '../../../utils/Requests';
-import { defaultAlert } from '../../../constants/Defaults';
+import { requestDeleteCompany } from '../../../utils/Requests';
+import { defaultAlertUnauthorized } from '../../../constants/Defaults';
 import { CustomAlert } from '../../Alerts/CustomAlert';
 import ICompany from '../../../types/ICompany';
 import { SpinnerBlock } from '../../LoadingAnimation/SpinnerBlock';
@@ -19,18 +19,23 @@ const RemoveCompanyModalComponent: FunctionComponent<RemoveCompanyModalProps> = 
     const [displaySerialText, setDisplaySerialText] = useState(false);
     const [otherReason, setOtherReason] = useState('');
     const [reasonForRemoval, setReasonForRemoval] = useState('');
-    const [alert, setAlert] = useState(defaultAlert);
+    const [alert, setAlert] = useState(defaultAlertUnauthorized);
 
     const removeCompany = async () => {
         setIsSaving(true);
         setTimeout(async () => {
+            let res;
             try {
-                await requestDeleteCompany(props.selectedCompany.id as number);
+                res = await requestDeleteCompany(props.selectedCompany.id as number);
                 props.getAllCompanies();
                 props.onClose();
             } catch (err) {
-                setAlert({ ...alert, label: `${err}`, show: true });
-                setTimeout(() => setAlert({ ...alert, show: false }), 3000);
+                err == 'Error: Request failed with status code 401' ?
+                    setAlert({ ...alert, show: true })
+                    :
+                    setAlert({ ...alert, label: `${err}`, show: true });
+
+                setTimeout(() => setAlert({ ...alert, show: false }), 5000);
                 setIsSaving(false);
             }
         }, 500);
@@ -42,7 +47,7 @@ const RemoveCompanyModalComponent: FunctionComponent<RemoveCompanyModalProps> = 
                 <Modal.Header className='modal-header' closeButton>
                     <Modal.Title>
                         <h2 className='modal-title'>Removing Company</h2>
-                        <p className='modal-sub-title'>You are about to remove {props.selectedCompany.companyName}</p>
+                        <p className='modal-sub-title'>You are about to remove {props.selectedCompany.name}</p>
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body style={{ background: '#2c3034', color: 'white' }}>
@@ -80,14 +85,6 @@ const RemoveCompanyModalComponent: FunctionComponent<RemoveCompanyModalProps> = 
                                         />
                                     </Form.Group>
                                 }
-                                <Form.Group className="mb-3">
-                                    <Form.Label htmlFor="inputPassword5">Password</Form.Label>
-                                    <Form.Control
-                                        type="password"
-                                        id="inputPassword5"
-                                        aria-describedby="passwordHelpBlock"
-                                    />
-                                </Form.Group>
                             </Form>
                         }
                     </div>
