@@ -1,13 +1,14 @@
 import React, { FunctionComponent, HTMLAttributes } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { PAGE_ROUTES } from '../../constants/PageRoutes';
 
 import './ForgotPassword.css';
 
-interface ForgotPasswordProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {}
+interface ForgotPasswordProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const ForgotPasswordLayout: FunctionComponent<ForgotPasswordProps> = ({ history }) => {
+export const ForgotPasswordLayout: FunctionComponent<ForgotPasswordProps> = () => {
+  const navigate = useNavigate();
   return (
     <div
       className="ForgotPassword"
@@ -20,9 +21,9 @@ export const ForgotPasswordLayout: FunctionComponent<ForgotPasswordProps> = ({ h
       <h1>
           FORGOT PASSWORD
       </h1>
-      <button type="button" onClick={() => history.push(PAGE_ROUTES.LOGIN)}>BACK TO LOGIN</button>
+      <button type="button" onClick={() => navigate(PAGE_ROUTES.LOGIN)}>BACK TO LOGIN</button>
     </div>
   );
 };
 
-export const ForgotPassword = withRouter(ForgotPasswordLayout);
+export default ForgotPasswordLayout;

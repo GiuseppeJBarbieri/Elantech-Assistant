@@ -2,15 +2,14 @@ import moment from 'moment';
 import React, { HTMLAttributes, FunctionComponent, useEffect } from 'react';
 import { useState } from 'react';
 import { Modal, Spinner, Form, Button, InputGroup, Col, Row } from 'react-bootstrap';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
 import IInventory from '../../../types/IInventory';
 import IProduct from '../../../types/IProduct';
-import { CustomAlert } from '../../Alerts/CustomAlert';
+import CustomAlert from '../../Alerts/CustomAlert';
 import { v4 } from 'uuid';
 import { defaultAlert } from '../../../constants/Defaults';
 import { requestAddInventory } from '../../../utils/Requests';
 
-interface AddInventoryModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface AddInventoryModalProps extends HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
     modalVisible: boolean;
     selectedProduct: IProduct;
@@ -27,12 +26,12 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
         id: 0,
         productId: props.selectedProduct.id || 0,
         removedInventoryId: undefined,
-        poId: undefined,
+        purchaseOrderId: undefined,
         serialNumber: '',
         condition: 'Choose Condition',
         warrantyExpiration: warrantyDate,
-        isTested: false,
-        dateTested: dateTested,
+        tested: false,
+        testedDate: dateTested,
         comment: '',
         location: '',
     });
@@ -128,7 +127,7 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
         setWarrantyDate(moment(new Date()).format('YYYY-MM-DD'));
         setDateTested(moment(new Date()).format('YYYY-MM-DD'));
     });
-        
+
     return (
         <div>
             <Modal backdrop="static" show={props.modalVisible} onHide={props.onClose} fullscreen={true}>
@@ -240,7 +239,7 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                                             value={dateTested}
                                             onChange={(e) => {
                                                 setDateTested(moment(e.target.value).format('YYYY-MM-DD'));
-                                                setInventoryObj({ ...inventoryObj, dateTested: moment(e.target.value).format() })
+                                                setInventoryObj({ ...inventoryObj, testedDate: moment(e.target.value).format() })
                                             }}
                                         />
                                     </Form.Group>
@@ -258,7 +257,7 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                                                     type={'radio'}
                                                     id={'inline-radio-3'}
                                                     onClick={() => {
-                                                        setInventoryObj({ ...inventoryObj, isTested: (true) })
+                                                        setInventoryObj({ ...inventoryObj, tested: (true) })
                                                     }}
                                                 />
                                                 <Form.Check
@@ -268,7 +267,7 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                                                     type={'radio'}
                                                     id={'inline-radio-4'}
                                                     onClick={() => {
-                                                        setInventoryObj({ ...inventoryObj, isTested: (false) })
+                                                        setInventoryObj({ ...inventoryObj, tested: (false) })
                                                     }}
                                                 />
                                             </div>
@@ -320,4 +319,4 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
     );
 };
 
-export const AddInventoryModal = withRouter(AddInventoryComponent);
+export default AddInventoryComponent;

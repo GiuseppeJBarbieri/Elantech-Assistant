@@ -1,9 +1,8 @@
 
 import React, { HTMLAttributes, FunctionComponent } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
-import { RouteComponentProps, withRouter } from "react-router-dom";
 
-interface EditInventoryAlertModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface EditInventoryAlertModalProps extends HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
     modalVisible: boolean;
 }
@@ -53,4 +52,4 @@ const EditInventoryAlertModalComponent: FunctionComponent<EditInventoryAlertModa
     );
 };
 
-export const EditInventoryAlertModal = withRouter(EditInventoryAlertModalComponent);
+export default EditInventoryAlertModalComponent;

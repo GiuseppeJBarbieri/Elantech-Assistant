@@ -4,13 +4,10 @@ import { Button } from 'react-bootstrap';
 import { Plus } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-interface ProcurementProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> { }
+interface ProcurementProps extends HTMLAttributes<HTMLDivElement> { }
 
 export const ProcurementLayout: FunctionComponent<ProcurementProps> = () => {
-
-// https://codesandbox.io/s/github/SpiceyLew12/React-Playground/tree/main/?file=/src/StockTable.js
     const fake_data = [
         {
             order_id: 1,
@@ -193,4 +190,4 @@ export const ProcurementLayout: FunctionComponent<ProcurementProps> = () => {
     );
 };
 
-export const Procurement = withRouter(ProcurementLayout);
+export default ProcurementLayout;

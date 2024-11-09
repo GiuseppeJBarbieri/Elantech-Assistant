@@ -1,26 +1,23 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { FunctionComponent, HTMLAttributes, useState, useEffect } from 'react';
 import { Button, DropdownButton, Dropdown, InputGroup } from 'react-bootstrap';
 import { Pencil, Plus, Search, Trash } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
-import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { CompanyModal } from '../../components/Modals/Company/CompanyModal';
-import { ExpandedQuoteRow } from '../../components/ExpandedQuoteRow/ExpandedQuoteRow';
+import paginationFactory from 'react-bootstrap-table2-paginator';
+import CompanyModal from '../../components/Modals/Company/CompanyModal';
+import ExpandedQuoteRow from '../../components/ExpandedQuoteRow/ExpandedQuoteRow';
 import ICompany from '../../types/ICompany';
-import { requestAllCompanies, requestAllQuotesByCompanyID } from '../../utils/Requests';
+import { requestAllCompanies } from '../../utils/Requests';
 import { defaultCompany } from '../../constants/Defaults';
-import './Quotes.css';
-import { RemoveCompanyModal } from '../../components/Modals/Company/RemoveCompanyModal';
+import RemoveCompanyModal from '../../components/Modals/Company/RemoveCompanyModal';
 import { DebounceInput } from 'react-debounce-input';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
-import { SpinnerBlock } from '../../components/LoadingAnimation/SpinnerBlock';
-import IQuote from '../../types/IQuote';
+import SpinnerBlock from '../../components/LoadingAnimation/SpinnerBlock';
+// import IQuote from '../../types/IQuote';
+import './Quotes.css';
 
-interface QuotesProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> { }
+interface QuotesProps extends HTMLAttributes<HTMLDivElement> { }
 
-export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
+export const QuotesLayout: FunctionComponent<QuotesProps> = () => {
   const [addCompanySwitch, setAddCompanySwitch] = useState(false);
   const [editCompanySwitch, setEditCompanySwitch] = useState(false);
   const [removeCompanySwitch, setRemoveCompanySwitch] = useState(false);
@@ -28,7 +25,7 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
   const [selectedCompany, setSelectedCompany] = useState<ICompany>(defaultCompany);
   const [searchString] = useState<string>('');
   const [isSearching] = useState(false);
-  const [quotes, setQuotes] = useState<IQuote[]>([]);
+  // const [quotes, setQuotes] = useState<IQuote[]>([]);
 
   const rankFormatterRemove = (_: any, data: any, index: any) => {
     return (
@@ -286,4 +283,4 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
   );
 };
 
-export const Quotes = withRouter(QuotesLayout);
+export default QuotesLayout;

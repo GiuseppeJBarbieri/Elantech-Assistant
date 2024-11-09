@@ -1,13 +1,12 @@
 import React, { HTMLAttributes, FunctionComponent, useState } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { Modal, Form, Button } from 'react-bootstrap';
 import { requestDeleteCompany } from '../../../utils/Requests';
 import { defaultAlertUnauthorized } from '../../../constants/Defaults';
-import { CustomAlert } from '../../Alerts/CustomAlert';
+import CustomAlert from '../../Alerts/CustomAlert';
 import ICompany from '../../../types/ICompany';
-import { SpinnerBlock } from '../../LoadingAnimation/SpinnerBlock';
+import SpinnerBlock from '../../LoadingAnimation/SpinnerBlock';
 
-interface RemoveCompanyModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface RemoveCompanyModalProps extends HTMLAttributes<HTMLDivElement> {
     modalVisible: boolean;
     selectedCompany: ICompany;
     getAllCompanies: () => void;
@@ -24,9 +23,8 @@ const RemoveCompanyModalComponent: FunctionComponent<RemoveCompanyModalProps> = 
     const removeCompany = async () => {
         setIsSaving(true);
         setTimeout(async () => {
-            let res;
             try {
-                res = await requestDeleteCompany(props.selectedCompany.id as number);
+                await requestDeleteCompany(props.selectedCompany.id as number);
                 props.getAllCompanies();
                 props.onClose();
             } catch (err) {
@@ -105,4 +103,4 @@ const RemoveCompanyModalComponent: FunctionComponent<RemoveCompanyModalProps> = 
     );
 };
 
-export const RemoveCompanyModal = withRouter(RemoveCompanyModalComponent);
+export default RemoveCompanyModalComponent;

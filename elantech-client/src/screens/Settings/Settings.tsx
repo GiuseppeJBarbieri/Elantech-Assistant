@@ -1,25 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
 import { FunctionComponent, HTMLAttributes } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
-
 
 import './Settings.css';
 
-interface SettingsProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface SettingsProps extends HTMLAttributes<HTMLDivElement> {
   loggedIn: boolean;
   setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const SettingsLayout: FunctionComponent<SettingsProps> = ({ history, loggedIn, setLoggedIn }) => {
-  // const title = 'Settings';
-
-  // const logoutClicked = (): void => {
-  //   clearCookie();
-  //   setLoggedIn(false);
-  //   history.push(PAGE_ROUTES.LOGIN);
-  // };
-
+export const SettingsLayout: FunctionComponent<SettingsProps> = ({ loggedIn, setLoggedIn }) => {
   return (
     <section className="text-white main-section overflow-auto">
       <div style={{ padding: 20 }}>
@@ -28,11 +18,11 @@ export const SettingsLayout: FunctionComponent<SettingsProps> = ({ history, logg
         </div>
         <hr />
         <div className='d-flex justify-content-between'>
-
+          {/* Add your settings content here */}
         </div>
       </div>
-    </section >
+    </section>
   );
 };
 
-export const Settings = withRouter(SettingsLayout);
+export default SettingsLayout;

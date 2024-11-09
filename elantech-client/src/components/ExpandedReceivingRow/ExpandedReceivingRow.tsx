@@ -5,11 +5,10 @@ import { Navbar, Nav } from 'react-bootstrap';
 import { Pencil, Trash, Plus } from 'react-bootstrap-icons';
 import BootstrapTable, { ColumnDescription } from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { EditReceivedProductOrderModal } from '../Modals/Receiving/EditReceivedProductOrderModal';
-import { ReceivingAddProductModal } from '../Modals/Receiving/ReceivingAddProductModal';
+import EditReceivedProductOrderModal from '../Modals/Receiving/EditReceivedProductOrderModal';
+import ReceivingAddProductModal from '../Modals/Receiving/ReceivingAddProductModal';
 
-interface ExpandedReceivingRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface ExpandedReceivingRowProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps> = () => {
@@ -258,4 +257,4 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
     );
 };
 
-export const ExpandedReceivingRow = withRouter(ExpandedReceivingRowComponent);
+export default ExpandedReceivingRowComponent;

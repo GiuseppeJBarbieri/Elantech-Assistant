@@ -1,10 +1,10 @@
 import React from 'react';
 import { FunctionComponent, HTMLAttributes } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+
 import { List } from 'react-bootstrap-icons';
 import './TopToolBar.css';
 
-interface TopToolBarProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface TopToolBarProps extends HTMLAttributes<HTMLDivElement> {
   setPanelVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -18,4 +18,4 @@ const TopToolBarComponent: FunctionComponent<TopToolBarProps> = ({ setPanelVisib
   );
 };
 
-export const TopToolBar = withRouter(TopToolBarComponent);
+export default TopToolBarComponent;

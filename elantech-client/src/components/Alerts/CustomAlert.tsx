@@ -1,9 +1,8 @@
 
 import React, { HTMLAttributes, FunctionComponent } from 'react';
 import { Alert } from 'react-bootstrap';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-interface CustomAlertProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface CustomAlertProps extends HTMLAttributes<HTMLDivElement> {
     label: string;
     showAlert: boolean;
     type: string;
@@ -19,4 +18,4 @@ const CustomAlertComponent: FunctionComponent<CustomAlertProps> = (props) => {
     );
 };
 
-export const CustomAlert = withRouter(CustomAlertComponent);
+export default CustomAlertComponent;

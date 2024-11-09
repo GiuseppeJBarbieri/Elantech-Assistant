@@ -1,9 +1,8 @@
 import React, { HTMLAttributes, FunctionComponent, useEffect } from 'react';
 import { useState } from 'react';
-import { Modal, Spinner, Form, Button, Row, Col, Container, Collapse, InputGroup, Dropdown, DropdownButton } from 'react-bootstrap';
+import { Modal, Spinner, Form, Button, Row, Col, Container, Collapse, InputGroup } from 'react-bootstrap';
 import BootstrapTable, { SelectRowProps } from 'react-bootstrap-table-next';
-import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import paginationFactory from 'react-bootstrap-table2-paginator';
 import ICompany from '../../../types/ICompany';
 import { requestAllCompanies, requestAllProducts } from '../../../utils/Requests';
 import IProduct from '../../../types/IProduct';
@@ -13,10 +12,9 @@ import { Search } from 'react-bootstrap-icons';
 import { DebounceInput } from 'react-debounce-input';
 import filterFactory from 'react-bootstrap-table2-filter';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
-import { ExpandedProductRow } from '../../ExpandedProductRow/ExpandedProductRow';
-import { SpinnerBlock } from '../../LoadingAnimation/SpinnerBlock';
+import SpinnerBlock from '../../LoadingAnimation/SpinnerBlock';
 
-interface AddReceivingOrderModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface AddReceivingOrderModalProps extends HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
     modalVisible: boolean;
 }
@@ -484,7 +482,7 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
                                                                                 <Form.Group className="mb-1">
                                                                                     <Form.Control id="comment" placeholder="Comments"
                                                                                         onChange={(e) => {
-                                                                                            setCurrentProduct({ ...currentProduct, comment: e.target.value })
+                                                                                            // setCurrentProduct({ ...currentProduct, comment: e.target.value })
                                                                                         }} />
                                                                                 </Form.Group>
                                                                             </div>
@@ -569,4 +567,4 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
     );
 };
 
-export const AddReceivingOrderModal = withRouter(AddReceivingOrderModalComponent);
+export default AddReceivingOrderModalComponent;

@@ -1,16 +1,16 @@
 import * as React from 'react';
 import { FunctionComponent, HTMLAttributes } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
 import SlidingPane from 'react-sliding-pane';
 import { HouseDoor, Shop, ArrowBarLeft, CartPlus, Truck, Gear } from 'react-bootstrap-icons';
 import { PAGE_ROUTES } from '../../constants/PageRoutes';
+import { useNavigate } from 'react-router-dom';
 import './SideNavBar.css';
 import 'react-sliding-pane/dist/react-sliding-pane.css';
 
 /**
  * Properties for SideNavBar Component
  */
-interface SideNavBarProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface SideNavBarProps extends HTMLAttributes<HTMLDivElement> {
   /**
    * Getter - Switch to display/not display side navigation bar
    */
@@ -22,6 +22,7 @@ interface SideNavBarProps extends RouteComponentProps, HTMLAttributes<HTMLDivEle
 }
 
 const SideNavBarComponent: FunctionComponent<SideNavBarProps> = (props: SideNavBarProps) => {
+  const navigate = useNavigate();
   return (
     <SlidingPane
       hideHeader
@@ -48,7 +49,7 @@ const SideNavBarComponent: FunctionComponent<SideNavBarProps> = (props: SideNavB
                 verticalAlign: 'middle',
                 textAlign: 'center',
               }}
-              onClick={() => { props.setPanelVisible(false); props.history.replace(PAGE_ROUTES.HOME) }}>
+              onClick={() => { props.setPanelVisible(false); navigate(PAGE_ROUTES.LOGIN, { replace: true }) }}>
               <HouseDoor className="bi me-2" width="25" height="25" style={{ 'verticalAlign': 'middle' }} />
               <h4 className='font-weight-300' style={{ marginTop: 2 }}>Home</h4>
             </div>
@@ -61,7 +62,7 @@ const SideNavBarComponent: FunctionComponent<SideNavBarProps> = (props: SideNavB
                 verticalAlign: 'middle',
                 textAlign: 'center',
               }}
-              onClick={() => { props.setPanelVisible(false); props.history.replace(PAGE_ROUTES.QUOTES) }}>
+              onClick={() => { props.setPanelVisible(false); navigate(PAGE_ROUTES.QUOTES, { replace: true }) }}>
               <Shop className="bi me-2" width="25" height="25" style={{ 'verticalAlign': 'middle' }} />
               <h4 className='font-weight-300' style={{ marginTop: 3 }}>Quotes</h4>
             </div>
@@ -74,7 +75,7 @@ const SideNavBarComponent: FunctionComponent<SideNavBarProps> = (props: SideNavB
                 verticalAlign: 'middle',
                 textAlign: 'center',
               }}
-              onClick={() => { props.setPanelVisible(false); props.history.replace(PAGE_ROUTES.RECEIVING) }}>
+              onClick={() => { props.setPanelVisible(false); navigate(PAGE_ROUTES.RECEIVING, { replace: true }) }}>
               <Truck className="bi me-2" width="25" height="25" style={{ 'verticalAlign': 'middle' }} />
               <h4 className='font-weight-300' style={{ marginTop: 3 }}>Receiving</h4>
             </div>
@@ -126,7 +127,7 @@ const SideNavBarComponent: FunctionComponent<SideNavBarProps> = (props: SideNavB
                 verticalAlign: 'middle',
                 textAlign: 'center',
               }}
-              onClick={() => { props.setPanelVisible(false); props.history.replace(PAGE_ROUTES.PROCUREMENT) }}>
+              onClick={() => { props.setPanelVisible(false); navigate(PAGE_ROUTES.PROCUREMENT, { replace: true }) }}>
               <CartPlus className="bi me-2" width="25" height="25" style={{ 'verticalAlign': 'middle' }} />
               <h4 className='font-weight-300' style={{ marginTop: 3 }}>Removed</h4>
             </div>
@@ -165,7 +166,7 @@ const SideNavBarComponent: FunctionComponent<SideNavBarProps> = (props: SideNavB
                 verticalAlign: 'middle',
                 textAlign: 'center',
               }}
-              onClick={() => { props.setPanelVisible(false); props.history.replace(PAGE_ROUTES.SETTINGS) }}>
+              onClick={() => { props.setPanelVisible(false); navigate(PAGE_ROUTES.SETTINGS, { replace: true }) }}>
               <Gear className="bi me-2" width="25" height="25" style={{ 'verticalAlign': 'middle' }} />
               <h4 className='font-weight-300' style={{ marginTop: 3 }}>Settings</h4>
             </div>
@@ -180,4 +181,4 @@ const SideNavBarComponent: FunctionComponent<SideNavBarProps> = (props: SideNavB
   );
 };
 
-export const SideNavBar = withRouter(SideNavBarComponent);
+export default SideNavBarComponent;

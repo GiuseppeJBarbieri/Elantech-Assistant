@@ -6,14 +6,14 @@ import { Pencil, Search, Trash } from 'react-bootstrap-icons';
 import { DebounceInput } from 'react-debounce-input';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { ExpandedProductRow } from '../../components/ExpandedProductRow/ExpandedProductRow';
-import { ProductModal } from '../../components/Modals/Product/ProductModal';
-import { RemoveProductModal } from '../../components/Modals/Product/RemoveProductModal';
+import { useNavigate } from 'react-router-dom';
+import ExpandedProductRow from '../../components/ExpandedProductRow/ExpandedProductRow';
+import ProductModal from '../../components/Modals/Product/ProductModal';
+import RemoveProductModal from '../../components/Modals/Product/RemoveProductModal';
 import { PAGE_ROUTES } from '../../constants/PageRoutes';
 import { clearCookie } from '../../utils/Auth';
-import { TopHomeBar } from '../../components/TopPageBars/TopHomeBar';
-import { SpinnerBlock } from '../../components/LoadingAnimation/SpinnerBlock';
+import TopHomeBar from '../../components/TopPageBars/TopHomeBar';
+import SpinnerBlock from '../../components/LoadingAnimation/SpinnerBlock';
 import { requestAllProducts, requestLogout } from '../../utils/Requests';
 import { defaultProduct } from '../../constants/Defaults';
 import { brandOptionsList, typeOptionsList } from '../../constants/Options';
@@ -22,12 +22,12 @@ import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import './Home.css';
 
-interface HomeProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface HomeProps extends HTMLAttributes<HTMLDivElement> {
   loggedIn: boolean;
   setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, setLoggedIn }) => {
+export const HomeLayout: FunctionComponent<HomeProps> = ({ setLoggedIn }) => {
   const [addProductSwitch, setAddProductSwitch] = useState(false);
   const [editProductSwitch, setEditProductSwitch] = useState(false);
   const [removeProductSwitch, setRemoveProductSwitch] = useState(false);
@@ -37,6 +37,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [productList, setProductList] = useState<IProduct[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<IProduct>(defaultProduct);
+  const navigate = useNavigate();
 
   const rankFormatterRemove = (_: unknown, data: IProduct) => {
     return (
@@ -156,7 +157,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
   const logout = async () => {
     const response = await requestLogout();
     if (response.status === 200) {
-      history.replace(PAGE_ROUTES.LOGIN);
+      navigate(PAGE_ROUTES.LOGIN, { replace: true });
       clearCookie();
       setLoggedIn(false);
     }
@@ -306,4 +307,4 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
   );
 };
 
-export const Home = withRouter(HomeLayout);
+export default HomeLayout;

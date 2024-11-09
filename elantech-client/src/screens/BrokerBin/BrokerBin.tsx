@@ -4,9 +4,8 @@ import { Button } from 'react-bootstrap';
 import { Plus } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-interface BrokerBinProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> { }
+interface BrokerBinProps extends HTMLAttributes<HTMLDivElement> { }
 
 export const BrokerBinLayout: FunctionComponent<BrokerBinProps> = () => {
 
@@ -184,4 +183,4 @@ export const BrokerBinLayout: FunctionComponent<BrokerBinProps> = () => {
     );
 };
 
-export const BrokerBin = withRouter(BrokerBinLayout);
+export default BrokerBinLayout;

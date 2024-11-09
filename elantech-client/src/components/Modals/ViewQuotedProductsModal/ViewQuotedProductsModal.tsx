@@ -3,13 +3,13 @@ import React, { HTMLAttributes, FunctionComponent } from 'react';
 import { useState } from 'react';
 import { Modal, Spinner, Form, Button, Col, Row } from 'react-bootstrap';
 import BootstrapTable, { ColumnDescription } from 'react-bootstrap-table-next';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+
 import ICompany from '../../../types/ICompany';
 import IQuote from '../../../types/IQuote';
 // import IQuotedProduct from '../../../types/IQuotedProduct';
 // import { requestGetQuotedProductsByQuoteId } from '../../../utils/Requests';
 
-interface ViewQuotedProductsModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface ViewQuotedProductsModalProps extends HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
     modalVisible: boolean;
     selectedCompany: ICompany;
@@ -304,4 +304,4 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
     );
 };
 
-export const ViewQuotedProductsModal = withRouter(ViewQuotedProductsModalComponent);
+export default ViewQuotedProductsModalComponent;

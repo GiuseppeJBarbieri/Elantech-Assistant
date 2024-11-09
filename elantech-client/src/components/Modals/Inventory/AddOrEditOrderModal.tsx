@@ -1,14 +1,15 @@
 import React, { HTMLAttributes, FunctionComponent } from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { PAGE_ROUTES } from '../../../constants/PageRoutes';
+import { useNavigate } from 'react-router-dom';
 
-interface AddOrEditOrderModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface AddOrEditOrderModalProps extends HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
     modalVisible: boolean;
 }
 
 const AddOrEditOrderModalComponent: FunctionComponent<AddOrEditOrderModalProps> = (props) => {
+    const navigate = useNavigate();
     return (
         <div>
             <Modal
@@ -33,7 +34,7 @@ const AddOrEditOrderModalComponent: FunctionComponent<AddOrEditOrderModalProps> 
                         variant="secondary"
                         onClick={() => {
                             props.onClose();
-                            props.history.replace(PAGE_ROUTES.RECEIVING);
+                            navigate(PAGE_ROUTES.RECEIVING, { replace: true });
                         }}>
                         Go to Receiving
                     </Button>
@@ -56,4 +57,4 @@ const AddOrEditOrderModalComponent: FunctionComponent<AddOrEditOrderModalProps> 
     );
 };
 
-export const AddOrEditOrderModal = withRouter(AddOrEditOrderModalComponent);
+export default AddOrEditOrderModalComponent;

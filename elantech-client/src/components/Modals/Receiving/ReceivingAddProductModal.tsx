@@ -5,11 +5,11 @@ import { Modal, Spinner, Form, Button, Container } from 'react-bootstrap';
 // import { Trash } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+
 // import { ExpandedProductRow } from '../../ExpandedProductRow/ExpandedProductRow';
 
 
-interface ReceivingAddProductModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface ReceivingAddProductModalProps extends HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
     modalVisible: boolean;
 }
@@ -440,4 +440,4 @@ const ReceivingAddProductModalComponent: FunctionComponent<ReceivingAddProductMo
     );
 };
 
-export const ReceivingAddProductModal = withRouter(ReceivingAddProductModalComponent);
+export default ReceivingAddProductModalComponent;

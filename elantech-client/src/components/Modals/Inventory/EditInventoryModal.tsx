@@ -3,13 +3,12 @@ import moment from 'moment';
 import React, { HTMLAttributes, FunctionComponent } from 'react';
 import { useState } from 'react';
 import { Modal, Spinner, Form, Button, InputGroup } from 'react-bootstrap';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { BASE_API_URL } from '../../../constants/API';
 import IInventory from '../../../types/IInventory';
 import IProduct from '../../../types/IProduct';
-import { CustomAlert } from '../../Alerts/CustomAlert';
+import CustomAlert from '../../Alerts/CustomAlert';
 
-interface EditInventoryModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface EditInventoryModalProps extends HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
     selectedInventory: IInventory;
     modalVisible: boolean;
@@ -117,7 +116,7 @@ const EditInventoryComponent: FunctionComponent<EditInventoryModalProps> = (prop
                                             value={dateTested}
                                             onChange={(e) => {
                                                 setDateTested(moment(e.target.value).format('YYYY-MM-DD'));
-                                                setInventoryObj({ ...inventoryObj, dateTested: moment(e.target.value).format() })
+                                                setInventoryObj({ ...inventoryObj, testedDate: moment(e.target.value).format() })
                                             }}
                                         />
                                     </Form.Group>
@@ -133,7 +132,7 @@ const EditInventoryComponent: FunctionComponent<EditInventoryModalProps> = (prop
                                                 type={'radio'}
                                                 id={'inline-radio-3'}
                                                 onClick={() => {
-                                                    setInventoryObj({ ...inventoryObj, isTested: (true) })
+                                                    setInventoryObj({ ...inventoryObj, tested: (true) })
                                                 }}
                                             />
                                             <Form.Check
@@ -143,7 +142,7 @@ const EditInventoryComponent: FunctionComponent<EditInventoryModalProps> = (prop
                                                 type={'radio'}
                                                 id={'inline-radio-4'}
                                                 onClick={() => {
-                                                    setInventoryObj({ ...inventoryObj, isTested: (false) })
+                                                    setInventoryObj({ ...inventoryObj, tested: (false) })
                                                 }}
                                             />
                                         </div>
@@ -183,4 +182,4 @@ const EditInventoryComponent: FunctionComponent<EditInventoryModalProps> = (prop
     );
 };
 
-export const EditInventoryModal = withRouter(EditInventoryComponent);
+export default EditInventoryComponent;

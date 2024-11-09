@@ -5,11 +5,10 @@ import { Navbar, Nav } from 'react-bootstrap';
 import { ThreeDots } from 'react-bootstrap-icons';
 import BootstrapTable, { ColumnDescription } from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { EditReceivedProductOrderModal } from '../Modals/Receiving/EditReceivedProductOrderModal';
-import { ReceivingAddProductModal } from '../Modals/Receiving/ReceivingAddProductModal';
+import EditReceivedProductOrderModal from '../Modals/Receiving/EditReceivedProductOrderModal';
+import ReceivingAddProductModal from '../Modals/Receiving/ReceivingAddProductModal';
 
-interface ExpandedOutgoingRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface ExpandedOutgoingRowProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const ExpandedOutgoingRowComponent: FunctionComponent<ExpandedOutgoingRowProps> = (_props) => {
@@ -206,4 +205,4 @@ const ExpandedOutgoingRowComponent: FunctionComponent<ExpandedOutgoingRowProps> 
     );
 };
 
-export const ExpandedOutgoingRow = withRouter(ExpandedOutgoingRowComponent);
+export default ExpandedOutgoingRowComponent;

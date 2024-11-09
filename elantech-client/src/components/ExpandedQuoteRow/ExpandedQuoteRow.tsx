@@ -4,16 +4,15 @@ import { Navbar, Nav } from 'react-bootstrap';
 import { Plus, ThreeDots } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
 import ICompany from '../../types/ICompany';
 import IQuote from '../../types/IQuote';
 import IQuotedProduct from '../../types/IQuotedProduct';
 import { requestAllQuotesByCompanyID } from '../../utils/Requests';
-import { AddMultiQuoteModal } from '../Modals/Quote/AddMultiQuoteModal';
-import { EditQuoteModal } from '../Modals/Quote/EditQuoteModal';
-import { ViewQuotedProductsModal } from '../Modals/ViewQuotedProductsModal/ViewQuotedProductsModal';
+import AddMultiQuoteModal from '../Modals/Quote/AddMultiQuoteModal';
+import EditQuoteModal from '../Modals/Quote/EditQuoteModal';
+import ViewQuotedProductsModal from '../Modals/ViewQuotedProductsModal/ViewQuotedProductsModal';
 
-interface ExpandedQuoteRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface ExpandedQuoteRowProps extends HTMLAttributes<HTMLDivElement> {
     selectedCompany: ICompany;
 }
 
@@ -258,4 +257,4 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
     );
 };
 
-export const ExpandedQuoteRow = withRouter(ExpandedQuoteRowComponent);
+export default ExpandedQuoteRowComponent;

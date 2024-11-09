@@ -1,15 +1,14 @@
 import React, { HTMLAttributes, FunctionComponent, useEffect, useState } from 'react';
 import { requestAddProduct, requestUpdateProduct } from '../../../utils/Requests';
 import { Modal, Form, Button, Row, Col } from 'react-bootstrap';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { CustomAlert } from '../../Alerts/CustomAlert';
+import CustomAlert from '../../Alerts/CustomAlert';
 import IProduct from '../../../types/IProduct';
-import { SpinnerBlock } from '../../LoadingAnimation/SpinnerBlock';
+import SpinnerBlock from '../../LoadingAnimation/SpinnerBlock';
 import { brandList, typeList } from '../../../constants/Options';
 import '../modal.css';
 import { defaultAlert } from '../../../constants/Defaults';
 
-interface ProductModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface ProductModalProps extends HTMLAttributes<HTMLDivElement> {
     modalVisible: boolean;
     selectedProduct: IProduct;
     modalSwitch: number;
@@ -227,8 +226,8 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                                         id="timeFrame"
                                         type="text"
                                         placeholder="Ebay Link"
-                                        value={product.ebayLink}
-                                        onChange={(e) => setProduct({ ...product, ebayLink: (e.target.value) })}
+                                        value={product.ebayUrl}
+                                        onChange={(e) => setProduct({ ...product, ebayUrl: (e.target.value) })}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
@@ -237,8 +236,8 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                                         id="timeFrame"
                                         type="text"
                                         placeholder="Website Link"
-                                        value={product.websiteLink}
-                                        onChange={(e) => setProduct({ ...product, websiteLink: (e.target.value) })}
+                                        value={product.websiteUrl}
+                                        onChange={(e) => setProduct({ ...product, websiteUrl: (e.target.value) })}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
@@ -247,8 +246,8 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                                         id="timeFrame"
                                         type="text"
                                         placeholder="Quick Specs"
-                                        value={product.quickSpecsLink}
-                                        onChange={(e) => setProduct({ ...product, quickSpecsLink: (e.target.value) })}
+                                        value={product.quickSpecsUrl}
+                                        onChange={(e) => setProduct({ ...product, quickSpecsUrl: (e.target.value) })}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
@@ -281,4 +280,4 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
     );
 };
 
-export const ProductModal = withRouter(ProductModalComponent);
+export default ProductModalComponent;

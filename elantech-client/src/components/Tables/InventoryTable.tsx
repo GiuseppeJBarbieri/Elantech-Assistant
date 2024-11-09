@@ -2,16 +2,14 @@ import React, { FunctionComponent, HTMLAttributes, useEffect, useState } from 'r
 import { Button } from 'react-bootstrap';
 import { Pencil, Trash } from 'react-bootstrap-icons';
 import BootstrapTable, { SelectRowProps } from 'react-bootstrap-table-next';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
-
 import IInventory from '../../types/IInventory';
 import IProduct from '../../types/IProduct';
-import { EditInventoryModal } from '../Modals/Inventory/EditInventoryModal';
-import { RemoveInventoryModal } from '../Modals/Inventory/RemoveInventoryModal';
-import { RemoveMultipleInventoryModal } from '../Modals/Inventory/RemoveMultipleInventoryModal';
+import EditInventoryModal from '../Modals/Inventory/EditInventoryModal';
+import RemoveInventoryModal from '../Modals/Inventory/RemoveInventoryModal';
+import RemoveMultipleInventoryModal from '../Modals/Inventory/RemoveMultipleInventoryModal';
 
 
-interface InventoryTableProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface InventoryTableProps extends HTMLAttributes<HTMLDivElement> {
     inventory: IInventory[];
     getAllInventory: (productId: number) => void
     selectedProduct: IProduct;
@@ -26,12 +24,12 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             id: 0,
             productId: 0,
             removedInventoryId: 0,
-            poId: undefined,
+            purchaseOrderId: undefined,
             serialNumber: '',
             condition: '',
             warrantyExpiration: '',
-            isTested: false,
-            dateTested: '',
+            tested: false,
+            testedDate: '',
             comment: '',
             location: '',
         }
@@ -366,4 +364,4 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
     );
 };
 
-export const InventoryTable = withRouter(InventoryTableComponent);
+export default InventoryTableComponent;

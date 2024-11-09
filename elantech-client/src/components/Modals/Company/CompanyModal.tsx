@@ -2,15 +2,14 @@ import React, { HTMLAttributes, FunctionComponent } from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { defaultAlert } from '../../../constants/Defaults';
 import ICompany from '../../../types/ICompany';
 import { requestAddCompany, requestUpdateCompany } from '../../../utils/Requests';
-import { CustomAlert } from '../../Alerts/CustomAlert';
-import { SpinnerBlock } from '../../LoadingAnimation/SpinnerBlock';
+import CustomAlert from '../../Alerts/CustomAlert';
+import SpinnerBlock from '../../LoadingAnimation/SpinnerBlock';
 import '../modal.css';
 
-interface CompanyModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface CompanyModalProps extends HTMLAttributes<HTMLDivElement> {
     modalVisible: boolean;
     selectedCompany: ICompany;
     modalSwitch: number;
@@ -161,4 +160,4 @@ const CompanyModalComponent: FunctionComponent<CompanyModalProps> = (props) => {
     );
 };
 
-export const CompanyModal = withRouter(CompanyModalComponent);
+export default CompanyModalComponent;

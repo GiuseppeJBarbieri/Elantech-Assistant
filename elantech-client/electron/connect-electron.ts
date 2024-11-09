@@ -31,5 +31,5 @@ tryConnection();
 
 client.on('error', (err) => {
   console.log('Retrying...', err);
-  setTimeout(tryConnection, 10000);
+  setTimeout(tryConnection, 1000);
 });

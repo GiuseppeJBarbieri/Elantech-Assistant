@@ -3,13 +3,12 @@ import axios from 'axios';
 import React, { HTMLAttributes, FunctionComponent } from 'react';
 import { useState } from 'react';
 import { Modal, Spinner, Form, Button } from 'react-bootstrap';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { BASE_API_URL } from '../../../constants/API';
 import IInventory from '../../../types/IInventory';
 import IProduct from '../../../types/IProduct';
-import { CustomAlert } from '../../Alerts/CustomAlert';
+import CustomAlert from '../../Alerts/CustomAlert';
 
-interface RemoveMultipleInventoryModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface RemoveMultipleInventoryModalProps extends HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
     modalVisible: boolean;
     selectedInventory: IInventory[] | undefined;
@@ -114,4 +113,4 @@ const RemoveMultipleInventoryModalComponent: FunctionComponent<RemoveMultipleInv
     );
 };
 
-export const RemoveMultipleInventoryModal = withRouter(RemoveMultipleInventoryModalComponent);
+export default RemoveMultipleInventoryModalComponent;

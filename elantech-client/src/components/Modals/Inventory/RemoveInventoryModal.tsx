@@ -1,17 +1,16 @@
 
-import axios from 'axios';
 import React, { HTMLAttributes, FunctionComponent } from 'react';
 import { useState } from 'react';
 import { Modal, Spinner, Form, Button } from 'react-bootstrap';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+
 import IInventory from '../../../types/IInventory';
 import IProduct from '../../../types/IProduct';
-import { CustomAlert } from '../../Alerts/CustomAlert';
+import CustomAlert from '../../Alerts/CustomAlert';
 import { defaultAlert } from '../../../constants/Defaults';
-import { requestAddRemovedInventory, requestRemoveInventory } from '../../../utils/Requests';
-import IRemovedInventory from '../../../types/IRemovedInventory';
+import { requestRemoveInventory } from '../../../utils/Requests';
+// import IRemovedInventory from '../../../types/IRemovedInventory';
 
-interface RemoveInventoryModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface RemoveInventoryModalProps extends HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
     modalVisible: boolean;
     selectedInventory: IInventory | undefined;
@@ -23,14 +22,13 @@ interface RemoveInventoryModalProps extends RouteComponentProps, HTMLAttributes<
 const RemoveInventoryModalComponent: FunctionComponent<RemoveInventoryModalProps> = (props) => {
     const [isSaving, setIsSaving] = useState(false);
     const [alert, setAlert] = useState(defaultAlert);
-    const [reasonForRemoval, setReasonForRemoval] = useState('');
+    // const [setReasonForRemoval] = useState('');
     const [showReasonForRemoval, setShowReasonForRemoval] = useState(false);
 
     const removeProduct = () => {
         setIsSaving(true);
         setTimeout(async () => {
             try {
-                const removedReson: IRemovedInventory = {};
                 // await requestAddRemovedInventory(new IRemovedInventory(reasonType: '', reason: '', dateRemoved: ''))
                 await requestRemoveInventory(props.selectedInventory?.id as number);
                 // Now Capture the reason  and save to removed inventory
@@ -84,7 +82,7 @@ const RemoveInventoryModalComponent: FunctionComponent<RemoveInventoryModalProps
                                                 setShowReasonForRemoval(true);
                                             } else {
                                                 setShowReasonForRemoval(false);
-                                                setReasonForRemoval('');
+                                                // setReasonForRemoval('');
                                             }
                                         }}>
                                         <option>Too many added</option>
@@ -100,7 +98,7 @@ const RemoveInventoryModalComponent: FunctionComponent<RemoveInventoryModalProps
                                         type="text"
                                         placeholder="Website Link"
                                         disabled={showReasonForRemoval}
-                                        onChange={(e) => setReasonForRemoval(e.target.value)}
+                                        // onChange={(e) => setReasonForRemoval(e.target.value)}
                                     />
                                 </Form.Group>
                             </Form>
@@ -123,4 +121,4 @@ const RemoveInventoryModalComponent: FunctionComponent<RemoveInventoryModalProps
     );
 };
 
-export const RemoveInventoryModal = withRouter(RemoveInventoryModalComponent);
+export default RemoveInventoryModalComponent;

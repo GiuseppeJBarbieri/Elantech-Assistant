@@ -4,21 +4,21 @@ import { Modal, Form, Button, InputGroup } from 'react-bootstrap';
 import { Plus, Search, Trash } from 'react-bootstrap-icons';
 import BootstrapTable, { ColumnDescription, SelectRowProps } from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+
 import { defaultAlert } from '../../../constants/Defaults';
 import { conditionList } from '../../../constants/Options';
 import ICompany from '../../../types/ICompany';
 import IProduct from '../../../types/IProduct';
 import IQuote from '../../../types/IQuote';
 import IQuotedProduct from '../../../types/IQuotedProduct';
-import { requestAddQuote, requestAddQuotedProduct, requestAllProducts } from '../../../utils/Requests';
-import { CustomAlert } from '../../Alerts/CustomAlert';
-import { SpinnerBlock } from '../../LoadingAnimation/SpinnerBlock';
+import { requestAddQuote, requestAllProducts } from '../../../utils/Requests';
+import CustomAlert from '../../Alerts/CustomAlert';
+import SpinnerBlock from '../../LoadingAnimation/SpinnerBlock';
 import '../modal.css';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import { DebounceInput } from 'react-debounce-input';
 
-interface AddMultiQuoteModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface AddMultiQuoteModalProps extends HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
     getAllQuotes: (companyId: number) => void;
     modalVisible: boolean;
@@ -433,4 +433,4 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
     );
 };
 
-export const AddMultiQuoteModal = withRouter(AddMultiQuoteModalComponent);
+export default AddMultiQuoteModalComponent;

@@ -1,19 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
 import React, { useState, FunctionComponent, HTMLAttributes } from 'react';
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { BASE_API_URL } from '../../constants/API';
+import { useNavigate } from 'react-router-dom';
 import { PAGE_ROUTES } from '../../constants/PageRoutes';
-import { CustomAlert } from '../../components/Alerts/CustomAlert';
+import CustomAlert from '../../components/Alerts/CustomAlert';
 import { defaultAlert } from '../../constants/Defaults';
 import './Login.css';
 
-interface LoginProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface LoginProps extends HTMLAttributes<HTMLDivElement> {
   loggedIn: boolean;
   setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const LoginLayout: FunctionComponent<LoginProps> = ({ history, setLoggedIn }) => {
+export const LoginLayout: FunctionComponent<LoginProps> = ({ setLoggedIn }) => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [alert, setAlert] = useState(defaultAlert);
@@ -39,7 +41,7 @@ export const LoginLayout: FunctionComponent<LoginProps> = ({ history, setLoggedI
       axios.post(`${BASE_API_URL}user/login`, data, { withCredentials: true })
         .then(() => {
           setLoggedIn(true);
-          history.push(PAGE_ROUTES.HOME);
+          navigate(PAGE_ROUTES.HOME);
         })
         .catch((err) => {
           setPassword('');
@@ -81,5 +83,4 @@ export const LoginLayout: FunctionComponent<LoginProps> = ({ history, setLoggedI
   );
 };
 
-export const Login = withRouter(LoginLayout);
-
+export default LoginLayout;

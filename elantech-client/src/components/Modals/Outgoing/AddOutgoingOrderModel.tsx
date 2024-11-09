@@ -1,22 +1,19 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { HTMLAttributes, FunctionComponent } from 'react';
 import { useState } from 'react';
 import { Modal, Spinner, Form, Button, Row, Col, Container } from 'react-bootstrap';
-// import { Trash } from 'react-bootstrap-icons';
 import BootstrapTable, { SelectRowProps } from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { ExpandedProductRow } from '../../ExpandedProductRow/ExpandedProductRow';
+import ExpandedProductRow from '../../ExpandedProductRow/ExpandedProductRow';
 
-
-interface AddOutgoingOrderModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface AddOutgoingOrderModalProps extends HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
     modalVisible: boolean;
 }
 
 const AddOutgoingOrderModalComponent: FunctionComponent<AddOutgoingOrderModalProps> = (props) => {
     const [isSaving] = useState(false);
+    // const navigate = useNavigate();
+    // const params = useParams();
 
     // const rankFormatterRemove = (_: any, data: any, index: any) => {
     //     return (
@@ -482,4 +479,4 @@ const AddOutgoingOrderModalComponent: FunctionComponent<AddOutgoingOrderModalPro
     );
 };
 
-export const AddOutgoingOrderModal = withRouter(AddOutgoingOrderModalComponent);
+export default AddOutgoingOrderModalComponent;

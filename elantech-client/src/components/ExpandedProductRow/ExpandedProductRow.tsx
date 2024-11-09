@@ -3,18 +3,17 @@ import { FunctionComponent, HTMLAttributes, useState } from 'react';
 import { Navbar, Nav, Button, Collapse } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
 import IInventory from '../../types/IInventory';
 import IProduct from '../../types/IProduct';
-import { AddInventoryModal } from '../Modals/Inventory/AddInventoryModal';
-import { AddSimpleQuoteModal } from '../Modals/Quote/AddSimpleQuoteModal';
-import { InventoryTable } from '../Tables/InventoryTable';
-import { EditInventoryAlertModal } from '../Modals/EditInventoryAlertModal';
+import AddInventoryModal from '../Modals/Inventory/AddInventoryModal';
+import AddSimpleQuoteModal from '../Modals/Quote/AddSimpleQuoteModal';
+import InventoryTable from '../Tables/InventoryTable';
+import EditInventoryAlertModal from '../Modals/EditInventoryAlertModal';
 import { requestAllInventoryByProductID, requestAllQuotesByProductId as requestAllQuotedProductsByProductId } from '../../utils/Requests';
 import IQuotedProduct from '../../types/IQuotedProduct';
-import { AddOrEditOrderModal } from '../Modals/Inventory/AddOrEditOrderModal';
+import AddOrEditOrderModal from '../Modals/Inventory/AddOrEditOrderModal';
 
-interface ExpandedProductRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface ExpandedProductRowProps extends HTMLAttributes<HTMLDivElement> {
     selectedProduct: IProduct;
     getAllProducts: () => void;
 }
@@ -381,4 +380,4 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
         </ div>
     );
 };
-export const ExpandedProductRow = withRouter(ExpandedProductRowComponent);
+export default ExpandedProductRowComponent;

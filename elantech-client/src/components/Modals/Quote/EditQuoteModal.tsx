@@ -1,9 +1,9 @@
 import React, { HTMLAttributes, FunctionComponent, useState } from 'react';
 import { Modal, Spinner, Form, Button } from 'react-bootstrap';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+
 import IQuotedProduct from '../../../types/IQuotedProduct';
 
-interface EditQuoteModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface EditQuoteModalProps extends HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
     modalVisible: boolean;
     selectedQuote: IQuotedProduct | undefined;
@@ -150,4 +150,4 @@ const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) 
     );
 };
 
-export const EditQuoteModal = withRouter(EditQuoteModalComponent);
+export default EditQuoteModalComponent;

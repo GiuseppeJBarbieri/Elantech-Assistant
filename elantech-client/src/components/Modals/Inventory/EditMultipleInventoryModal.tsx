@@ -2,17 +2,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { HTMLAttributes, FunctionComponent, useEffect } from 'react';
 import { useState } from 'react';
-import { Modal, Spinner, Form, Button, InputGroup } from 'react-bootstrap';
+import { Modal, Form, Button, InputGroup } from 'react-bootstrap';
 import BootstrapTable, { SelectRowProps } from 'react-bootstrap-table-next';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+
 import { defaultAlert } from '../../../constants/Defaults';
 import IInventory from '../../../types/IInventory';
 import IProduct from '../../../types/IProduct';
 import { requestUpdateInventory } from '../../../utils/Requests';
-import { CustomAlert } from '../../Alerts/CustomAlert';
-import { SpinnerBlock } from '../../LoadingAnimation/SpinnerBlock';
+import CustomAlert from '../../Alerts/CustomAlert';
+import SpinnerBlock from '../../LoadingAnimation/SpinnerBlock';
 
-interface EditMultipleInventoryModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface EditMultipleInventoryModalProps extends HTMLAttributes<HTMLDivElement> {
     selectedInventory: IInventory[];
     onClose: () => Promise<void>;
     modalVisible: boolean;
@@ -112,9 +112,9 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
         // Make changes on selected items
         selectedInventoryList.forEach((selectedInventory) => {
             Object.keys(attributes).forEach((key, index) => {
-                if (attributes[key] !== undefined) {
-                    selectedInventory[key] = attributes[key];
-                }
+                // if (attributes[key] !== undefined) {
+                //     selectedInventory[key] = attributes[key];
+                // }
             })
         });
         // Add To Inventory List
@@ -292,4 +292,4 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
     );
 };
 
-export const EditMultipleInventoryModal = withRouter(EditMultipleInventoryComponent);
+export default EditMultipleInventoryComponent;

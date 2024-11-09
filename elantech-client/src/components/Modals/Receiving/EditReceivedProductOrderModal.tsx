@@ -1,9 +1,9 @@
 import React, { HTMLAttributes, FunctionComponent } from 'react';
 import { useState } from 'react';
 import { Modal, Spinner, Form, Button } from 'react-bootstrap';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-interface EditReceivedProductOrderModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+
+interface EditReceivedProductOrderModalProps extends HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
     modalVisible: boolean;
 }
@@ -71,4 +71,4 @@ const EditReceivedProductOrderModalComponent: FunctionComponent<EditReceivedProd
     );
 };
 
-export const EditReceivedProductOrderModal = withRouter(EditReceivedProductOrderModalComponent);
+export default EditReceivedProductOrderModalComponent;

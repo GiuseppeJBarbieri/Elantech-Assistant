@@ -7,13 +7,13 @@ import { Button } from 'react-bootstrap';
 import { Pencil, Plus, Trash } from 'react-bootstrap-icons';
 import BootstrapTable, { ColumnDescription } from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { AddOutgoingOrderModal } from '../../components/Modals/Outgoing/AddOutgoingOrderModel';
-import { ExpandedOutgoingRow } from '../../components/ExpandedOutgoingRow/ExpandedOutgoingRow';
 
-interface OutgoingProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> { }
+import AddOutgoingOrderModal from '../../components/Modals/Outgoing/AddOutgoingOrderModel';
+import ExpandedOutgoingRow from '../../components/ExpandedOutgoingRow/ExpandedOutgoingRow';
 
-export const OutgoingLayout: FunctionComponent<OutgoingProps> = ({ history }) => {
+interface OutgoingProps extends HTMLAttributes<HTMLDivElement> { }
+
+export const OutgoingLayout: FunctionComponent<OutgoingProps> = () => {
     const [addOrderSwitch, setAddOrderSwitch] = useState(false);
     const rankFormatterEdit = (_: any, data: any, index: any) => {
         return (
@@ -271,4 +271,4 @@ export const OutgoingLayout: FunctionComponent<OutgoingProps> = ({ history }) =>
     );
 };
 
-export const Outgoing = withRouter(OutgoingLayout);
+export default OutgoingLayout;

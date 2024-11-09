@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { Spinner } from 'react-bootstrap';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
 import './SpinnerBlock.css'
-interface SpinnerBlockProps extends RouteComponentProps, React.HTMLAttributes<HTMLDivElement> { }
+interface SpinnerBlockProps extends React.HTMLAttributes<HTMLDivElement> { }
 
 const SpinnerBlockComponent: React.FunctionComponent<SpinnerBlockProps> = () => {
     return (
@@ -19,4 +18,4 @@ const SpinnerBlockComponent: React.FunctionComponent<SpinnerBlockProps> = () => 
     );
 };
 
-export const SpinnerBlock = withRouter(SpinnerBlockComponent);
+export default SpinnerBlockComponent;

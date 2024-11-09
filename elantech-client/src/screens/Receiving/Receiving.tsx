@@ -4,14 +4,15 @@ import { Button, DropdownButton, Dropdown } from 'react-bootstrap';
 import { Pencil, Plus } from 'react-bootstrap-icons';
 import BootstrapTable, { ColumnDescription } from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { AddReceivingOrderModal } from '../../components/Modals/Receiving/AddReceivingOrderModal';
-import { EditReceivingOrderModal } from '../../components/Modals/Receiving/EditReceivingOrderModal';
-import { ExpandedReceivingRow } from '../../components/ExpandedReceivingRow/ExpandedReceivingRow';
+// import { useNavigate } from 'react-router-dom';
+import AddReceivingOrderModal from '../../components/Modals/Receiving/AddReceivingOrderModal';
+import EditReceivingOrderModal from '../../components/Modals/Receiving/EditReceivingOrderModal';
+import ExpandedReceivingRow from '../../components/ExpandedReceivingRow/ExpandedReceivingRow';
 
-interface ReceivingProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> { }
+interface ReceivingProps extends HTMLAttributes<HTMLDivElement> { }
 
-export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) => {
+export const ReceivingLayout: FunctionComponent<ReceivingProps> = () => {
+    // const navigate = useNavigate();
     const [addReceivingSwitch, setAddReceivingSwitch] = useState(false);
     const [editOrderSwitch, setEditOrderSwitch] = useState(false);
 
@@ -142,7 +143,7 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) 
             shipped_via: 'UPS',
             tracking_number: '345678901234567890',
             order_type: 'RMA'
-        }        
+        }
     ];
     const options = {
         custom: true,
@@ -249,4 +250,4 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) 
     );
 };
 
-export const Receiving = withRouter(ReceivingLayout);
+export default ReceivingLayout;

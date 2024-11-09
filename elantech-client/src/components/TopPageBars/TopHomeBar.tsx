@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { Button } from 'react-bootstrap';
 import { Plus } from 'react-bootstrap-icons';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-interface TopHomeBarProps extends RouteComponentProps, React.HTMLAttributes<HTMLDivElement> {
+interface TopHomeBarProps extends React.HTMLAttributes<HTMLDivElement> {
     logout: () => void;
     setAddProductSwitch: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -26,4 +25,4 @@ const TopHomeBarComponent: React.FunctionComponent<TopHomeBarProps> = (props) =>
     );
 };
 
-export const TopHomeBar = withRouter(TopHomeBarComponent);
+export default TopHomeBarComponent;

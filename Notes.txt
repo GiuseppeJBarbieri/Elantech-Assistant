@@ -13,3 +13,40 @@ Eventually
 
 
 Figure out proper cookie life
+
+Coonsider using 
+* electron-store
+* localforage
+* open
+* react-bootstrap-table2-overlay
+
+
+
+Unused dependencies
+* @emotion/react
+* @emotion/styled
+* @material-ui/core - Removed
+* @material-ui/lab - Removed
+* @mui/material - Removed
+* @mui/x-data-grid - removed
+* @tanstack/react-table - Removed
+* bootstrap-datepicker - Removed
+* bootstrap-table - removed
+* material-ui - removed
+* react-bootstrap-table2-editor - removed
+* react-icons - Removed
+* react-stack-grid
+* tslib
+Unused devDependencies
+* @types/classnames
+* @types/electron-store
+* @types/jest
+* @types/material-ui
+* depcheck
+* nodemon
+* stylelint-config-standard
+* stylelint-order
+Missing dependencies
+* react-select: .\src\screens\Procurement\delete_later.js
+* react-contexify: .\src\screens\Procurement\delete_later.js
+* uuid: .\src\components\Modals\Inventory\AddInventoryModal.tsx

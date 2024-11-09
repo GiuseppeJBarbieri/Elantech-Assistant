@@ -1,12 +1,12 @@
 import React, { HTMLAttributes, FunctionComponent, useState } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+
 import { Modal, Spinner, Form, Button } from 'react-bootstrap';
-import { requestDeleteProduct, requestUpdateProduct } from '../../../utils/Requests';
+import { requestDeleteProduct } from '../../../utils/Requests';
 import { defaultAlert } from '../../../constants/Defaults';
-import { CustomAlert } from '../../Alerts/CustomAlert';
+import CustomAlert from '../../Alerts/CustomAlert';
 import IProduct from '../../../types/IProduct';
 
-interface RemoveProductModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface RemoveProductModalProps extends HTMLAttributes<HTMLDivElement> {
     modalVisible: boolean;
     selectedProduct: IProduct;
     onClose: () => Promise<void>;
@@ -116,4 +116,4 @@ const RemoveProductModalComponent: FunctionComponent<RemoveProductModalProps> = 
     );
 };
 
-export const RemoveProductModal = withRouter(RemoveProductModalComponent);
+export default RemoveProductModalComponent;

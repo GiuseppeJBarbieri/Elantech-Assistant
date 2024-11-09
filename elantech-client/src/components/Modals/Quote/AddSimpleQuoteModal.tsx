@@ -2,20 +2,20 @@ import React, { HTMLAttributes, FunctionComponent, useEffect, useState } from 'r
 import { Modal, Form, Button, Col, InputGroup } from 'react-bootstrap';
 import BootstrapTable, { SelectRowProps } from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+
 import { requestAddQuote, requestAllCompanies } from '../../../utils/Requests';
 import { defaultAlert, defaultQuote, defaultQuotedProduct } from '../../../constants/Defaults';
 import { conditionList } from '../../../constants/Options';
 import ICompany from '../../../types/ICompany';
 import IProduct from '../../../types/IProduct';
-import { SpinnerBlock } from '../../LoadingAnimation/SpinnerBlock';
-import { CustomAlert } from '../../Alerts/CustomAlert';
+import SpinnerBlock from '../../LoadingAnimation/SpinnerBlock';
+import CustomAlert from '../../Alerts/CustomAlert';
 import moment from 'moment';
 import { Search } from 'react-bootstrap-icons';
 import { DebounceInput } from 'react-debounce-input';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 
-interface AddSimpleQuoteModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface AddSimpleQuoteModalProps extends HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
     modalVisible: boolean;
     selectedProduct: IProduct;
@@ -294,4 +294,4 @@ const AddSimpleQuoteModalComponent: FunctionComponent<AddSimpleQuoteModalProps> 
     );
 };
 
-export const AddSimpleQuoteModal = withRouter(AddSimpleQuoteModalComponent);
+export default AddSimpleQuoteModalComponent;
