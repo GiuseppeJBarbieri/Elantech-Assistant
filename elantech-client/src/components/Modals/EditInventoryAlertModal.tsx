@@ -1,6 +1,6 @@
 
-import React, { HTMLAttributes, FunctionComponent } from "react";
-import { Modal, Form, Button } from "react-bootstrap";
+import React, { HTMLAttributes, FunctionComponent } from 'react';
+import { Modal, Form, Button } from 'react-bootstrap';
 
 interface EditInventoryAlertModalProps extends HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
@@ -11,7 +11,7 @@ const EditInventoryAlertModalComponent: FunctionComponent<EditInventoryAlertModa
     return (
         <div>
             <Modal
-                backdrop="static"
+                backdrop='static'
                 show={props.modalVisible}
                 onHide={props.onClose}
             >

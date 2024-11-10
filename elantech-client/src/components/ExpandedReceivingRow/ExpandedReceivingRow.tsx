@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from 'react';
-import { FunctionComponent, HTMLAttributes, useState } from 'react';
+import { FunctionComponent, useState } from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
 import { Pencil, Trash, Plus } from 'react-bootstrap-icons';
 import BootstrapTable, { ColumnDescription } from 'react-bootstrap-table-next';
@@ -8,10 +8,7 @@ import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, P
 import EditReceivedProductOrderModal from '../Modals/Receiving/EditReceivedProductOrderModal';
 import ReceivingAddProductModal from '../Modals/Receiving/ReceivingAddProductModal';
 
-interface ExpandedReceivingRowProps extends HTMLAttributes<HTMLDivElement> {
-}
-
-const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps> = () => {
+const ExpandedReceivingRowComponent: FunctionComponent = () => {
     const [editProductSwitch, setEditProductSwitch] = useState(false);
     const [addInventorySwitch, setAddInventorySwitch] = useState(false);
     const [addProductSwitch, setAddProductSwitch] = useState(false);

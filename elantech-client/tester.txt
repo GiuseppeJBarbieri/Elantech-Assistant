@@ -1,0 +1,10 @@
+yarn run v1.22.22
+$ nf start -p 3000
+9:52:13 PM react.1          |  > elantech-assistant@0.1.0 start-react
+9:52:13 PM react.1          |  > cross-env BROWSER=none react-scripts start
+9:52:13 PM start-electron.1 |  > elantech-assistant@0.1.0 start-electron
+9:52:13 PM start-electron.1 |  > ts-node --skip-project electron/connect-electron.ts
+9:52:13 PM watch-electron.1 |  > elantech-assistant@0.1.0 watch-electron
+9:52:13 PM watch-electron.1 |  > tsc --watch --project electron/tsconfig.json
+9:52:13 PM watch-electron.1 |  [2J[3J[H
+9:52:13 PM watch-electron.1 |  9:52:13 PM - Starting compilation in watch mode...

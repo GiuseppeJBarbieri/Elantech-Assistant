@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
-import { FunctionComponent, HTMLAttributes, useState } from 'react';
+import { FunctionComponent, useState } from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
 import { ThreeDots } from 'react-bootstrap-icons';
 import BootstrapTable, { ColumnDescription } from 'react-bootstrap-table-next';
@@ -8,15 +8,12 @@ import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, P
 import EditReceivedProductOrderModal from '../Modals/Receiving/EditReceivedProductOrderModal';
 import ReceivingAddProductModal from '../Modals/Receiving/ReceivingAddProductModal';
 
-interface ExpandedOutgoingRowProps extends HTMLAttributes<HTMLDivElement> {
-}
-
-const ExpandedOutgoingRowComponent: FunctionComponent<ExpandedOutgoingRowProps> = (_props) => {
+const ExpandedOutgoingRowComponent: FunctionComponent = (_props) => {
     const [editProductSwitch, setEditProductSwitch] = useState(false);
     const [addInventorySwitch] = useState(false);
     const [addProductSwitch, setAddProductSwitch] = useState(false);
 
-    const rankFormatterViewMore = (_: any, _data: any, _index: any) => {
+    const rankFormatterViewMore = () => {
         return (
             <div
                 style={{
@@ -37,7 +34,7 @@ const ExpandedOutgoingRowComponent: FunctionComponent<ExpandedOutgoingRowProps> 
             </div>
         );
     };
-    const column_inner: ColumnDescription<any, any>[] = [
+    const column_inner: ColumnDescription[] = [
         {
             dataField: 'quantity',
             text: 'QTY',

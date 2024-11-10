@@ -28,11 +28,11 @@ const RemoveCompanyModalComponent: FunctionComponent<RemoveCompanyModalProps> = 
                 props.getAllCompanies();
                 props.onClose();
             } catch (err) {
-                err == 'Error: Request failed with status code 401' ?
-                    setAlert({ ...alert, show: true })
-                    :
+                if (err == 'Error: Request failed with status code 401') {
+                    setAlert({ ...alert, show: true });
+                } else {
                     setAlert({ ...alert, label: `${err}`, show: true });
-
+                }
                 setTimeout(() => setAlert({ ...alert, show: false }), 5000);
                 setIsSaving(false);
             }

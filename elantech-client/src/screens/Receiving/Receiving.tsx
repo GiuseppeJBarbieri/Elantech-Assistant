@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FunctionComponent, HTMLAttributes, useState } from 'react';
+import { FunctionComponent, useState } from 'react';
 import { Button, DropdownButton, Dropdown } from 'react-bootstrap';
 import { Pencil, Plus } from 'react-bootstrap-icons';
 import BootstrapTable, { ColumnDescription } from 'react-bootstrap-table-next';
@@ -9,14 +9,12 @@ import AddReceivingOrderModal from '../../components/Modals/Receiving/AddReceivi
 import EditReceivingOrderModal from '../../components/Modals/Receiving/EditReceivingOrderModal';
 import ExpandedReceivingRow from '../../components/ExpandedReceivingRow/ExpandedReceivingRow';
 
-interface ReceivingProps extends HTMLAttributes<HTMLDivElement> { }
-
-export const ReceivingLayout: FunctionComponent<ReceivingProps> = () => {
+export const ReceivingLayout: FunctionComponent = () => {
     // const navigate = useNavigate();
     const [addReceivingSwitch, setAddReceivingSwitch] = useState(false);
     const [editOrderSwitch, setEditOrderSwitch] = useState(false);
 
-    const rankFormatterEdit = (_: any, data: any, index: any) => {
+    const rankFormatterEdit = () => {
         return (
             <div
                 style={{
@@ -28,7 +26,7 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = () => {
                 onClick={(e) => {
                     e.stopPropagation()
                 }} >
-                <div onClick={(e) => {
+                <div onClick={() => {
                     setEditOrderSwitch(true);
                 }}
                 >
@@ -37,7 +35,7 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = () => {
             </div>
         );
     };
-    const column: ColumnDescription<any, any>[] = [
+    const column: ColumnDescription[] = [
         {
             dataField: 'po_number',
             text: 'PO Number',
@@ -203,7 +201,7 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = () => {
                                         noDataIndication="Table is Empty"
                                         expandRow={{
                                             onlyOneExpanding: true,
-                                            renderer: (row, index) => {
+                                            renderer: () => {
                                                 return (
                                                     <ExpandedReceivingRow />
                                                 )

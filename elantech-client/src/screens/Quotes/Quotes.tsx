@@ -1,7 +1,7 @@
-import React, { FunctionComponent, HTMLAttributes, useState, useEffect } from 'react';
+import React, { FunctionComponent, useState, useEffect } from 'react';
 import { Button, DropdownButton, Dropdown, InputGroup } from 'react-bootstrap';
 import { Pencil, Plus, Search, Trash } from 'react-bootstrap-icons';
-import BootstrapTable from 'react-bootstrap-table-next';
+import BootstrapTable, { SearchProps } from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import CompanyModal from '../../components/Modals/Company/CompanyModal';
 import ExpandedQuoteRow from '../../components/ExpandedQuoteRow/ExpandedQuoteRow';
@@ -15,9 +15,7 @@ import SpinnerBlock from '../../components/LoadingAnimation/SpinnerBlock';
 // import IQuote from '../../types/IQuote';
 import './Quotes.css';
 
-interface QuotesProps extends HTMLAttributes<HTMLDivElement> { }
-
-export const QuotesLayout: FunctionComponent<QuotesProps> = () => {
+export const QuotesLayout: FunctionComponent = () => {
   const [addCompanySwitch, setAddCompanySwitch] = useState(false);
   const [editCompanySwitch, setEditCompanySwitch] = useState(false);
   const [removeCompanySwitch, setRemoveCompanySwitch] = useState(false);
@@ -27,7 +25,7 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = () => {
   const [isSearching] = useState(false);
   // const [quotes, setQuotes] = useState<IQuote[]>([]);
 
-  const rankFormatterRemove = (_: any, data: any, index: any) => {
+  const rankFormatterRemove = (data: React.SetStateAction<ICompany>) => {
     return (
       <div
         style={{
@@ -48,7 +46,7 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = () => {
       </div>
     );
   };
-  const rankFormatterEdit = (_: any, data: any, index: any) => {
+  const rankFormatterEdit = (data: React.SetStateAction<ICompany>) => {
     return (
       <div
         style={{
@@ -60,7 +58,7 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = () => {
         onClick={(e) => {
           e.stopPropagation()
         }} >
-        <div onClick={(e) => {
+        <div onClick={() => {
           setSelectedCompany(data);
           setEditCompanySwitch(true);
         }}
@@ -70,9 +68,9 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = () => {
       </div>
     );
   };
-  const customTotal = (from: number, to: number, size: number) => {
+  const customTotal = (size: number) => {
     return (
-      <span className="react-bootstrap-table-pagination-total"
+      <span className='react-bootstrap-table-pagination-total'
         style={{ marginLeft: 5 }}>
         {size} Results
       </span>)
@@ -147,8 +145,8 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = () => {
   const getAllCompanies = async () => {
     setCompanyList(await requestAllCompanies());
   };
-  const handleSearch = (input: string, props: { searchText?: string; onSearch: any; onClear?: () => void; }) => {
-    if (input !== undefined) {
+  const handleSearch: (input: string, props: SearchProps<ICompany>) => void = (input, props) => {
+    if (input !== undefined && props.onSearch) {
       props.onSearch(input);
     }
   };
@@ -156,19 +154,19 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = () => {
     getAllCompanies();
   }, []);
   return (
-    <section className="text-white main-section overflow-auto">
+    <section className='text-white main-section overflow-auto'>
       <div style={{ padding: 20 }}>
         <div className='d-flex justify-content-between'>
           <h2 style={{ fontWeight: 300 }}>Quotes by Company</h2>
           <div>
-            <Button variant="dark" onClick={() => { setAddCompanySwitch(true) }}>
-              <Plus height="25" width="25" style={{ marginTop: -3, marginLeft: -10 }} />Company
+            <Button variant='dark' onClick={() => { setAddCompanySwitch(true) }}>
+              <Plus height='25' width='25' style={{ marginTop: -3, marginLeft: -10 }} />Company
             </Button>
           </div>
         </div>
         <hr />
         <ToolkitProvider
-          keyField="id"
+          keyField='id'
           data={companyList}
           columns={column}
           search >
@@ -181,14 +179,14 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = () => {
                     :
                     <div>
                       <div className='d-flex justify-content-between'>
-                        <InputGroup className="mb-3">
-                          <InputGroup.Text id="basic-addon2">
+                        <InputGroup className='mb-3'>
+                          <InputGroup.Text id='basic-addon2'>
                             <Search />
                           </InputGroup.Text>
                           <DebounceInput
-                            type="text"
+                            type='text'
                             className='debounce'
-                            placeholder="Search..."
+                            placeholder='Search...'
                             debounceTimeout={500}
                             value={searchString}
                             onChange={e => {
@@ -198,26 +196,26 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = () => {
                         <div className='d-flex'>
                           <DropdownButton
                             key={'dark'}
-                            variant="dark"
-                            menuVariant="dark"
+                            variant='dark'
+                            menuVariant='dark'
                             title={'Search History '}
                           >
-                            <Dropdown.Item eventKey="1">---------</Dropdown.Item>
-                            <Dropdown.Item eventKey="2">---------</Dropdown.Item>
-                            <Dropdown.Item eventKey="3" active>---------</Dropdown.Item>
-                            <Dropdown.Item eventKey="4">---------</Dropdown.Item>
+                            <Dropdown.Item eventKey='1'>---------</Dropdown.Item>
+                            <Dropdown.Item eventKey='2'>---------</Dropdown.Item>
+                            <Dropdown.Item eventKey='3' active>---------</Dropdown.Item>
+                            <Dropdown.Item eventKey='4'>---------</Dropdown.Item>
                           </DropdownButton>
                         </div>
                       </div>
                       <br />
                       <BootstrapTable
                         {...props.baseProps}
-                        keyField="id"
+                        keyField='id'
                         bootstrap4
                         data={companyList}
                         columns={column}
-                        classes="table table-dark table-hover table-striped table-responsive"
-                        noDataIndication="Table is Empty"
+                        classes='table table-dark table-hover table-striped table-responsive'
+                        noDataIndication='Table is Empty'
                         pagination={paginationFactory(options)}
                         expandRow={{
                           onlyOneExpanding: true,

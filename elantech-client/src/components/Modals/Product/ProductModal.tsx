@@ -26,10 +26,11 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
         setIsSaving(true);
         setTimeout(async () => {
             try {
-                props.modalSwitch === 0 ?
-                    await requestAddProduct(productObj)
-                    :
+                if (props.modalSwitch === 0) {
+                    await requestAddProduct(productObj);
+                } else {
                     await requestUpdateProduct(productObj);
+                }
                 setIsSaving(false);
                 props.getAllProducts();
                 props.onClose();
@@ -68,7 +69,7 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
             setAlert({ ...alert, label: 'Please enter required information.', show: true });
             setTimeout(() => setAlert({ ...alert, show: false }), 5000);
             return false;
-        } else if(isDuplicate){
+        } else if (isDuplicate) {
             setAlert({ ...alert, label: 'Cannot contain duplicate product numbers.', show: true });
             setTimeout(() => setAlert({ ...alert, show: false }), 5000);
             return false;
@@ -82,7 +83,11 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
         }
     };
     useEffect(() => {
-        props.modalSwitch === 0 ? setTitle('Create Product') : setTitle('Edit Product');
+        if (props.modalSwitch === 0) {
+            setTitle('Create Product');
+        } else {
+            setTitle('Edit Product');
+        }
     }, [])
     return (
         <div>

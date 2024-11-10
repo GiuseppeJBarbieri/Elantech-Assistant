@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { Spinner } from 'react-bootstrap';
 import './SpinnerBlock.css'
-interface SpinnerBlockProps extends React.HTMLAttributes<HTMLDivElement> { }
 
-const SpinnerBlockComponent: React.FunctionComponent<SpinnerBlockProps> = () => {
+const SpinnerBlockComponent: React.FunctionComponent = () => {
     return (
         <div className={'spinnerDiv'}>
             <ul>

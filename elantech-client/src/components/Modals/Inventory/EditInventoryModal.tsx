@@ -40,7 +40,7 @@ const EditInventoryComponent: FunctionComponent<EditInventoryModalProps> = (prop
         } else {
             setTimeout(() => {
                 axios.put(`${BASE_API_URL}inventory`, inventoryObj, { withCredentials: true })
-                    .then((response) => {
+                    .then(() => {
                         setIsSaving(false);
                         props.getAllInventory(props.selectedProduct.id as number)
                         props.onClose();

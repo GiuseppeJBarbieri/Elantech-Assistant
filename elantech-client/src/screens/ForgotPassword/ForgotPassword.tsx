@@ -1,13 +1,11 @@
-import React, { FunctionComponent, HTMLAttributes } from 'react';
+import React, { FunctionComponent } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { PAGE_ROUTES } from '../../constants/PageRoutes';
 
 import './ForgotPassword.css';
 
-interface ForgotPasswordProps extends HTMLAttributes<HTMLDivElement> {}
-
-export const ForgotPasswordLayout: FunctionComponent<ForgotPasswordProps> = () => {
+export const ForgotPasswordLayout: FunctionComponent = () => {
   const navigate = useNavigate();
   return (
     <div

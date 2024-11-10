@@ -4,7 +4,7 @@ import filterFactory, { selectFilter } from 'react-bootstrap-table2-filter';
 import { Dropdown, DropdownButton, InputGroup } from 'react-bootstrap';
 import { Pencil, Search, Trash } from 'react-bootstrap-icons';
 import { DebounceInput } from 'react-debounce-input';
-import BootstrapTable from 'react-bootstrap-table-next';
+import BootstrapTable, { SearchProps } from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { useNavigate } from 'react-router-dom';
 import ExpandedProductRow from '../../components/ExpandedProductRow/ExpandedProductRow';
@@ -72,7 +72,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ setLoggedIn }) => {
         onClick={(e) => {
           e.stopPropagation()
         }} >
-        <div onClick={(e) => {
+        <div onClick={() => {
           setEditProductSwitch(true);
           setSelectedProduct(data);
         }}
@@ -138,17 +138,22 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ setLoggedIn }) => {
       headerAlign: 'center',
     }
   ];
-  const handleSearch = (input: string, props: { searchText?: string; onSearch: any; onClear?: () => void; }) => {
+  const handleSearch = (input: string, props: SearchProps<IProduct>) => {
     if (input !== '' || input !== undefined) {
       const result = searchHistory.includes(input);
-      if (!result) { input.length > 0 && searchHistory.push(input) }
-
-      searchHistory.length > 5 && setSearchHistory(searchHistory.slice(1, searchHistory.length));
+      if (!result && input.length > 0) {
+        searchHistory.push(input);
+      }
+      if (searchHistory.length > 5) {
+        setSearchHistory(searchHistory.slice(1, searchHistory.length));
+      }
       setSearchString(input);
     } else {
       setSearchHistoryFilterText('Search History');
     }
-    props.onSearch(input);
+    if (props.onSearch) {
+      props.onSearch(input);
+    }
   };
   const getAllProducts = async () => {
     const products = await requestAllProducts();

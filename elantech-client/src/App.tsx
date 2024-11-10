@@ -27,7 +27,7 @@ interface AppProps {
   width?: string;
 }
 
-const App: React.FunctionComponent<AppProps> = (props) => {
+const App: React.FunctionComponent<AppProps> = () => {
   const [panelVisible, setPanelVisible] = React.useState(false);
   const [loggedIn, setLoggedIn] = React.useState(isLoggedIn);
   return (

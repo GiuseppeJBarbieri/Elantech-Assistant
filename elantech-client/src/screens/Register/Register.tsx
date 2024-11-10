@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { FunctionComponent, HTMLAttributes } from 'react';
+import React, { FunctionComponent } from 'react';
 import { useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -10,9 +10,7 @@ import IUser from '../../types/IUser';
 
 import './Register.css';
 
-interface RegisterProps extends HTMLAttributes<HTMLDivElement> { }
-
-export const RegisterLayout: FunctionComponent<RegisterProps> = () => {
+export const RegisterLayout: FunctionComponent = () => {
   const navigate = useNavigate();
   const [newUser, setNewUser] = useState<IUser>(
     {

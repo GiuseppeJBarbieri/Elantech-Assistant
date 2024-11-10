@@ -23,7 +23,7 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
     const [selectedQuote] = useState<IQuotedProduct>();
     const [viewMoreSwitch, setViewMoreSwitch] = useState(false);
 
-    const rankFormatterAdd = (_: any, _data: any, _index: any) => {
+    const rankFormatterAdd = () => {
         return (
             <div
                 style={{
@@ -34,7 +34,7 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
                 onClick={(e) => {
                     e.stopPropagation()
                 }}>
-                <div onClick={(_e) => {
+                <div onClick={() => {
                     console.log('Create Order');
                 }}>
                     <Plus style={{ fontSize: 20, color: 'white' }} />
@@ -42,7 +42,7 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
             </div>
         );
     };
-    const rankFormatterViewMore = (_: any, _data: any, _index: any) => {
+    const rankFormatterViewMore = () => {
         return (
             <div
                 style={{
@@ -54,7 +54,7 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
                 onClick={(e) => {
                     e.stopPropagation()
                 }} >
-                <div onClick={(_e) => {
+                <div onClick={() => {
                     setViewMoreSwitch(true);
                 }}
                 >
@@ -96,9 +96,9 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
         {
             dataField: 'quantity',
             text: 'Number of Products',
-            formatter: (cell: any, row: any) => {
-                var total = 0;
-                row.quotedProducts.forEach((element: IQuotedProduct) => {
+            formatter: (row: IQuote) => {
+                let total = 0;
+                row.QuotedProducts?.forEach((element: IQuotedProduct) => {
                     total += element.quantity;
                 });
                 return `${total}`;
@@ -108,8 +108,8 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
         {
             dataField: 'quotedBy',
             text: 'Quoted By',
-            formatter: (cell: any, row: any) => {
-                return `${row.user.firstName}  ${row.user.lastName}`;
+            formatter: (row: IQuote) => {
+                return row.User ? `${row.User.firstName}  ${row.User.lastName}` : 'Unknown';
             },
             sort: true,
         },
@@ -121,9 +121,9 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
         {
             dataField: 'totalQuote',
             text: 'Total Quote',
-            formatter: (cell: any, row: any) => {
-                var total = 0;
-                row.quotedProducts.forEach((element: IQuotedProduct) => {
+            formatter: (row: IQuote) => {
+                let total = 0;
+                row.QuotedProducts?.forEach((element: IQuotedProduct) => {
                     total += element.quotedPrice;
                 });
                 return `$${total}`;

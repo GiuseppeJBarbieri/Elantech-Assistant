@@ -1,13 +1,11 @@
 import * as React from 'react';
-import { FunctionComponent, HTMLAttributes } from 'react';
+import { FunctionComponent } from 'react';
 import { Button } from 'react-bootstrap';
 import { Plus } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 
-interface ProcurementProps extends  HTMLAttributes<HTMLDivElement> { }
-
-export const ProcurementLayout: FunctionComponent<ProcurementProps> = () => {
+export const ProcurementLayout: FunctionComponent = () => {
 
     const fake_data = [
         {

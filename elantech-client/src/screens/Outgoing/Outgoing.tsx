@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
-import { FunctionComponent, HTMLAttributes, useState } from 'react';
+import { FunctionComponent, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { Pencil, Plus, Trash } from 'react-bootstrap-icons';
 import BootstrapTable, { ColumnDescription } from 'react-bootstrap-table-next';
@@ -11,9 +11,7 @@ import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, P
 import AddOutgoingOrderModal from '../../components/Modals/Outgoing/AddOutgoingOrderModel';
 import ExpandedOutgoingRow from '../../components/ExpandedOutgoingRow/ExpandedOutgoingRow';
 
-interface OutgoingProps extends HTMLAttributes<HTMLDivElement> { }
-
-export const OutgoingLayout: FunctionComponent<OutgoingProps> = () => {
+export const OutgoingLayout: FunctionComponent = () => {
     const [addOrderSwitch, setAddOrderSwitch] = useState(false);
     const rankFormatterEdit = (_: any, data: any, index: any) => {
         return (

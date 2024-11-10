@@ -52,8 +52,8 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
         }, {
             dataField: 'quotedBy',
             text: 'Quoted By',
-            formatter: (cell: any, row: any) => {
-                return `${row.Quote.User.firstName}  ${row.Quote.User.lastName}`;
+            formatter: (row: IQuotedProduct) => {
+                return `${row.Quote?.User?.firstName ?? ''} ${row.Quote?.User?.lastName ?? ''}`;
             },
             sort: true,
         }, {

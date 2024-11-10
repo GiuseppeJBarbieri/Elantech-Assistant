@@ -419,7 +419,7 @@ const AddOutgoingOrderModalComponent: FunctionComponent<AddOutgoingOrderModalPro
                                                         expandRow={{
                                                             onlyOneExpanding: true,
                                                             // eslint-disable-next-line react/display-name
-                                                            renderer: (row, index) => {
+                                                            renderer: (row) => {
                                                                 return(
                                                                     <ExpandedProductRow
                                                                         selectedProduct={row} getAllProducts={function (): void {

@@ -30,10 +30,10 @@ const RemoveMultipleInventoryModalComponent: FunctionComponent<RemoveMultipleInv
     }
     const removeInventories = () => {
         setIsSaving(true);
-        (props.selectedInventory as IInventory[]).forEach((inventory, index) => {
+        (props.selectedInventory as IInventory[]).forEach((inventory) => {
             setTimeout(async () => {
                 await axios.delete(`${BASE_API_URL}inventory/${inventory.id}`, { withCredentials: true })
-                    .then((response) => {
+                    .then(() => {
                         setIsSaving(false);
                         props.getAllInventory(props.selectedProduct.id as number);
                         props.getAllProducts();

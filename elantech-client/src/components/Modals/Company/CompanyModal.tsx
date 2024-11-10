@@ -27,10 +27,11 @@ const CompanyModalComponent: FunctionComponent<CompanyModalProps> = (props) => {
         setIsSaving(true);
         setTimeout(async () => {
             try {
-                props.modalSwitch === 0 ?
-                await requestAddCompany(companyObj)
-                :
-                await requestUpdateCompany(companyObj);
+                if (props.modalSwitch === 0) {
+                    await requestAddCompany(companyObj)
+                } else {
+                    await requestUpdateCompany(companyObj);
+                }
                 setIsSaving(false);
                 props.getAllCompanies();
                 props.onClose();
@@ -50,7 +51,11 @@ const CompanyModalComponent: FunctionComponent<CompanyModalProps> = (props) => {
         }
     };
     useEffect(() => {
-        props.modalSwitch === 0 ? setTitle('Create Company') : setTitle('Edit Company');
+        if (props.modalSwitch === 0) {
+            setTitle('Create Company');
+        } else {
+            setTitle('Edit Company');
+        }
     }, [])
     return (
         <div>
