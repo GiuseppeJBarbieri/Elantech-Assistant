@@ -1,10 +1,241 @@
 yarn run v1.22.22
 $ nf start -p 3000
-9:52:13 PM react.1          |  > elantech-assistant@0.1.0 start-react
-9:52:13 PM react.1          |  > cross-env BROWSER=none react-scripts start
-9:52:13 PM start-electron.1 |  > elantech-assistant@0.1.0 start-electron
-9:52:13 PM start-electron.1 |  > ts-node --skip-project electron/connect-electron.ts
-9:52:13 PM watch-electron.1 |  > elantech-assistant@0.1.0 watch-electron
-9:52:13 PM watch-electron.1 |  > tsc --watch --project electron/tsconfig.json
-9:52:13 PM watch-electron.1 |  [2J[3J[H
-9:52:13 PM watch-electron.1 |  9:52:13 PM - Starting compilation in watch mode...
+11:21:16 PM react.1         |  > elantech-assistant@0.1.0 start-react
+11:21:16 PM react.1         |  > cross-env BROWSER=none react-scripts start
+11:21:16 PM start-electron.1 |  > elantech-assistant@0.1.0 start-electron
+11:21:16 PM start-electron.1 |  > ts-node --skip-project electron/connect-electron.js
+11:21:16 PM watch-electron.1 |  > elantech-assistant@0.1.0 watch-electron
+11:21:16 PM watch-electron.1 |  > tsc --watch --project electron/tsconfig.json
+11:21:16 PM watch-electron.1 |  [2J[3J[H
+11:21:16 PM watch-electron.1 |  11:21:16 PM - Starting compilation in watch mode...
+11:21:16 PM start-electron.1 |  (node:28148) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/Giuseppe/Documents/GitHub/Elantech-Assistant/elantech-client/electron/connect-electron.js is not specified and it doesn't parse as CommonJS.
+11:21:16 PM start-electron.1 |  Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+11:21:16 PM start-electron.1 |  To eliminate this warning, add "type": "module" to C:\Users\Giuseppe\Documents\GitHub\Elantech-Assistant\elantech-client\package.json.
+11:21:16 PM start-electron.1 |  (Use `node --trace-warnings ...` to show where the warning was created)
+11:21:16 PM start-electron.1 |  Retrying... Error: connect ECONNREFUSED ::1:3000
+11:21:16 PM start-electron.1 |      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1615:16) {
+11:21:16 PM start-electron.1 |    errno: -4078,
+11:21:16 PM start-electron.1 |    code: 'ECONNREFUSED',
+11:21:16 PM start-electron.1 |    syscall: 'connect',
+11:21:16 PM start-electron.1 |    address: '::1',
+11:21:16 PM start-electron.1 |    port: 3000
+11:21:16 PM start-electron.1 |  }
+11:21:17 PM start-electron.1 |  Retrying... Error: connect ECONNREFUSED ::1:3000
+11:21:17 PM start-electron.1 |      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1615:16) {
+11:21:17 PM start-electron.1 |    errno: -4078,
+11:21:17 PM start-electron.1 |    code: 'ECONNREFUSED',
+11:21:17 PM start-electron.1 |    syscall: 'connect',
+11:21:17 PM start-electron.1 |    address: '::1',
+11:21:17 PM start-electron.1 |    port: 3000
+11:21:17 PM start-electron.1 |  }
+11:21:18 PM start-electron.1 |  Retrying... Error: connect ECONNREFUSED ::1:3000
+11:21:18 PM start-electron.1 |      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1615:16) {
+11:21:18 PM start-electron.1 |    errno: -4078,
+11:21:18 PM start-electron.1 |    code: 'ECONNREFUSED',
+11:21:18 PM start-electron.1 |    syscall: 'connect',
+11:21:18 PM start-electron.1 |    address: '::1',
+11:21:18 PM start-electron.1 |    port: 3000
+11:21:18 PM start-electron.1 |  }
+11:21:19 PM start-electron.1 |  Retrying... Error: connect ECONNREFUSED ::1:3000
+11:21:19 PM start-electron.1 |      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1615:16) {
+11:21:19 PM start-electron.1 |    errno: -4078,
+11:21:19 PM start-electron.1 |    code: 'ECONNREFUSED',
+11:21:19 PM start-electron.1 |    syscall: 'connect',
+11:21:19 PM start-electron.1 |    address: '::1',
+11:21:19 PM start-electron.1 |    port: 3000
+11:21:19 PM start-electron.1 |  }
+11:21:20 PM react.1         |  (node:22980) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+11:21:20 PM react.1         |  (Use `node --trace-deprecation ...` to show where the warning was created)
+11:21:20 PM react.1         |  (node:22980) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+11:21:20 PM start-electron.1 |  Retrying... Error: connect ECONNREFUSED ::1:3000
+11:21:20 PM start-electron.1 |      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1615:16) {
+11:21:20 PM start-electron.1 |    errno: -4078,
+11:21:20 PM start-electron.1 |    code: 'ECONNREFUSED',
+11:21:20 PM start-electron.1 |    syscall: 'connect',
+11:21:20 PM start-electron.1 |    address: '::1',
+11:21:20 PM start-electron.1 |    port: 3000
+11:21:20 PM start-electron.1 |  }
+11:21:21 PM react.1         |  Starting the development server...
+11:21:21 PM start-electron.1 |  Retrying... Error: connect ECONNREFUSED ::1:3000
+11:21:21 PM start-electron.1 |      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1615:16) {
+11:21:21 PM start-electron.1 |    errno: -4078,
+11:21:21 PM start-electron.1 |    code: 'ECONNREFUSED',
+11:21:21 PM start-electron.1 |    syscall: 'connect',
+11:21:21 PM start-electron.1 |    address: '::1',
+11:21:21 PM start-electron.1 |    port: 3000
+11:21:21 PM start-electron.1 |  }
+11:21:22 PM start-electron.1 |  Retrying... Error: connect ECONNREFUSED ::1:3000
+11:21:22 PM start-electron.1 |      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1615:16) {
+11:21:22 PM start-electron.1 |    errno: -4078,
+11:21:22 PM start-electron.1 |    code: 'ECONNREFUSED',
+11:21:22 PM start-electron.1 |    syscall: 'connect',
+11:21:22 PM start-electron.1 |    address: '::1',
+11:21:22 PM start-electron.1 |    port: 3000
+11:21:22 PM start-electron.1 |  }
+11:21:24 PM start-electron.1 |  Retrying... Error: connect ECONNREFUSED ::1:3000
+11:21:24 PM start-electron.1 |      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1615:16) {
+11:21:24 PM start-electron.1 |    errno: -4078,
+11:21:24 PM start-electron.1 |    code: 'ECONNREFUSED',
+11:21:24 PM start-electron.1 |    syscall: 'connect',
+11:21:24 PM start-electron.1 |    address: '::1',
+11:21:24 PM start-electron.1 |    port: 3000
+11:21:24 PM start-electron.1 |  }
+11:21:25 PM start-electron.1 |  Retrying... Error: connect ECONNREFUSED ::1:3000
+11:21:25 PM start-electron.1 |      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1615:16) {
+11:21:25 PM start-electron.1 |    errno: -4078,
+11:21:25 PM start-electron.1 |    code: 'ECONNREFUSED',
+11:21:25 PM start-electron.1 |    syscall: 'connect',
+11:21:25 PM start-electron.1 |    address: '::1',
+11:21:25 PM start-electron.1 |    port: 3000
+11:21:25 PM start-electron.1 |  }
+11:21:25 PM watch-electron.1 |  node_modules/@types/react-router-dom/index.d.ts(13,10): error TS2724: '"react-router"' has no exported member named 'match'. Did you mean 'UIMatch'?
+11:21:25 PM watch-electron.1 |  node_modules/@types/react-router-dom/index.d.ts(19,5): error TS2305: Module '"react-router"' has no exported member 'PromptProps'.
+11:21:25 PM watch-electron.1 |  node_modules/@types/react-router-dom/index.d.ts(20,5): error TS2305: Module '"react-router"' has no exported member 'Prompt'.
+11:21:25 PM watch-electron.1 |  node_modules/@types/react-router-dom/index.d.ts(23,5): error TS2305: Module '"react-router"' has no exported member 'RedirectProps'.
+11:21:25 PM watch-electron.1 |  node_modules/@types/react-router-dom/index.d.ts(24,5): error TS2724: '"react-router"' has no exported member named 'Redirect'. Did you mean 'redirect'?
+11:21:25 PM watch-electron.1 |  node_modules/@types/react-router-dom/index.d.ts(25,5): error TS2305: Module '"react-router"' has no exported member 'RouteChildrenProps'.
+11:21:25 PM watch-electron.1 |  node_modules/@types/react-router-dom/index.d.ts(26,5): error TS2305: Module '"react-router"' has no exported member 'RouteComponentProps'.
+11:21:25 PM watch-electron.1 |  node_modules/@types/react-router-dom/index.d.ts(31,5): error TS2305: Module '"react-router"' has no exported member 'StaticRouterProps'.
+11:21:25 PM watch-electron.1 |  node_modules/@types/react-router-dom/index.d.ts(32,5): error TS2305: Module '"react-router"' has no exported member 'StaticRouter'.
+11:21:25 PM watch-electron.1 |  node_modules/@types/react-router-dom/index.d.ts(33,5): error TS2305: Module '"react-router"' has no exported member 'SwitchProps'.
+11:21:25 PM watch-electron.1 |  node_modules/@types/react-router-dom/index.d.ts(34,5): error TS2305: Module '"react-router"' has no exported member 'Switch'.
+11:21:25 PM watch-electron.1 |  node_modules/@types/react-router-dom/index.d.ts(35,5): error TS2724: '"react-router"' has no exported member named 'match'. Did you mean 'UIMatch'?
+11:21:25 PM watch-electron.1 |  node_modules/@types/react-router-dom/index.d.ts(37,5): error TS2305: Module '"react-router"' has no exported member 'withRouter'.
+11:21:25 PM watch-electron.1 |  node_modules/@types/react-router-dom/index.d.ts(38,5): error TS2305: Module '"react-router"' has no exported member 'RouterChildContext'.
+11:21:25 PM watch-electron.1 |  node_modules/@types/react-router-dom/index.d.ts(39,5): error TS2305: Module '"react-router"' has no exported member 'useHistory'.
+11:21:25 PM watch-electron.1 |  node_modules/@types/react-router-dom/index.d.ts(42,5): error TS2724: '"react-router"' has no exported member named 'useRouteMatch'. Did you mean 'RouteMatch'?
+11:21:25 PM watch-electron.1 |  node_modules/electron-store/index.d.ts(2,51): error TS2307: Cannot find module 'conf' or its corresponding type declarations.
+11:21:25 PM watch-electron.1 |    There are types at 'C:/Users/Giuseppe/Documents/GitHub/Elantech-Assistant/elantech-client/node_modules/conf/dist/source/index.d.ts', but this result could not be resolved under your current 'moduleResolution' setting. Consider updating to 'node16', 'nodenext', or 'bundler'.
+11:21:25 PM watch-electron.1 |  node_modules/electron-store/index.d.ts(4,22): error TS2307: Cannot find module 'conf' or its corresponding type declarations.
+11:21:25 PM watch-electron.1 |    There are types at 'C:/Users/Giuseppe/Documents/GitHub/Elantech-Assistant/elantech-client/node_modules/conf/dist/source/index.d.ts', but this result could not be resolved under your current 'moduleResolution' setting. Consider updating to 'node16', 'nodenext', or 'bundler'.
+11:21:25 PM watch-electron.1 |  11:21:25 PM - Found 18 errors. Watching for file changes.
+11:21:26 PM start-electron.1 |  Retrying... Error: connect ECONNREFUSED ::1:3000
+11:21:26 PM start-electron.1 |      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1615:16) {
+11:21:26 PM start-electron.1 |    errno: -4078,
+11:21:26 PM start-electron.1 |    code: 'ECONNREFUSED',
+11:21:26 PM start-electron.1 |    syscall: 'connect',
+11:21:26 PM start-electron.1 |    address: '::1',
+11:21:26 PM start-electron.1 |    port: 3000
+11:21:26 PM start-electron.1 |  }
+11:21:27 PM start-electron.1 |  (node:28148) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 connect listeners added to [Socket]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+11:21:27 PM start-electron.1 |  Retrying... Error: connect ECONNREFUSED ::1:3000
+11:21:27 PM start-electron.1 |      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1615:16) {
+11:21:27 PM start-electron.1 |    errno: -4078,
+11:21:27 PM start-electron.1 |    code: 'ECONNREFUSED',
+11:21:27 PM start-electron.1 |    syscall: 'connect',
+11:21:27 PM start-electron.1 |    address: '::1',
+11:21:27 PM start-electron.1 |    port: 3000
+11:21:27 PM start-electron.1 |  }
+11:21:28 PM start-electron.1 |  Retrying... Error: connect ECONNREFUSED ::1:3000
+11:21:28 PM start-electron.1 |      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1615:16) {
+11:21:28 PM start-electron.1 |    errno: -4078,
+11:21:28 PM start-electron.1 |    code: 'ECONNREFUSED',
+11:21:28 PM start-electron.1 |    syscall: 'connect',
+11:21:28 PM start-electron.1 |    address: '::1',
+11:21:28 PM start-electron.1 |    port: 3000
+11:21:28 PM start-electron.1 |  }
+11:21:29 PM start-electron.1 |  Retrying... Error: connect ECONNREFUSED ::1:3000
+11:21:29 PM start-electron.1 |      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1615:16) {
+11:21:29 PM start-electron.1 |    errno: -4078,
+11:21:29 PM start-electron.1 |    code: 'ECONNREFUSED',
+11:21:29 PM start-electron.1 |    syscall: 'connect',
+11:21:29 PM start-electron.1 |    address: '::1',
+11:21:29 PM start-electron.1 |    port: 3000
+11:21:29 PM start-electron.1 |  }
+11:21:30 PM start-electron.1 |  Retrying... Error: connect ECONNREFUSED ::1:3000
+11:21:30 PM start-electron.1 |      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1615:16) {
+11:21:30 PM start-electron.1 |    errno: -4078,
+11:21:30 PM start-electron.1 |    code: 'ECONNREFUSED',
+11:21:30 PM start-electron.1 |    syscall: 'connect',
+11:21:30 PM start-electron.1 |    address: '::1',
+11:21:30 PM start-electron.1 |    port: 3000
+11:21:30 PM start-electron.1 |  }
+11:21:31 PM start-electron.1 |  Retrying... Error: connect ECONNREFUSED ::1:3000
+11:21:31 PM start-electron.1 |      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1615:16) {
+11:21:31 PM start-electron.1 |    errno: -4078,
+11:21:31 PM start-electron.1 |    code: 'ECONNREFUSED',
+11:21:31 PM start-electron.1 |    syscall: 'connect',
+11:21:31 PM start-electron.1 |    address: '::1',
+11:21:31 PM start-electron.1 |    port: 3000
+11:21:31 PM start-electron.1 |  }
+11:21:31 PM react.1         |  Compiled successfully!
+11:21:31 PM react.1         |  You can now view elantech-assistant in the browser.
+11:21:31 PM react.1         |    Local:            http://localhost:3000
+11:21:31 PM react.1         |    On Your Network:  http://192.168.1.124:3000
+11:21:31 PM react.1         |  Note that the development build is not optimized.
+11:21:31 PM react.1         |  To create a production build, use yarn build.
+11:21:31 PM react.1         |  webpack compiled [1m[32msuccessfully[39m[22m
+11:21:31 PM react.1         |  No issues found.
+11:21:32 PM start-electron.1 |  Retrying... Error: connect ECONNREFUSED ::1:3000
+11:21:32 PM start-electron.1 |      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1615:16) {
+11:21:32 PM start-electron.1 |    errno: -4078,
+11:21:32 PM start-electron.1 |    code: 'ECONNREFUSED',
+11:21:32 PM start-electron.1 |    syscall: 'connect',
+11:21:32 PM start-electron.1 |    address: '::1',
+11:21:32 PM start-electron.1 |    port: 3000
+11:21:32 PM start-electron.1 |  }
+11:21:33 PM start-electron.1 |  Retrying... Error: connect ECONNREFUSED ::1:3000
+11:21:33 PM start-electron.1 |      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1615:16) {
+11:21:33 PM start-electron.1 |    errno: -4078,
+11:21:33 PM start-electron.1 |    code: 'ECONNREFUSED',
+11:21:33 PM start-electron.1 |    syscall: 'connect',
+11:21:33 PM start-electron.1 |    address: '::1',
+11:21:33 PM start-electron.1 |    port: 3000
+11:21:33 PM start-electron.1 |  }
+11:21:34 PM start-electron.1 |  Retrying... Error: connect ECONNREFUSED ::1:3000
+11:21:34 PM start-electron.1 |      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1615:16) {
+11:21:34 PM start-electron.1 |    errno: -4078,
+11:21:34 PM start-electron.1 |    code: 'ECONNREFUSED',
+11:21:34 PM start-electron.1 |    syscall: 'connect',
+11:21:34 PM start-electron.1 |    address: '::1',
+11:21:34 PM start-electron.1 |    port: 3000
+11:21:34 PM start-electron.1 |  }
+11:21:35 PM start-electron.1 |  Retrying... Error: connect ECONNREFUSED ::1:3000
+11:21:35 PM start-electron.1 |      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1615:16) {
+11:21:35 PM start-electron.1 |    errno: -4078,
+11:21:35 PM start-electron.1 |    code: 'ECONNREFUSED',
+11:21:35 PM start-electron.1 |    syscall: 'connect',
+11:21:35 PM start-electron.1 |    address: '::1',
+11:21:35 PM start-electron.1 |    port: 3000
+11:21:35 PM start-electron.1 |  }
+11:21:36 PM start-electron.1 |  Retrying... Error: connect ECONNREFUSED ::1:3000
+11:21:36 PM start-electron.1 |      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1615:16) {
+11:21:36 PM start-electron.1 |    errno: -4078,
+11:21:36 PM start-electron.1 |    code: 'ECONNREFUSED',
+11:21:36 PM start-electron.1 |    syscall: 'connect',
+11:21:36 PM start-electron.1 |    address: '::1',
+11:21:36 PM start-electron.1 |    port: 3000
+11:21:36 PM start-electron.1 |  }
+11:21:37 PM start-electron.1 |  Retrying... Error: connect ECONNREFUSED ::1:3000
+11:21:37 PM start-electron.1 |      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1615:16) {
+11:21:37 PM start-electron.1 |    errno: -4078,
+11:21:37 PM start-electron.1 |    code: 'ECONNREFUSED',
+11:21:37 PM start-electron.1 |    syscall: 'connect',
+11:21:37 PM start-electron.1 |    address: '::1',
+11:21:37 PM start-electron.1 |    port: 3000
+11:21:37 PM start-electron.1 |  }
+11:21:38 PM start-electron.1 |  Retrying... Error: connect ECONNREFUSED ::1:3000
+11:21:38 PM start-electron.1 |      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1615:16) {
+11:21:38 PM start-electron.1 |    errno: -4078,
+11:21:38 PM start-electron.1 |    code: 'ECONNREFUSED',
+11:21:38 PM start-electron.1 |    syscall: 'connect',
+11:21:38 PM start-electron.1 |    address: '::1',
+11:21:38 PM start-electron.1 |    port: 3000
+11:21:38 PM start-electron.1 |  }
+11:21:39 PM start-electron.1 |  Retrying... Error: connect ECONNREFUSED ::1:3000
+11:21:39 PM start-electron.1 |      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1615:16) {
+11:21:39 PM start-electron.1 |    errno: -4078,
+11:21:39 PM start-electron.1 |    code: 'ECONNREFUSED',
+11:21:39 PM start-electron.1 |    syscall: 'connect',
+11:21:39 PM start-electron.1 |    address: '::1',
+11:21:39 PM start-electron.1 |    port: 3000
+11:21:39 PM start-electron.1 |  }
+11:21:40 PM start-electron.1 |  Retrying... Error: connect ECONNREFUSED ::1:3000
+11:21:40 PM start-electron.1 |      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1615:16) {
+11:21:40 PM start-electron.1 |    errno: -4078,
+11:21:40 PM start-electron.1 |    code: 'ECONNREFUSED',
+11:21:40 PM start-electron.1 |    syscall: 'connect',
+11:21:40 PM start-electron.1 |    address: '::1',
+11:21:40 PM start-electron.1 |    port: 3000
+11:21:40 PM start-electron.1 |  }
+[DONE] Killing all processes with signal  SIGINT

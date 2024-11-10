@@ -11,13 +11,14 @@ let startedElectron = false;
 
 const tryConnection = () => {
   client.connect(
-    { port },
+    { port, host: '127.0.0.1' }, // Ensure the correct host is used
     () => {
       client.end();
 
       if (!startedElectron) {
         startedElectron = true;
         console.log('starting electron');
+        // exec('npm run electron');
 
         childProcess.exec('nodemon --watch "build"  --exec "electron ." --inspect=5858', {
           windowsHide: true

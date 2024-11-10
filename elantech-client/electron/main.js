@@ -4,7 +4,7 @@ import * as url from 'url';
 
 import menuTemplate from './menu';
 
-let mainWindow: BrowserWindow | null;
+let mainWindow = null;
 
 function createWindow() {
   const displays = screen.getAllDisplays()
