@@ -184,7 +184,7 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
                     :
                     <div>
                       <div className='d-flex justify-content-between'>
-                        <InputGroup className="mb-3">
+                        <InputGroup className="mb-1">
                           <InputGroup.Text id="basic-addon2">
                             <Search />
                           </InputGroup.Text>

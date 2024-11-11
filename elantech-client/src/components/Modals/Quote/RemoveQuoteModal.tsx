@@ -6,13 +6,13 @@ import { defaultAlert } from '../../../constants/Defaults';
 import { CustomAlert } from '../../Alerts/CustomAlert';
 import IProduct from '../../../types/IProduct';
 
-interface RemoveProductModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+interface RemoveQuoteModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     modalVisible: boolean;
     selectedProduct: IProduct;
     onClose: () => Promise<void>;
 }
 
-const RemoveProductModalComponent: FunctionComponent<RemoveProductModalProps> = (props) => {
+const RemoveQuoteModalComponent: FunctionComponent<RemoveQuoteModalProps> = (props) => {
     const [isSaving, setIsSaving] = useState(false);
     const [displaySerialText, setDisplaySerialText] = useState(false);
     const [otherReason, setOtherReason] = useState('');
@@ -116,4 +116,4 @@ const RemoveProductModalComponent: FunctionComponent<RemoveProductModalProps> = 
     );
 };
 
-export const RemoveProductModal = withRouter(RemoveProductModalComponent);
+export const RemoveProductModal = withRouter(RemoveQuoteModalComponent);

@@ -85,3 +85,5 @@ export const requestAllQuotesByProductId = async (productId: number): Promise<IQ
 export const requestAddRemovedInventory = async (removedInventory: IRemovedInventory): Promise<any> => {
     return axios.post(`${BASE_API_URL}${ROUTES.REMOVED_INVENTORY}`, removedInventory, { withCredentials: true }).then((response) => response);
 }
+
+

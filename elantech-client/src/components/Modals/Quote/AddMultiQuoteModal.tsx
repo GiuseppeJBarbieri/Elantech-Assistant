@@ -11,7 +11,7 @@ import ICompany from '../../../types/ICompany';
 import IProduct from '../../../types/IProduct';
 import IQuote from '../../../types/IQuote';
 import IQuotedProduct from '../../../types/IQuotedProduct';
-import { requestAddQuote, requestAddQuotedProduct, requestAllProducts } from '../../../utils/Requests';
+import { requestAddQuote, requestAllProducts } from '../../../utils/Requests';
 import { CustomAlert } from '../../Alerts/CustomAlert';
 import { SpinnerBlock } from '../../LoadingAnimation/SpinnerBlock';
 import '../modal.css';
@@ -180,7 +180,7 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
             setAlert({ ...alert, label: 'Please select a product.', show: true });
             setTimeout(() => setAlert({ ...alert, show: false }), 5000);
         }
-        else if (condition == '' || quantity === 0 || price === 0) {
+        else if (condition === '' || quantity === 0 || price === 0) {
             const errorMessage = JSON.stringify(selectedProduct) === '{}'
                 ? 'Please select a product.'
                 : condition === ''

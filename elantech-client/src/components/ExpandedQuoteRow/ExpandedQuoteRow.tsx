@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { FunctionComponent, HTMLAttributes, useEffect, useState } from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
-import { Plus, ThreeDots } from 'react-bootstrap-icons';
+import { Pencil, Plus, ThreeDots, Trash } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
@@ -75,35 +75,34 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
             </div>
         );
     };
-    // const rankFormatterEdit = (_: any, data: any, _index: any) => {
-    //     return (
-    //         <div
-    //             style={{
-    //                 textAlign: 'center',
-    //                 cursor: 'pointer',
-    //                 lineHeight: 'normal',
-    //                 zIndex: 0
-    //             }}
-    //             onClick={(e) => {
-    //                 e.stopPropagation()
-    //             }} >
-    //             <div onClick={(_e) => {
-    //                 setSelectedQuote(data);
-    //                 setEditQuoteSwitch(true);
-    //             }}
-    //             >
-    //                 <Pencil style={{ fontSize: 20, color: 'white' }} />
-    //             </div>
-    //         </div>
-    //     );
-    // };
-    // const rankFormatterRemove = (_: any, _data: any, _index: any) => {
-    //     return (
-    //         <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }} onClick={() => console.log('Remove Column')} >
-    //             <Trash style={{ fontSize: 20, color: 'white' }} />
-    //         </div>
-    //     );
-    // };
+    const rankFormatterEdit = (_: any, data: any, _index: any) => {
+        return (
+            <div
+                style={{
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    lineHeight: 'normal',
+                    zIndex: 0
+                }}
+                onClick={(e) => {
+                    e.stopPropagation()
+                }}>
+                <div onClick={(_e) => {
+                    setSelectedQuote(data);
+                    setEditQuoteSwitch(true);
+                }}>
+                    <Pencil style={{ fontSize: 20, color: 'white' }} />
+                </div>
+            </div>
+        );
+    };
+    const rankFormatterRemove = (_: any, _data: any, _index: any) => {
+        return (
+            <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }} onClick={() => console.log('Remove Column')} >
+                <Trash style={{ fontSize: 20, color: 'white' }} />
+            </div>
+        );
+    };
     const column = [
         {
             dataField: 'quantity',
@@ -155,12 +154,26 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
             headerAlign: 'center',
         },
         {
-            dataField: 'Add',
-            text: 'Create Order',
+            dataField: 'edit',
+            text: 'Edit',
             sort: false,
-            formatter: rankFormatterAdd,
+            formatter: rankFormatterEdit,
             headerAlign: 'center',
         },
+        {
+            dataField: 'remove',
+            text: 'Delete',
+            sort: false,
+            formatter: rankFormatterRemove,
+            headerAlign: 'center',
+        },
+        // {
+        //     dataField: 'Add',
+        //     text: 'Create Order',
+        //     sort: false,
+        //     formatter: rankFormatterAdd,
+        //     headerAlign: 'center',
+        // },
     ];
     const options = {
         custom: true,
@@ -246,7 +259,8 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
                 <div className='modal-dialog'>
                     <EditQuoteModal
                         modalVisible={editQuoteSwitch}
-                        selectedQuote={undefined}
+                        selectedCompany={props.selectedCompany}
+                        selectedQuote={selectedQuote}
                         onClose={async () => {
                             setEditQuoteSwitch(false);
                         }}

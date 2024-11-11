@@ -1,42 +1,175 @@
-import React, { HTMLAttributes, FunctionComponent, useState } from 'react';
-import { Modal, Spinner, Form, Button } from 'react-bootstrap';
+import React, { HTMLAttributes, FunctionComponent, useState, useEffect } from 'react';
+import { Modal, Spinner, Form, Button, Col, Row } from 'react-bootstrap';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import IQuotedProduct from '../../../types/IQuotedProduct';
+import BootstrapTable, { ColumnDescription } from 'react-bootstrap-table-next';
+import ICompany from '../../../types/ICompany';
+import IQuote from '../../../types/IQuote';
+import { requestAllProductQuotesByQuoteId } from '../../../utils/Requests';
+import { Pencil, Plus, Trash } from 'react-bootstrap-icons';
 
 interface EditQuoteModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
     modalVisible: boolean;
-    selectedQuote: IQuotedProduct | undefined;
+    selectedCompany: ICompany;
+    selectedQuote: IQuote;
 }
 
 const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) => {
+    const [quotedProducts, setQuotedProducts] = useState<IQuotedProduct[]>([]);
     const [isSaving] = useState(false);
-    // const [quote, setQuote] = useState<IQuotedProduct>(
-    //     {
-    //         quantity: props.selectedQuote?.quantity,
-    //         product_number: props.selectedQuote?.product_number,
-    //         product_type: props.selectedQuote?.product_type,
-    //         brand: props.selectedQuote?.brand,
-    //         description: props.selectedQuote?.description,
-    //         condition: props.selectedQuote?.condition,
-    //         price: props.selectedQuote?.price,
-    //     }
-    // );
-    // const editQuote = () => {
-    //     setIsSaving(true);
-    //     setTimeout(function () { //Start the timer
-    //         setIsSaving(false);
-    //         // Display Alert
-    //         props.onClose();
-    //     }.bind(this), 5000)
-    // }
+    const [totalQuote, setTotalQuote] = useState<number>(0);
+    const [showEditProductArea, setShowEditProductArea] = useState(false);
+    const rankFormatterEdit = (_: any, data: any, _index: any) => {
+        return (
+            <div
+                style={{
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    lineHeight: 'normal',
+                    zIndex: 0
+                }}
+                onClick={(e) => {
+                    e.stopPropagation()
+                }}>
+                <div onClick={(_e) => {
+                }}>
+                    <Pencil style={{ fontSize: 20, color: 'white' }} />
+                </div>
+            </div>
+        );
+    };
+    const rankFormatterRemove = (_: any, _data: any, _index: any) => {
+        return (
+            <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }} onClick={() => console.log('Remove Column')} >
+                <Trash style={{ fontSize: 20, color: 'white' }} />
+            </div>
+        );
+    };
+    const column: ColumnDescription<any, any>[] = [
+        {
+            dataField: 'quantity',
+            text: 'QTY',
+            sort: true,
+            headerAlign: 'center',
+            style: {
+                textAlign: 'center',
+            }
+        },
+        {
+            dataField: 'quotedPrice',
+            text: 'Price',
+        },
+        {
+            dataField: 'productCondition',
+            text: 'Condition',
+        },
+        {
+            dataField: 'Product.productNumber',
+            text: 'Product Number',
+            sort: true,
+            style: {
+                maxWidth: 180
+            }
+        },
+        {
+            dataField: 'Product.altNumber1',
+            text: 'Alt 1',
+            sort: true,
+            style: {
+                maxWidth: 180
+            }
+        },
+        {
+            dataField: 'Product.altNumber2',
+            text: 'Alt 2',
+            sort: true,
+            style: {
+                maxWidth: 180
+            }
+        },
+        {
+            dataField: 'Product.altNumber3',
+            text: 'Alt 3',
+            sort: true,
+            style: {
+                maxWidth: 180
+            }
+        },
+        {
+            dataField: 'Product.altNumber4',
+            text: 'Alt 4',
+            sort: true,
+            style: {
+                maxWidth: 180
+            }
+        },
+        {
+            dataField: 'Product.brand',
+            text: 'Brand',
+            sort: true,
+            headerAlign: 'center',
+            style: {
+                textAlign: 'center'
+            }
+        },
+        {
+            dataField: 'Product.description',
+            text: 'Description',
+            sort: false,
+            style: {
+                maxWidth: 280
+            }
+        },
+        {
+            dataField: 'comment',
+            text: 'Comment',
+        },
+        {
+            dataField: 'edit',
+            text: 'Edit',
+            sort: false,
+            formatter: rankFormatterEdit,
+            headerAlign: 'center',
+        },
+        {
+            dataField: 'remove',
+            text: 'Delete',
+            sort: false,
+            formatter: rankFormatterRemove,
+            headerAlign: 'center',
+        },
+    ];
+
+    const getAllQuotedProducts = (quoteId: number) => {
+        setTimeout(async () => {
+            try {
+                const quotedProducts = await requestAllProductQuotesByQuoteId(quoteId);
+                console.log('Quoted Products: ', quotedProducts);
+                setQuotedProducts(quotedProducts);
+
+                let totalQuote = 0;
+                quotedProducts.forEach(element => {
+                    totalQuote += element.quotedPrice;
+                });
+                setTotalQuote(totalQuote);
+            } catch (err) {
+                console.log(err);
+            }
+        }, 400)
+    };
+    useEffect(() => {
+        if (props.selectedQuote.id !== undefined) {
+            getAllQuotedProducts(props.selectedQuote.id);
+        }
+    }, []);
     return (
         <div>
             <Modal backdrop="static" show={props.modalVisible} onHide={props.onClose} fullscreen={true}>
                 <Modal.Header style={{ background: '#212529', color: 'white', borderBottom: '1px solid rgb(61 66 70)' }} closeButton>
                     <Modal.Title>
                         <h2 style={{ verticalAlign: '', fontWeight: 300 }} >Edit Quote</h2>
-                        <p style={{ color: 'darkgray', fontSize: 18, fontWeight: 300 }}>Please enter quote information.</p>
+                        <p style={{ color: 'darkgray', fontSize: 18, fontWeight: 300 }}>Quoted products from this quote IDK what to put here.</p>
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body style={{ background: '#2c3034', color: 'white' }}>
@@ -54,81 +187,45 @@ const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) 
                             </div>
                             :
                             <Form className="container d-grid" >
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Product Number</Form.Label>
-                                    <Form.Control
-                                        id="product_number"
-                                        type="text"
-                                        placeholder="Product Number"
-                                        // value={quote.product_number}
-                                        // onChange={(e) => setQuote({ ...quote, product_number: (e.target.value) })}
-                                    />
-                                </Form.Group>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Product Type</Form.Label>
-                                    <Form.Control
-                                        id="product_type"
-                                        type="text"
-                                        placeholder="Product Type"
-                                        // value={quote.product_type}
-                                        // onChange={(e) => setQuote({ ...quote, product_type: (e.target.value) })}
-                                    />
-                                </Form.Group>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Brand</Form.Label>
-                                    <Form.Control
-                                        id="brand"
-                                        type="text"
-                                        placeholder="Brand"
-                                        // value={quote.brand}
-                                        // onChange={(e) => setQuote({ ...quote, brand: (e.target.value) })}
-                                    />
-                                </Form.Group>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Description</Form.Label>
-                                    <Form.Control
-                                        id="description"
-                                        type="text"
-                                        placeholder="Description"
-                                        // value={quote.description}
-                                        // onChange={(e) => setQuote({ ...quote, description: (e.target.value) })}
-                                    />
-                                </Form.Group>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Condition</Form.Label>
-                                    <Form.Select aria-label="Default select example"
-                                        // value={quote.condition}
-                                        // onChange={(e) => setQuote({ ...quote, condition: (e.target.value) })}
-                                    >
-                                        <option>Choose Condition</option>
-                                        <option value="New Factory Sealed">New Factory Sealed</option>
-                                        <option value="New Opened Box">New Opened Box</option>
-                                        <option value="Renew">Renew</option>
-                                        <option value="Refurbished">Refurbished</option>
-                                        <option value="Used">Used</option>
-                                        <option value="Damaged">Damaged</option>
-                                    </Form.Select>
-                                </Form.Group>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Quantity</Form.Label>
-                                    <Form.Control
-                                        id="quantity"
-                                        type="text"
-                                        placeholder="Quantity"
-                                        // value={quote.quantity}
-                                        // onChange={(e) => setQuote({ ...quote, quantity: Number(e.target.value) })}
-                                    />
-                                </Form.Group>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Price</Form.Label>
-                                    <Form.Control
-                                        id="price"
-                                        type="text"
-                                        placeholder="Price"
-                                        // value={quote.price}
-                                        // onChange={(e) => setQuote({ ...quote, price: Number(e.target.value) })}
-                                    />
-                                </Form.Group>
+                                <Row>
+                                    <Col>
+                                        <Form.Label style={{ fontWeight: 300, fontSize: 18 }}>Company Information</Form.Label>
+                                        <hr />
+                                        <div className="container" style={{ display: 'inline-grid' }}>
+                                            <Form.Label style={{ fontWeight: 300 }}>Company Type: {props.selectedCompany.type}</Form.Label>
+                                            <Form.Label style={{ fontWeight: 300 }}>Company Name: {props.selectedCompany.name}</Form.Label>
+                                            <Form.Label style={{ fontWeight: 300 }}>Company Rep: {props.selectedCompany.representative}</Form.Label>
+                                            <Form.Label style={{ fontWeight: 300 }}>Phone Number: {props.selectedCompany.phone}</Form.Label>
+                                            <Form.Label style={{ fontWeight: 300 }}>Email: {props.selectedCompany.email}</Form.Label>
+                                        </div>
+                                    </Col>
+                                    <br />
+                                    <br />
+                                    <Col>
+                                        <Form.Label style={{ fontWeight: 300, fontSize: 18 }}>Quote Information</Form.Label>
+                                        <hr />
+                                        <div className="container" style={{ display: 'inline-grid' }}>
+                                            <Form.Label style={{ fontWeight: 300 }}>Quoter: {props.selectedQuote?.User?.firstName} {props.selectedQuote?.User?.lastName}</Form.Label>
+                                            <Form.Label style={{ fontWeight: 300 }}>Date: {props.selectedQuote.dateQuoted}</Form.Label>
+                                            <Form.Label style={{ fontWeight: 300 }}>Total Quote: ${totalQuote}</Form.Label>
+                                        </div>
+                                    </Col>
+                                </Row>
+                                <br />
+                                <Button variant="dark" onClick={() => {  }}>
+                                    <Plus height="25" width="25" style={{ marginTop: -3, marginLeft: -10 }} />Add Product
+                                </Button>
+                                
+                                <hr />
+                                <BootstrapTable
+                                    bootstrap4
+                                    condensed
+                                    columns={column}
+                                    keyField="id"
+                                    data={quotedProducts}
+                                    classes="table table-dark table-hover table-striped"
+                                    noDataIndication="Table is Empty"
+                                />
                             </Form>
                         }
                     </div>
@@ -138,8 +235,7 @@ const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) 
                         <Button
                             variant="dark"
                             onClick={async () => {
-                                console.log('')
-                                //addProduct();
+                                console.log('');
                             }}>
                             Finish
                         </Button>

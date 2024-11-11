@@ -13,3 +13,25 @@ Eventually
 
 
 Figure out proper cookie life
+
+
+
+
+Quote By company to be completed
+1. Fix Search Bar Width
+2. Search History - Make this work
+3. Remove Quote
+4. Edit Quote
+5. Lazy Load Companies?
+
+Products
+1. Export to CSV? - Keep or Remove for  now
+2. Reserve inventory
+3. Edit Multiple inventory
+4. Remove  Multiple
+5. Edit inventory
+6. Remove inventory
+7. View Quotes
+8. Add Inventory
+9. Remove Product
+10. Lazy Load Lists?

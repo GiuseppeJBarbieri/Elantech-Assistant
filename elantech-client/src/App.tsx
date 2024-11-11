@@ -22,6 +22,7 @@ import { Outgoing } from './screens/Outgoing/Outgoing';
 import { BrokerBin } from './screens/BrokerBin/BrokerBin';
 
 import NotFound from './screens/NotFound/NotFound';
+import AuthGuard from './utils/AuthGuard';
 
 interface AppProps {
   width?: string;
@@ -36,19 +37,19 @@ const App: React.FunctionComponent<AppProps> = (props) => {
         {loggedIn && <TopToolBar setPanelVisible={setPanelVisible} />}
         {loggedIn && <SideNavBar panelVisible={panelVisible} setPanelVisible={setPanelVisible} />}
       
-          <Switch>
-            {/* Initial route based on if currently logged in */}
-            <Route exact path="/" render={() => {
-              return (
-                loggedIn ?
-                  <Redirect to="/home" /> :
-                  <Redirect to="/login" />
-              );
-            }} />
+        <Switch>
+          {/* Initial route based on if currently logged in */}
+          <Route exact path="/" render={() => {
+            return (
+              loggedIn ?
+                <Redirect to="/home" /> :
+                <Redirect to="/login" />
+            );
+          }} />
 
-            <Route exact path="/login" render={() => <Login loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
+          <Route exact path="/login" render={() => <Login loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
+          <AuthGuard>
             <Route exact path="/home" render={() => <Home loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
-
             <Route exact path="/forgotPassword" component={ForgotPassword} />
             <Route exact path="/register" component={Register} />
             <Route exact path="/quotes" component={Quotes} />
@@ -57,11 +58,9 @@ const App: React.FunctionComponent<AppProps> = (props) => {
             <Route exact path="/outgoing" component={Outgoing} />
             <Route exact path="/brokerBin" component={BrokerBin} />
             <Route exact path="/settings" render={() => <Settings loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
-
-            <Route component={NotFound} />
-            
-          </Switch>
-        
+          </AuthGuard>
+          <Route component={NotFound} />
+        </Switch>
       </div>
     </HashRouter>
   );

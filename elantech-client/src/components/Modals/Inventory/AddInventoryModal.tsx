@@ -27,12 +27,12 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
         id: 0,
         productId: props.selectedProduct.id || 0,
         removedInventoryId: undefined,
-        poId: undefined,
+        purchaseOrderId: undefined,
         serialNumber: '',
         condition: 'Choose Condition',
         warrantyExpiration: warrantyDate,
-        isTested: false,
-        dateTested: dateTested,
+        tested: false,
+        testedDate: dateTested,
         comment: '',
         location: '',
     });
@@ -127,7 +127,7 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
     useEffect(() => {
         setWarrantyDate(moment(new Date()).format('YYYY-MM-DD'));
         setDateTested(moment(new Date()).format('YYYY-MM-DD'));
-    });
+    }, []);
         
     return (
         <div>

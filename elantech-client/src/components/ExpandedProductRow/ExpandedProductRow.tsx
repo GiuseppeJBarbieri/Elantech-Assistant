@@ -157,7 +157,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
             getAllInventory(props.selectedProduct.id);
             getAllQuotedProducts(props.selectedProduct.id);
         }
-    }, []);
+    });
     return (
         <div style={{ padding: 20 }} className='expandedProductRow'>
             <Navbar bg="dark" variant="dark">
