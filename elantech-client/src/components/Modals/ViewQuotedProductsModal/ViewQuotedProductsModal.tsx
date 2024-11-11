@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { HTMLAttributes, FunctionComponent } from 'react';
+import React, { HTMLAttributes, FunctionComponent, useEffect } from 'react';
 import { useState } from 'react';
 import { Modal, Spinner, Form, Button, Col, Row } from 'react-bootstrap';
 import BootstrapTable, { ColumnDescription } from 'react-bootstrap-table-next';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import ICompany from '../../../types/ICompany';
 import IQuote from '../../../types/IQuote';
-// import IQuotedProduct from '../../../types/IQuotedProduct';
-// import { requestGetQuotedProductsByQuoteId } from '../../../utils/Requests';
+import IQuotedProduct from '../../../types/IQuotedProduct';
+import { requestAllProductQuotesByQuoteId } from '../../../utils/Requests';
 
 interface ViewQuotedProductsModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
@@ -17,8 +17,9 @@ interface ViewQuotedProductsModalProps extends RouteComponentProps, HTMLAttribut
 }
 
 const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModalProps> = (props) => {
-    // const [setQuotedProducts] = useState<IQuotedProduct[]>([]);
+    const [quotedProducts, setQuotedProducts] = useState<IQuotedProduct[]>([]);
     const [isSaving] = useState(false);
+    const [totalQuote, setTotalQuote] = useState<number>(0);
     const column: ColumnDescription<any, any>[] = [
         {
             dataField: 'quantity',
@@ -30,7 +31,15 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
             }
         },
         {
-            dataField: 'productNumber',
+            dataField: 'quotedPrice',
+            text: 'Price',
+        },
+        {
+            dataField: 'productCondition',
+            text: 'Condition',
+        },
+        {
+            dataField: 'Product.productNumber',
             text: 'Product Number',
             sort: true,
             style: {
@@ -38,7 +47,7 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
             }
         },
         {
-            dataField: 'alt_1',
+            dataField: 'Product.altNumber1',
             text: 'Alt 1',
             sort: true,
             style: {
@@ -46,7 +55,7 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
             }
         },
         {
-            dataField: 'alt_2',
+            dataField: 'Product.altNumber2',
             text: 'Alt 2',
             sort: true,
             style: {
@@ -54,7 +63,7 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
             }
         },
         {
-            dataField: 'alt_3',
+            dataField: 'Product.altNumber3',
             text: 'Alt 3',
             sort: true,
             style: {
@@ -62,7 +71,7 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
             }
         },
         {
-            dataField: 'alt_4',
+            dataField: 'Product.altNumber4',
             text: 'Alt 4',
             sort: true,
             style: {
@@ -70,7 +79,7 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
             }
         },
         {
-            dataField: 'brand',
+            dataField: 'Product.brand',
             text: 'Brand',
             sort: true,
             headerAlign: 'center',
@@ -79,150 +88,40 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
             }
         },
         {
-            dataField: 'description',
+            dataField: 'Product.description',
             text: 'Description',
             sort: false,
             style: {
                 maxWidth: 280
             }
-        }
-    ];
-    const fake_data = [
-        {
-            quantity: 130,
-            product_number: '804331-B21',
-            product_type: 'Raid Controller',
-            brand: 'HPE',
-            description: 'HPE Smart Array P408i-a SR Gen10 Controller',
-            last_added: '2022-01-29',
-            alt_1: '99999999',
-            alt_2: '809461-001',
-            alt_3: '875056-002',
-            alt_4: '871820-003',
-            ebay_link: 'https://www.ebay.com/itm/294851127729?hash=item44a67f29b1:g:nnYAAOSw6RdiJlYX',
-            website_link: 'https://elantechit.com/hpe-804331-b21',
-            quick_specs: 'https://www.hpe.com/psnow/doc/a00008200enw?jumpid=in_lit-psnow-red',
-            related_tags: 'DL380G10',
         },
         {
-            quantity: 130,
-            product_number: 'search 2',
-            product_type: 'CPU',
-            brand: 'Dell',
-            description: 'HPE Smart Array P408i-a SR Gen10 Controller',
-            last_added: '2022-01-29',
-            alt_1: '88888888',
-            alt_2: '809461-001',
-            alt_3: '875056-001',
-            alt_4: '871820-001',
-            ebay_link: 'https://www.ebay.com/itm/294851127729?hash=item44a67f29b1:g:nnYAAOSw6RdiJlYX',
-            website_link: 'https://elantechit.com/hpe-804331-b21',
-            quick_specs: 'https://www.hpe.com/psnow/doc/a00008200enw?jumpid=in_lit-psnow-red',
-            related_tags: 'DL380G10',
-        },
-        {
-            quantity: 130,
-            product_number: 'Search 1',
-            product_type: 'Memory',
-            brand: 'Lenovo',
-            description: 'HPE Smart Array P408i-a SR Gen10 Controller',
-            last_added: '2022-01-29',
-            alt_1: '7777777777',
-            alt_2: '809461-001',
-            alt_3: '875056-001',
-            alt_4: '871820-001',
-            ebay_link: 'https://www.ebay.com/itm/294851127729?hash=item44a67f29b1:g:nnYAAOSw6RdiJlYX',
-            website_link: 'https://elantechit.com/hpe-804331-b21',
-            quick_specs: 'https://www.hpe.com/psnow/doc/a00008200enw?jumpid=in_lit-psnow-red',
-            related_tags: 'DL380G10',
-        },
-        {
-            quantity: 130,
-            product_number: 'text 1',
-            product_type: 'SSD',
-            brand: 'IBM',
-            description: 'HPE Smart Array P408i-a SR Gen10 Controller',
-            last_added: '2022-01-29',
-            alt_1: '877946-001',
-            alt_2: '809461-001',
-            alt_3: '875056-001',
-            alt_4: '871820-001',
-            ebay_link: 'https://www.ebay.com/itm/294851127729?hash=item44a67f29b1:g:nnYAAOSw6RdiJlYX',
-            website_link: 'https://elantechit.com/hpe-804331-b21',
-            quick_specs: 'https://www.hpe.com/psnow/doc/a00008200enw?jumpid=in_lit-psnow-red',
-            related_tags: 'DL380G10',
-        },
-        {
-            quantity: 130,
-            product_number: 'text 2',
-            product_type: 'HDD',
-            brand: 'Cisco',
-            description: 'HPE Smart Array P408i-a SR Gen10 Controller',
-            last_added: '2022-01-29',
-            alt_1: '877946-001',
-            alt_2: '809461-001',
-            alt_3: '875056-001',
-            alt_4: '871820-001',
-            ebay_link: 'https://www.ebay.com/itm/294851127729?hash=item44a67f29b1:g:nnYAAOSw6RdiJlYX',
-            website_link: 'https://elantechit.com/hpe-804331-b21',
-            quick_specs: 'https://www.hpe.com/psnow/doc/a00008200enw?jumpid=in_lit-psnow-red',
-            related_tags: 'DL380G10',
-        },
-        {
-            quantity: 130,
-            product_number: 'Apples',
-            product_type: 'Raid Controller',
-            brand: 'HPE',
-            description: 'HPE Smart Array P408i-a SR Gen10 Controller',
-            last_added: '2022-01-29',
-            alt_1: '877946-001',
-            alt_2: '809461-001',
-            alt_3: '875056-001',
-            alt_4: '871820-001',
-            ebay_link: 'https://www.ebay.com/itm/294851127729?hash=item44a67f29b1:g:nnYAAOSw6RdiJlYX',
-            website_link: 'https://elantechit.com/hpe-804331-b21',
-            quick_specs: 'https://www.hpe.com/psnow/doc/a00008200enw?jumpid=in_lit-psnow-red',
-            related_tags: 'DL380G10',
-        },
-        {
-            quantity: 130,
-            product_number: 'Oranges',
-            product_type: 'Raid Controller',
-            brand: 'HPE',
-            description: 'HPE Smart Array P408i-a SR Gen10 Controller',
-            last_added: '2022-01-29',
-            alt_1: '877946-001',
-            alt_2: '809461-001',
-            alt_3: '875056-001',
-            alt_4: '871820-001',
-            ebay_link: 'https://www.ebay.com/itm/294851127729?hash=item44a67f29b1:g:nnYAAOSw6RdiJlYX',
-            website_link: 'https://elantechit.com/hpe-804331-b21',
-            quick_specs: 'https://www.hpe.com/psnow/doc/a00008200enw?jumpid=in_lit-psnow-red',
-            related_tags: 'DL380G10',
-        },
-        {
-            quantity: 130,
-            product_number: 'Pears',
-            product_type: 'Raid Controller',
-            brand: 'HPE',
-            description: 'HPE Smart Array P408i-a SR Gen10 Controller',
-            last_added: '2022-01-29',
-            alt_1: '877946-001',
-            alt_2: '809461-001',
-            alt_3: '875056-001',
-            alt_4: '871820-001',
-            ebay_link: 'https://www.ebay.com/itm/294851127729?hash=item44a67f29b1:g:nnYAAOSw6RdiJlYX',
-            website_link: 'https://elantechit.com/hpe-804331-b21',
-            quick_specs: 'https://www.hpe.com/psnow/doc/a00008200enw?jumpid=in_lit-psnow-red',
-            related_tags: 'DL380G10',
+            dataField: 'comment',
+            text: 'Comment',
         },
     ];
-    // const getQuotedProducts = async (quoteId: number) => {
-    //     setQuotedProducts(await requestGetQuotedProductsByQuoteId(props.selectedQuote.quoteId));
-    // }
-    // useEffect(() => {
+    const getAllQuotedProducts = (quoteId: number) => {
+        setTimeout(async () => {
+            try {
+                const quotedProducts = await requestAllProductQuotesByQuoteId(quoteId);
+                console.log('Quoted Products: ', quotedProducts);
+                setQuotedProducts(quotedProducts);
 
-    // })
+                let totalQuote = 0;
+                quotedProducts.forEach(element => {
+                    totalQuote += element.quotedPrice;
+                });
+                setTotalQuote(totalQuote);
+            } catch (err) {
+                console.log(err);
+            }
+        }, 400)
+    };
+    useEffect(() => {
+        if (props.selectedQuote.id !== undefined) {
+            getAllQuotedProducts(props.selectedQuote.id);
+        }
+    }, []);
     return (
         <div>
             <Modal backdrop="static" show={props.modalVisible} onHide={props.onClose} fullscreen={true}>
@@ -252,11 +151,11 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
                                         <Form.Label style={{ fontWeight: 300, fontSize: 18 }}>Company Information</Form.Label>
                                         <hr />
                                         <div className="container" style={{ display: 'inline-grid' }}>
-                                            <Form.Label style={{ fontWeight: 300 }}>Company Type: Broker</Form.Label>
-                                            <Form.Label style={{ fontWeight: 300 }}>Company Name: Kings Collectables</Form.Label>
-                                            <Form.Label style={{ fontWeight: 300 }}>Company Rep: Giuseppe</Form.Label>
-                                            <Form.Label style={{ fontWeight: 300 }}>Phone Number: 631-278-8517</Form.Label>
-                                            <Form.Label style={{ fontWeight: 300 }}>Email: giuseppe@elantechus.com</Form.Label>
+                                            <Form.Label style={{ fontWeight: 300 }}>Company Type: {props.selectedCompany.type}</Form.Label>
+                                            <Form.Label style={{ fontWeight: 300 }}>Company Name: {props.selectedCompany.name}</Form.Label>
+                                            <Form.Label style={{ fontWeight: 300 }}>Company Rep: {props.selectedCompany.representative}</Form.Label>
+                                            <Form.Label style={{ fontWeight: 300 }}>Phone Number: {props.selectedCompany.phone}</Form.Label>
+                                            <Form.Label style={{ fontWeight: 300 }}>Email: {props.selectedCompany.email}</Form.Label>
                                         </div>
                                     </Col>
                                     <br />
@@ -265,10 +164,9 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
                                         <Form.Label style={{ fontWeight: 300, fontSize: 18 }}>Quote Information</Form.Label>
                                         <hr />
                                         <div className="container" style={{ display: 'inline-grid' }}>
-                                            <Form.Label style={{ fontWeight: 300 }}>Quoter: Giuseppe</Form.Label>
-                                            <Form.Label style={{ fontWeight: 300 }}>Date: 04-29-2022</Form.Label>
-                                            <Form.Label style={{ fontWeight: 300 }}>Time: 4:06 PM</Form.Label>
-                                            <Form.Label style={{ fontWeight: 300 }}>Total Quote: $2,500.00</Form.Label>
+                                            <Form.Label style={{ fontWeight: 300 }}>Quoter: {props.selectedQuote?.User?.firstName} {props.selectedQuote?.User?.lastName}</Form.Label>
+                                            <Form.Label style={{ fontWeight: 300 }}>Date: {props.selectedQuote.dateQuoted}</Form.Label>
+                                            <Form.Label style={{ fontWeight: 300 }}>Total Quote: ${totalQuote}</Form.Label>
                                         </div>
                                     </Col>
                                 </Row>
@@ -278,11 +176,10 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
                                     bootstrap4
                                     condensed
                                     columns={column}
-                                    keyField="serial_number"
-                                    data={fake_data}
+                                    keyField="id"
+                                    data={quotedProducts}
                                     classes="table table-dark table-hover table-striped"
                                     noDataIndication="Table is Empty"
-
                                 />
                             </Form>
                         }

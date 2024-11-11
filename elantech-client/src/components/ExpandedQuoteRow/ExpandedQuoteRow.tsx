@@ -12,6 +12,7 @@ import { requestAllQuotesByCompanyID } from '../../utils/Requests';
 import { AddMultiQuoteModal } from '../Modals/Quote/AddMultiQuoteModal';
 import { EditQuoteModal } from '../Modals/Quote/EditQuoteModal';
 import { ViewQuotedProductsModal } from '../Modals/ViewQuotedProductsModal/ViewQuotedProductsModal';
+import { defaultQuote } from '../../constants/Defaults';
 
 interface ExpandedQuoteRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     selectedCompany: ICompany;
@@ -21,10 +22,10 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
     const [addQuoteSwitch, setAddQuoteSwitch] = useState(false);
     const [editQuoteSwitch, setEditQuoteSwitch] = useState(false);
     const [quotes, setQuotes] = useState<IQuote[]>([]);
-    const [selectedQuote] = useState<IQuotedProduct>();
+    const [selectedQuote, setSelectedQuote] = useState<IQuote>(defaultQuote);
     const [viewMoreSwitch, setViewMoreSwitch] = useState(false);
 
-    const rankFormatterAdd = (_: any, _data: any, _index: any) => {
+    const rankFormatterAdd = (_: any, _data: IQuote, _index: any) => {
         return (
             <div
                 style={{
@@ -43,7 +44,7 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
             </div>
         );
     };
-    const rankFormatterViewMore = (_: any, _data: any, _index: any) => {
+    const rankFormatterViewMore = (hm: any, _data: any, _index: any) => {
         return (
             <div
                 style={{
@@ -56,6 +57,16 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
                     e.stopPropagation()
                 }} >
                 <div onClick={(_e) => {
+                    const quote: IQuote = {
+                        id: _data.id,
+                        companyId: _data.companyId,
+                        userId: _data.userId,
+                        dateQuoted: _data.dateQuoted,
+                        sold: _data.sold,
+                        User: { firstName: _data.user.firstName, lastName: _data.user.lastName },
+                        QuotedProducts: _data.quotedProducts
+                    }
+                    setSelectedQuote(quote);
                     setViewMoreSwitch(true);
                 }}
                 >
@@ -235,7 +246,7 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
                 <div className='modal-dialog'>
                     <EditQuoteModal
                         modalVisible={editQuoteSwitch}
-                        selectedQuote={selectedQuote}
+                        selectedQuote={undefined}
                         onClose={async () => {
                             setEditQuoteSwitch(false);
                         }}
@@ -251,7 +262,7 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
                             setViewMoreSwitch(false);
                         }}
                         selectedCompany={props.selectedCompany}
-                        selectedQuote={selectedQuote as unknown as IQuote} />
+                        selectedQuote={selectedQuote} />
                 </div>
             }
         </ div>

@@ -12,6 +12,15 @@ interface IQuotedProduct {
         productType: string,
         brand: string,
         description: string
+        altNumber1?: string;
+        altNumber2?: string;
+        altNumber3?: string;
+        altNumber4?: string;
+        altNumber5?: string;
+        altNumber6?: string;
+        ebayUrl?: string;
+        websiteUrl?: string;
+        quickSpecsUrl?: string;
     };
     Quote?: {
         dateQuoted: string,

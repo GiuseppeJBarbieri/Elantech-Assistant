@@ -47,7 +47,9 @@ router.get('/:id', authenticationMiddleware, validate(QuotedProductsValidation.G
 /**
 * This route will fetch all QuotedProducts by quote id
 */
-router.get('/quote/:quoteId', authenticationMiddleware, validate(QuotedProductsValidation.GetQuotedProductByQuoteId),
+router.get('/quote/quotedProduct/:quoteId',
+  authenticationMiddleware,
+  validate(QuotedProductsValidation.GetQuotedProductByQuoteId),
   (req, res, next) => {
     logger.info('GET QUOTED PRODUCT BY QUOTE ID');
 
@@ -58,7 +60,7 @@ router.get('/quote/:quoteId', authenticationMiddleware, validate(QuotedProductsV
 /**
  * This route will get quotes in ProductQuotesTable Format
  */
-router.get('/quote/productQuotes/:productId',
+router.get('/quote/quotedProduct/:productId',
   authenticationMiddleware,
   validate(QuotedProductsValidation.GetProductQuotesTable),
   (req, res, next) => {

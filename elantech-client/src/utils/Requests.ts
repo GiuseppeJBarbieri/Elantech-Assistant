@@ -58,6 +58,9 @@ export const requestDeleteCompany = async (id: number): Promise<any> => {
 export const requestAllProductQuotes = async (): Promise<any> => {
     return undefined;
 }
+export const requestAllProductQuotesByQuoteId = async (quoteId: number): Promise<IQuotedProduct[]> => {
+    return axios.get(`${BASE_API_URL}${ROUTES.QUOTED_PRODUCTS}/${ROUTES.QUOTE}/${ROUTES.QUOTED_PRODUCTS}/${quoteId}`, { withCredentials: true }).then((response) => response?.data?.payload);
+}
 
 // QUOTES
 export const requestAllQuotesByCompanyID = async (companyId: number): Promise<IQuote[]> => {

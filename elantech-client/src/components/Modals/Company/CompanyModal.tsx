@@ -29,9 +29,9 @@ const CompanyModalComponent: FunctionComponent<CompanyModalProps> = (props) => {
         setTimeout(async () => {
             try {
                 props.modalSwitch === 0 ?
-                await requestAddCompany(companyObj)
-                :
-                await requestUpdateCompany(companyObj);
+                    await requestAddCompany(companyObj)
+                    :
+                    await requestUpdateCompany(companyObj);
                 setIsSaving(false);
                 props.getAllCompanies();
                 props.onClose();
@@ -43,7 +43,9 @@ const CompanyModalComponent: FunctionComponent<CompanyModalProps> = (props) => {
         }, 500);
     };
     const submit = () => {
-        if (company.name === '' || company.type === '' || company.representative === '') {
+        console.log(company.name, company.type, company.representative);
+        if (company.name == '' || company.type == '' || company.representative == '' 
+            || company.name == undefined || company.type == undefined || company.representative == undefined) {
             setAlert({ ...alert, label: 'Please enter required information.', show: true });
             setTimeout(() => setAlert({ ...alert, show: false }), 5000);
         } else {

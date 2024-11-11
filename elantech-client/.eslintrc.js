@@ -14,6 +14,8 @@ module.exports = {
   ],
   rules: {
     '@typescript-eslint/no-non-null-assertion': 'off',
+    '@typescript-eslint/no-explicit-any': 'true',
+    '@typescript-eslint/no-unused-vars': 'true',
     quotes: ['error', 'single'],
     'react/prop-types': 'off', // In favor of strong typing - no need to dedupe
   },
