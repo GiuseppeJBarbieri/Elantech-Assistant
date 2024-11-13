@@ -67,6 +67,18 @@ export default {
     }
   },
 
+  async UpdateQuotedProducts(quote: IQuote): Promise<IHTTPResponse> {
+    try {
+      QuoteRepository.UpdateQuotedProducts(quote);
+
+      return {
+        ...constants.HTTP.SUCCESS.UPDATE,
+      };
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  },
+
   async Delete(id: number) {
     try {
       const affectedRowCount = await QuoteRepository.Delete(id);

@@ -121,7 +121,7 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
         if (props.selectedQuote.id !== undefined) {
             getAllQuotedProducts(props.selectedQuote.id);
         }
-    });
+    }, []);
     return (
         <div>
             <Modal backdrop="static" show={props.modalVisible} onHide={props.onClose} fullscreen={true}>

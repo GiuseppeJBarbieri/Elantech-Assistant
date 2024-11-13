@@ -28,7 +28,6 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
   const [selectedCompany, setSelectedCompany] = useState<ICompany>(defaultCompany);
   const [searchString] = useState<string>('');
   const [isSearching] = useState(false);
-  const [quotes, setQuotes] = useState<IQuote[]>([]);
 
   const rankFormatterRemove = (_: any, data: any, index: any) => {
     return (
@@ -183,7 +182,7 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
                     <SpinnerBlock />
                     :
                     <div>
-                      <div className='d-flex justify-content-between'>
+                      <div className='d-flex' style={{width: 'max-content'}}>
                         <InputGroup className="mb-1">
                           <InputGroup.Text id="basic-addon2">
                             <Search />

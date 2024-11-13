@@ -128,4 +128,52 @@ export default {
     }
   },
 
+  async UpdateQuotedProducts(quote: IQuote): Promise<void> {
+    const transaction: Transaction = await db.sequelize.transaction();
+    try {
+      // Fetch existing quoted products
+      const existingQuotedProducts = await db.quotedProduct.findAll({
+        where: {
+          quoteId: quote.id,
+        },
+        transaction,
+      });
+
+      // Create a map of existing products by ID for quick lookup
+      const existingQuotedProductsMap = new Map(
+        existingQuotedProducts.map((quotedProduct: IQuotedProduct) => [quotedProduct.id, quotedProduct]),
+      );
+
+      // Iterate over the provided quoted products list
+      existingQuotedProductsMap.forEach(async (quotedProduct: IQuotedProduct) => {
+        if (quotedProduct.id && existingQuotedProductsMap.has(quotedProduct.id)) {
+          // Update existing product
+          await db.quotedProduct.update(quotedProduct, {
+            where: { id: quotedProduct.id },
+            transaction,
+          });
+          existingQuotedProductsMap.delete(quotedProduct.id);
+        } else {
+          // Create new product
+          await db.quotedProduct.create({ ...quotedProduct, quoteId: quote.id }, { transaction });
+        }
+      });
+
+      // Delete remaining products that were not in the provided list
+      existingQuotedProductsMap.forEach(async (quotedProduct: IQuotedProduct) => {
+        await db.quotedProduct.destroy({
+          where: { id: quotedProduct.id },
+          transaction,
+        });
+      });
+      // Commit the transaction
+      await transaction.commit();
+    } catch (err) {
+      // Rollback the transaction in case of error
+      await transaction.rollback();
+      standardError(`${err.name} ${err.message}`);
+      throw repoErr;
+    }
+  },
+
 };

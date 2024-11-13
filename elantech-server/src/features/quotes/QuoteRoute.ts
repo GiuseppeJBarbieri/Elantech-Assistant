@@ -73,6 +73,20 @@ router.put('/', authenticationMiddleware, validate(QuoteValidation.PutQuote),
   });
 
 /**
+* This route will update a quote
+*/
+router.put('/quotedProduct', authenticationMiddleware, validate(QuoteValidation.PutQuoteAndProducts),
+  (req, res, next) => {
+    logger.info('PUT QUOTE WITH QUOTED PRODUCTS');
+
+    QuoteController.UpdateQuotedProducts(req.body)
+      .then((response) => {
+        res.status(201).json(response);
+      })
+      .catch((err) => next(err));
+  });
+
+/**
 * This route will delete a quote by id
 */
 router.delete('/:id', authenticationMiddleware, validate(QuoteValidation.DeleteQuote),

@@ -69,6 +69,9 @@ export const requestAllQuotesByCompanyID = async (companyId: number): Promise<IQ
 export const requestAddQuote = async (quote: IQuote): Promise<any> => {
     return axios.post(`${BASE_API_URL}${ROUTES.QUOTE}`, quote, { withCredentials: true }).then((response) => response);
 }
+export const requestUpdateQuoteAndQuotedProducts = async (quote: IQuote): Promise<any> => {
+    return axios.put(`${BASE_API_URL}${ROUTES.QUOTE}/${ROUTES.QUOTED_PRODUCTS}`, quote, { withCredentials: true }).then((response) => response);
+}
 
 // QUOTED PRODUCTS
 export const requestAddQuotedProduct = async (quotedProduct: IQuotedProduct): Promise<any> => {

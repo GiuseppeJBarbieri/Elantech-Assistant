@@ -1,12 +1,20 @@
 import React, { HTMLAttributes, FunctionComponent, useState, useEffect } from 'react';
-import { Modal, Spinner, Form, Button, Col, Row } from 'react-bootstrap';
+import { Modal, Spinner, Form, Button, Col, Row, InputGroup } from 'react-bootstrap';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import IQuotedProduct from '../../../types/IQuotedProduct';
-import BootstrapTable, { ColumnDescription } from 'react-bootstrap-table-next';
+import BootstrapTable, { ColumnDescription, SelectRowProps } from 'react-bootstrap-table-next';
 import ICompany from '../../../types/ICompany';
 import IQuote from '../../../types/IQuote';
-import { requestAllProductQuotesByQuoteId } from '../../../utils/Requests';
-import { Pencil, Plus, Trash } from 'react-bootstrap-icons';
+import { requestAllProductQuotesByQuoteId, requestAllProducts, requestUpdateQuoteAndQuotedProducts } from '../../../utils/Requests';
+import { Plus, Search, Trash } from 'react-bootstrap-icons';
+import paginationFactory from 'react-bootstrap-table2-paginator';
+import ToolkitProvider from 'react-bootstrap-table2-toolkit';
+import { DebounceInput } from 'react-debounce-input';
+import { conditionList } from '../../../constants/Options';
+import IProduct from '../../../types/IProduct';
+import { CustomAlert } from '../../Alerts/CustomAlert';
+import { SpinnerBlock } from '../../LoadingAnimation/SpinnerBlock';
+import { defaultAlert } from '../../../constants/Defaults';
 
 interface EditQuoteModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
@@ -16,35 +24,61 @@ interface EditQuoteModalProps extends RouteComponentProps, HTMLAttributes<HTMLDi
 }
 
 const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) => {
+    const [alert, setAlert] = useState(defaultAlert);
     const [quotedProducts, setQuotedProducts] = useState<IQuotedProduct[]>([]);
     const [isSaving] = useState(false);
     const [totalQuote, setTotalQuote] = useState<number>(0);
-    const [showEditProductArea, setShowEditProductArea] = useState(false);
-    const rankFormatterEdit = (_: any, data: any, _index: any) => {
+    const [condition, setCondition] = useState('');
+    const [quantity, setQuantity] = useState(0);
+    const [price, setPrice] = useState(0);
+    const [comment] = useState('');
+    const [products, setProducts] = useState<IProduct[]>([]);
+    const [searchString] = useState<string>('');
+    const [isSearching] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState<IProduct>({});
+    const customTotal = (from: number, to: number, size: number) => {
+        return (
+            <span className="react-bootstrap-table-pagination-total"
+                style={{ marginLeft: 5 }}>
+                {size} Results
+            </span>)
+    };
+    const options = {
+        showTotal: true,
+        paginationTotalRenderer: customTotal,
+    };
+    const selectRow: SelectRowProps<IProduct> = {
+        mode: 'radio',
+        clickToSelect: true,
+        onSelect: (row: IProduct, isSelect: boolean) => {
+            if (isSelect === true) {
+                setSelectedProduct(row);
+            }
+        },
+    };
+    const rankFormatterRemove = (_: unknown, data: IQuotedProduct) => {
         return (
             <div
                 style={{
                     textAlign: 'center',
                     cursor: 'pointer',
-                    lineHeight: 'normal',
-                    zIndex: 0
+                    lineHeight: 'normal'
                 }}
                 onClick={(e) => {
                     e.stopPropagation()
+                }} >
+                <div onClick={() => {
+                    setQuotedProducts(quotedProducts.filter(quotedProduct => { return quotedProduct.id !== data.id }));
                 }}>
-                <div onClick={(_e) => {
-                }}>
-                    <Pencil style={{ fontSize: 20, color: 'white' }} />
+                    <Trash style={{ fontSize: 20, color: 'white' }} />
                 </div>
             </div>
         );
     };
-    const rankFormatterRemove = (_: any, _data: any, _index: any) => {
-        return (
-            <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }} onClick={() => console.log('Remove Column')} >
-                <Trash style={{ fontSize: 20, color: 'white' }} />
-            </div>
-        );
+    const handleSearch = (input: string, props: { searchText?: string; onSearch: any; onClear?: () => void; }) => {
+        if (input !== undefined) {
+            props.onSearch(input);
+        }
     };
     const column: ColumnDescription<any, any>[] = [
         {
@@ -126,13 +160,6 @@ const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) 
             text: 'Comment',
         },
         {
-            dataField: 'edit',
-            text: 'Edit',
-            sort: false,
-            formatter: rankFormatterEdit,
-            headerAlign: 'center',
-        },
-        {
             dataField: 'remove',
             text: 'Delete',
             sort: false,
@@ -140,7 +167,51 @@ const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) 
             headerAlign: 'center',
         },
     ];
-
+    const product_column: ColumnDescription<any, any>[] = [
+        {
+            dataField: 'quantity',
+            text: 'QTY',
+            sort: true,
+            headerAlign: 'center',
+        },
+        {
+            dataField: 'productNumber',
+            text: 'Product Number',
+            sort: true,
+        },
+        {
+            dataField: 'altNumber1',
+            text: 'Alt 1',
+            sort: true,
+        },
+        {
+            dataField: 'altNumber2',
+            text: 'Alt 2',
+            sort: true,
+        },
+        {
+            dataField: 'altNumber3',
+            text: 'Alt 3',
+            sort: true,
+        },
+        {
+            dataField: 'productType',
+            text: 'Type',
+            sort: true,
+            headerAlign: 'center',
+        },
+        {
+            dataField: 'brand',
+            text: 'Brand',
+            sort: true,
+            headerAlign: 'center',
+        },
+        {
+            dataField: 'description',
+            text: 'Description',
+            sort: false,
+        },
+    ];
     const getAllQuotedProducts = (quoteId: number) => {
         setTimeout(async () => {
             try {
@@ -158,11 +229,83 @@ const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) 
             }
         }, 400)
     };
+    const getAllProducts = async () => {
+        setProducts(await requestAllProducts());
+    };
+    const addQuotedProductToTable = () => {
+        if (JSON.stringify(selectedProduct) === '{}') {
+            setAlert({ ...alert, label: 'Please select a product.', show: true });
+            setTimeout(() => setAlert({ ...alert, show: false }), 5000);
+        }
+        else if (condition === '' || quantity === 0 || price === 0) {
+            const errorMessage = JSON.stringify(selectedProduct) === '{}'
+                ? 'Please select a product.'
+                : condition === ''
+                    ? 'Please select a condition.'
+                    : quantity === 0
+                        ? 'Please enter a quantity.'
+                        : price === 0
+                            ? 'Please enter a price.'
+                            : '';
+            setAlert({ ...alert, label: errorMessage, show: true });
+            setTimeout(() => setAlert({ ...alert, show: false }), 5000);
+        } else {
+            let found = false;
+            quotedProducts.forEach(product => {
+                if (product.productId === selectedProduct.id &&
+                    product.productCondition.toLocaleLowerCase() === condition.toLocaleLowerCase()) {
+                    setAlert({ ...alert, label: 'Cannot quote another product with the same condition.', show: true });
+                    setTimeout(() => setAlert({ ...alert, show: false }), 5000);
+                    found = true;
+                }
+            });
+            if (!found) {
+                const quotedProduct: IQuotedProduct = {
+                    id: (Math.random() * 10000),
+                    quoteId: 0,
+                    productId: selectedProduct.id as number,
+                    quantity: quantity,
+                    quotedPrice: price,
+                    productCondition: condition,
+                    comment: comment,
+                    Product: {
+                        productNumber: selectedProduct.productNumber || '',
+                        productType: selectedProduct.productType || '',
+                        brand: selectedProduct.brand || '',
+                        description: selectedProduct.description || '',
+                    },
+                }
+                quotedProducts.push(quotedProduct);
+                setQuotedProducts(JSON.parse(JSON.stringify(quotedProducts)));
+                setTotalQuote(totalQuote + price);
+            }
+        }
+    };
+    const finished = async () => {
+        const quotedProductsCopy: IQuotedProduct[] = [];
+
+        quotedProducts.forEach(product => {
+            delete product.Product;
+            delete product.Quote;
+            quotedProductsCopy.push(product);
+        });
+
+        const quote: IQuote = {
+            id: props.selectedQuote.id,
+            companyId: props.selectedQuote.companyId,
+            userId: props.selectedQuote.userId,
+            dateQuoted: props.selectedQuote.dateQuoted,
+            sold: props.selectedQuote.sold,
+            QuotedProducts: quotedProductsCopy,
+        }
+        await requestUpdateQuoteAndQuotedProducts(quote)
+    }
     useEffect(() => {
         if (props.selectedQuote.id !== undefined) {
             getAllQuotedProducts(props.selectedQuote.id);
         }
-    }, []);
+        getAllProducts();
+    }, [setProducts]);
     return (
         <div>
             <Modal backdrop="static" show={props.modalVisible} onHide={props.onClose} fullscreen={true}>
@@ -211,12 +354,6 @@ const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) 
                                         </div>
                                     </Col>
                                 </Row>
-                                <br />
-                                <Button variant="dark" onClick={() => {  }}>
-                                    <Plus height="25" width="25" style={{ marginTop: -3, marginLeft: -10 }} />Add Product
-                                </Button>
-                                
-                                <hr />
                                 <BootstrapTable
                                     bootstrap4
                                     condensed
@@ -226,6 +363,126 @@ const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) 
                                     classes="table table-dark table-hover table-striped"
                                     noDataIndication="Table is Empty"
                                 />
+                                <hr />
+                                <CustomAlert label={alert.label} type={alert.type} showAlert={alert.show} />
+                                <Form.Group className="mb-3">
+                                    <h3 style={{ fontWeight: 300 }}>Add Products</h3>
+                                    <p style={{ fontWeight: 300 }}>
+                                        First select a product, add the quote information, then click add quote when finished.
+                                    </p>
+                                </Form.Group>
+                                <div className='d-flex justify-content-between'>
+                                    <div className='d-flex'>
+                                        <div style={{ marginRight: 5 }}>
+                                            <Form.Label style={{ display: 'flex' }}>Condition</Form.Label>
+                                            <Form.Select aria-label="Default select example"
+                                                value={condition}
+                                                onChange={(e) => setCondition(e.target.value)}
+                                            >
+                                                <option>Condition</option>
+                                                {
+                                                    conditionList.map(condition => {
+                                                        return (<option key={condition} value={condition}>{condition}</option>);
+                                                    })
+                                                }
+                                            </Form.Select>
+                                        </div>
+                                        <div style={{ marginRight: 5 }}>
+                                            <Form.Label style={{ display: 'flex' }}>Quantity</Form.Label>
+                                            <input
+                                                type='text'
+                                                className="form-control custom-input"
+                                                placeholder="QTY"
+                                                style={{ width: 75 }}
+                                                pattern='[0-9]*'
+                                                value={quantity}
+                                                onChange={(e) => {
+                                                    if (!isNaN(Number(e.target.value))) {
+                                                        setQuantity(Number(e.target.value))
+                                                    }
+                                                }}
+                                            />
+                                        </div>
+                                        <div style={{ marginRight: 5 }}>
+                                            <Form.Label style={{ display: 'flex' }}>Price</Form.Label>
+                                            <input type='text'
+                                                className="form-control custom-input"
+                                                placeholder="Price"
+                                                style={{ width: 100 }}
+                                                pattern='[0-9]\.*'
+                                                value={price}
+                                                onChange={(e) => {
+                                                    if (!isNaN(Number(e.target.value))) {
+                                                        setPrice(Number(e.target.value))
+                                                    }
+                                                }}
+                                            />
+                                        </div>
+                                        <div>
+                                            <Button variant="dark"
+                                                onClick={() => {
+                                                    // Add quoted product to list
+                                                    addQuotedProductToTable();
+                                                }}
+                                            >
+                                                <Plus style={{ marginTop: -3, marginLeft: -10 }} />
+                                                Add Quote
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div>
+                                    <ToolkitProvider
+                                        keyField="id"
+                                        data={products}
+                                        columns={product_column}
+                                        search >
+                                        {
+                                            props => {
+                                                return (
+                                                    <div>
+                                                        {isSearching ?
+                                                            <SpinnerBlock />
+                                                            :
+                                                            <div>
+                                                                <InputGroup className="mb-3" style={{ width: 'max-content' }}>
+                                                                    <InputGroup.Text id="basic-addon2">
+                                                                        <Search />
+                                                                    </InputGroup.Text>
+                                                                    <DebounceInput
+                                                                        type="text"
+                                                                        className='debounce'
+                                                                        placeholder="Search..."
+                                                                        debounceTimeout={500}
+                                                                        value={searchString}
+                                                                        onChange={e => {
+                                                                            handleSearch(e.target.value, { ...props.searchProps });
+                                                                        }} />
+                                                                </InputGroup>
+
+                                                                <BootstrapTable
+                                                                    {...props.baseProps}
+                                                                    key='product_table'
+                                                                    keyField="id"
+                                                                    bootstrap4
+                                                                    condensed
+                                                                    data={products}
+                                                                    columns={product_column}
+                                                                    selectRow={selectRow as SelectRowProps<IProduct>}
+                                                                    pagination={paginationFactory(options)}
+                                                                    classes="table table-dark table-hover table-striped table-responsive"
+                                                                    noDataIndication="Table is Empty"
+                                                                />
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                );
+                                            }
+                                        }
+                                    </ToolkitProvider>
+                                </div>
+
                             </Form>
                         }
                     </div>
@@ -235,7 +492,7 @@ const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) 
                         <Button
                             variant="dark"
                             onClick={async () => {
-                                console.log('');
+                                finished();
                             }}>
                             Finish
                         </Button>
