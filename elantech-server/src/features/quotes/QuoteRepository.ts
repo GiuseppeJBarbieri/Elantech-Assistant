@@ -21,7 +21,6 @@ const standardError = (message: string) => {
 
 export default {
   async Add(quote: IQuote): Promise<IQuote> {
-    logger.info(quote);
     const transaction: Transaction = await db.sequelize.transaction();
     try {
       // Create the quote
@@ -31,7 +30,13 @@ export default {
         ...product,
         quoteId: createdQuote.id,
       }));
-      await db.quotedProduct.bulkCreate(quotedProducts, { transaction });
+
+      if (quotedProducts.length === 1) {
+        console.log(quotedProducts[0]);
+        await db.quotedProduct.create(quotedProducts[0], { transaction });
+      } else {
+        await db.quotedProduct.bulkCreate(quotedProducts, { transaction });
+      }
       // Commit the transaction
       await transaction.commit();
       return createdQuote;
@@ -39,7 +44,7 @@ export default {
       // Rollback the transaction in case of error
       await transaction.rollback();
       standardError(`${err.name} ${err.message}`);
-      throw repoErr;
+      return Promise.reject(repoErr);
     }
   },
 
@@ -118,11 +123,39 @@ export default {
   },
 
   async Delete(id: number): Promise<IQuote[]> {
+    const transaction: Transaction = await db.sequelize.transaction();
     try {
-      return await db.quote.delete({
-        where: { id },
+      const existingQuotedProducts = await db.quotedProduct.findAll({
+        where: {
+          quoteId: id,
+        },
       });
+
+      // Create a map of existing products by ID for quick lookup
+      const existingQuotedProductsMap = new Map(
+        existingQuotedProducts.map((quotedProduct: IQuotedProduct) => [quotedProduct.id, quotedProduct]),
+      );
+
+      // Delete related quoted products
+      existingQuotedProductsMap.forEach(async (quotedProduct: IQuotedProduct) => {
+        await db.quotedProduct.destroy({
+          where: { id: quotedProduct.id },
+          transaction,
+        });
+      });
+
+      const response = await db.quote.destroy({
+        where: {
+          id,
+        },
+        transaction,
+      });
+
+      // Commit the transaction
+      await transaction.commit();
+      return response;
     } catch (err) {
+      await transaction.rollback();
       standardError(`${err.name} ${err.message}`);
       return Promise.reject(repoErr);
     }
@@ -136,35 +169,36 @@ export default {
         where: {
           quoteId: quote.id,
         },
-        transaction,
-      });
+      }, transaction);
 
       // Create a map of existing products by ID for quick lookup
-      const existingQuotedProductsMap = new Map(
-        existingQuotedProducts.map((quotedProduct: IQuotedProduct) => [quotedProduct.id, quotedProduct]),
-      );
-
-      // Iterate over the provided quoted products list
-      existingQuotedProductsMap.forEach(async (quotedProduct: IQuotedProduct) => {
-        if (quotedProduct.id && existingQuotedProductsMap.has(quotedProduct.id)) {
-          // Update existing product
-          await db.quotedProduct.update(quotedProduct, {
-            where: { id: quotedProduct.id },
-            transaction,
-          });
-          existingQuotedProductsMap.delete(quotedProduct.id);
-        } else {
-          // Create new product
-          await db.quotedProduct.create({ ...quotedProduct, quoteId: quote.id }, { transaction });
-        }
+      const existingQuotedProductsMap = new Map();
+      existingQuotedProducts.forEach((element) => {
+        existingQuotedProductsMap.set(element.dataValues.id, element.dataValues);
       });
 
+      // Iterate over the provided quoted products list
+      quote.QuotedProducts.forEach(async (product: IQuotedProduct) => {
+        if (product.id && existingQuotedProductsMap.has(product.id)) {
+          // Update existing product
+          await db.quotedProduct.update(product,
+            {
+              where: { id: product.id },
+            }, transaction);
+        } else {
+          // Create new product
+          // eslint-disable-next-line no-param-reassign
+          delete product.id;
+          await db.quotedProduct.create(product, transaction);
+        }
+      });
       // Delete remaining products that were not in the provided list
-      existingQuotedProductsMap.forEach(async (quotedProduct: IQuotedProduct) => {
-        await db.quotedProduct.destroy({
-          where: { id: quotedProduct.id },
-          transaction,
-        });
+      existingQuotedProductsMap.forEach(async (product: IQuotedProduct) => {
+        if (product.id && !quote.QuotedProducts.find((p) => p.id === product.id)) {
+          await db.quotedProduct.destroy({
+            where: { id: product.id },
+          }, transaction);
+        }
       });
       // Commit the transaction
       await transaction.commit();

@@ -16,7 +16,6 @@ import { RemoveCompanyModal } from '../../components/Modals/Company/RemoveCompan
 import { DebounceInput } from 'react-debounce-input';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import { SpinnerBlock } from '../../components/LoadingAnimation/SpinnerBlock';
-import IQuote from '../../types/IQuote';
 
 interface QuotesProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> { }
 
@@ -26,8 +25,10 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
   const [removeCompanySwitch, setRemoveCompanySwitch] = useState(false);
   const [companyList, setCompanyList] = useState<ICompany[]>([]);
   const [selectedCompany, setSelectedCompany] = useState<ICompany>(defaultCompany);
-  const [searchString] = useState<string>('');
+  const [searchString, setSearchString] = useState<string>('');
   const [isSearching] = useState(false);
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
+  const [searchHistoryFilterText, setSearchHistoryFilterText] = useState('Search History');
 
   const rankFormatterRemove = (_: any, data: any, index: any) => {
     return (
@@ -150,9 +151,16 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
     setCompanyList(await requestAllCompanies());
   };
   const handleSearch = (input: string, props: { searchText?: string; onSearch: any; onClear?: () => void; }) => {
-    if (input !== undefined) {
-      props.onSearch(input);
+    if (input !== '' || input !== undefined) {
+      const result = searchHistory.includes(input);
+      if (!result) { input.length > 0 && searchHistory.push(input) }
+
+      searchHistory.length > 5 && setSearchHistory(searchHistory.slice(1, searchHistory.length));
+      setSearchString(input);
+    } else {
+      setSearchHistoryFilterText('Search History');
     }
+    props.onSearch(input);
   };
   useEffect(() => {
     getAllCompanies();
@@ -182,7 +190,7 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
                     <SpinnerBlock />
                     :
                     <div>
-                      <div className='d-flex' style={{width: 'max-content'}}>
+                      <div className='d-flex' style={{ width: 'max-content' }}>
                         <InputGroup className="mb-1">
                           <InputGroup.Text id="basic-addon2">
                             <Search />
@@ -202,12 +210,18 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
                             key={'dark'}
                             variant="dark"
                             menuVariant="dark"
-                            title={'Search History '}
+                            title={searchHistoryFilterText}
+                            onSelect={e => {
+                              setTimeout(() => handleSearch(e as string, { ...props.searchProps }), 100);
+                            }}
                           >
-                            <Dropdown.Item eventKey="1">---------</Dropdown.Item>
-                            <Dropdown.Item eventKey="2">---------</Dropdown.Item>
-                            <Dropdown.Item eventKey="3" active>---------</Dropdown.Item>
-                            <Dropdown.Item eventKey="4">---------</Dropdown.Item>
+                            {searchHistory.length > 0 ?
+                              searchHistory.map((o, index) => {
+                                return <Dropdown.Item key={index} eventKey={o}>{o}</Dropdown.Item>;
+                              })
+                              :
+                              <Dropdown.Item disabled>No History</Dropdown.Item>}
+                            <Dropdown.Item eventKey=''>Clear</Dropdown.Item>
                           </DropdownButton>
                         </div>
                       </div>

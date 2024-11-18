@@ -1,5 +1,4 @@
 
-import axios from 'axios';
 import React, { HTMLAttributes, FunctionComponent } from 'react';
 import { useState } from 'react';
 import { Modal, Spinner, Form, Button } from 'react-bootstrap';
@@ -8,7 +7,7 @@ import IInventory from '../../../types/IInventory';
 import IProduct from '../../../types/IProduct';
 import { CustomAlert } from '../../Alerts/CustomAlert';
 import { defaultAlert } from '../../../constants/Defaults';
-import { requestAddRemovedInventory, requestRemoveInventory } from '../../../utils/Requests';
+import { requestRemoveInventory } from '../../../utils/Requests';
 import IRemovedInventory from '../../../types/IRemovedInventory';
 
 interface RemoveInventoryModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
@@ -96,9 +95,9 @@ const RemoveInventoryModalComponent: FunctionComponent<RemoveInventoryModalProps
                                 <Form.Group className="mb-3">
                                     <Form.Label>Reason for Removal</Form.Label>
                                     <Form.Control
-                                        id="timeFrame"
+                                        id="reasonForRemoval"
                                         type="text"
-                                        placeholder="Website Link"
+                                        placeholder="Reason for removal"
                                         disabled={showReasonForRemoval}
                                         onChange={(e) => setReasonForRemoval(e.target.value)}
                                     />

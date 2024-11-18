@@ -54,7 +54,6 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
             dataField: 'quotedBy',
             text: 'Quoted By',
             formatter: (cell: any, row: any) => {
-                console.log(row);
                 return `${row.Quote.User.firstName}  ${row.Quote.User.lastName}`;
             },
             sort: true,
@@ -93,29 +92,38 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
         setTimeout(async () => {
             try {
                 const request = await requestAllQuotedProductsByProductId(productId);
-                console.log(request);
                 setQuotedProductsList(request);
-                let avgQuote = 0;
-                let earliestDate = {
-                    date: request[0].Quote?.dateQuoted as string,
-                    index: 0,
-                };
-                request.forEach((quote, index) => {
-                    avgQuote += quote.quotedPrice;
-                    if (new Date(earliestDate.date as string) < new Date(quote.Quote?.dateQuoted as string)) {
-                        earliestDate = {
-                            date: quote.Quote?.dateQuoted as string,
-                            index: index
-                        };
-                    }
-                });
-                avgQuote = avgQuote / request.length;
-                setDisplayedQuoteInfo({
-                    averageQuote: avgQuote,
-                    quotedTo: request[earliestDate.index].Quote?.Company?.name as string,
-                    quotedBy: request[earliestDate.index].Quote?.User?.firstName as string,
-                    lastQuotedPrice: request[earliestDate.index].quotedPrice,
-                });
+                if (request.length > 0) {
+                    let avgQuote = 0;
+                    let earliestDate = {
+                        date: request[0].Quote?.dateQuoted as string,
+                        index: 0,
+                    };
+                    request.forEach((quote, index) => {
+                        avgQuote += quote.quotedPrice;
+                        if (new Date(earliestDate.date as string) < new Date(quote.Quote?.dateQuoted as string)) {
+                            earliestDate = {
+                                date: quote.Quote?.dateQuoted as string,
+                                index: index
+                            };
+                        }
+                    });
+                    avgQuote = avgQuote / request.length;
+                    setDisplayedQuoteInfo({
+                        averageQuote: avgQuote,
+                        quotedTo: request[earliestDate.index].Quote?.Company?.name as string,
+                        quotedBy: request[earliestDate.index].Quote?.User?.firstName as string,
+                        lastQuotedPrice: request[earliestDate.index].quotedPrice,
+                    });
+                    return;
+                } else {
+                    setDisplayedQuoteInfo({
+                        averageQuote: 0,
+                        quotedTo: '',
+                        quotedBy: '',
+                        lastQuotedPrice: 0,
+                    });
+                }
             } catch (err) {
                 console.log(err);
             }
@@ -157,7 +165,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
             getAllInventory(props.selectedProduct.id);
             getAllQuotedProducts(props.selectedProduct.id);
         }
-    });
+    }, []);
     return (
         <div style={{ padding: 20 }} className='expandedProductRow'>
             <Navbar bg="dark" variant="dark">
@@ -303,11 +311,12 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                                 }) => (
                                     <div>
                                         <BootstrapTable
+                                            key='quote_table'
                                             bootstrap4
                                             condensed
                                             {...paginationTableProps}
                                             columns={quotes_column}
-                                            keyField="serial_number"
+                                            keyField="id"
                                             data={quoteProductsList}
                                             classes="table table-dark table-hover table-striped"
                                             noDataIndication="Table is Empty"

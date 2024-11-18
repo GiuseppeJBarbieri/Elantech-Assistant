@@ -4,34 +4,15 @@ Ask sam if
 2. Make is so that only Admin accounts are allowed to remove a quote from a company
 3. Make it so that only Admin accounts are allowed to remove products from the system
 
-
-
-
 Eventually
-4. Make it so that only warehouse admin accounts can remove items from inventory or remove products
-
-
-
-Figure out proper cookie life
-
-
-
-
-Quote By company to be completed
-1. Fix Search Bar Width
-2. Search History - Make this work
-3. Remove Quote
-4. Edit Quote
-5. Lazy Load Companies?
+Make it so that only warehouse admin accounts can remove items from inventory or remove products
 
 Products
-1. Export to CSV? - Keep or Remove for  now
-2. Reserve inventory
-3. Edit Multiple inventory
-4. Remove  Multiple
-5. Edit inventory
-6. Remove inventory
-7. View Quotes
-8. Add Inventory
-9. Remove Product
-10. Lazy Load Lists?
+7. Add Inventory
+8. Edit Inventory
+9. Edit Multiple inventory
+12. Reserve inventory
+13. Lazy Load Lists?
+14. Export to CSV? - Keep or Remove for  now
+
+

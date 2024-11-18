@@ -60,7 +60,7 @@ router.get('/quote/quotedProduct/:quoteId',
 /**
  * This route will get quotes in ProductQuotesTable Format
  */
-router.get('/quote/quotedProduct/:productId',
+router.get('/quote/quotedProduct/product/:productId',
   authenticationMiddleware,
   validate(QuotedProductsValidation.GetProductQuotesTable),
   (req, res, next) => {

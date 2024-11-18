@@ -62,7 +62,7 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
             product.altNumber5,
             product.altNumber6
         ];
-        compareList = compareList.filter((str) => str != '');
+        compareList = compareList.filter((str) => str != '' && str != null);
         if (new Set(compareList).size !== compareList.length) isDuplicate = true;
 
         if (isEmpty) {
@@ -227,8 +227,8 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                                         id="timeFrame"
                                         type="text"
                                         placeholder="Ebay Link"
-                                        value={product.ebayLink}
-                                        onChange={(e) => setProduct({ ...product, ebayLink: (e.target.value) })}
+                                        value={product.ebayUrl}
+                                        onChange={(e) => setProduct({ ...product, ebayUrl: (e.target.value) })}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
@@ -237,8 +237,8 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                                         id="timeFrame"
                                         type="text"
                                         placeholder="Website Link"
-                                        value={product.websiteLink}
-                                        onChange={(e) => setProduct({ ...product, websiteLink: (e.target.value) })}
+                                        value={product.websiteUrl}
+                                        onChange={(e) => setProduct({ ...product, websiteUrl: (e.target.value) })}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
@@ -247,8 +247,8 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                                         id="timeFrame"
                                         type="text"
                                         placeholder="Quick Specs"
-                                        value={product.quickSpecsLink}
-                                        onChange={(e) => setProduct({ ...product, quickSpecsLink: (e.target.value) })}
+                                        value={product.quickSpecsUrl}
+                                        onChange={(e) => setProduct({ ...product, quickSpecsUrl: (e.target.value) })}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3">

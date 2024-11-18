@@ -13,6 +13,7 @@ import { AddMultiQuoteModal } from '../Modals/Quote/AddMultiQuoteModal';
 import { EditQuoteModal } from '../Modals/Quote/EditQuoteModal';
 import { ViewQuotedProductsModal } from '../Modals/ViewQuotedProductsModal/ViewQuotedProductsModal';
 import { defaultQuote } from '../../constants/Defaults';
+import { RemoveQuoteModal } from '../Modals/Quote/RemoveQuoteModal';
 
 interface ExpandedQuoteRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     selectedCompany: ICompany;
@@ -24,6 +25,7 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
     const [quotes, setQuotes] = useState<IQuote[]>([]);
     const [selectedQuote, setSelectedQuote] = useState<IQuote>(defaultQuote);
     const [viewMoreSwitch, setViewMoreSwitch] = useState(false);
+    const [removeQuoteSwitch, setRemoveQuoteSwitch] = useState(false);
 
     const rankFormatterAdd = (_: any, _data: IQuote, _index: any) => {
         return (
@@ -96,10 +98,24 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
             </div>
         );
     };
-    const rankFormatterRemove = (_: any, _data: any, _index: any) => {
+    const rankFormatterRemove = (_: any, data: any, _index: any) => {
         return (
-            <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }} onClick={() => console.log('Remove Column')} >
-                <Trash style={{ fontSize: 20, color: 'white' }} />
+            <div
+                style={{
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    lineHeight: 'normal'
+                }}
+                onClick={(e) => {
+                    e.stopPropagation()
+                }} >
+                <div onClick={() => {
+                    setSelectedQuote(data);
+                    setRemoveQuoteSwitch(true);
+                }}
+                >
+                    <Trash style={{ fontSize: 20, color: 'white' }} />
+                </div>
             </div>
         );
     };
@@ -277,6 +293,19 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
                         }}
                         selectedCompany={props.selectedCompany}
                         selectedQuote={selectedQuote} />
+                </div>
+            }
+            {
+                removeQuoteSwitch &&
+                <div className='modal-dialog'>
+                    <RemoveQuoteModal
+                        modalVisible={removeQuoteSwitch}
+                        selectedQuote={selectedQuote}
+                        getAllQuotes={getAllQuotes}
+                        onClose={async () => {
+                            setRemoveQuoteSwitch(false);
+                        }}
+                    />
                 </div>
             }
         </ div>

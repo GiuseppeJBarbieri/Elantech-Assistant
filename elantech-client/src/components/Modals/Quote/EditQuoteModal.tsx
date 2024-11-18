@@ -216,7 +216,6 @@ const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) 
         setTimeout(async () => {
             try {
                 const quotedProducts = await requestAllProductQuotesByQuoteId(quoteId);
-                console.log('Quoted Products: ', quotedProducts);
                 setQuotedProducts(quotedProducts);
 
                 let totalQuote = 0;
@@ -261,8 +260,7 @@ const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) 
             });
             if (!found) {
                 const quotedProduct: IQuotedProduct = {
-                    id: (Math.random() * 10000),
-                    quoteId: 0,
+                    quoteId: props.selectedQuote.id as number,
                     productId: selectedProduct.id as number,
                     quantity: quantity,
                     quotedPrice: price,
@@ -299,6 +297,13 @@ const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) 
             QuotedProducts: quotedProductsCopy,
         }
         await requestUpdateQuoteAndQuotedProducts(quote)
+            .then(() => {
+                props.onClose();
+
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }
     useEffect(() => {
         if (props.selectedQuote.id !== undefined) {

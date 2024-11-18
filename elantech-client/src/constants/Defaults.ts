@@ -19,9 +19,9 @@ export const defaultProduct = (): IProduct => {
         productType: '',
         brand: '',
         description: '',
-        ebayLink: '',
-        websiteLink: '',
-        quickSpecsLink: '',
+        ebayUrl: '',
+        websiteUrl: '',
+        quickSpecsUrl: '',
         relatedTags: ''
     }))
 }

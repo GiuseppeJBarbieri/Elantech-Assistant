@@ -125,7 +125,6 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
                 if (inventory.serialNumber === selectedInventory.serialNumber) {
                     newInventoryList.push(selectedInventory);
                     found = true;
-                    console.log('found')
                 }
             });
             if (!found) {

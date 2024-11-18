@@ -26,12 +26,12 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             id: 0,
             productId: 0,
             removedInventoryId: 0,
-            poId: undefined,
+            purchaseOrderId: undefined,
             serialNumber: '',
             condition: '',
             warrantyExpiration: '',
-            isTested: false,
-            dateTested: '',
+            tested: false,
+            testedDate: '',
             comment: '',
             location: '',
         }
@@ -89,13 +89,9 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
     };
     const handleConditionSort = (order: string) => {
         if(order === 'desc') {
-            // console.log('Handle Sort: ' + order);
             inventoryList.sort((a, b) => b.condition.localeCompare(a.condition));
-            // console.log(inventoryList);
         } else {
-            // console.log('Handle Sort: ' + order);
             inventoryList.sort((a, b) => a.condition.localeCompare(b.condition));
-            // console.log(inventoryList);
         }
     }
     const columns = [
@@ -214,7 +210,6 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                 }
                 if(lastSelected === -1) {
                     setLastSelected(rowIndex);
-                    console.log('HERE');
                 }
             }
             if (isSelect === true) {

@@ -171,9 +171,7 @@ export default {
           },
         ],
       });
-
       const list: IQuotedProduct[] = [];
-
       qp.forEach((element) => {
         const quoteProduct: IQuotedProduct = {
           id: element.id,

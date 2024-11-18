@@ -1,3 +1,4 @@
+import { Transaction } from 'sequelize';
 import db from '../../models';
 import logger from '../../utils/logging/Logger';
 import IRepoError from '../../utils/interfaces/IRepoError';
@@ -60,13 +61,30 @@ export default {
     }
   },
 
-  async Delete(id: number): Promise<IProduct[]> {
+  async Delete(id: number): Promise<void> {
+    const transaction: Transaction = await db.sequelize.transaction();
     try {
-      return await db.product.destroy({
+      const inventory = await db.inventory.findAll({
+        where: {
+          productId: id,
+        },
+      });
+
+      inventory.forEach(async (item) => {
+        await db.inventory.destroy({
+          where: { id: item.id },
+          transaction,
+        });
+      });
+
+      await db.product.destroy({
         where: {
           id,
         },
+        transaction,
       });
+      const resolution = transaction.commit();
+      return resolution;
     } catch (err) {
       standardError(`${err.name} ${err.message}`);
       return Promise.reject(repoErr);

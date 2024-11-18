@@ -65,7 +65,7 @@ router.put('/', authenticationMiddleware, validate(ProductValidation.PutProduct)
 router.delete('/:id', authenticationMiddleware, validate(ProductValidation.DeleteProduct), (req, res, next) => {
   logger.info('DELETE PRODUCT');
   // eslint-disable-next-line dot-notation
-  if (req.session['userType'] === 2) {
+  if (req.session['userType'] === 1) {
     ProductController.Delete(Number(req.params.id))
       .then((response) => {
         res.status(201).json(response);

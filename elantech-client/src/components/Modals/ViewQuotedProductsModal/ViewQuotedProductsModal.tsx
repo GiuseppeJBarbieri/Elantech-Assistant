@@ -104,7 +104,6 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
         setTimeout(async () => {
             try {
                 const quotedProducts = await requestAllProductQuotesByQuoteId(quoteId);
-                console.log('Quoted Products: ', quotedProducts);
                 setQuotedProducts(quotedProducts);
 
                 let totalQuote = 0;

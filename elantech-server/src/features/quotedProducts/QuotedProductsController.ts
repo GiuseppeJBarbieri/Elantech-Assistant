@@ -47,7 +47,7 @@ export default {
 
   async GetByProductId(productId: number): Promise<IHTTPResponse> {
     try {
-      const quotedProducts: IQuotedProduct[] = await QuotedProductsRepository.GetByProductId(productId);
+      const quotedProducts = await QuotedProductsRepository.GetByProductId(productId);
       return {
         ...constants.HTTP.SUCCESS.SELECTED,
         payload: [...quotedProducts],
