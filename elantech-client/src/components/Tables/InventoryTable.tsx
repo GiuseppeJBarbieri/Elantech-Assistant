@@ -3,12 +3,13 @@ import { Button } from 'react-bootstrap';
 import { Pencil, Trash } from 'react-bootstrap-icons';
 import BootstrapTable, { SelectRowProps } from 'react-bootstrap-table-next';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-
 import IInventory from '../../types/IInventory';
 import IProduct from '../../types/IProduct';
 import { EditInventoryModal } from '../Modals/Inventory/EditInventoryModal';
 import { RemoveInventoryModal } from '../Modals/Inventory/RemoveInventoryModal';
 import { RemoveMultipleInventoryModal } from '../Modals/Inventory/RemoveMultipleInventoryModal';
+import { requestUpdateInventory } from '../../utils/Requests';
+import { EditMultipleInventoryModal } from '../Modals/Inventory/EditMultipleInventoryModal';
 
 
 interface InventoryTableProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
@@ -21,6 +22,12 @@ interface InventoryTableProps extends RouteComponentProps, HTMLAttributes<HTMLDi
 const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) => {
     const [inventoryList, setInventoryList] = useState<IInventory[]>(props.inventory);
     const [selectedInventoryList, setSelectedInventoryList] = useState<IInventory[]>([]);
+    const [editInventorySwitch, setEditInventorySwitch] = useState(false);
+    const [removeInventorySwitch, setRemoveInventorySwitch] = useState(false);
+    const [removeMultipleInventorySwitch, setRemoveMultipleInventorySwitch] = useState(false);
+    const [tempSelected, setTempSelected] = useState<string[]>([]);
+    const [editMultipleInventorySwitch, setEditMultipleInventorySwitch] = useState(false);
+    const [lastSelected, setLastSelected] = useState(-1);
     const [selectedInventory, setSelectedInventory] = useState<IInventory>(
         {
             id: 0,
@@ -34,15 +41,9 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             testedDate: '',
             comment: '',
             location: '',
+            reserved: false
         }
     );
-    const [editInventorySwitch, setEditInventorySwitch] = useState(false);
-    const [removeInventorySwitch, setRemoveInventorySwitch] = useState(false);
-    const [removeMultipleInventorySwitch, setRemoveMultipleInventorySwitch] = useState(false);
-    // const [editMultipleInventorySwitch, setEditMultipleInventorySwitch] = useState(false);
-
-    const [tempSelected, setTempSelected] = useState<string[]>([]);
-
     const rankFormatterRemove = (_: any, data: any, index: any) => {
         return (
             <div
@@ -88,7 +89,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
         );
     };
     const handleConditionSort = (order: string) => {
-        if(order === 'desc') {
+        if (order === 'desc') {
             inventoryList.sort((a, b) => b.condition.localeCompare(a.condition));
         } else {
             inventoryList.sort((a, b) => a.condition.localeCompare(b.condition));
@@ -181,7 +182,6 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             formatter: rankFormatterRemove,
         }
     ];
-    const [lastSelected, setLastSelected] = useState(-1);
     const selectRow = {
         mode: 'checkbox',
         clickToSelect: true,
@@ -192,23 +192,23 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
 
         },
         onSelect: (row: IInventory, isSelect: boolean, rowIndex: number, e: any) => {
-            if(e.shiftKey) {
+            if (e.shiftKey) {
                 if (isSelect === true && lastSelected !== -1) {
-                    if(lastSelected > rowIndex) {
-                        for(let i = lastSelected; i > rowIndex ; i--){
+                    if (lastSelected > rowIndex) {
+                        for (let i = lastSelected; i > rowIndex; i--) {
                             if (!selectedInventoryList.includes(inventoryList[i])) selectedInventoryList.push(inventoryList[i]);
                             if (!tempSelected.includes(inventoryList[i].serialNumber)) tempSelected.push(inventoryList[i].serialNumber);
                             setLastSelected(-1);
                         }
                     } else {
-                        for(let i = lastSelected; i < rowIndex; i++){
+                        for (let i = lastSelected; i < rowIndex; i++) {
                             if (!selectedInventoryList.includes(inventoryList[i])) selectedInventoryList.push(inventoryList[i]);
                             if (!tempSelected.includes(inventoryList[i].serialNumber)) tempSelected.push(inventoryList[i].serialNumber);
                             setLastSelected(-1);
                         }
                     }
                 }
-                if(lastSelected === -1) {
+                if (lastSelected === -1) {
                     setLastSelected(rowIndex);
                 }
             }
@@ -234,11 +234,25 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                     tempSelected.push(rows[i].serialNumber);
                 }
                 setSelectedInventoryList([...selectedInventoryList]);
-                
+
             } else {
                 setSelectedInventoryList([]);
                 setTempSelected([]);
             }
+        }
+    };
+    // This will probably be removed
+    const reserveItem = () => {
+        selectedInventoryList.forEach((inventory: IInventory) => {
+            if (inventory.reserved == null) {
+                inventory.reserved = true;
+            } else {
+                inventory.reserved = !inventory.reserved;
+            }
+            requestUpdateInventory(inventory);
+        });
+        if (props.selectedProduct.id !== undefined) {
+            props.getAllInventory(props.selectedProduct.id);
         }
     };
     useEffect(() => {
@@ -258,18 +272,22 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                             style={{ width: 70, textAlign: 'center', marginLeft: 5 }}
                         />
                         {
+                            selectedInventoryList.length > 0 &&
+                            <div className='fade-in-right' aria-controls="example-fade-text">
+                                <Button variant='dark' style={{ marginLeft: 5 }}
+                                    onClick={() => {
+                                        reserveItem();
+                                    }}>
+                                    Reserve Items
+                                </Button>
+                            </div>
+                        }
+                        {
                             selectedInventoryList.length > 1 &&
                             <div className='fade-in-right' aria-controls="example-fade-text">
                                 <Button variant='dark' style={{ marginLeft: 5 }}
                                     onClick={() => {
-                                        console.log('')
-                                    }}
-                                >
-                                    Reserve Items
-                                </Button>
-                                <Button variant='dark' style={{ marginLeft: 5 }}
-                                    onClick={() => {
-                                        // setEditMultipleInventorySwitch(true);
+                                        setEditMultipleInventorySwitch(true);
                                     }}
                                 >
                                     Edit Multiple Inventory
@@ -286,7 +304,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                     </div>
                 </div>
             </div>
-            <div style={{overflowX: 'auto', maxHeight: 500}} className='no-highlight'>
+            <div style={{ overflowX: 'auto', maxHeight: 500 }} className='no-highlight'>
                 <BootstrapTable
                     key='inventory_table'
                     bootstrap4
@@ -345,18 +363,21 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                     />
                 </div>
             }
-            {/* {
+            {
                 editMultipleInventorySwitch &&
                 <div className='modal-dialog'>
                     <EditMultipleInventoryModal
                         modalVisible={editMultipleInventorySwitch}
                         selectedInventory={selectedInventoryList}
+                        getAllInventory={props.getAllInventory}
+                        selectedProduct={props.selectedProduct}
+                        getAllProducts={props.getAllProducts}
                         onClose={async () => {
                             setEditMultipleInventorySwitch(false);
                         }}
                     />
                 </div>
-            } */}
+            }
         </div >
     );
 };

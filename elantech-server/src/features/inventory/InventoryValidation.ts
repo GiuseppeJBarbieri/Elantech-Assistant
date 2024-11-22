@@ -26,6 +26,7 @@ export default {
       testedDate: Joi.date().optional().allow(''),
       comment: Joi.string().optional().allow(null, ''),
       location: Joi.string().optional().allow(null, ''),
+      reserved: Joi.boolean().optional().allow(null, ''),
     },
   },
 
@@ -42,6 +43,7 @@ export default {
       testedDate: Joi.date().optional().allow(null, ''),
       comment: Joi.string().optional().allow(null, ''),
       location: Joi.string().optional().allow(null, ''),
+      reserved: Joi.boolean().optional().allow(null, ''),
       createdAt: Joi.string().optional(),
       updatedAt: Joi.string().optional(),
       deletedAt: Joi.string().optional().allow(null),

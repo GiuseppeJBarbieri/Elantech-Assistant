@@ -22,22 +22,34 @@ interface RemoveInventoryModalProps extends RouteComponentProps, HTMLAttributes<
 const RemoveInventoryModalComponent: FunctionComponent<RemoveInventoryModalProps> = (props) => {
     const [isSaving, setIsSaving] = useState(false);
     const [alert, setAlert] = useState(defaultAlert);
-    const [reasonForRemoval, setReasonForRemoval] = useState('');
+    const [reasonForRemoval, setReasonForRemoval] = useState<string>('');
+    const [reasonType, setReasonType] = useState('');
     const [showReasonForRemoval, setShowReasonForRemoval] = useState(false);
-
     const removeProduct = () => {
         setIsSaving(true);
         setTimeout(async () => {
             try {
-                const removedReson: IRemovedInventory = {};
-                // await requestAddRemovedInventory(new IRemovedInventory(reasonType: '', reason: '', dateRemoved: ''))
-                await requestRemoveInventory(props.selectedInventory?.id as number);
-                // Now Capture the reason  and save to removed inventory
-                // Request already made in backend
-                props.getAllInventory(props.selectedInventory?.productId as number);
-                setIsSaving(false);
-                props.getAllProducts();
-                props.onClose();
+                if (reasonForRemoval === '' && showReasonForRemoval) {
+                    const removedInventory: IRemovedInventory = {
+                        reason: reasonForRemoval,
+                        reasonType: reasonType,
+                        userId: 0,
+                        orderId: 0,
+                        dateRemoved: new Date().toISOString()
+                    };
+                    if (props.selectedInventory) {
+                        props.selectedInventory.RemovedInventory = removedInventory;
+                    }
+                    await requestRemoveInventory(props.selectedInventory?.id as number);
+                    props.getAllInventory(props.selectedInventory?.productId as number);
+                    props.getAllProducts();
+                    setIsSaving(false);
+                    props.onClose();
+                } else {
+                    setAlert({ ...alert, label: `Please enter a reason for removal`, show: true });
+                    setTimeout(() => setAlert({ ...alert, show: false }), 3000);
+                    setIsSaving(false);
+                }
             } catch (err) {
                 setAlert({ ...alert, label: `${err}`, show: true });
                 setTimeout(() => setAlert({ ...alert, show: false }), 3000);
@@ -45,7 +57,7 @@ const RemoveInventoryModalComponent: FunctionComponent<RemoveInventoryModalProps
             }
 
         }, 500);
-    }
+    };
     return (
         <div>
             <Modal
@@ -76,32 +88,34 @@ const RemoveInventoryModalComponent: FunctionComponent<RemoveInventoryModalProps
                             :
                             <Form className="container d-grid" >
                                 <Form.Group className="mb-3">
-                                    <Form.Label>Please enter a reason for removal</Form.Label>
+                                    <Form.Label>Please select a reason for removal</Form.Label>
                                     <Form.Select aria-label="Default select example"
                                         onChange={(e) => {
+                                            console.log(e.target.value);
                                             if (e.target.value == 'OTHER') {
                                                 setShowReasonForRemoval(true);
                                             } else {
+                                                setReasonType(e.target.value);
                                                 setShowReasonForRemoval(false);
-                                                setReasonForRemoval('');
                                             }
                                         }}>
-                                        <option>Too many added</option>
-                                        <option value="CPU">No longer here</option>
-                                        <option value="OTHER"
-                                        >Other</option>
+                                        <option value="TOO_MANY_ADDED">Too many added</option>
+                                        <option value="NO_LONG">No longer here</option>
+                                        <option value="OTHER">Other</option>
                                     </Form.Select>
                                 </Form.Group>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Reason for Removal</Form.Label>
-                                    <Form.Control
-                                        id="reasonForRemoval"
-                                        type="text"
-                                        placeholder="Reason for removal"
-                                        disabled={showReasonForRemoval}
-                                        onChange={(e) => setReasonForRemoval(e.target.value)}
-                                    />
-                                </Form.Group>
+                                {showReasonForRemoval &&
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Reason for Removal</Form.Label>
+                                        <Form.Control
+                                            id="reasonForRemoval"
+                                            type="text"
+                                            placeholder="Reason for removal"
+                                            disabled={showReasonForRemoval}
+                                            onChange={(e) => setReasonForRemoval(e.target.value)}
+                                        />
+                                    </Form.Group>
+                                }
                             </Form>
                         }
                     </div>

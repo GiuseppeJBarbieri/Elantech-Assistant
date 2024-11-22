@@ -35,6 +35,7 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
         testedDate: dateTested,
         comment: '',
         location: '',
+        reserved: false,
     });
 
     const addNextInventory = () => {
@@ -240,7 +241,7 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                                             value={dateTested}
                                             onChange={(e) => {
                                                 setDateTested(moment(e.target.value).format('YYYY-MM-DD'));
-                                                setInventoryObj({ ...inventoryObj, dateTested: moment(e.target.value).format() })
+                                                setInventoryObj({ ...inventoryObj, testedDate: moment(e.target.value).format() })
                                             }}
                                         />
                                     </Form.Group>
@@ -258,7 +259,7 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                                                     type={'radio'}
                                                     id={'inline-radio-3'}
                                                     onClick={() => {
-                                                        setInventoryObj({ ...inventoryObj, isTested: (true) })
+                                                        setInventoryObj({ ...inventoryObj, tested: (true) })
                                                     }}
                                                 />
                                                 <Form.Check
@@ -268,7 +269,7 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                                                     type={'radio'}
                                                     id={'inline-radio-4'}
                                                     onClick={() => {
-                                                        setInventoryObj({ ...inventoryObj, isTested: (false) })
+                                                        setInventoryObj({ ...inventoryObj, tested: (false) })
                                                     }}
                                                 />
                                             </div>

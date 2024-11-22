@@ -80,7 +80,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
     const getAllInventory = (productId: number) => {
         setTimeout(async () => {
             try {
-                const inventoryList = await requestAllInventoryByProductID(productId)
+                const inventoryList = await requestAllInventoryByProductID(productId);
                 setInventory(inventoryList);
                 setConditionAmount(inventoryList);
             } catch (err) {

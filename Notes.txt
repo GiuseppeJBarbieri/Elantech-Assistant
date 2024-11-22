@@ -8,11 +8,9 @@ Eventually
 Make it so that only warehouse admin accounts can remove items from inventory or remove products
 
 Products
-7. Add Inventory
-8. Edit Inventory
-9. Edit Multiple inventory
-12. Reserve inventory
-13. Lazy Load Lists?
-14. Export to CSV? - Keep or Remove for  now
+Remove inventory
+Edit Multiple inventory
+Lazy Load Lists?
+Export to CSV? - Keep or Remove for  now
 
 

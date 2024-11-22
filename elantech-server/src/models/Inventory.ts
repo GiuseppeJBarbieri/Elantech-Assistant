@@ -12,6 +12,7 @@ interface InventoryAttributes {
   testedDate: Date;
   comment: string;
   location: string;
+  reserved: boolean;
 }
 
 export default (sequelize: Sequelize) => {
@@ -38,6 +39,8 @@ export default (sequelize: Sequelize) => {
     comment!: string;
 
     location!: string;
+
+    reserved: boolean;
 
     static associate(models: any) {
       Inventory.belongsTo(models.product, { foreignKey: 'productId' });
@@ -93,6 +96,10 @@ export default (sequelize: Sequelize) => {
     location: {
       type: DataTypes.STRING,
       allowNull: true,
+    },
+    reserved: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
     },
   }, {
     sequelize,

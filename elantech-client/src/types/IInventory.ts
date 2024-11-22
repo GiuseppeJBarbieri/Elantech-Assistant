@@ -1,3 +1,5 @@
+import IRemovedInventory from "./IRemovedInventory";
+
 interface IInventory {
     id: number;
     productId: number;
@@ -10,6 +12,8 @@ interface IInventory {
     testedDate: string;
     comment: string;
     location: string;
+    reserved: boolean;
+    RemovedInventory?: IRemovedInventory;
 }
 
 export default IInventory;

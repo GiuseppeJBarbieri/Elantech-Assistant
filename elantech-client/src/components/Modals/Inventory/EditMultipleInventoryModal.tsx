@@ -111,9 +111,9 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
     const submitChanges = () => {
         // Make changes on selected items
         selectedInventoryList.forEach((selectedInventory) => {
-            Object.keys(attributes).forEach((key, index) => {
+            (Object.keys(attributes) as (keyof typeof attributes)[]).forEach((key, index) => {
                 if (attributes[key] !== undefined) {
-                    selectedInventory[key] = attributes[key];
+                    // selectedInventory[key] = attributes[key];
                 }
             })
         });

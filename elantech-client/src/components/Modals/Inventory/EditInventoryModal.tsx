@@ -117,7 +117,7 @@ const EditInventoryComponent: FunctionComponent<EditInventoryModalProps> = (prop
                                             value={dateTested}
                                             onChange={(e) => {
                                                 setDateTested(moment(e.target.value).format('YYYY-MM-DD'));
-                                                setInventoryObj({ ...inventoryObj, dateTested: moment(e.target.value).format() })
+                                                setInventoryObj({ ...inventoryObj, testedDate: moment(e.target.value).format() })
                                             }}
                                         />
                                     </Form.Group>
@@ -133,7 +133,7 @@ const EditInventoryComponent: FunctionComponent<EditInventoryModalProps> = (prop
                                                 type={'radio'}
                                                 id={'inline-radio-3'}
                                                 onClick={() => {
-                                                    setInventoryObj({ ...inventoryObj, isTested: (true) })
+                                                    setInventoryObj({ ...inventoryObj, tested: (true) })
                                                 }}
                                             />
                                             <Form.Check
@@ -143,7 +143,7 @@ const EditInventoryComponent: FunctionComponent<EditInventoryModalProps> = (prop
                                                 type={'radio'}
                                                 id={'inline-radio-4'}
                                                 onClick={() => {
-                                                    setInventoryObj({ ...inventoryObj, isTested: (false) })
+                                                    setInventoryObj({ ...inventoryObj, tested: (false) })
                                                 }}
                                             />
                                         </div>
