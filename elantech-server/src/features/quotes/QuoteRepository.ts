@@ -32,7 +32,6 @@ export default {
       }));
 
       if (quotedProducts.length === 1) {
-        console.log(quotedProducts[0]);
         await db.quotedProduct.create(quotedProducts[0], { transaction });
       } else {
         await db.quotedProduct.bulkCreate(quotedProducts, { transaction });

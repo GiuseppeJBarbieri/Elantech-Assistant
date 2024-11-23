@@ -7,7 +7,6 @@ import IInventory from '../../types/IInventory';
 import IProduct from '../../types/IProduct';
 import { EditInventoryModal } from '../Modals/Inventory/EditInventoryModal';
 import { RemoveInventoryModal } from '../Modals/Inventory/RemoveInventoryModal';
-import { RemoveMultipleInventoryModal } from '../Modals/Inventory/RemoveMultipleInventoryModal';
 import { requestUpdateInventory } from '../../utils/Requests';
 import { EditMultipleInventoryModal } from '../Modals/Inventory/EditMultipleInventoryModal';
 
@@ -24,7 +23,6 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
     const [selectedInventoryList, setSelectedInventoryList] = useState<IInventory[]>([]);
     const [editInventorySwitch, setEditInventorySwitch] = useState(false);
     const [removeInventorySwitch, setRemoveInventorySwitch] = useState(false);
-    const [removeMultipleInventorySwitch, setRemoveMultipleInventorySwitch] = useState(false);
     const [tempSelected, setTempSelected] = useState<string[]>([]);
     const [editMultipleInventorySwitch, setEditMultipleInventorySwitch] = useState(false);
     const [lastSelected, setLastSelected] = useState(-1);
@@ -294,7 +292,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                                 </Button>
                                 <Button variant='dark' style={{ marginLeft: 5 }}
                                     onClick={() => {
-                                        setRemoveMultipleInventorySwitch(true);
+                                        setRemoveInventorySwitch(true);
                                     }}
                                 >
                                     Remove Multiple
@@ -337,28 +335,13 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                     <RemoveInventoryModal
                         modalVisible={removeInventorySwitch}
                         selectedInventory={selectedInventory}
+                        selectedInventoryList={selectedInventoryList}
                         getAllInventory={props.getAllInventory}
                         getAllProducts={props.getAllProducts}
                         selectedProduct={props.selectedProduct}
                         onClose={async () => {
                             setRemoveInventorySwitch(false);
                             setSelectedInventoryList([]);
-                        }}
-                    />
-                </div>
-            }
-            {
-                removeMultipleInventorySwitch &&
-                <div className='modal-dialog'>
-                    <RemoveMultipleInventoryModal
-                        modalVisible={removeMultipleInventorySwitch}
-                        selectedInventory={selectedInventoryList}
-                        getAllProducts={props.getAllProducts}
-                        getAllInventory={props.getAllInventory}
-                        selectedProduct={props.selectedProduct}
-                        onClose={async () => {
-                            setSelectedInventoryList([]);
-                            setRemoveMultipleInventorySwitch(false);
                         }}
                     />
                 </div>

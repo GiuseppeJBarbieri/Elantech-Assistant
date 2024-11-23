@@ -46,12 +46,11 @@ export default {
     }
   },
 
-  async Delete(id: number) {
+  async Delete(inventory: IInventory) {
     try {
-      const affectedRowCount = await InventoryRepository.Delete(id);
+      await InventoryRepository.Delete(inventory);
       return {
         ...constants.HTTP.SUCCESS.DELETE,
-        payload: affectedRowCount,
       };
     } catch (err) {
       return Promise.reject(err);

@@ -13,7 +13,8 @@ import IRemovedInventory from '../../../types/IRemovedInventory';
 interface RemoveInventoryModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
     modalVisible: boolean;
-    selectedInventory: IInventory | undefined;
+    selectedInventory: IInventory;
+    selectedInventoryList: IInventory[];
     getAllInventory: (productId: number) => void;
     getAllProducts: () => void;
     selectedProduct: IProduct;
@@ -22,14 +23,19 @@ interface RemoveInventoryModalProps extends RouteComponentProps, HTMLAttributes<
 const RemoveInventoryModalComponent: FunctionComponent<RemoveInventoryModalProps> = (props) => {
     const [isSaving, setIsSaving] = useState(false);
     const [alert, setAlert] = useState(defaultAlert);
-    const [reasonForRemoval, setReasonForRemoval] = useState<string>('');
-    const [reasonType, setReasonType] = useState('');
+    const [reasonForRemoval, setReasonForRemoval] = useState('');
+    const [reasonType, setReasonType] = useState('TOO_MANY_ADDED');
     const [showReasonForRemoval, setShowReasonForRemoval] = useState(false);
     const removeProduct = () => {
         setIsSaving(true);
         setTimeout(async () => {
             try {
-                if (reasonForRemoval === '' && showReasonForRemoval) {
+                if (showReasonForRemoval && reasonForRemoval == 'OTHER') {
+                    setAlert({ ...alert, label: `Please enter a reason for removal`, show: true });
+                    setTimeout(() => setAlert({ ...alert, show: false }), 3000);
+                    setIsSaving(false);
+                }
+                else {
                     const removedInventory: IRemovedInventory = {
                         reason: reasonForRemoval,
                         reasonType: reasonType,
@@ -37,18 +43,24 @@ const RemoveInventoryModalComponent: FunctionComponent<RemoveInventoryModalProps
                         orderId: 0,
                         dateRemoved: new Date().toISOString()
                     };
-                    if (props.selectedInventory) {
-                        props.selectedInventory.RemovedInventory = removedInventory;
+                    const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+                    if (props.selectedInventoryList.length > 1) {
+                        for(let item of props.selectedInventoryList) {
+                            await delay(100);
+                            const inventoryCopy = item;
+                            inventoryCopy.RemovedInventory = removedInventory;
+                            await requestRemoveInventory(inventoryCopy)
+                        }
+                    } else {
+                        const inventoryCopy = props.selectedInventory;
+                        inventoryCopy.RemovedInventory = removedInventory;
+                        await requestRemoveInventory(inventoryCopy);
                     }
-                    await requestRemoveInventory(props.selectedInventory?.id as number);
-                    props.getAllInventory(props.selectedInventory?.productId as number);
+                    props.getAllInventory(props.selectedProduct.id as number);
                     props.getAllProducts();
                     setIsSaving(false);
                     props.onClose();
-                } else {
-                    setAlert({ ...alert, label: `Please enter a reason for removal`, show: true });
-                    setTimeout(() => setAlert({ ...alert, show: false }), 3000);
-                    setIsSaving(false);
                 }
             } catch (err) {
                 setAlert({ ...alert, label: `${err}`, show: true });
@@ -91,7 +103,6 @@ const RemoveInventoryModalComponent: FunctionComponent<RemoveInventoryModalProps
                                     <Form.Label>Please select a reason for removal</Form.Label>
                                     <Form.Select aria-label="Default select example"
                                         onChange={(e) => {
-                                            console.log(e.target.value);
                                             if (e.target.value == 'OTHER') {
                                                 setShowReasonForRemoval(true);
                                             } else {
@@ -100,7 +111,7 @@ const RemoveInventoryModalComponent: FunctionComponent<RemoveInventoryModalProps
                                             }
                                         }}>
                                         <option value="TOO_MANY_ADDED">Too many added</option>
-                                        <option value="NO_LONG">No longer here</option>
+                                        <option value="NO_LONGER_HERE">No longer here</option>
                                         <option value="OTHER">Other</option>
                                     </Form.Select>
                                 </Form.Group>

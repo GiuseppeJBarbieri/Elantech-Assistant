@@ -2,7 +2,7 @@ import * as React from 'react';
 import { FunctionComponent, HTMLAttributes } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import SlidingPane from 'react-sliding-pane';
-import { HouseDoor, Shop, ArrowBarLeft, CartPlus, Truck, Gear } from 'react-bootstrap-icons';
+import { HouseDoor, Shop, ArrowBarLeft, Truck } from 'react-bootstrap-icons';
 import { PAGE_ROUTES } from '../../constants/PageRoutes';
 import './SideNavBar.css';
 import 'react-sliding-pane/dist/react-sliding-pane.css';
@@ -118,7 +118,7 @@ const SideNavBarComponent: FunctionComponent<SideNavBarProps> = (props: SideNavB
               <h4 className='font-weight-300' style={{ marginTop: 3 }}>Broker Bin</h4>
             </div>
           </li> */}
-          <li>
+          {/* <li>
             <div className="btn btn-dark"
               style={{
                 display: 'flex',
@@ -130,7 +130,7 @@ const SideNavBarComponent: FunctionComponent<SideNavBarProps> = (props: SideNavB
               <CartPlus className="bi me-2" width="25" height="25" style={{ 'verticalAlign': 'middle' }} />
               <h4 className='font-weight-300' style={{ marginTop: 3 }}>Removed</h4>
             </div>
-          </li>
+          </li> */}
           {/* <li>
             <div className="btn btn-dark"
               style={{
@@ -157,7 +157,7 @@ const SideNavBarComponent: FunctionComponent<SideNavBarProps> = (props: SideNavB
               <h4 className='font-weight-300' style={{ marginTop: 3 }}>Current Orders</h4>
             </div>
           </li> */}
-          <li>
+          {/* <li>
             <div className="btn btn-dark"
               style={{
                 display: 'flex',
@@ -169,7 +169,7 @@ const SideNavBarComponent: FunctionComponent<SideNavBarProps> = (props: SideNavB
               <Gear className="bi me-2" width="25" height="25" style={{ 'verticalAlign': 'middle' }} />
               <h4 className='font-weight-300' style={{ marginTop: 3 }}>Settings</h4>
             </div>
-          </li>
+          </li> */}
         </ul>
         <div style={{ 'bottom': '0', 'position': 'absolute', 'width': '75%' }}>
           <hr />

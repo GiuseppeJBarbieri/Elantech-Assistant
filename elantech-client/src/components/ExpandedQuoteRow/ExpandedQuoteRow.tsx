@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { FunctionComponent, HTMLAttributes, useEffect, useState } from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
-import { Pencil, Plus, ThreeDots, Trash } from 'react-bootstrap-icons';
+import { Pencil, ThreeDots, Trash } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
@@ -27,25 +27,25 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
     const [viewMoreSwitch, setViewMoreSwitch] = useState(false);
     const [removeQuoteSwitch, setRemoveQuoteSwitch] = useState(false);
 
-    const rankFormatterAdd = (_: any, _data: IQuote, _index: any) => {
-        return (
-            <div
-                style={{
-                    textAlign: 'center',
-                    cursor: 'pointer',
-                    lineHeight: 'normal'
-                }}
-                onClick={(e) => {
-                    e.stopPropagation()
-                }}>
-                <div onClick={(_e) => {
-                    console.log('Create Order');
-                }}>
-                    <Plus style={{ fontSize: 20, color: 'white' }} />
-                </div>
-            </div>
-        );
-    };
+    // const rankFormatterAdd = (_: any, _data: IQuote, _index: any) => {
+    //     return (
+    //         <div
+    //             style={{
+    //                 textAlign: 'center',
+    //                 cursor: 'pointer',
+    //                 lineHeight: 'normal'
+    //             }}
+    //             onClick={(e) => {
+    //                 e.stopPropagation()
+    //             }}>
+    //             <div onClick={(_e) => {
+    //                 console.log('Create Order');
+    //             }}>
+    //                 <Plus style={{ fontSize: 20, color: 'white' }} />
+    //             </div>
+    //         </div>
+    //     );
+    // };
     const rankFormatterViewMore = (hm: any, _data: any, _index: any) => {
         return (
             <div

@@ -4,12 +4,12 @@ import React, { FunctionComponent, HTMLAttributes, useState, useEffect } from 'r
 import { Button, DropdownButton, Dropdown, InputGroup } from 'react-bootstrap';
 import { Pencil, Plus, Search, Trash } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
-import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
+import paginationFactory from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { CompanyModal } from '../../components/Modals/Company/CompanyModal';
 import { ExpandedQuoteRow } from '../../components/ExpandedQuoteRow/ExpandedQuoteRow';
 import ICompany from '../../types/ICompany';
-import { requestAllCompanies, requestAllQuotesByCompanyID } from '../../utils/Requests';
+import { requestAllCompanies } from '../../utils/Requests';
 import { defaultCompany } from '../../constants/Defaults';
 import './Quotes.css';
 import { RemoveCompanyModal } from '../../components/Modals/Company/RemoveCompanyModal';

@@ -152,7 +152,7 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) 
         <section className="text-white main-section overflow-auto">
             <div style={{ padding: 20 }}>
                 <div className='d-flex justify-content-between'>
-                    <h2 style={{ fontWeight: 300 }}>Receiving</h2>
+                    <h2 style={{ fontWeight: 300 }}>Receiving - NON FUNCTIONAL - DO NOT USE</h2>
                     <div>
                         <Button variant="dark" onClick={() => { setAddReceivingSwitch(true) }} >
                             <Plus height="25" width="25" style={{ marginTop: -3, marginLeft: -10 }} />Order

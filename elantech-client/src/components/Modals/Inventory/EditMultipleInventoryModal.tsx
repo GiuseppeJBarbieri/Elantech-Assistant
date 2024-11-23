@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { HTMLAttributes, FunctionComponent, useEffect } from 'react';
 import { useState } from 'react';
-import { Modal, Spinner, Form, Button, InputGroup } from 'react-bootstrap';
+import { Modal, Form, Button, InputGroup } from 'react-bootstrap';
 import BootstrapTable, { SelectRowProps } from 'react-bootstrap-table-next';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { defaultAlert } from '../../../constants/Defaults';

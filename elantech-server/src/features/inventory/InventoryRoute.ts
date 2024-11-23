@@ -47,13 +47,31 @@ router.put('/', authenticationMiddleware, validate(InventoryValidation.PutInvent
 
 /**
 * This route will delete a inventory by id
-*/
+
 router.delete('/:id',
   authenticationMiddleware,
   validate(InventoryValidation.DeleteInventory), (req, res, next) => {
     logger.info('DELETE INVENTORY');
 
     InventoryController.Delete(Number(req.params.id))
+      .then((response) => {
+        res.status(201).json(response);
+      })
+      .catch((err) => next(err));
+  });
+*/
+/**
+* This route will remove an inventory obj and create the removed inventory obj
+*/
+router.put('/removal', authenticationMiddleware, validate(InventoryValidation.DeleteInventory),
+  (req, res, next) => {
+    logger.info('REMOVE INVENTORY');
+    const copy = req.body;
+    // eslint-disable-next-line dot-notation
+    copy.userId = req.session['userId'];
+    // eslint-disable-next-line dot-notation
+    copy.RemovedInventory.userId = req.session['userId'];
+    InventoryController.Delete(copy)
       .then((response) => {
         res.status(201).json(response);
       })

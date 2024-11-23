@@ -24,9 +24,8 @@ const RemoveCompanyModalComponent: FunctionComponent<RemoveCompanyModalProps> = 
     const removeCompany = async () => {
         setIsSaving(true);
         setTimeout(async () => {
-            let res;
             try {
-                res = await requestDeleteCompany(props.selectedCompany.id as number);
+                await requestDeleteCompany(props.selectedCompany.id as number);
                 props.getAllCompanies();
                 props.onClose();
             } catch (err) {

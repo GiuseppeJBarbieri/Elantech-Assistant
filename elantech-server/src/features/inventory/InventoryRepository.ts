@@ -1,7 +1,9 @@
+import { Transaction } from 'sequelize';
 import db from '../../models';
 import logger from '../../utils/logging/Logger';
 import IRepoError from '../../utils/interfaces/IRepoError';
 import IInventory from './IInventory';
+import IRemovedInventory from '../removedInventory/IRemovedInventory';
 
 /// /////////////////
 /// / INTERNALS /////
@@ -74,33 +76,45 @@ export default {
     }
   },
 
-  async Delete(id: number): Promise<IInventory[]> {
+  async Delete(inventory: IInventory): Promise<any[]> {
     try {
-      // get product id
-      const inventory = await db.inventory.findOne({
-        where: { id },
-      });
-      // Delete from inventory
-      const result = await db.inventory.destroy({
-        where: { id },
-      });
-      // Get num of entries
-      const numOfInventory = await db.inventory.count({
+      const transaction: Transaction = await db.sequelize.transaction();
+      const removedProductObj: IRemovedInventory = inventory.RemovedInventory;
+      delete removedProductObj.id;
+      // Create the Removed Entry + return the ID
+      const createdRemovedProduct = await db.removedInventory.create(removedProductObj, { transaction });
+      // add the removed entry id to the inventory obj
+      const inventoryCopy = inventory;
+      inventoryCopy.removedInventoryId = createdRemovedProduct.id;
+      // update the inventory obj
+      await db.inventory.update(inventoryCopy, {
         where: {
-          productId: inventory.productId,
+          id: inventoryCopy.id,
         },
+        transaction,
       });
-      // Update quantity
+      // remove the inventory obj
+      await db.inventory.destroy({
+        where: {
+          id: inventoryCopy.id,
+        },
+        transaction,
+      });
+      // Get the quantity of the product
+      const product = await db.product.findOne({ where: { id: inventory.productId } });
+      const quantity = product.quantity - 1;
+      // Update quantity for the product
       await db.product.update(
-        { quantity: numOfInventory },
+        { quantity },
         {
           where: {
-            id: inventory.productId,
+            id: product.id,
           },
         },
+        transaction,
       );
-
-      return result;
+      await transaction.commit();
+      return Promise.resolve([]);
     } catch (err) {
       standardError(`${err.name} ${err.message}`);
       return Promise.reject(repoErr);

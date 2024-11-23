@@ -36,8 +36,8 @@ export const requestUpdateInventory = async (inventory: IInventory): Promise<any
 export const requestAddInventory = async (inventory: IInventory): Promise<any> => {
     return axios.post(`${BASE_API_URL}${ROUTES.INVENTORY}`, inventory, { withCredentials: true }).then((response) => response);
 }
-export const requestRemoveInventory = async (id: number): Promise<any> => {
-    return axios.delete(`${BASE_API_URL}${ROUTES.INVENTORY}/${id}`, { withCredentials: true }).then((response) => response);
+export const requestRemoveInventory = async (inventory: IInventory): Promise<any> => {
+    return axios.put(`${BASE_API_URL}${ROUTES.INVENTORY}/removal`, inventory, { withCredentials: true }).then((response) => response);
 }
 
 
