@@ -30,7 +30,7 @@ const ExpandedOutgoingRowComponent: FunctionComponent<ExpandedOutgoingRowProps> 
                     e.stopPropagation()
                 }} >
                 <div onClick={(_e) => {
-                    console.log('View More');
+                    // console.log('View More');
                 }}
                 >
                     <ThreeDots style={{ fontSize: 20, color: 'white' }} />

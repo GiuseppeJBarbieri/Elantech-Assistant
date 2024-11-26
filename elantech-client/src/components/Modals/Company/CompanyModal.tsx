@@ -43,7 +43,6 @@ const CompanyModalComponent: FunctionComponent<CompanyModalProps> = (props) => {
         }, 500);
     };
     const submit = () => {
-        console.log(company.name, company.type, company.representative);
         if (company.name == '' || company.type == '' || company.representative == '' 
             || company.name == undefined || company.type == undefined || company.representative == undefined) {
             setAlert({ ...alert, label: 'Please enter required information.', show: true });

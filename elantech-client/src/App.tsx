@@ -22,7 +22,7 @@ import { Outgoing } from './screens/Outgoing/Outgoing';
 import { BrokerBin } from './screens/BrokerBin/BrokerBin';
 
 import NotFound from './screens/NotFound/NotFound';
-import AuthGuard from './utils/AuthGuard';
+// import AuthGuard from './utils/AuthGuard';
 
 interface AppProps {
   width?: string;
@@ -48,7 +48,7 @@ const App: React.FunctionComponent<AppProps> = (props) => {
           }} />
 
           <Route exact path="/login" render={() => <Login loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
-          <AuthGuard>
+          {/* <AuthGuard> */}
             <Route exact path="/home" render={() => <Home loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
             <Route exact path="/forgotPassword" component={ForgotPassword} />
             <Route exact path="/register" component={Register} />
@@ -58,7 +58,7 @@ const App: React.FunctionComponent<AppProps> = (props) => {
             <Route exact path="/outgoing" component={Outgoing} />
             <Route exact path="/brokerBin" component={BrokerBin} />
             <Route exact path="/settings" render={() => <Settings loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
-          </AuthGuard>
+          {/* </AuthGuard> */}
           <Route component={NotFound} />
         </Switch>
       </div>

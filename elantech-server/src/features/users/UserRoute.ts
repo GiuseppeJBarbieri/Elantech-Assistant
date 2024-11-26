@@ -58,7 +58,6 @@ router.get('/byEmail/:email', authenticationMiddleware, validate(UserValidation.
  */
 // eslint-disable-next-line max-len
 router.post('/login', validate(UserValidation.Login), passport.authenticate('local'), (req, res) => {
-  logger.info('Login');
   const response = constants.AUTH.PASSWORD_SUCCESS;
 
   // Note that 3600000 converts our cookieLife param from hours to milliseconds
@@ -72,7 +71,6 @@ router.post('/login', validate(UserValidation.Login), passport.authenticate('loc
 router.get('/logout', authenticationMiddleware, validate(UserValidation.Logout),
   async (req, res) => {
     const response = constants.AUTH.LOGOUT_SUCCESS;
-    logger.info(req.cookies.sessionId);
     await UserController.Logout(req.cookies.sessionId);
     res.status(200).json(response);
   });
