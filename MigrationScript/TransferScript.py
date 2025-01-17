@@ -6,7 +6,7 @@
 # =========================================================================================
 import json, csv
 from typing import List
-from NewDBSchema import NewProduct, NewInventory, NewCompany, NewQuote, NewProductQuote, NewReceivedOrder, NewReceivedItem
+from NewDBSchema import FileNameEnum, NewProduct, NewInventory, NewCompany, NewQuote, NewProductQuote, NewReceivedOrder, NewReceivedItem
 from OldDBSchema import Product, Inventory, Company, Quotes, ReceivedOrder, ProductQuote, User
 # =========================================================================================
 # Start
@@ -32,28 +32,31 @@ new_received_order_list: List[NewReceivedOrder] = []
 new_received_item_list: List[NewReceivedItem] = []
 
 user_list: List[User] = []
+        
+def import_all_json():
+    global old_product_list, old_inventory_list, old_quotes_list, old_product_quotes_list, old_company_list, old_received_order_list, user_list
+    user_list = [User(**item) for item in read_json_file("Users")]
+    old_product_list = [Product(**item) for item in read_json_file("Product")]
+    old_inventory_list = [Inventory(**item) for item in read_json_file("Inventory")]
+    old_quotes_list = [Quotes(**item) for item in read_json_file("Quotes")]
+    old_product_quotes_list = [ProductQuote(**item) for item in read_json_file("ProductQuotes")]
+    old_company_list = [Company(**item) for item in read_json_file("Company")]
+    old_received_order_list = [ReceivedOrder(**item) for item in read_json_file("ReceivedOrders")]
 
-def get_users_json():
-    global user_list
-    """
-    Get all Users from JSON.
-    """
-    print('Reading in Users from JSON')
-    with open("DBDumpJSON/Users.json", 'r') as file:
+def read_json_file(file_name: str):
+    file_path = "DBDumpJSON/" + file_name + ".json"
+    with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
         data = json.load(file)
-        # Map JSON objects to the custom Product class
-        user_list = [User(**item) for item in data]
+        return data
 
-def get_products_json():
-    global old_product_list
-    """
-    Get all Products from JSON.
-    """
-    print('Reading in Product from JSON')
-    with open("DBDumpJSON/Product.json", 'r') as file:
-        data = json.load(file)
-        # Map JSON objects to the custom Product class
-        old_product_list = [Product(**item) for item in data]
+def save_to_file(file_name: str, data: List):
+    print('Saving ' + file_name + ' List...')
+    with open('NewDBDump/' + file_name + '.csv', 'w', newline='', encoding='utf-8') as csv_file:
+        spam_writer = csv.writer(csv_file, delimiter=',', quotechar='"',  quoting=csv.QUOTE_MINIMAL)
+        attributes = list(data[0].__dict__.keys())
+        spam_writer.writerow(attributes)
+        for item in data:
+            spam_writer.writerow([getattr(item, attr) for attr in attributes])
 
 def convert_to_new_product_schema():
     global new_product_list
@@ -79,30 +82,8 @@ def convert_to_new_product_schema():
             updatedAt="2022-01-03 20:38:35.5-05"
         )
         new_product_list.append(tmpProd)
-
-def save_products_to_file():
-    product_header = ['id','userId', 'productNumber', 'altNumber1', 'altNumber2', 'altNumber3', 
-                      'altNumber4', 'altNumber5', 'altNumber6', 'quantity', 'productType', 
-                      'brand', 'description', 'relatedTags', 'createdAt', 'updatedAt']
-    print('Saving Product List...')
-    with open('NewDBDump/New_Product_List.csv', 'w', newline='') as csv_file:
-        spam_writer = csv.writer(csv_file, delimiter=',', quotechar='"',  quoting=csv.QUOTE_MINIMAL)
-        spam_writer.writerow(product_header)
-        for x in new_product_list:
-            spam_writer.writerow([x.id, x.userId, x.productNumber, x.altNumber1, x.altNumber2, x.altNumber3, 
-                                  x.altNumber4, x.altNumber5, x.altNumber6, x.quantity, x.productType, x.brand, 
-                                  x.description, x.relatedTags, x.createdAt, x.updatedAt])  
-
-def get_company_json():
-    global old_company_list
-    """
-    Get all Company from JSON.
-    """
-    print('Reading in Company from JSON')
-    with open("DBDumpJSON/Company.json", 'r') as file:
-        data = json.load(file)
-        # Map JSON objects to the custom Product class
-        old_company_list = [Company(**item) for item in data]
+    
+    save_to_file(FileNameEnum.PRODUCT, new_product_list)
 
 def convert_company_to_new():
     global new_company_list
@@ -122,27 +103,7 @@ def convert_company_to_new():
             updatedAt="2022-01-03 20:38:35.5-05",
         )
         new_company_list.append(tmpProd)
-
-def save_company_to_file():
-    company_header = ['id', 'userId', 'type', 'name', 'representative', 'phone', 'email', 'location', 'comment', 'createdAt', 'updatedAt']
-    print('Saving Company List...')
-    with open('NewDBDump/New_Company_List.csv', 'w', newline='', encoding='utf-8') as csv_file:
-        spam_writer = csv.writer(csv_file, delimiter=',', quotechar='"',  quoting=csv.QUOTE_MINIMAL)
-        spam_writer.writerow(company_header)
-        for x in new_company_list:
-            spam_writer.writerow([x.id, x.userId, x.type, x.name, x.representative, x.phone, 
-                                  x.email, x.location, x.comment, x.createdAt, x.updatedAt])  
-
-def get_quotes_json():
-    global old_quotes_list
-    """
-    Get all Quotes from JSON.
-    """
-    print('Reading in Quotes from JSON')
-    with open("DBDumpJSON/Quotes.json", 'r') as file:
-        data = json.load(file)
-        # Map JSON objects to the custom Product class
-        old_quotes_list = [Quotes(**item) for item in data]
+    save_to_file(FileNameEnum.COMPANY, new_company_list)
 
 def convert_quotes_to_new():
     global old_quotes_list, new_quotes_list, user_list
@@ -172,26 +133,7 @@ def convert_quotes_to_new():
             updatedAt="2022-01-03 20:38:35.5-05"
         )
         new_quotes_list.append(tmpProd)
-
-def save_quotes_file():
-    quotes_header = ['id', 'companyId', 'userId', 'dateQuoted', 'sold', 'createdAt', 'updatedAt']
-    print('Saving Quotes List...')
-    with open('NewDBDump/New_Quotes.csv', 'w', newline='', encoding='utf-8') as csv_file:
-        spam_writer = csv.writer(csv_file, delimiter=',', quotechar='"',  quoting=csv.QUOTE_MINIMAL)
-        spam_writer.writerow(quotes_header)
-        for x in new_quotes_list:
-            spam_writer.writerow([x.id, x.companyId, x.userId, x.dateQuoted,  x.sold, x.createdAt, x.updatedAt])  
-
-def get_quoted_products():
-    global old_product_quotes_list
-    """
-    Get all Product Quotes from JSON.
-    """
-    print('Reading in Product Quotes from JSON')
-    with open("DBDumpJSON/ProductQuotes.json", 'r') as file:
-        data = json.load(file)
-        # Map JSON objects to the custom Product class
-        old_product_quotes_list = [ProductQuote(**item) for item in data]
+    save_to_file(FileNameEnum.QUOTE, new_quotes_list)
 
 def convert_quoted_products_to_new():
     global old_product_quotes_list, new_product_quotes_list
@@ -219,27 +161,7 @@ def convert_quoted_products_to_new():
         if (product_id != 0):
             new_product_quotes_list.append(tmpProd)
 
-def save_quoted_products_file():
-    product_quote_header = ['id', 'quoteId', 'productId', 'quantity', 'quotedPrice', 
-                            'productCondition', 'comment', 'createdAt', 'updatedAt']
-    print('Saving upload list...')
-    with open('NewDBDump/New_Quoted_Product.csv', 'w', newline='') as csv_file:
-        spam_writer = csv.writer(csv_file, delimiter=',', quotechar='"',  quoting=csv.QUOTE_MINIMAL)
-        spam_writer.writerow(product_quote_header)
-        for x in new_product_quotes_list:
-            spam_writer.writerow([x.id, x.quoteId, x.productId, x.quantity, x.quotedPrice, 
-                                  x.productCondition, x.comment, x.createdAt, x.updatedAt])  
-
-def get_received_order_json():
-    global old_received_order_list
-    """
-    Get all Received Orders from JSON.
-    """
-    print('Reading in Received Orders from JSON')
-    with open("DBDumpJSON/ReceivedOrders.json", 'r') as file:
-        data = json.load(file)
-        # Map JSON objects to the custom Product class
-        old_received_order_list = [ReceivedOrder(**item) for item in data]
+    save_to_file(FileNameEnum.QUOTED_PRODUCT, new_product_quotes_list)
 
 # Need to create new companies based off the Orders
 def create_company_from_received(order: ReceivedOrder):
@@ -305,6 +227,7 @@ def convert_received_order_to_new():
 
         if exists is False:
             new_received_order_list.append(tmpProd)
+    save_to_file(FileNameEnum.RECEIVED_ORDER, new_received_order_list)
 
 def create_received_item():
     global old_received_order_list, new_received_item_list, new_product_list
@@ -334,38 +257,7 @@ def create_received_item():
         )
         if(productId != 0):
             new_received_item_list.append(tmp)
-
-def save_received_order_file():
-    inv_header = ['id', 'companyId', 'userId', 'purchaseOrderNumber', 'orderType', 
-                  'trackingNumber', 'dateReceived', 'shippedVia', 'comment', 'createdAt', 'updatedAt']
-    print('Saving upload list...')
-    with open('NewDBDump/New_Received_Order.csv', 'w', newline='') as csv_file:
-        spam_writer = csv.writer(csv_file, delimiter=',', quotechar='"',  quoting=csv.QUOTE_MINIMAL)
-        spam_writer.writerow(inv_header)
-        for x in new_received_order_list:
-            spam_writer.writerow([x.id, x.companyId, x.userId, x.purchaseOrderNumber, x.orderType, x.trackingNumber, 
-                                  x.dateReceived, x.shippedVia, x.comment, x.createdAt, x.updatedAt])  
-
-def save_received_item_file():
-    inv_header = ['id', 'receivingId', 'productId', 'quantity', 'cud', 'comment', 'finishedAdding', 'createdAt', 'updatedAt']
-    print('Saving upload list...')
-    with open('NewDBDump/New_Received_Item.csv', 'w', newline='') as csv_file:
-        spam_writer = csv.writer(csv_file, delimiter=',', quotechar='"',  quoting=csv.QUOTE_MINIMAL)
-        spam_writer.writerow(inv_header)
-        for x in new_received_item_list:
-            spam_writer.writerow([x.id, x.receivingId, x.productId, x.quantity, x.cud, x.comment, x.finishedAdding, 
-                                  x.createdAt, x.updatedAt])  
-
-def get_inventory_json():
-    global old_inventory_list
-    """
-    Get all Inventory from JSON.
-    """
-    print('Reading in Inventory from JSON')
-    with open("DBDumpJSON/Inventory.json", 'r') as file:
-        data = json.load(file)
-        # Map JSON objects to the custom Product class
-        old_inventory_list = [Inventory(**item) for item in data]
+    save_to_file(FileNameEnum.RECEIVED_ITEM, new_received_item_list)
 
 def convert_old_inventory_fields():
     global old_inventory_list
@@ -391,7 +283,7 @@ def convert_old_inventory_fields():
             if(c.company_name == x.seller):
                 x.new_company_id = c.company_id
 
-def covert_inventory_to_new():
+def convert_inventory_to_new():
     global new_inventory_list
     print('Converting Inventory to new Schema...')
     for x in old_inventory_list:
@@ -415,41 +307,18 @@ def covert_inventory_to_new():
             )
             if(tmpProd.productId != None):
                 new_inventory_list.append(tmpProd)
-
-def save_inventory_file():
-    inv_header = ['productId', 'serialNumber', 'condition', 'warrantyExpiration', 
-                  'tested', 'testedDate', 'comment', 'location', 'createdAt', 'updatedAt']
-    print('Saving upload list...')
-    with open('NewDBDump/New_Inventory_List.csv', 'w', newline='') as csv_file:
-        spam_writer = csv.writer(csv_file, delimiter=',', quotechar='"',  quoting=csv.QUOTE_MINIMAL)
-        spam_writer.writerow(inv_header)
-        for x in new_inventory_list:
-            spam_writer.writerow([x.productId, x.serialNumber, x.condition, x.warrantyExpiration, x.tested, 
-                                  x.testedDate, x.comment, x.location,  x.createdAt, x.updatedAt])  
+    save_to_file(FileNameEnum.INVENTORY, new_inventory_list)
 
 def run():
-    get_users_json()
-    get_products_json()
-    get_inventory_json()
-    get_quotes_json()
-    get_company_json()
-    get_received_order_json()
+    import_all_json()
     convert_to_new_product_schema()
-    save_products_to_file()
     convert_old_inventory_fields()
-    covert_inventory_to_new()
-    save_inventory_file()
+    convert_inventory_to_new()
     convert_company_to_new()
     convert_quotes_to_new()
-    save_quotes_file()
-    get_quoted_products()
     convert_quoted_products_to_new()
-    save_quoted_products_file()
     convert_received_order_to_new()
     create_received_item()
-    save_received_order_file()
-    save_received_item_file()
-    save_company_to_file()
 
 run()
 # =========================================================================================
