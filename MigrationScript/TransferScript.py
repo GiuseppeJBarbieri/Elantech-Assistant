@@ -83,7 +83,7 @@ def convert_to_new_product_schema():
         )
         new_product_list.append(tmpProd)
     
-    save_to_file(FileNameEnum.PRODUCT, new_product_list)
+    save_to_file(FileNameEnum.PRODUCT.value, new_product_list)
 
 def convert_company_to_new():
     global new_company_list
@@ -103,7 +103,7 @@ def convert_company_to_new():
             updatedAt="2022-01-03 20:38:35.5-05",
         )
         new_company_list.append(tmpProd)
-    save_to_file(FileNameEnum.COMPANY, new_company_list)
+    save_to_file(FileNameEnum.COMPANY.value, new_company_list)
 
 def convert_quotes_to_new():
     global old_quotes_list, new_quotes_list, user_list
@@ -133,7 +133,7 @@ def convert_quotes_to_new():
             updatedAt="2022-01-03 20:38:35.5-05"
         )
         new_quotes_list.append(tmpProd)
-    save_to_file(FileNameEnum.QUOTE, new_quotes_list)
+    save_to_file(FileNameEnum.QUOTE.value, new_quotes_list)
 
 def convert_quoted_products_to_new():
     global old_product_quotes_list, new_product_quotes_list
@@ -161,7 +161,7 @@ def convert_quoted_products_to_new():
         if (product_id != 0):
             new_product_quotes_list.append(tmpProd)
 
-    save_to_file(FileNameEnum.QUOTED_PRODUCT, new_product_quotes_list)
+    save_to_file(FileNameEnum.QUOTED_PRODUCT.value, new_product_quotes_list)
 
 # Need to create new companies based off the Orders
 def create_company_from_received(order: ReceivedOrder):
@@ -227,7 +227,7 @@ def convert_received_order_to_new():
 
         if exists is False:
             new_received_order_list.append(tmpProd)
-    save_to_file(FileNameEnum.RECEIVED_ORDER, new_received_order_list)
+    save_to_file(FileNameEnum.RECEIVED_ORDER.value, new_received_order_list)
 
 def create_received_item():
     global old_received_order_list, new_received_item_list, new_product_list
@@ -257,7 +257,7 @@ def create_received_item():
         )
         if(productId != 0):
             new_received_item_list.append(tmp)
-    save_to_file(FileNameEnum.RECEIVED_ITEM, new_received_item_list)
+    save_to_file(FileNameEnum.RECEIVED_ITEM.value, new_received_item_list)
 
 def convert_old_inventory_fields():
     global old_inventory_list
@@ -307,7 +307,7 @@ def convert_inventory_to_new():
             )
             if(tmpProd.productId != None):
                 new_inventory_list.append(tmpProd)
-    save_to_file(FileNameEnum.INVENTORY, new_inventory_list)
+    save_to_file(FileNameEnum.INVENTORY.value, new_inventory_list)
 
 def run():
     import_all_json()
