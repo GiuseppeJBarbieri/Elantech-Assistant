@@ -14,12 +14,10 @@ Order of Operations
 1. Users - User Types already prefilled
 2. Companies
 3. Products
-4. Inventory
-5. Quotes
-6. Quoted Products
-7. Receivings
-8. Received Items
-
-Remove all �
+4. Receiving
+5. Received Items
+6. Inventory
+7. Quotes
+8. Quoted Products
 
 ** Might need to remove the get_quoted_product() function from the script **

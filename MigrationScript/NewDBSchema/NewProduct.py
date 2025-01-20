@@ -5,7 +5,7 @@
 class NewProduct:
     def __init__(self, id: int, userId: int, productNumber: str, altNumber1: str, altNumber2: str, 
                  altNumber3: str, altNumber4: str, altNumber5: str, altNumber6: str, quantity: int, 
-                 productType: str, brand: str, description: str, relatedTags: str, createdAt: str, 
+                 productType: str, brand: str, description: str, ebayUrl: str, websiteUrl: str, quickSpecsUrl: str, relatedTags: str, reasonForRemoval: str, createdAt: str, 
                  updatedAt: str):
         self.id = id
         self.userId = userId
@@ -20,7 +20,11 @@ class NewProduct:
         self.productType = productType
         self.brand = brand
         self.description = description
+        self.ebayUrl = ebayUrl
+        self.websiteUrl = websiteUrl
+        self.quickSpecsUrl = quickSpecsUrl
         self.relatedTags = relatedTags
+        self.reasonForRemoval = reasonForRemoval
         self.createdAt = createdAt
         self.updatedAt = updatedAt   
 # =========================================================================================

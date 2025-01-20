@@ -75,7 +75,7 @@ export default (sequelize: Sequelize) => {
     },
     condition: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     warrantyExpiration: {
       type: DataTypes.DATEONLY,
