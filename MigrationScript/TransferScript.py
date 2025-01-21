@@ -453,6 +453,15 @@ def save_all():
     save_to_file(FileNameEnum.RECEIVED_ORDER.value, new_received_order_list)
     save_to_file(FileNameEnum.QUOTED_PRODUCT.value, new_product_quotes_list)
 
+    index_quotes = max(new_quotes_list, key=lambda x: x.id).id + 1
+    index_company = max(new_company_list, key=lambda x: x.id).id + 1
+    index_product = max(new_product_list, key=lambda x: x.id).id + 1
+    index_inventory = max(new_inventory_list, key=lambda x: x.id).id + 1
+    index_received_items = max(new_received_item_list, key=lambda x: x.id).id + 1
+    index_product_quotes = max(new_product_quotes_list, key=lambda x: x.id).id + 1
+    print(f'>>> Indexes: Quotes: {index_quotes}, Company: {index_company}, Product: {index_product}, Inventory: {index_inventory}, Received Items: {index_received_items}, Product Quotes: {index_product_quotes}')
+    
+
 def speed_test(toRun):
     start_time = datetime.now()
     toRun()
