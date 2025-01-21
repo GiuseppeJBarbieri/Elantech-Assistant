@@ -19,7 +19,7 @@ interface InventoryTableProps extends RouteComponentProps, HTMLAttributes<HTMLDi
 }
 
 const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) => {
-    const [inventoryList, setInventoryList] = useState<IInventory[]>(props.inventory);
+    const [inventoryList, setInventoryList] = useState<IInventory[]>([]);
     const [selectedInventoryList, setSelectedInventoryList] = useState<IInventory[]>([]);
     const [editInventorySwitch, setEditInventorySwitch] = useState(false);
     const [removeInventorySwitch, setRemoveInventorySwitch] = useState(false);
@@ -31,15 +31,29 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             id: 0,
             productId: 0,
             removedInventoryId: 0,
-            purchaseOrderId: undefined,
+            purchaseOrderId: 0,
             serialNumber: '',
             condition: '',
-            warrantyExpiration: '',
+            warrantyExpiration: new Date(),
             tested: false,
-            testedDate: '',
+            testedDate: new Date(),
             comment: '',
             location: '',
-            reserved: false
+            reserved: false,
+            Receiving: {
+                id: 0,
+                companyId: 0,
+                userId: 0,
+                purchaseOrderNumber: '',
+                orderType: '',
+                trackingNumber: '',
+                dateReceived: new Date(),
+                shippedVia: '',
+                comment: '',
+                Company: {
+                    name: '',
+                }
+            }
         }
     );
     const rankFormatterRemove = (_: any, data: any, index: any) => {
@@ -111,21 +125,21 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
         },
         {
             id: 3,
-            dataField: 'sellerName',
-            text: 'Seller Name',
-            sort: false
+            dataField: 'receiving.company.name',
+            text: 'Company Name',
+            sort: false,
         },
         {
             id: 4,
-            dataField: 'orderNumber',
+            dataField: 'receiving.purchaseOrderNumber',
             text: 'Order Number',
             sort: false,
         },
         {
             id: 5,
-            dataField: 'dateReceived',
+            dataField: 'receiving.dateReceived',
             text: 'Date Received',
-            sort: false,
+            sort: true,
         },
         {
             id: 6,
@@ -147,13 +161,13 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
         },
         {
             id: 9,
-            dataField: 'dateTested',
+            dataField: 'testedDate',
             text: 'Date Tested',
             sort: false,
         },
         {
             id: 10,
-            dataField: 'isTested',
+            dataField: 'tested',
             text: 'Tested',
             sort: false,
             headerAlign: 'center',

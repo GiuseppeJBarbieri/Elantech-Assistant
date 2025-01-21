@@ -29,7 +29,46 @@ export default {
 
   async GetAllReceiving(): Promise<IReceiving[]> {
     try {
-      return await db.receiving.findAll();
+      const qp = await db.receiving.findAll({
+        include: [
+          {
+            model: db.company,
+            attributes: ['name'],
+            required: false,
+            as: 'company',
+          },
+          {
+            model: db.user,
+            attributes: ['firstName', 'lastName'],
+            required: false,
+            as: 'user',
+          }],
+      });
+
+      const list: IReceiving[] = [];
+      qp.forEach((element) => {
+        const receiving: IReceiving = {
+          id: element?.receiving?.id,
+          companyId: element.receiving?.companyId,
+          userId: element.receiving?.userId,
+          purchaseOrderNumber: element.receiving?.purchaseOrderNumber,
+          orderType: element.receiving?.orderType,
+          trackingNumber: element.receiving?.trackingNumber,
+          dateReceived: element.receiving?.dateReceived,
+          shippedVia: element.receiving?.shippedVia,
+          comment: element.receiving?.comment,
+          Company: {
+            name: element.receiving?.company?.name,
+          },
+          User: {
+            firstName: element.receiving?.user?.firstName,
+            lastName: element.receiving?.user?.lastName,
+          },
+        };
+        list.push(receiving);
+      });
+
+      return qp;
     } catch (err) {
       standardError(err.message);
       return Promise.reject(repoErr);

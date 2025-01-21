@@ -153,16 +153,18 @@ def convert_seller_to_received(old: Inventory):
             companyId = c.id
             break
 
-    if(companyId == 0 and old.seller == None and old.seller.strip() != '' and old.seller.strip().lower() != 'n/a'
-       and old.seller.strip() != '0' and old.seller.strip() != '3' and old.seller.strip() != '6' and old.seller.strip() != '12'
-       and old.seller.strip() != '123' and old.seller.strip() != '123999' and old.seller.strip() != '????' and old.seller.strip() != 'a'):
-        companyId = max(new_company_list, key=lambda x: x.id).id + 1
-        
-        companyType = 'Auto Created'
-        if(old.seller.lower().__contains__('ebay')):
-           companyType = 'eBay'
+    if(companyId == 0):
+        if(companyId == 0 and old.seller.strip() != '' and old.seller.strip().lower() != 'n/a'
+            and old.seller.strip() != '0' and old.seller.strip() != '3' and old.seller.strip() != '6' and old.seller.strip() != '12'
+            and old.seller.strip() != '123' and old.seller.strip() != '123999' and old.seller.strip() != '????' and old.seller.strip() != 'a'):
+            
+            companyId = max(new_company_list, key=lambda x: x.id).id + 1
+            
+            companyType = 'Auto Created'
+            if(old.seller.lower().__contains__('ebay')):
+                companyType = 'eBay'
 
-        tmpComp = NewCompany(
+            tmpComp = NewCompany(
                 id=companyId,
                 userId=2,
                 type=companyType,
@@ -175,9 +177,9 @@ def convert_seller_to_received(old: Inventory):
                 createdAt='2025-01-03 20:38:35.5-05',
                 updatedAt='2025-01-03 20:38:35.5-05',
             )
-        new_company_list.append(tmpComp)
-    else:
-         return None
+            new_company_list.append(tmpComp)
+        else:
+            return None
     
     # Somehow check if the received order already exists
     receivedOrderId = 0
@@ -199,7 +201,7 @@ def convert_seller_to_received(old: Inventory):
             userId = 2,
             orderType = 'Auto Created - Here',
             trackingNumber = None,
-            dateReceived = old.date_received + ' 20:38:35.5-05',
+            dateReceived = old.date_received.replace('T', ' ') + ' 20:38:35.5-05',
             shippedVia=None,
             comment=None,
             createdAt=old.date_received + ' 20:38:35.5-05',
@@ -320,7 +322,7 @@ def create_company_from_received(order: ReceivedOrder):
 
 def convert_received_order_to_new():
     global old_received_order_list, new_received_order_list, new_company_list
-    print('Converting Received Order to new schema...')
+    print('#START# Converting Received Order to new schema...')
     receivedOrderId = 0
     if(len(new_received_order_list) != 0):
         receivedOrderId = max(new_received_order_list, key=lambda x: x.id).id
@@ -363,9 +365,12 @@ def convert_received_order_to_new():
 
         if exists is False:
             new_received_order_list.append(tmpProd)
-    
+
+    print('#END# Converting Received Order to new schema...')
+
 def create_received_item():
     global old_received_order_list, new_received_item_list, new_product_list
+    print('#START# Creating Received Items...')
     receivedItemId = 0
     if(len(new_received_item_list) != 0):
         receivedItemId = max(new_received_item_list, key=lambda x: x.id).id
@@ -395,9 +400,11 @@ def create_received_item():
         if(productId != 0):
             new_received_item_list.append(tmp)
 
+    print('#END# Creating Received Items...')
+
 def convert_inventory_to_new():
     global new_inventory_list, old_inventory_list
-    print('Converting Inventory to new Schema...')
+    print('#START# Converting Inventory to new Schema...')
     inventoryId = 0
     if(len(new_received_item_list) != 0):
         inventoryId = max(new_received_item_list, key=lambda x: x.id).id
@@ -434,6 +441,8 @@ def convert_inventory_to_new():
 
         if(tmpInv.productId != None):
             new_inventory_list.append(tmpInv)
+
+    print('#END# Converting Inventory to new Schema...')
         
 def save_all():
     save_to_file(FileNameEnum.QUOTE.value, new_quotes_list)
@@ -449,19 +458,19 @@ def speed_test(toRun):
     toRun()
     end_time = datetime.now()
     elapsed_time = end_time - start_time
-    print(f'Elapsed time: {elapsed_time}')
+    print(f'>>> Elapsed time: {elapsed_time}')
 
 def run():
-    import_all_json()
-    convert_company_to_new()
-    convert_to_new_product_schema()
-    convert_old_inventory_fields()
-    convert_quotes_to_new()
-    convert_quoted_products_to_new()
-    convert_received_order_to_new()
-    create_received_item()
-    convert_inventory_to_new()
-    save_all()
+    speed_test(import_all_json)
+    speed_test(convert_company_to_new)
+    speed_test(convert_to_new_product_schema)
+    speed_test(convert_old_inventory_fields)
+    speed_test(convert_quotes_to_new)
+    speed_test(convert_quoted_products_to_new)
+    speed_test(convert_received_order_to_new)
+    speed_test(create_received_item)
+    speed_test(convert_inventory_to_new)
+    speed_test(save_all)
     
     
 

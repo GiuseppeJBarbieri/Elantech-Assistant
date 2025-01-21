@@ -20,7 +20,7 @@ const standardError = (message: string) => {
 export default {
   async Add(ReceivedItem: IReceivedItem): Promise<IReceivedItem> {
     try {
-      return db.ReceivedItem.create(ReceivedItem);
+      return db.receivedItem.create(ReceivedItem);
     } catch (err) {
       standardError(`${err.name} ${err.message}`);
       throw repoErr;
@@ -29,7 +29,7 @@ export default {
 
   async GetAllReceiving(): Promise<IReceivedItem[]> {
     try {
-      return await db.ReceivedItem.findAll();
+      return await db.receivedItem.findAll();
     } catch (err) {
       standardError(err.message);
       return Promise.reject(repoErr);
@@ -38,7 +38,7 @@ export default {
 
   async Get(id: number): Promise<IReceivedItem> {
     try {
-      return await db.ReceivedItem.findOne({
+      return await db.receivedItem.findOne({
         where: { id },
       });
     } catch (err) {
@@ -47,9 +47,32 @@ export default {
     }
   },
 
+  async GetByReceivingId(id: number): Promise<IReceivedItem[]> {
+    try {
+      const list = await db.receivedItem.findAll({
+        where: {
+          receivingId: id,
+        },
+        include: [
+          {
+            model: db.product,
+            required: true,
+            attributes: ['productNumber', 'productType', 'brand', 'description'],
+            as: 'product',
+          },
+        ],
+      });
+
+      return list;
+    } catch (err) {
+      standardError(err.message);
+      return Promise.reject(repoErr);
+    }
+  },
+
   async Edit(ReceivedItem: IReceivedItem): Promise<IReceivedItem> {
     try {
-      return await db.ReceivedItem.update(ReceivedItem, {
+      return await db.receivedItem.update(ReceivedItem, {
         where: {
           id: ReceivedItem.id,
         },
@@ -62,7 +85,7 @@ export default {
 
   async Delete(id: number): Promise<IReceivedItem[]> {
     try {
-      return await db.ReceivedItem.delete({
+      return await db.receivedItem.delete({
         where: { id },
       });
     } catch (err) {

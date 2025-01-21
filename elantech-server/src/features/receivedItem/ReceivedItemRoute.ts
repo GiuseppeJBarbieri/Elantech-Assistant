@@ -48,6 +48,17 @@ router.get('/:id', authenticationMiddleware, validate(ReceivedItemValidation.Get
   });
 
 /**
+* This route will fetch a ReceivedItem by receiving id
+*/
+router.get('/receiving/:id', authenticationMiddleware, validate(ReceivedItemValidation.GetReceivedItem),
+  (req, res, next) => {
+    logger.info('GET Received Item by Receiving Id');
+    ReceivedItemController.GetByReceivingId(Number(req.params.id))
+      .then((receivedItems) => res.status(200).json(receivedItems))
+      .catch((err) => next(err));
+  });
+
+/**
 * This route will update a ReceivedItem
 */
 router.put('/', authenticationMiddleware, validate(ReceivedItemValidation.PutReceivedItem),

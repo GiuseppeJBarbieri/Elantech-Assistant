@@ -1,20 +1,30 @@
 import * as React from 'react';
 import { FunctionComponent, HTMLAttributes, useState } from 'react';
-import { Button, DropdownButton, Dropdown } from 'react-bootstrap';
-import { Pencil, Plus } from 'react-bootstrap-icons';
+import { Button, DropdownButton, Dropdown, InputGroup } from 'react-bootstrap';
+import { Pencil, Plus, Search } from 'react-bootstrap-icons';
 import BootstrapTable, { ColumnDescription } from 'react-bootstrap-table-next';
-import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { AddReceivingOrderModal } from '../../components/Modals/Receiving/AddReceivingOrderModal';
 import { EditReceivingOrderModal } from '../../components/Modals/Receiving/EditReceivingOrderModal';
 import { ExpandedReceivingRow } from '../../components/ExpandedReceivingRow/ExpandedReceivingRow';
+import IReceiving from '../../types/IReceiving';
+import { requestAllReceiving } from '../../utils/Requests';
+import ToolkitProvider from 'react-bootstrap-table2-toolkit';
+import { SpinnerBlock } from '../../components/LoadingAnimation/SpinnerBlock';
+import { DebounceInput } from 'react-debounce-input';
+import filterFactory from 'react-bootstrap-table2-filter';
+import paginationFactory from 'react-bootstrap-table2-paginator';
 
 interface ReceivingProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> { }
 
 export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) => {
     const [addReceivingSwitch, setAddReceivingSwitch] = useState(false);
     const [editOrderSwitch, setEditOrderSwitch] = useState(false);
-
+    const [receivingList, setReceivingList] = useState<IReceiving[]>([]);
+    const [isSearching] = useState(false);
+    const [searchString, setSearchString] = useState<string>('');
+    const [searchHistoryFilterText, setSearchHistoryFilterText] = useState('Search History');
+    const [searchHistory, setSearchHistory] = useState<string[]>([]);
     const rankFormatterEdit = (_: any, data: any, index: any) => {
         return (
             <div
@@ -38,190 +48,186 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) 
     };
     const column: ColumnDescription<any, any>[] = [
         {
-            dataField: 'po_number',
+            dataField: 'purchaseOrderNumber',
             text: 'PO Number',
             sort: true,
         },
         {
-            dataField: 'purchased_from',
+            dataField: 'company.name',
             text: 'Purchased From',
             sort: false,
         },
         {
-            dataField: 'received_by',
+            dataField: 'user.firstName',
             text: 'Received By',
             sort: false,
         },
         {
-            dataField: 'order_type',
+            dataField: 'orderType',
             text: 'Order Type',
             sort: false,
         },
         {
-            dataField: 'tracking_number',
+            dataField: 'trackingNumber',
             text: 'Tracking Number',
             sort: false,
         },
         {
-            dataField: 'shipped_via',
+            dataField: 'shippedVia',
             text: 'Shipped Via',
             sort: false,
         },
         {
-            dataField: 'date_received',
+            dataField: 'dateReceived',
             text: 'Date Received',
             sort: false,
         },
         {
-            dataField: 'comments',
+            dataField: 'comment',
             text: 'Comments',
             sort: false,
         },
-        {
-            dataField: 'completed',
-            text: 'Completed',
-            sort: false,
-        },
+        // {
+        //     dataField: 'completed',
+        //     text: 'Completed',
+        //     sort: false,
+        // },
+        // {
+        //     dataField: 'edit',
+        //     text: 'Edit',
+        //     sort: false,
+        //     formatter: rankFormatterEdit,
+        //     headerAlign: 'center',
+        //     style: {
+        //         textAlign: 'center'
+        //     }
+        // },
+    ];
+    const handleSearch = (input: string, props: { searchText?: string; onSearch: any; onClear?: () => void; }) => {
+        if (input !== '' || input !== undefined) {
+            const result = searchHistory.includes(input);
+            if (!result) { input.length > 0 && searchHistory.push(input) }
 
-        {
-            dataField: 'edit',
-            text: 'Edit',
-            sort: false,
-            formatter: rankFormatterEdit,
-            headerAlign: 'center',
-            style: {
-                textAlign: 'center'
-            }
-        },
-    ];
-    const fake_data = [
-        {
-            order_id: 1,
-            po_number: '93847562',
-            date_received: '2022-04-15',
-            purchased_from: 'Tech Solutions',
-            received_by: 'Sophia',
-            comments: 'Updated comments!',
-            completed: false,
-            shipped_via: 'FedEx',
-            tracking_number: '782910463728194738',
-            order_type: 'Exchange'
-        },
-        {
-            order_id: 2,
-            po_number: '56473829',
-            date_received: '2022-05-22',
-            purchased_from: 'Electro World',
-            received_by: 'Alex',
-            comments: 'Revised comments!',
-            completed: false,
-            shipped_via: 'DHL',
-            tracking_number: '495671023847563829',
-            order_type: 'Repair'
-        },
-        {
-            order_id: 3,
-            po_number: '10928374',
-            date_received: '2022-06-10',
-            purchased_from: 'Gadget Galaxy',
-            received_by: 'Emma',
-            comments: 'Updated information!',
-            completed: true,
-            shipped_via: 'USPS',
-            tracking_number: '612345678901234567',
-            order_type: 'Return'
-        },
-        {
-            order_id: 4,
-            po_number: '87509212',
-            date_received: '2022-07-05',
-            purchased_from: 'Service Express',
-            received_by: 'Giuseppe',
-            comments: 'New comments here!',
-            completed: true,
-            shipped_via: 'UPS',
-            tracking_number: '345678901234567890',
-            order_type: 'RMA'
-        }        
-    ];
-    const options = {
-        custom: true,
-        totalSize: fake_data.length
+            searchHistory.length > 5 && setSearchHistory(searchHistory.slice(1, searchHistory.length));
+            setSearchString(input);
+        } else {
+            setSearchHistoryFilterText('Search History');
+        }
+        props.onSearch(input);
     };
+    const customTotal = (from: number, to: number, size: number) => {
+        return (
+            <span className="react-bootstrap-table-pagination-total"
+                style={{ marginLeft: 5 }}>
+                {size} Results
+            </span>)
+    };
+    const options = {
+        showTotal: true,
+        paginationTotalRenderer: customTotal
+    };
+    const getAllReceiving = async () => {
+        // API call to get all receiving
+        const receiving = await requestAllReceiving();
+        setReceivingList(receiving);
+    }
+    React.useEffect(() => {
+        getAllReceiving();
+    }, []);
     return (
         <section className="text-white main-section overflow-auto">
             <div style={{ padding: 20 }}>
-                <div className='d-flex justify-content-between'>
-                    <h2 style={{ fontWeight: 300 }}>Receiving - NON FUNCTIONAL - DO NOT USE</h2>
-                    <div>
-                        <Button variant="dark" onClick={() => { setAddReceivingSwitch(true) }} >
-                            <Plus height="25" width="25" style={{ marginTop: -3, marginLeft: -10 }} />Order
-                        </Button>
-                    </div>
-                </div>
-                <hr />
-                <div className='d-flex justify-content-between'>
-                    <input type='text'
-                        className="form-control custom-input"
-                        placeholder="Search by PO Number"
-                        style={{ width: 200 }}
-                    />
-                    <div className='d-flex'>
-                        <DropdownButton
-                            key={'dark'}
-                            variant="dark"
-                            menuVariant="dark"
-                            title={'Search History '}
-                        >
-                            <Dropdown.Item eventKey="1">---------</Dropdown.Item>
-                            <Dropdown.Item eventKey="2">---------</Dropdown.Item>
-                            <Dropdown.Item eventKey="3" active>---------</Dropdown.Item>
-                            <Dropdown.Item eventKey="4">---------</Dropdown.Item>
-                        </DropdownButton>
-                    </div>
-                </div>
-                <br />
-                <div>
-                    <PaginationProvider
-                        pagination={paginationFactory(options)}
-                    >
-                        {
-                            ({
-                                paginationProps,
-                                paginationTableProps
-                            }) => (
+                <ToolkitProvider
+                    keyField="id"
+                    data={receivingList}
+                    columns={column}
+                    search
+                >
+                    {
+                        props => {
+                            return (
                                 <div>
-                                    <BootstrapTable
-                                        key='product_table'
-                                        {...paginationTableProps}
-                                        keyField="order_id"
-                                        bootstrap4
-                                        data={fake_data}
-                                        columns={column}
-                                        classes="table table-dark table-hover table-striped table-responsive"
-                                        noDataIndication="Table is Empty"
-                                        expandRow={{
-                                            onlyOneExpanding: true,
-                                            renderer: (row, index) => {
-                                                return (
-                                                    <ExpandedReceivingRow />
-                                                )
-                                            }
-                                        }}
-                                    />
-                                    <div className='d-flex justify-content-between'>
-                                        <SizePerPageDropdownStandalone
-                                            {...paginationProps}
-                                        />
-                                        <PaginationListStandalone
-                                            {...paginationProps}
-                                        />
-                                    </div>
+                                    {isSearching ?
+                                        <SpinnerBlock />
+                                        :
+                                        <div>
+                                            <div className='d-flex justify-content-between'>
+                                                <h2 style={{ fontWeight: 300 }}>Receiving</h2>
+                                                {
+                                                    /* 
+                                                    <div>
+                                                        <Button variant="dark" onClick={() => { setAddReceivingSwitch(true) }} >
+                                                            <Plus height="25" width="25" style={{ marginTop: -3, marginLeft: -10 }} />Order
+                                                        </Button>
+                                                    </div> 
+                                                    */
+                                                }
+                                            </div>
+                                            <hr />
+                                            <div className='d-flex justify-content-between'>
+                                                <div className='d-flex justify-space-between'>
+                                                    <InputGroup className="mb-3">
+                                                        <InputGroup.Text id="basic-addon2">
+                                                            <Search />
+                                                        </InputGroup.Text>
+                                                        <DebounceInput
+                                                            type="text"
+                                                            className='debounce'
+                                                            placeholder="Search..."
+                                                            debounceTimeout={500}
+                                                            value={searchString}
+                                                            onChange={e => {
+                                                                handleSearch(e.target.value, { ...props.searchProps });
+                                                            }} />
+                                                    </InputGroup>
+                                                    <InputGroup className="mb-3">
+                                                        <DropdownButton
+                                                            key={'dark'}
+                                                            variant="dark"
+                                                            menuVariant="dark"
+                                                            title={searchHistoryFilterText}
+                                                            onSelect={e => {
+                                                                setTimeout(() => handleSearch(e as string, { ...props.searchProps }), 100);
+                                                            }}
+                                                        >
+                                                            {searchHistory.length > 0 ?
+                                                                searchHistory.map((o, index) => {
+                                                                    return <Dropdown.Item key={index} eventKey={o}>{o}</Dropdown.Item>;
+                                                                })
+                                                                :
+                                                                <Dropdown.Item disabled>No History</Dropdown.Item>}
+                                                            <Dropdown.Item eventKey=''>Clear</Dropdown.Item>
+                                                        </DropdownButton>
+                                                    </InputGroup>
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <BootstrapTable
+                                                {...props.baseProps}
+                                                bootstrap4
+                                                striped
+                                                hover
+                                                noDataIndication='TABLE IS EMPTY'
+                                                pagination={paginationFactory(options)}
+                                                filter={filterFactory()}
+                                                classes="table table-dark table-hover table-striped table-responsive"
+                                                expandRow={{
+                                                    onlyOneExpanding: true,
+                                                    renderer: (row, index) => {
+                                                        return (
+                                                            <ExpandedReceivingRow
+                                                                receiving={row}
+                                                                getAllReceiving={getAllReceiving} />
+                                                        )
+                                                    }
+                                                }} />
+                                        </div>
+                                    }
                                 </div>
-                            )
+                            );
                         }
-                    </PaginationProvider>
-                </div>
+                    }
+                </ToolkitProvider>
             </div>
             {
                 addReceivingSwitch &&

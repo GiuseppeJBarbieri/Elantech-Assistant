@@ -32,6 +32,18 @@ export default {
     }
   },
 
+  async GetByReceivingId(id: number) {
+    try {
+      const receivedItem = await ReceivedItemRepository.GetByReceivingId(id);
+      return {
+        ...constants.HTTP.SUCCESS.SELECTED,
+        payload: [...receivedItem],
+      };
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  },
+
   async Add(ReceivedItem: IReceivedItem): Promise<IHTTPResponse> {
     try {
       const _ReceivedItem = { ...ReceivedItem };

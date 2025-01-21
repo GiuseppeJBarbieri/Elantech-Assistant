@@ -24,7 +24,7 @@ export default {
 
   PostProduct: {
     body: {
-      id: Joi.number().optional().allow(null, ''),
+      id: Joi.number().optional(),
       userId: Joi.number().required(),
       productNumber: Joi.string().required(),
       altNumber1: Joi.string().optional().allow(null, ''),

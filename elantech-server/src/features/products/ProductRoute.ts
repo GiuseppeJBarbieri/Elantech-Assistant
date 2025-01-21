@@ -12,14 +12,18 @@ const router = express.Router();
  */
 router.post('/', authenticationMiddleware, validate(ProductValidation.PostProduct),
   (req, res, next) => {
-    logger.info('POST PRODUCT');
+    logger.info('POST PRODUCT', req.body);
+
     // eslint-disable-next-line dot-notation
     req.body.userId = req.session['userId'];
     ProductController.Add(req.body)
       .then((response) => {
         res.status(201).json(response);
       })
-      .catch((err) => next(err));
+      .catch((err) => {
+        next(err);
+        logger.info(err, req.body);
+      });
   });
 
 /**

@@ -8,14 +8,20 @@ import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, P
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { EditReceivedProductOrderModal } from '../Modals/Receiving/EditReceivedProductOrderModal';
 import { ReceivingAddProductModal } from '../Modals/Receiving/ReceivingAddProductModal';
+import IReceivedItem from '../../types/IReceivedItem';
+import { requestAllReceivedItems } from '../../utils/Requests';
+import IReceiving from '../../types/IReceiving';
 
 interface ExpandedReceivingRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
+    receiving: IReceiving;
+    getAllReceiving: () => void;
 }
 
-const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps> = () => {
+const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps> = (props) => {
     const [editProductSwitch, setEditProductSwitch] = useState(false);
     const [addInventorySwitch, setAddInventorySwitch] = useState(false);
     const [addProductSwitch, setAddProductSwitch] = useState(false);
+    const [receivedItemList, setReceivedItemList] = useState<IReceivedItem[]>([]);
 
     const rankFormatterAdd = () => {
         return (
@@ -72,112 +78,89 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
             sort: false,
         },
         {
-            dataField: 'product_number',
+            dataField: 'product.productNumber',
             text: 'Product Number',
             sort: true,
         },
         {
-            dataField: 'product_type',
+            dataField: 'product.productType',
             text: 'Type',
             sort: true,
         },
         {
-            dataField: 'brand',
+            dataField: 'product.brand',
             text: 'Brand',
             sort: true,
         },
         {
-            dataField: 'description',
+            dataField: 'product.description',
             text: 'Description',
             sort: true,
         },
         {
-            dataField: 'condition_upon_delivery',
+            dataField: 'cud',
             text: 'CUD',
             sort: true,
         },
         {
-            dataField: 'added_to_inventory',
+            dataField: 'finishedAdding',
             text: 'Added',
             sort: true,
         },
-        {
-            dataField: 'Add',
-            text: 'Receive Item',
-            sort: false,
-            formatter: rankFormatterAdd,
-            headerAlign: 'center',
-            style: {
-                textAlign: 'center'
-            }
-        },
-        {
-            dataField: 'edit',
-            text: 'Edit',
-            sort: false,
-            formatter: rankFormatterEdit,
-            headerAlign: 'center',
-            style: {
-                textAlign: 'center'
-            }
-        },
-        {
-            dataField: 'remove',
-            text: 'Delete',
-            sort: false,
-            formatter: rankFormatterRemove,
-            headerAlign: 'center',
-            style: {
-                textAlign: 'center'
-            }
-        }
-    ];
-    const fake_data = [
-        {
-            quantity: 1,
-            product_number: '875001-B21',
-            condition_upon_delivery: 'New',
-            added_to_inventory: 'Yes',
-            added_by: 'Giuseppe',
-            product_type: 'Raid Controller',
-            brand: 'HPE',
-            description: 'HPE Smart Array P408i-a SR Gen10 Controller',
-        },
-        {
-            quantity: 3,
-            product_number: '875001-B21',
-            condition_upon_delivery: 'New',
-            added_to_inventory: 'Yes',
-            added_by: 'Giuseppe',
-            product_type: 'Raid Controller',
-            brand: 'HPE',
-            description: 'HPE Smart Array P408i-a SR Gen10 Controller',
-        },
-        {
-            quantity: 12,
-            product_number: '875001-B21',
-            condition_upon_delivery: 'Used',
-            added_to_inventory: 'No',
-            added_by: 'Giuseppe',
-            product_type: 'Raid Controller',
-            brand: 'HPE',
-            description: 'HPE Smart Array P408i-a SR Gen10 Controller',
-        },
+        // {
+        //     dataField: 'Add',
+        //     text: 'Receive Item',
+        //     sort: false,
+        //     formatter: rankFormatterAdd,
+        //     headerAlign: 'center',
+        //     style: {
+        //         textAlign: 'center'
+        //     }
+        // },
+        // {
+        //     dataField: 'edit',
+        //     text: 'Edit',
+        //     sort: false,
+        //     formatter: rankFormatterEdit,
+        //     headerAlign: 'center',
+        //     style: {
+        //         textAlign: 'center'
+        //     }
+        // },
+        // {
+        //     dataField: 'remove',
+        //     text: 'Delete',
+        //     sort: false,
+        //     formatter: rankFormatterRemove,
+        //     headerAlign: 'center',
+        //     style: {
+        //         textAlign: 'center'
+        //     }
+        // }
     ];
     const options = {
         custom: true,
         sizePerPage: 5,
-        totalSize: fake_data.length
-
+        totalSize: receivedItemList.length
     };
+    const getAllReceivedItems = async () => {
+        if (props.receiving.id !== undefined) {
+            const receiving = await requestAllReceivedItems(props.receiving.id);
+            console.log(receiving);
+            setReceivedItemList(receiving);
+        }
+    }
+    React.useEffect(() => {
+        getAllReceivedItems();
+    }, []);
     return (
         <div style={{ padding: 20 }} className='expandedProductRow'>
             <Navbar bg="dark" variant="dark">
                 <Navbar.Brand>Received Products</Navbar.Brand>
                 <Nav className="me-auto" style={{ marginBottom: -3 }}>
-                    <Nav.Link onClick={() => {
+                    {/* <Nav.Link onClick={() => {
                         setAddProductSwitch(true);
-                    }}>Add Product</Nav.Link>
+                    }}>Add Product</Nav.Link> */}
                 </Nav>
             </Navbar>
             <hr />
@@ -197,8 +180,8 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
                                     condensed
                                     {...paginationTableProps}
                                     columns={column_inner}
-                                    keyField="serial_number"
-                                    data={fake_data}
+                                    keyField="id"
+                                    data={receivedItemList}
                                     classes="table table-dark table-hover table-striped"
                                     noDataIndication="Table is Empty"
 

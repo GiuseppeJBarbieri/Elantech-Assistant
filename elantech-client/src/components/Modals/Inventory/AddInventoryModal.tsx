@@ -1,4 +1,3 @@
-import moment from 'moment';
 import React, { HTMLAttributes, FunctionComponent, useEffect } from 'react';
 import { useState } from 'react';
 import { Modal, Spinner, Form, Button, InputGroup, Col, Row } from 'react-bootstrap';
@@ -21,13 +20,13 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
     const [isSaving, setIsSaving] = useState(false);
     const [radioSwitch, setRadioSwitch] = useState(false);
     const [quantity, setQuantity] = useState(0);
-    const [warrantyDate, setWarrantyDate] = useState(moment(new Date()).format('YYYY-MM-DD'));
-    const [dateTested, setDateTested] = useState(moment(new Date()).format('YYYY-MM-DD'));
+    const [warrantyDate, setWarrantyDate] = useState<Date>(new Date());
+    const [dateTested, setDateTested] = useState<Date>(new Date());
     const [inventoryObj, setInventoryObj] = useState<IInventory>({
         id: 0,
         productId: props.selectedProduct.id || 0,
-        removedInventoryId: undefined,
-        purchaseOrderId: undefined,
+        removedInventoryId: 0,
+        purchaseOrderId: 0,
         serialNumber: '',
         condition: 'Choose Condition',
         warrantyExpiration: warrantyDate,
@@ -90,7 +89,7 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
             setIsSaving(false);
             setAlert({ ...alert, label: 'Please select a condition!', show: true });
             return false;
-        } else if (inventoryObj.warrantyExpiration === '') {
+        } else if (!inventoryObj.warrantyExpiration) {
             setIsSaving(false);
             setAlert({ ...alert, label: 'Warranty Expiration cannot be empty!', show: true });
             return false;
@@ -126,8 +125,8 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
         addNextInventory();
     };
     useEffect(() => {
-        setWarrantyDate(moment(new Date()).format('YYYY-MM-DD'));
-        setDateTested(moment(new Date()).format('YYYY-MM-DD'));
+        setWarrantyDate(new Date());
+        setDateTested(new Date());
     }, []);
         
     return (
@@ -228,20 +227,20 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                                     <Form.Group as={Col}>
                                         <Form.Label>Warranty Expiration<Form.Label style={{ color: '#ff2f2f', fontSize: 12, fontWeight: 300, marginLeft: 5 }}>*</Form.Label></Form.Label>
                                         <Form.Control id="orderNumber" type="date"
-                                            value={warrantyDate}
+                                            value={warrantyDate.valueOf()}
                                             onChange={(e) => {
-                                                setWarrantyDate(moment(e.target.value).format('YYYY-MM-DD'));
-                                                setInventoryObj({ ...inventoryObj, warrantyExpiration: moment(e.target.value).format() });
+                                                setWarrantyDate(new Date(e.target.value));
+                                                setInventoryObj({ ...inventoryObj, warrantyExpiration:new Date(e.target.value) });
                                             }}
                                         />
                                     </Form.Group>
                                     <Form.Group as={Col}>
                                         <Form.Label>Date Tested</Form.Label>
                                         <Form.Control id="dateTested" type="date"
-                                            value={dateTested}
+                                            value={dateTested.valueOf()}
                                             onChange={(e) => {
-                                                setDateTested(moment(e.target.value).format('YYYY-MM-DD'));
-                                                setInventoryObj({ ...inventoryObj, testedDate: moment(e.target.value).format() })
+                                                setDateTested(new Date(e.target.value));
+                                                setInventoryObj({ ...inventoryObj, testedDate: new Date(e.target.value) })
                                             }}
                                         />
                                     </Form.Group>

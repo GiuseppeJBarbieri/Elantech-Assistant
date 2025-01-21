@@ -24,6 +24,7 @@ export default {
       return await db.product.create(product);
     } catch (err) {
       standardError(`${err.name} ${err.message}`);
+      standardError(err);
       throw repoErr;
     }
   },

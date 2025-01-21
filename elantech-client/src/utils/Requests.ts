@@ -6,6 +6,8 @@ import IProduct from '../types/IProduct';
 import IQuote from '../types/IQuote';
 import IQuotedProduct from '../types/IQuotedProduct';
 import IRemovedInventory from '../types/IRemovedInventory';
+import IReceiving from '../types/IReceiving';
+import IReceivedItem from '../types/IReceivedItem';
 
 // USERS
 export const requestLogout = async (): Promise<AxiosResponse<unknown, unknown>> => {
@@ -93,4 +95,13 @@ export const requestAddRemovedInventory = async (removedInventory: IRemovedInven
     return axios.post(`${BASE_API_URL}${ROUTES.REMOVED_INVENTORY}`, removedInventory, { withCredentials: true }).then((response) => response);
 }
 
+// Receiving
+export const requestAllReceiving = async (): Promise<IReceiving[]> => {
+    return axios.get(`${BASE_API_URL}${ROUTES.RECEIVING}`, { withCredentials: true }).then((response) => response?.data?.payload);
+}
+
+// Received Items
+export const requestAllReceivedItems = async (receivingId: number): Promise<IReceivedItem[]> => {
+    return axios.get(`${BASE_API_URL}${ROUTES.RECEIVED_ITEM}/receiving/${receivingId}`, { withCredentials: true }).then((response) => response?.data?.payload);
+}
 

@@ -1,3 +1,4 @@
+import IReceiving from '../receiving/IReceiving';
 import IRemovedInventory from '../removedInventory/IRemovedInventory';
 
 interface IInventory {
@@ -14,6 +15,7 @@ interface IInventory {
     location: string;
     reserved: boolean;
     RemovedInventory?: IRemovedInventory;
+    Receiving?: IReceiving;
 }
 
 export default IInventory;

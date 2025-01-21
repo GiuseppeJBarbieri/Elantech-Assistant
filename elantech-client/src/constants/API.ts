@@ -9,5 +9,5 @@ export enum ROUTES  {
     QUOTED_PRODUCTS = 'quotedProduct',
     REMOVED_INVENTORY = 'removedInventory',
     RECEIVING = 'receiving',
-    ReceivedItem = 'receivedItem'
+    RECEIVED_ITEM = 'receivedItem'
 }
