@@ -2,7 +2,7 @@ import * as React from 'react';
 import { FunctionComponent, HTMLAttributes, useEffect, useState } from 'react';
 import filterFactory, { selectFilter } from 'react-bootstrap-table2-filter';
 import { Dropdown, DropdownButton, InputGroup } from 'react-bootstrap';
-import { Pencil, Search, Trash } from 'react-bootstrap-icons';
+import { Pencil, Search as SearchIcon, Trash } from 'react-bootstrap-icons';
 import { DebounceInput } from 'react-debounce-input';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
@@ -37,6 +37,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [productList, setProductList] = useState<IProduct[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<IProduct>(defaultProduct);
+  const [searchResults, setSearchResults] = useState<IProduct[]>([]);
 
   const rankFormatterRemove = (_: unknown, data: IProduct) => {
     return (
@@ -96,7 +97,6 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
     {
       text: '',
       dataField: 'productType',
-      sort: true,
       headerAlign: 'center',
       filter: selectFilter({
         options: typeOptionsList,
@@ -104,6 +104,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
         className: 'btn btn-dark',
         style: { height: 25, padding: 0 }
       }),
+      sort: true,
     },
     {
       text: '',
@@ -147,11 +148,19 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
     } else {
       setSearchHistoryFilterText('Search History');
     }
-    props.onSearch(input);
+    // I need to search by all fields than grab the product number associated with it
+    // props.onSearch(input.toLowerCase().trim());
+    const results = productList.filter(product =>
+      Object.values(product).some(value =>
+        value?.toString().toLowerCase().includes(input.toLowerCase())
+      )
+    );
+    setSearchResults(results);
   };
   const getAllProducts = async () => {
     const products = await requestAllProducts();
-    setProductList(products)
+    setProductList(products);
+    setSearchResults(products);
   };
   const logout = async () => {
     const response = await requestLogout();
@@ -183,9 +192,9 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
         <div>
           <ToolkitProvider
             keyField="id"
-            data={productList}
+            data={searchResults}
             columns={column}
-            search
+            search //00KC570
           >
             {
               props => {
@@ -199,7 +208,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
                           <div className='d-flex justify-space-between'>
                             <InputGroup className="mb-3">
                               <InputGroup.Text id="basic-addon2">
-                                <Search />
+                                <SearchIcon />
                               </InputGroup.Text>
                               <DebounceInput
                                 type="text"

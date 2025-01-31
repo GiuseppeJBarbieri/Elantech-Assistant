@@ -63,3 +63,7 @@ td {
 .sr-only {
   display: none;
 }
+
+th {
+  min-width: 90px;
+}
