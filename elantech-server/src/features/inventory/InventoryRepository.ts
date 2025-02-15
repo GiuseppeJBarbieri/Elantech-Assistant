@@ -22,7 +22,7 @@ const standardError = (message: string) => {
 export default {
   async GetByProductId(productId: number): Promise<IInventory[]> {
     try {
-      const qp = await db.inventory.findAll({
+      return await db.inventory.findAll({
         where: { productId },
         include: [
           {
@@ -41,43 +41,7 @@ export default {
             ],
           },
         ],
-      });
-
-      const list: IInventory[] = [];
-
-      qp.forEach((element) => {
-        const inventory: IInventory = {
-          id: element.id,
-          productId: element.productId,
-          removedInventoryId: element.removedInventoryId,
-          purchaseOrderId: element.purchaseOrderId,
-          serialNumber: element.serialNumber,
-          condition: element.condition,
-          warrantyExpiration: element.warrantyExpiration,
-          tested: element.tested,
-          testedDate: element.testedDate,
-          comment: element.comment,
-          location: element.location,
-          reserved: element.reserved,
-          Receiving: {
-            id: element?.receiving?.id,
-            companyId: element.receiving?.companyId,
-            userId: element.receiving?.userId,
-            purchaseOrderNumber: element.receiving?.purchaseOrderNumber,
-            orderType: element.receiving?.orderType,
-            trackingNumber: element.receiving?.trackingNumber,
-            dateReceived: element.receiving?.dateReceived,
-            shippedVia: element.receiving?.shippedVia,
-            comment: element.receiving?.comment,
-            Company: {
-              name: element.receiving?.company?.name,
-            },
-          },
-        };
-        list.push(inventory);
-      });
-
-      return qp;
+      }) as IInventory[];
     } catch (err) {
       standardError(err.message);
       return Promise.reject(repoErr);

@@ -49,7 +49,7 @@ export default {
 
   async GetByReceivingId(id: number): Promise<IReceivedItem[]> {
     try {
-      const list = await db.receivedItem.findAll({
+      return await db.receivedItem.findAll({
         where: {
           receivingId: id,
         },
@@ -61,9 +61,7 @@ export default {
             as: 'product',
           },
         ],
-      });
-
-      return list;
+      }) as IReceivedItem[];
     } catch (err) {
       standardError(err.message);
       return Promise.reject(repoErr);

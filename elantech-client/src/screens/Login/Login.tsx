@@ -60,6 +60,7 @@ export const LoginLayout: FunctionComponent<LoginProps> = ({ history, setLoggedI
         <div className='container rounded  frame' style={{ textAlign: 'center', padding: 150 }}>
           <h2 style={{ 'marginBottom': 10, fontWeight: 400 }}>Welcome Back</h2>
           <p style={{ 'marginBottom': 25, fontWeight: 200, color: '#878787' }}>Elantech Management System</p>
+          <p style={{ 'marginBottom': 25, fontWeight: 200, color: '#878787' }}>Version 0.1.2</p>
           <div className='container' style={{ 'maxWidth': 350, 'borderRadius': '15px !important' }}>
             <input required type='text' className="form-control" placeholder="Enter Email" style={{ 'marginBottom': 10, 'textAlign': 'center', 'backgroundColor': '#0f0f0f', 'borderColor': '#202020', 'color': '#fff', height: 45 }} value={email} onChange={(e) => setEmail(e.target.value)} />
             <input type='password' className="form-control" placeholder="Password" style={{ 'marginBottom': 15, 'textAlign': 'center', 'backgroundColor': '#0f0f0f', 'borderColor': '#202020', 'color': '#fff', height: 45 }} value={password} onChange={(e) => setPassword(e.target.value)} onKeyDown={handleKeyDown} />

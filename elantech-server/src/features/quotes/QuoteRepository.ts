@@ -59,7 +59,7 @@ export default {
 
   async GetByCompanyId(companyId: number): Promise<IQuote[]> {
     try {
-      const responseList = await db.quote.findAll({
+      return await db.quote.findAll({
         where: { companyId },
         include: [
           {
@@ -75,22 +75,7 @@ export default {
             as: 'user',
           },
         ],
-      });
-
-      const list: IQuote[] = [];
-      responseList.forEach((element) => {
-        const tmp: IQuote = {
-          id: element.id,
-          companyId: element.companyId,
-          userId: element.userId,
-          dateQuoted: element.dateQuoted,
-          sold: element.sold,
-          User: element.user,
-          QuotedProducts: element.quotedProducts,
-        };
-        list.push(tmp);
-      });
-      return responseList;
+      }) as IQuote[];
     } catch (err) {
       standardError(err.message);
       return Promise.reject(repoErr);

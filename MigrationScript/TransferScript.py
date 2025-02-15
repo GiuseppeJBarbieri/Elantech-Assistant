@@ -12,6 +12,8 @@ from OldDBSchema import Product, Inventory, Company, Quotes, ReceivedOrder, Prod
 # =========================================================================================
 # Start
 # =========================================================================================
+# Properties
+# =========================================================================================
 old_product_list: List[Product] = []
 new_product_list: List[NewProduct] = []
 old_inventory_list: List[Inventory] = []
@@ -26,7 +28,9 @@ old_received_order_list: List[ReceivedOrder] = []
 new_received_order_list: List[NewReceivedOrder] = []
 new_received_item_list: List[NewReceivedItem] = []
 user_list: List[User] = []
-        
+# =========================================================================================
+# Helper Functions
+# =========================================================================================
 def import_all_json():  
     global old_product_list, old_inventory_list, old_quotes_list, old_product_quotes_list, old_company_list, old_received_order_list, user_list
     print('#START# Importing JSON Files...')

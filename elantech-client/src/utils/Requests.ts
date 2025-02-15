@@ -42,7 +42,6 @@ export const requestRemoveInventory = async (inventory: IInventory): Promise<any
     return axios.put(`${BASE_API_URL}${ROUTES.INVENTORY}/removal`, inventory, { withCredentials: true }).then((response) => response);
 }
 
-
 // COMPANY
 export const requestAllCompanies = async (): Promise<ICompany[]> => {
     return axios.get(`${BASE_API_URL}${ROUTES.COMPANY}`, { withCredentials: true }).then((response) => response?.data?.payload);
