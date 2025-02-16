@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { FunctionComponent, HTMLAttributes, useState } from 'react';
 import { Button, DropdownButton, Dropdown, InputGroup } from 'react-bootstrap';
-import { Pencil, Plus, Search } from 'react-bootstrap-icons';
+import { Pencil, Plus, Search, Trash } from 'react-bootstrap-icons';
 import BootstrapTable, { ColumnDescription } from 'react-bootstrap-table-next';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { AddReceivingOrderModal } from '../../components/Modals/Receiving/AddReceivingOrderModal';
@@ -46,6 +46,13 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) 
             </div>
         );
     };
+        const rankFormatterRemove = () => {
+            return (
+                <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }} onClick={() => console.log('Remove Column')} >
+                    <Trash style={{ fontSize: 20, color: 'white' }} />
+                </div>
+            );
+        };
     const column: ColumnDescription<any, any>[] = [
         {
             dataField: 'purchaseOrderNumber',
@@ -87,21 +94,31 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) 
             text: 'Comments',
             sort: false,
         },
-        // {
-        //     dataField: 'completed',
-        //     text: 'Completed',
-        //     sort: false,
-        // },
-        // {
-        //     dataField: 'edit',
-        //     text: 'Edit',
-        //     sort: false,
-        //     formatter: rankFormatterEdit,
-        //     headerAlign: 'center',
-        //     style: {
-        //         textAlign: 'center'
-        //     }
-        // },
+        {
+            dataField: 'completed',
+            text: 'Completed',
+            sort: false,
+        },
+        {
+            dataField: 'edit',
+            text: 'Edit',
+            sort: false,
+            formatter: rankFormatterEdit,
+            headerAlign: 'center',
+            style: {
+                textAlign: 'center'
+            }
+        },
+        {
+            dataField: 'remove',
+            text: 'Delete',
+            sort: false,
+            formatter: rankFormatterRemove,
+            headerAlign: 'center',
+            style: {
+                textAlign: 'center'
+            }
+        },
     ];
     const handleSearch = (input: string, props: { searchText?: string; onSearch: any; onClear?: () => void; }) => {
         if (input !== '' || input !== undefined) {
@@ -154,13 +171,13 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) 
                                             <div className='d-flex justify-content-between'>
                                                 <h2 style={{ fontWeight: 300 }}>Receiving</h2>
                                                 {
-                                                    /* 
+
                                                     <div>
                                                         <Button variant="dark" onClick={() => { setAddReceivingSwitch(true) }} >
                                                             <Plus height="25" width="25" style={{ marginTop: -3, marginLeft: -10 }} />Order
                                                         </Button>
                                                     </div> 
-                                                    */
+
                                                 }
                                             </div>
                                             <hr />

@@ -107,36 +107,36 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
             text: 'Added',
             sort: true,
         },
-        // {
-        //     dataField: 'Add',
-        //     text: 'Receive Item',
-        //     sort: false,
-        //     formatter: rankFormatterAdd,
-        //     headerAlign: 'center',
-        //     style: {
-        //         textAlign: 'center'
-        //     }
-        // },
-        // {
-        //     dataField: 'edit',
-        //     text: 'Edit',
-        //     sort: false,
-        //     formatter: rankFormatterEdit,
-        //     headerAlign: 'center',
-        //     style: {
-        //         textAlign: 'center'
-        //     }
-        // },
-        // {
-        //     dataField: 'remove',
-        //     text: 'Delete',
-        //     sort: false,
-        //     formatter: rankFormatterRemove,
-        //     headerAlign: 'center',
-        //     style: {
-        //         textAlign: 'center'
-        //     }
-        // }
+        {
+            dataField: 'Add',
+            text: 'Receive Item',
+            sort: false,
+            formatter: rankFormatterAdd,
+            headerAlign: 'center',
+            style: {
+                textAlign: 'center'
+            }
+        },
+        {
+            dataField: 'edit',
+            text: 'Edit',
+            sort: false,
+            formatter: rankFormatterEdit,
+            headerAlign: 'center',
+            style: {
+                textAlign: 'center'
+            }
+        },
+        {
+            dataField: 'remove',
+            text: 'Delete',
+            sort: false,
+            formatter: rankFormatterRemove,
+            headerAlign: 'center',
+            style: {
+                textAlign: 'center'
+            }
+        }
     ];
     const options = {
         custom: true,
