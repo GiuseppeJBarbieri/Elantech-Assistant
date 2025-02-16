@@ -26,16 +26,17 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
     const [inventoryTableList, setInventoryTableList] = useState<IInventory[]>([]);
     const [selectedInventoryList, setSelectedInventoryList] = useState<IInventory[]>([]);
     const [alert, setAlert] = useState(defaultAlert);
-    const [attributes, setAttributes] = useState(
-        {
-            condition: undefined as unknown as string,
-            warrantyExpiration: undefined as unknown as string,
-            tested: undefined as unknown as boolean | undefined,
-            testedDate: undefined as unknown as string,
-            comment: undefined as unknown as string,
-            location: undefined as unknown as string,
-        }
-    )
+
+    const attributeState = {
+        condition: undefined as unknown as string,
+        warrantyExpiration: undefined as unknown as string,
+        tested: undefined as unknown as boolean | undefined,
+        testedDate: undefined as unknown as string,
+        comment: undefined as unknown as string,
+        location: undefined as unknown as string,
+    }
+    const [attributes, setAttributes] = useState(attributeState)
+
     const handleConditionSort = (order: string) => {
         if (order === 'desc') {
             selectedInventoryList.sort((a, b) => b.condition.localeCompare(a.condition));
@@ -144,6 +145,7 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
     };
     const submitChanges = () => {
         // Make changes on selected items
+        console.log(selectedInventoryList);
         selectedInventoryList.forEach((selectedInventory) => {
             (Object.keys(attributes) as (keyof typeof attributes)[]).forEach((key, index) => {
                 if (attributes[key] !== undefined) {
@@ -155,7 +157,10 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
             const newItem = selectedInventoryList.find(newItem => newItem.id === oldItem.id);
             return newItem ? newItem : oldItem;
         });
+
+        setAttributes(attributeState);
         setInventoryTableList(updatedList);
+        console.log(selectedInventoryList);
     };
     const finish = () => {
         setIsSaving(true);
@@ -177,7 +182,7 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
         props.onClose();
     }
     const setInventoryList = (inventoryList: IInventory[]) => {
-        setInventoryTableList(JSON.parse(JSON.stringify(inventoryList)));
+        setInventoryTableList(inventoryList);
     }
     useEffect(() => {
         setInventoryList(props.selectedInventory);
