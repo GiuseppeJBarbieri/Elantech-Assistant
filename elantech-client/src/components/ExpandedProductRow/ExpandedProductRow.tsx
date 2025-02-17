@@ -96,14 +96,14 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                 if (request.length > 0) {
                     let avgQuote = 0;
                     let earliestDate = {
-                        date: request[0].Quote?.dateQuoted as string,
+                        date: request[0].quote?.dateQuoted as string,
                         index: 0,
                     };
                     request.forEach((quote, index) => {
                         avgQuote += quote.quotedPrice;
-                        if (new Date(earliestDate.date as string) < new Date(quote.Quote?.dateQuoted as string)) {
+                        if (new Date(earliestDate.date as string) < new Date(quote.quote?.dateQuoted as string)) {
                             earliestDate = {
-                                date: quote.Quote?.dateQuoted as string,
+                                date: quote.quote?.dateQuoted as string,
                                 index: index
                             };
                         }
@@ -111,8 +111,8 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                     avgQuote = avgQuote / request.length;
                     setDisplayedQuoteInfo({
                         averageQuote: avgQuote,
-                        quotedTo: request[earliestDate.index].Quote?.Company?.name as string,
-                        quotedBy: request[earliestDate.index].Quote?.User?.firstName as string,
+                        quotedTo: request[earliestDate.index].quote?.company?.name as string,
+                        quotedBy: request[earliestDate.index].quote?.user?.firstName as string,
                         lastQuotedPrice: request[earliestDate.index].quotedPrice,
                     });
                     return;

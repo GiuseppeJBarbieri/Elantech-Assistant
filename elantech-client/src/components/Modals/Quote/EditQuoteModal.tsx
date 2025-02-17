@@ -266,7 +266,7 @@ const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) 
                     quotedPrice: price,
                     productCondition: condition,
                     comment: comment,
-                    Product: {
+                    product: {
                         productNumber: selectedProduct.productNumber || '',
                         productType: selectedProduct.productType || '',
                         brand: selectedProduct.brand || '',
@@ -283,8 +283,8 @@ const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) 
         const quotedProductsCopy: IQuotedProduct[] = [];
 
         quotedProducts.forEach(product => {
-            delete product.Product;
-            delete product.Quote;
+            delete product.product;
+            delete product.quote;
             quotedProductsCopy.push(product);
         });
 
@@ -294,7 +294,7 @@ const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) 
             userId: props.selectedQuote.userId,
             dateQuoted: props.selectedQuote.dateQuoted,
             sold: props.selectedQuote.sold,
-            QuotedProducts: quotedProductsCopy,
+            quotedProducts: quotedProductsCopy,
         }
         await requestUpdateQuoteAndQuotedProducts(quote)
             .then(() => {
@@ -353,7 +353,7 @@ const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) 
                                         <Form.Label style={{ fontWeight: 300, fontSize: 18 }}>Quote Information</Form.Label>
                                         <hr />
                                         <div className="container" style={{ display: 'inline-grid' }}>
-                                            <Form.Label style={{ fontWeight: 300 }}>Quoter: {props.selectedQuote?.User?.firstName} {props.selectedQuote?.User?.lastName}</Form.Label>
+                                            <Form.Label style={{ fontWeight: 300 }}>Quoter: {props.selectedQuote?.user?.firstName} {props.selectedQuote?.user?.lastName}</Form.Label>
                                             <Form.Label style={{ fontWeight: 300 }}>Date: {props.selectedQuote.dateQuoted}</Form.Label>
                                             <Form.Label style={{ fontWeight: 300 }}>Total Quote: ${totalQuote}</Form.Label>
                                         </div>

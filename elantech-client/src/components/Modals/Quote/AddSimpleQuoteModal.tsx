@@ -107,7 +107,7 @@ const AddSimpleQuoteModalComponent: FunctionComponent<AddSimpleQuoteModalProps> 
             } else {
                 try {
                     quotedProduct.productId = props.selectedProduct.id as number;
-                    quote.QuotedProducts = [quotedProduct];
+                    quote.quotedProducts = [quotedProduct];
                     await requestAddQuote(quote);
                     props.getAllQuotes(props.selectedProduct.id as number);
                     setIsSaving(false);

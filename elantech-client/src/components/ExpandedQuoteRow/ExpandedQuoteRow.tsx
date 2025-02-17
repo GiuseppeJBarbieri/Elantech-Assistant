@@ -65,8 +65,8 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
                         userId: _data.userId,
                         dateQuoted: _data.dateQuoted,
                         sold: _data.sold,
-                        User: { firstName: _data.user.firstName, lastName: _data.user.lastName },
-                        QuotedProducts: _data.quotedProducts
+                        user: { firstName: _data.user.firstName, lastName: _data.user.lastName },
+                        quotedProducts: _data.quotedProducts
                     }
                     setSelectedQuote(quote);
                     setViewMoreSwitch(true);
