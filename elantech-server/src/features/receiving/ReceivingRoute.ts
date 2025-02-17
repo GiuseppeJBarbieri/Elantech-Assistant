@@ -14,8 +14,7 @@ router.post('/', authenticationMiddleware, validate(ReceivingValidation.PostRece
   (req, res, next) => {
     logger.info('POST RECEIVING');
     const copy = JSON.parse(JSON.stringify(req.body));
-    // eslint-disable-next-line dot-notation
-    req.body.userId = req.session['userId'];
+    copy.userId = req.session['userId'];
     ReceivingController.Add(copy)
       .then((response) => {
         res.status(201).json(response);

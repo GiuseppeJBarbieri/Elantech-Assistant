@@ -5,35 +5,38 @@ import BootstrapTable, { SelectRowProps } from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import ICompany from '../../../types/ICompany';
-import { requestAllCompanies, requestAllProducts } from '../../../utils/Requests';
+import { RequestAddReceivingOrder, requestAllCompanies, requestAllProducts } from '../../../utils/Requests';
 import IProduct from '../../../types/IProduct';
-import ISelectedProductListReceivedOrder from '../../../types/ISelectedProductListReceivedOrder';
 import moment from 'moment';
 import { Search } from 'react-bootstrap-icons';
 import { DebounceInput } from 'react-debounce-input';
 import filterFactory from 'react-bootstrap-table2-filter';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import { SpinnerBlock } from '../../LoadingAnimation/SpinnerBlock';
+import { defaultAlert, defaultReceivedItem, defaultReceiving } from '../../../constants/Defaults';
+import IReceiving from '../../../types/IReceiving';
+import IReceivedItem from '../../../types/IReceivedItem';
+import { CustomAlert } from '../../Alerts/CustomAlert';
 
 interface AddReceivingOrderModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
-    modalVisible: boolean;
+    getAllReceiving: () => void;
 }
 
 const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalProps> = (props) => {
-    const [isSaving] = useState(false);
+	const [mainAlert, setMainAlert] = useState(defaultAlert);
+    const [productSectionAlert, setProductSectionAlert] = useState(defaultAlert);
+    const [isSaving, setIsSaving] = useState(false);
     const [companyList, setCompanyList] = useState<ICompany[]>([]);
     const [productList, setProductList] = useState<IProduct[]>([]);
     const [isSearching] = useState(false);
     const [searchCompanyString, setSearchCompanyString] = useState<string>('');
     const [searchProductString, setSearchProductString] = useState<string>('');
-    const [selectedProductList, setSelectedProductList] = useState<ISelectedProductListReceivedOrder[]>([]);
-    const [currentProduct, setCurrentProduct] = useState<ISelectedProductListReceivedOrder>({
-        quantity: 0,
-        condition: '',
-        product: {},
-        comments: '',
-    });
+    
+    const [receivingOrderState, setReceivingOrderState] = useState<IReceiving>(defaultReceiving);
+    const [receivedItemState, setReceivedItemState] = useState<IReceivedItem>(defaultReceivedItem);
+    const [orderList, setOrderList] = useState<IReceivedItem[]>([]);
+    
     const [expanderState, setExpanderState] = useState({
         orderInfoExpander: true,
         sellerInfoExpander: false,
@@ -41,28 +44,27 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
         productsInOrderExpander: false,
     });
     const companyColumn = [
-
         {
             id: 1,
-            dataField: 'companyType',
+            dataField: 'type',
             text: 'Type',
             sort: true,
         },
         {
             id: 2,
-            dataField: 'companyName',
+            dataField: 'name',
             text: 'Company Name',
             sort: true,
         },
         {
             id: 3,
-            dataField: 'companyRep',
+            dataField: 'representative',
             text: 'Company Rep',
             sort: true,
         },
         {
             id: 4,
-            dataField: 'phoneNumber',
+            dataField: 'phone',
             text: 'Phone Number',
             sort: false,
             headerAlign: 'center',
@@ -82,7 +84,7 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
         },
         {
             id: 7,
-            dataField: 'comments',
+            dataField: 'comment',
             text: 'Comments',
             sort: false,
         },
@@ -197,25 +199,17 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
         mode: 'radio',
         clickToSelect: true,
         onSelect: (row: IProduct) => {
-            setCurrentProduct({ ...currentProduct, product: row });
+            setReceivedItemState({ ...receivedItemState, productId: row.id as number, product: row});
         },
     };
     const selectCompanyRow: SelectRowProps<ICompany> = {
         mode: 'radio',
         clickToSelect: true,
         onSelect: (row: ICompany) => {
-            setReceivingOrderState({ ...receivingOrderState, sellerId: row.id as number });
+            setReceivingOrderState({ ...receivingOrderState, companyId: row.id as number });
         },
     };
-    const [receivingOrderState, setReceivingOrderState] = useState({
-        poNumber: '',
-        orderType: '',
-        dateReceived: moment().format('YYYY-MM-DD'),
-        comments: '',
-        sellerId: 0,
-        productsInOrder: {}
-    });
-    const getAllCompanies = async () => {
+    const requestAllData = async () => {
         setCompanyList(await requestAllCompanies());
         setProductList(await requestAllProducts());
     };
@@ -227,15 +221,86 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
         setSearchProductString(input);
         props.onSearch(input);
     };
-    const onSubmit = () => {
-        // Check for 
-    }
+    const validateForm = (): boolean => {
+        let isEmpty = false;
+        if (receivingOrderState.purchaseOrderNumber === '') isEmpty = true;
+        if (receivingOrderState.trackingNumber === '') isEmpty = true;
+        if (receivingOrderState.orderType === '') isEmpty = true;
+        if (receivingOrderState.shippedVia === '') isEmpty = true;
+
+        // A seller must be selected
+        if (receivingOrderState.companyId === 0) isEmpty = true;
+
+        // At least ONE product must be created
+        if (orderList.length < 1) isEmpty = true;
+
+		if (isEmpty) {
+			setMainAlert({ ...mainAlert, label: 'Please enter required information.', show: true });
+			setTimeout(() => setMainAlert({ ...mainAlert, show: false }), 5000);
+			return false;
+		}
+
+		return true;
+    };
+    const addProductToOrder = async () => {
+        // Validate form
+        // quantity not empty, seller selected, product selected
+        let isEmpty = false;
+        if (receivedItemState.quantity) isEmpty = true;
+
+        // A seller must be selected
+        if (receivingOrderState.companyId === 0) isEmpty = true;
+
+        // At least ONE product must be created
+        if (orderList.length < 1) isEmpty = true;
+
+		if (isEmpty) {
+			setProductSectionAlert({ ...mainAlert, label: 'Please enter required product information.', show: true });
+			setTimeout(() => setProductSectionAlert({ ...mainAlert, show: false }), 5000);
+			return;
+		}
+        
+        setReceivingOrderState({
+            ...receivingOrderState,
+            receivedItems: [...orderList, receivedItemState],
+        });
+
+        // Add item to orderList
+        setOrderList((prev) => [...prev, { ...receivedItemState }]);
+
+        // clear receivedState form
+        setReceivedItemState({...receivedItemState, quantity: 0, cud: '', comment: ''});
+    };
+	const onSubmit = async () => {
+        if (!validateForm()) return
+        
+		setIsSaving(true);
+		setTimeout(async () => {
+			try {
+                // Add receiving order into the database
+                await RequestAddReceivingOrder(receivingOrderState);
+
+                // Refresh parent page
+				props.getAllReceiving && await props.getAllReceiving();
+
+                // Hide modal
+                setIsSaving(false);
+
+                // Invoke given close event handler
+				props.onClose && await props.onClose();
+			} catch (err) {
+				setMainAlert({ ...mainAlert, label: `${err}`, show: true });
+				setTimeout(() => setMainAlert({ ...mainAlert, show: false }), 3000);
+				setIsSaving(false);
+			}
+		}, 500);
+	};
     useEffect(() => {
-        getAllCompanies();
+        requestAllData();
     }, []);
     return (
         <div>
-            <Modal backdrop="static" show={props.modalVisible} onHide={props.onClose} fullscreen={true}>
+            <Modal backdrop="static" show onHide={props.onClose} fullscreen={true}>
                 <Modal.Header
                     style={{ background: '#212529', color: 'white', borderBottom: '1px solid rgb(61 66 70)' }}
                     closeButton
@@ -262,6 +327,7 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
                             </div>
                             :
                             <Form className="d-grid">
+                                <CustomAlert label={mainAlert.label} type={mainAlert.type} showAlert={mainAlert.show} />
                                 {/* Order Information Block */}
                                 <>
                                     <div>
@@ -280,13 +346,21 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
                                             <Row>
                                                 <Col>
                                                     <Form.Group className="mb-3" style={{ marginRight: 5 }}>
-                                                        <Form.Label style={{ fontWeight: 300 }}>PO Number</Form.Label>
-                                                        <Form.Control id="comments" type="text" placeholder="PO Number" onChange={(e) => setReceivingOrderState({ ...receivingOrderState, poNumber: e.target.value })} />
+                                                        <Form.Label style={{ fontWeight: 300 }}>
+                                                            PO Number
+                                                            <Form.Label className={'required-text-asterisk'}>*</Form.Label>
+                                                        </Form.Label>
+                                                        <Form.Control id="comments" type="text" placeholder="PO Number" onChange={(e) => setReceivingOrderState({ ...receivingOrderState, purchaseOrderNumber: e.target.value })} />
                                                     </Form.Group>
                                                 </Col>
                                                 <Col>
                                                     <Form.Group className="mb-3" style={{ marginRight: 5 }}>
-                                                        <Form.Label style={{ fontWeight: 300 }}>Order Type</Form.Label>
+                                                        <Form.Label
+                                                            style={{ fontWeight: 300 }}
+                                                        >
+                                                            Order Type
+                                                            <Form.Label className={'required-text-asterisk'}>*</Form.Label>
+                                                        </Form.Label>
                                                         <Form.Select aria-label="Default select example" onChange={(e) => setReceivingOrderState({ ...receivingOrderState, orderType: e.target.value })}>
                                                             <option>Choose Order Type</option>
                                                             <option value="Order">Order</option>
@@ -296,11 +370,19 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
                                                 </Col>
                                                 <Col>
                                                     <Form.Group className="mb-3" style={{ marginRight: 5 }}>
-                                                        <Form.Label style={{ fontWeight: 300 }}>Date Received</Form.Label>
+                                                        <Form.Label
+                                                            style={{ fontWeight: 300 }}
+                                                        >
+                                                            Date Received
+                                                            <Form.Label className={'required-text-asterisk'}>*</Form.Label>
+                                                        </Form.Label>
                                                         <Form.Control id="dateReceived" type="date"
-                                                            value={receivingOrderState.dateReceived}
-                                                            onChange={(e) => {
-                                                                setReceivingOrderState({ ...receivingOrderState, dateReceived: moment(e.target.value).format('YYYY-MM-DD') });
+                                                            value={`${moment(receivingOrderState.dateReceived).format('YYYY-MM-DD')}`}
+                                                            onChange={(e) => {;
+                                                                setReceivingOrderState({
+                                                                    ...receivingOrderState,
+                                                                    dateReceived: new Date(e.target.value),
+                                                                });
                                                             }} />
                                                     </Form.Group>
                                                 </Col>
@@ -308,14 +390,24 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
                                             <Row>
                                                 <Col>
                                                     <Form.Group className="mb-3" style={{ marginRight: 5 }}>
-                                                        <Form.Label style={{ fontWeight: 300 }}>Tracking Number</Form.Label>
-                                                        <Form.Control id="comments" type="text" placeholder="PO Number" onChange={(e) => setReceivingOrderState({ ...receivingOrderState, poNumber: e.target.value })} />
+                                                        <Form.Label
+                                                            style={{ fontWeight: 300 }}
+                                                        >
+                                                            Tracking Number
+                                                            <Form.Label className={'required-text-asterisk'}>*</Form.Label>
+                                                        </Form.Label>
+                                                        <Form.Control id="comments" type="text" placeholder="PO Number" onChange={(e) => setReceivingOrderState({ ...receivingOrderState, trackingNumber: e.target.value })} />
                                                     </Form.Group>
                                                 </Col>
                                                 <Col>
                                                     <Form.Group className="mb-3" style={{ marginRight: 5 }}>
-                                                        <Form.Label style={{ fontWeight: 300 }}>Shipped Via</Form.Label>
-                                                        <Form.Select aria-label="Default select example" onChange={(e) => setReceivingOrderState({ ...receivingOrderState, orderType: e.target.value })}>
+                                                        <Form.Label
+                                                            style={{ fontWeight: 300 }}
+                                                        >
+                                                            Shipped Via
+                                                            <Form.Label className={'required-text-asterisk'}>*</Form.Label>
+                                                        </Form.Label>
+                                                        <Form.Select aria-label="Default select example" onChange={(e) => setReceivingOrderState({ ...receivingOrderState, shippedVia: e.target.value })}>
                                                             <option>Choose Order Type</option>
                                                             <option value="DHL">DHL</option>
                                                             <option value="FedEx">FedEx</option>
@@ -327,7 +419,7 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
                                                 <Col>
                                                     <Form.Group className="mb-3">
                                                         <Form.Label style={{ fontWeight: 300 }}>Comments</Form.Label>
-                                                        <Form.Control id="comments" type="text" placeholder="Comments" onChange={(e) => setReceivingOrderState({ ...receivingOrderState, comments: e.target.value })} />
+                                                        <Form.Control id="comments" type="text" placeholder="Comments" onChange={(e) => setReceivingOrderState({ ...receivingOrderState, comment: e.target.value })} />
                                                     </Form.Group>
                                                 </Col>
                                             </Row>
@@ -354,7 +446,12 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
                                     <Collapse in={expanderState.sellerInfoExpander}>
                                         <Container>
                                             {/* TODO Search Functionality of Quote Table */}
-                                            <p style={{ fontWeight: 300 }}>Please select a seller from the table below. Hit the select button when finished.</p>
+                                            <p
+                                                style={{ fontWeight: 300 }}
+                                            >
+                                                <span className={'required-text-asterisk'}>* </span>
+                                                Please select a seller from the table below. Hit the select button when finished.
+                                            </p>
                                             {/* <Form.Group className="mb-3" style={{ marginRight: 5, width: '150px' }}>
                                                 <Form.Control id="comments" type="text" placeholder="Search" />
                                             </Form.Group> */}
@@ -425,10 +522,16 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
                                             </Button>
                                         </div>
                                         <hr />
+                                        <CustomAlert label={productSectionAlert.label} type={productSectionAlert.type} showAlert={productSectionAlert.show} />
                                     </div>
                                     <Collapse in={expanderState.productInfoExpander}>
                                         <Container>
-                                            <p style={{ fontWeight: 300 }}>Enter in the info below. Then select a product from the table. Click submit when your finished.</p>
+                                            <p
+                                                style={{ fontWeight: 300 }}
+                                            >
+                                                <span className={'required-text-asterisk'}>* </span>
+                                                Enter in the info below. Then select a product from the table. Click submit when your finished.
+                                            </p>
                                             <ToolkitProvider
                                                 keyField="id"
                                                 data={productList}
@@ -464,13 +567,13 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
                                                                                 <Form.Group className="mb-4">
                                                                                     <Form.Control id="quantity" type="number" placeholder="Quantity"
                                                                                         onChange={(e) => {
-                                                                                            setCurrentProduct({ ...currentProduct, quantity: e.target.value as unknown as number })
+                                                                                            setReceivedItemState({ ...receivedItemState, quantity: Number(e.target.value) });
                                                                                         }} />
                                                                                 </Form.Group>
                                                                                 <Form.Group className="mb-3">
                                                                                     <Form.Select aria-label="Default select example"
                                                                                         onChange={(e) => {
-                                                                                            setCurrentProduct({ ...currentProduct, condition: e.target.value })
+                                                                                            setReceivedItemState({ ...receivedItemState, cud: e.target.value })
                                                                                         }}>
                                                                                         <option>Choose Condition</option>
                                                                                         <option value="New_Factory_Sealed">New Factory Sealed</option>
@@ -483,17 +586,13 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
                                                                                 <Form.Group className="mb-1">
                                                                                     <Form.Control id="comment" placeholder="Comments"
                                                                                         onChange={(e) => {
-                                                                                            setCurrentProduct({ ...currentProduct, comments: e.target.value })
+                                                                                            setReceivedItemState({ ...receivedItemState, comment: e.target.value })
                                                                                         }} />
                                                                                 </Form.Group>
                                                                             </div>
                                                                             <div style={{ float: 'right' }}>
                                                                                 <Form.Group className="mb-3">
-                                                                                    {/* TODO */}
-                                                                                    <Button variant="secondary" onClick={() => {
-                                                                                        selectedProductList.push(currentProduct);
-                                                                                        setSelectedProductList(JSON.parse(JSON.stringify(selectedProductList)));
-                                                                                    }}>Submit</Button>
+                                                                                    <Button variant="secondary" onClick={addProductToOrder}>Submit</Button>
                                                                                 </Form.Group>
                                                                             </div>
                                                                         </div>
@@ -536,10 +635,15 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
                                     </div>
                                     <Collapse in={expanderState.productsInOrderExpander}>
                                         <Container>
-                                            <p style={{ fontWeight: 300 }}>Review all products below.</p>
+                                            <p
+                                                style={{ fontWeight: 300 }}
+                                            >
+                                                <span className={'required-text-asterisk'}>* </span>
+                                                Review all products below.
+                                            </p>
                                             <BootstrapTable
-                                                keyField='productNumber'
-                                                data={selectedProductList}
+                                                keyField="id"
+                                                data={orderList}
                                                 columns={selectedProductColumn}
                                                 bootstrap4
                                                 classes="table table-dark table-hover table-striped"
@@ -556,9 +660,7 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
                     <div style={{ textAlign: 'center' }}>
                         <Button
                             variant="dark"
-                            onClick={async () => {
-                                onSubmit();
-                            }}>
+                            onClick={onSubmit}>
                             Finish
                         </Button>
                     </div>

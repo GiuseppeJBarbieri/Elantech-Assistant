@@ -14,17 +14,43 @@ import { SpinnerBlock } from '../../components/LoadingAnimation/SpinnerBlock';
 import { DebounceInput } from 'react-debounce-input';
 import filterFactory from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
+import { defaultReceiving } from '../../constants/Defaults';
+import { RemoveReceivingOrderModal } from '../../components/Modals/Receiving/RemoveReceivingOrderModal';
 
 interface ReceivingProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> { }
 
 export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) => {
     const [addReceivingSwitch, setAddReceivingSwitch] = useState(false);
     const [editOrderSwitch, setEditOrderSwitch] = useState(false);
+    const [removeOrderSwitch, setRemoveOrderSwitch] = useState(false);
     const [receivingList, setReceivingList] = useState<IReceiving[]>([]);
+    const [selectedReceiving, setSelectedReceiving] = useState<IReceiving>(defaultReceiving);
     const [isSearching] = useState(false);
     const [searchString, setSearchString] = useState<string>('');
     const [searchHistoryFilterText, setSearchHistoryFilterText] = useState('Search History');
     const [searchHistory, setSearchHistory] = useState<string[]>([]);
+
+    const rankFormatterRemove = (_: unknown, data: any) => {
+        return (
+          <div
+            style={{
+              textAlign: 'center',
+              cursor: 'pointer',
+              lineHeight: 'normal'
+            }}
+            onClick={(e) => {
+              e.stopPropagation()
+            }} >
+            <div onClick={() => {
+              setSelectedReceiving(data);
+              setRemoveOrderSwitch(true);
+            }}
+            >
+              <Trash style={{ fontSize: 20, color: 'white' }} />
+            </div>
+          </div>
+        );
+    };
     const rankFormatterEdit = (_: any, data: any, index: any) => {
         return (
             <div
@@ -38,6 +64,7 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) 
                     e.stopPropagation()
                 }} >
                 <div onClick={(e) => {
+                    setSelectedReceiving(data);
                     setEditOrderSwitch(true);
                 }}
                 >
@@ -46,13 +73,6 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) 
             </div>
         );
     };
-        const rankFormatterRemove = () => {
-            return (
-                <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }} onClick={() => console.log('Remove Column')} >
-                    <Trash style={{ fontSize: 20, color: 'white' }} />
-                </div>
-            );
-        };
     const column: ColumnDescription<any, any>[] = [
         {
             dataField: 'purchaseOrderNumber',
@@ -65,8 +85,11 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) 
             sort: false,
         },
         {
-            dataField: 'user.firstName',
+            dataField: 'receivedBy',
             text: 'Received By',
+            formatter: (cell: any, row: any) => {
+                return `${row.user.firstName ?? 'Fname'}  ${row.user.lastName ?? 'Lname'}`;
+            },
             sort: false,
         },
         {
@@ -250,7 +273,7 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) 
                 addReceivingSwitch &&
                 <div className='modal-dialog'>
                     <AddReceivingOrderModal
-                        modalVisible={addReceivingSwitch}
+                        getAllReceiving={getAllReceiving}
                         onClose={async () => {
                             setAddReceivingSwitch(false);
                         }}
@@ -261,14 +284,27 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) 
                 editOrderSwitch &&
                 <div className='modal-dialog'>
                     <EditReceivingOrderModal
-                        modalVisible={editOrderSwitch}
+                        selectedReceiving={selectedReceiving}
+                        getAllReceiving={getAllReceiving}
                         onClose={async () => {
                             setEditOrderSwitch(false);
                         }}
                     />
                 </div>
             }
-        </section >
+            {
+                removeOrderSwitch &&
+                <div className='modal-dialog'>
+                    <RemoveReceivingOrderModal
+                    selectedReceiving={selectedReceiving}
+                    getAllReceiving={getAllReceiving}
+                    onClose={async () => {
+                        setRemoveOrderSwitch(false);
+                    }}
+                    />
+                </div>
+            }
+        </section>
     );
 };
 

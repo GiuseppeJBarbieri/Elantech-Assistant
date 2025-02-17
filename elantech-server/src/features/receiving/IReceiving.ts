@@ -1,3 +1,5 @@
+import IReceivedItem from '../receivedItem/IReceivedItem';
+
 interface IReceiving {
     id?: number;
     companyId: number;
@@ -15,6 +17,7 @@ interface IReceiving {
         firstName: string,
         lastName: string,
     }
+    receivedItems?: IReceivedItem[];
 }
 
 export default IReceiving;

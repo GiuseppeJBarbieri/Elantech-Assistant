@@ -1,3 +1,4 @@
+import { Transaction } from 'sequelize';
 import db from '../../models';
 import logger from '../../utils/logging/Logger';
 import IRepoError from '../../utils/interfaces/IRepoError';
@@ -19,11 +20,36 @@ const standardError = (message: string) => {
 
 export default {
   async Add(receiving: IReceiving): Promise<IReceiving> {
+    let transaction: Transaction;
+
     try {
-      return db.receiving.create(receiving);
+      transaction = await db.sequelize.transaction();
+
+      // Create "Receiving" object
+      const receivingPayload = { ...receiving };
+      delete receivingPayload.receivedItems;
+      const createdReceivingObj = await db.receiving.create(receivingPayload, { transaction });
+
+      // Create "ReceivedItem" objects
+      const receivedItems = [...receiving.receivedItems];
+      await Promise.all(receivedItems.map(async (receivedItem) => {
+        const _receivedItemPayload = { ...receivedItem };
+
+        // Link current ReceivedItem to the newly created "Receiving" object
+        _receivedItemPayload.receivingId = createdReceivingObj.id;
+
+        await db.receivedItem.create(_receivedItemPayload, { transaction });
+      })).catch((err) => {
+        throw new Error(err);
+      });
+
+      await transaction.commit();
+      return createdReceivingObj;
     } catch (err) {
+      // Rollback the transaction in case of error
+      await transaction.rollback();
       standardError(`${err.name} ${err.message}`);
-      throw repoErr;
+      return Promise.reject(repoErr);
     }
   },
 

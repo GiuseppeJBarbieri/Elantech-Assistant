@@ -98,6 +98,9 @@ export const requestAddRemovedInventory = async (removedInventory: IRemovedInven
 }
 
 // Receiving
+export const RequestAddReceivingOrder = async (receiving: IReceiving): Promise<any> => {
+    await axios.post(`${BASE_API_URL}${ROUTES.RECEIVING}`, receiving, { withCredentials: true });
+};
 export const requestAllReceiving = async (): Promise<IReceiving[]> => {
     return axios.get(`${BASE_API_URL}${ROUTES.RECEIVING}`, { withCredentials: true }).then((response) => response?.data?.payload);
 }

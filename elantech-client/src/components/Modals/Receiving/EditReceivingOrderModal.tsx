@@ -2,10 +2,12 @@ import React, { HTMLAttributes, FunctionComponent } from 'react';
 import { useState } from 'react';
 import { Modal, Spinner, Form, Button } from 'react-bootstrap';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+import IReceiving from '../../../types/IReceiving';
 
 interface EditReceivingOrderModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
-    modalVisible: boolean;
+    getAllReceiving: () => void;
+    selectedReceiving: IReceiving;
 }
 
 const EditReceivingOrderModalComponent: FunctionComponent<EditReceivingOrderModalProps> = (props) => {
@@ -14,7 +16,7 @@ const EditReceivingOrderModalComponent: FunctionComponent<EditReceivingOrderModa
     
     return (
         <div>
-            <Modal backdrop="static" show={props.modalVisible} onHide={props.onClose} fullscreen={true}>
+            <Modal backdrop="static" show onHide={props.onClose} fullscreen={true}>
                 <Modal.Header style={{ background: '#212529', color: 'white', borderBottom: '1px solid rgb(61 66 70)' }} closeButton>
                     <Modal.Title>
                         <h2 style={{ verticalAlign: '', fontWeight: 300 }} >{title}</h2>
