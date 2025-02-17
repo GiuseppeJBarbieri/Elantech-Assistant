@@ -29,7 +29,7 @@ export default {
     }
   },
 
-  async GetAllProducts(): Promise<IProduct[]> {
+  async GetAll(): Promise<IProduct[]> {
     try {
       return await db.product.findAll();
     } catch (err) {
