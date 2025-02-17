@@ -163,7 +163,7 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
                                         <Form.Label style={{ fontWeight: 300, fontSize: 18 }}>Quote Information</Form.Label>
                                         <hr />
                                         <div className="container" style={{ display: 'inline-grid' }}>
-                                            <Form.Label style={{ fontWeight: 300 }}>Quoter: {props.selectedQuote?.User?.firstName} {props.selectedQuote?.User?.lastName}</Form.Label>
+                                            <Form.Label style={{ fontWeight: 300 }}>Quoter: {props.selectedQuote?.user?.firstName} {props.selectedQuote?.user?.lastName}</Form.Label>
                                             <Form.Label style={{ fontWeight: 300 }}>Date: {props.selectedQuote.dateQuoted}</Form.Label>
                                             <Form.Label style={{ fontWeight: 300 }}>Total Quote: ${totalQuote}</Form.Label>
                                         </div>
