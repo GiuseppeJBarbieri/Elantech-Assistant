@@ -35,7 +35,7 @@ export default {
       userId: Joi.number().required(),
       dateQuoted: Joi.date().required(),
       sold: Joi.boolean().required(),
-      QuotedProducts: Joi.array().items(Joi.object().keys({
+      quotedProducts: Joi.array().items(Joi.object().keys({
         id: Joi.number().optional().allow(null, ''),
         quoteId: Joi.number().optional().allow(null, ''),
         productId: Joi.number().required(),
@@ -64,7 +64,7 @@ export default {
       userId: Joi.number().required(),
       dateQuoted: Joi.date().required(),
       sold: Joi.boolean().required(),
-      QuotedProducts: Joi.array().items(Joi.object().keys({
+      quotedProducts: Joi.array().items(Joi.object().keys({
         id: Joi.number().optional().allow(null, ''),
         quoteId: Joi.number().optional().allow(null, ''),
         productId: Joi.number().required(),

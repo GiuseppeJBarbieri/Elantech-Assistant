@@ -49,12 +49,12 @@ const RemoveInventoryModalComponent: FunctionComponent<RemoveInventoryModalProps
                         for(let item of props.selectedInventoryList) {
                             await delay(100);
                             const inventoryCopy = item;
-                            inventoryCopy.RemovedInventory = removedInventory;
+                            inventoryCopy.removedInventory = removedInventory;
                             await requestRemoveInventory(inventoryCopy)
                         }
                     } else {
                         const inventoryCopy = props.selectedInventory;
-                        inventoryCopy.RemovedInventory = removedInventory;
+                        inventoryCopy.removedInventory = removedInventory;
                         await requestRemoveInventory(inventoryCopy);
                     }
                     props.getAllInventory(props.selectedProduct.id as number);

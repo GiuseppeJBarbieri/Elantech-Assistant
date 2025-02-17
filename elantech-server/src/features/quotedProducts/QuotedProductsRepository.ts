@@ -138,7 +138,7 @@ export default {
           quotedPrice: element.quotedPrice,
           productCondition: element.productCondition,
           comment: element.comment,
-          Product: {
+          product: {
             productNumber: element.product.productNumber,
             productType: element.product.productType,
             brand: element.product.brand,
@@ -153,14 +153,14 @@ export default {
             websiteUrl: element.product.websiteUrl,
             quickSpecsUrl: element.product.quickSpecsUrl,
           },
-          Quote: {
+          quote: {
             dateQuoted: element.quote.dateQuoted,
             sold: element.quote.sold,
-            Company: {
+            company: {
               name: element.quote.company.name,
               representative: element.quote.company.representative,
             },
-            User: {
+            user: {
               firstName: element.quote.user.firstName,
               lastName: element.quote.user.lastName,
             },

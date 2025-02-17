@@ -64,7 +64,7 @@ const authenticationMiddleware = async (req, res, next) => {
     if (!req.session) {
       req.session = {
         userId: session.userId,
-        userType: session.User.userTypeId,
+        userType: session.user.userTypeId,
       };
     } else {
       req.session.userId = session.userId;

@@ -6,8 +6,8 @@ interface IQuote {
     userId: number;
     dateQuoted: string;
     sold: boolean;
-    User?: {firstName: string, lastName: string};
-    QuotedProducts?: IQuotedProduct[];
+    user?: {firstName: string, lastName: string};
+    quotedProducts?: IQuotedProduct[];
 }
 
 export default IQuote;

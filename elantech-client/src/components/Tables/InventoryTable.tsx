@@ -40,7 +40,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             comment: '',
             location: '',
             reserved: false,
-            Receiving: {
+            receiving: {
                 id: 0,
                 companyId: 0,
                 userId: 0,
@@ -50,7 +50,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                 dateReceived: new Date(),
                 shippedVia: '',
                 comment: '',
-                Company: {
+                company: {
                     name: '',
                 }
             }

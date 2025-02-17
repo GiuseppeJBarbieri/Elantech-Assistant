@@ -8,10 +8,10 @@ interface IReceiving {
     dateReceived: Date;
     shippedVia: string;
     comment: string;
-    Company?: {
+    company?: {
         name: string,
     },
-    User?: {
+    user?: {
         firstName: string,
         lastName: string,
     }

@@ -8,7 +8,7 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { defaultAlert } from '../../../constants/Defaults';
 import IInventory from '../../../types/IInventory';
 import IProduct from '../../../types/IProduct';
-import { requestUpdateInventory } from '../../../utils/Requests';
+import { requestUpdateMultipleInventory } from '../../../utils/Requests';
 import { CustomAlert } from '../../Alerts/CustomAlert';
 import { SpinnerBlock } from '../../LoadingAnimation/SpinnerBlock';
 
@@ -145,7 +145,6 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
     };
     const submitChanges = () => {
         // Make changes on selected items
-        console.log(selectedInventoryList);
         selectedInventoryList.forEach((selectedInventory) => {
             (Object.keys(attributes) as (keyof typeof attributes)[]).forEach((key, index) => {
                 if (attributes[key] !== undefined) {
@@ -164,22 +163,20 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
     };
     const finish = () => {
         setIsSaving(true);
-        inventoryTableList.forEach((inventory) => {
-            setTimeout(async () => {
-                try {
-                    // This should really just pass the whole list instead of a single item
-                    await requestUpdateInventory(inventory);
-                } catch (err) {
-                    setAlert({ ...alert, label: `${err}`, show: true });
-                    setTimeout(() => setAlert({ ...alert, show: false }), 3000);
-                    setIsSaving(false);
-                    return;
-                }
-            }, 500)
-        });
-        props.getAllProducts();
-        props.getAllInventory(props.selectedProduct.id as number)
-        props.onClose();
+        setTimeout(async () => {
+            try {
+                // This should really just pass the whole list instead of a single item
+                await requestUpdateMultipleInventory(inventoryTableList);
+            } catch (err) {
+                setAlert({ ...alert, label: `${err}`, show: true });
+                setTimeout(() => setAlert({ ...alert, show: false }), 3000);
+                setIsSaving(false);
+                return;
+            }
+            props.getAllProducts();
+            props.getAllInventory(props.selectedProduct.id as number)
+            props.onClose();
+        }, 500)
     }
     const setInventoryList = (inventoryList: IInventory[]) => {
         setInventoryTableList(inventoryList);

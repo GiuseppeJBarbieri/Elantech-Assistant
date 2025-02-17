@@ -139,7 +139,7 @@ export default {
         active: session.active,
         expired: session.expired,
         expiresAt: session.expiresAt,
-        User: session.user,
+        user: session.user,
       };
     } catch (err) {
       standardError(err.message);

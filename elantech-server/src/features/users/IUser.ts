@@ -1,12 +1,14 @@
 interface IUser {
     id?: number
-    userTypeId: number
+    createdBy?: number
+    editedBy?: number
     email?: string
     firstName?: string
     lastName?: string
     password?: string
+    userType?: {value: string}
     phoneNumber?: string
-    UserType?: {value: string}
+    userTypeId?: number
 }
 
 export default IUser;

@@ -6,7 +6,7 @@ interface IUser {
     firstName?: string
     lastName?: string
     password?: string
-    UserType?: {value: string}
+    userType?: {value: string}
     phoneNumber?: string
     userTypeId?: number
 }

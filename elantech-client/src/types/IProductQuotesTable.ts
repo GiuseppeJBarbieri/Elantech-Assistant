@@ -1,6 +1,6 @@
 interface IProductQuotesTable {
     quantity: number,
-    companyNamy: string,
+    companyName: string,
     price: number,
     dateQuoted: string,
     quotedBy: string,

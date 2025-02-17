@@ -6,7 +6,7 @@ interface IReceivedItem {
     cud: string;
     comment: string;
     finishedAdding: boolean;
-    Product?: {
+    product?: {
         productNumber: string;
         type: string;
         brand: string;

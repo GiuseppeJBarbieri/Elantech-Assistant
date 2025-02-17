@@ -211,7 +211,7 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
                     quotedPrice: price,
                     productCondition: condition,
                     comment: comment,
-                    Product: {
+                    product: {
                         productNumber: selectedProduct.productNumber || '',
                         productType: selectedProduct.productType || '',
                         brand: selectedProduct.brand || '',
@@ -236,13 +236,13 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
         } else {
             setTimeout(async () => {
                 try {
-                    const quotedProductCopy: IQuotedProduct[] = quotedProducts.map(({ id, Product, ...rest }) => rest);
+                    const quotedProductCopy: IQuotedProduct[] = quotedProducts.map(({ id, product, ...rest }) => rest);
                     const quote: IQuote = {
                         companyId: props.selectedCompany.id as number,
                         userId: 0,
                         dateQuoted: new Date().toString(),
                         sold: false,
-                        QuotedProducts: quotedProductCopy,
+                        quotedProducts: quotedProductCopy,
                     };
                     
                     await requestAddQuote(quote);

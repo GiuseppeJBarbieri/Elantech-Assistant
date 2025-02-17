@@ -14,8 +14,8 @@ interface IInventory {
     comment: string;
     location: string;
     reserved: boolean;
-    RemovedInventory?: IRemovedInventory;
-    Receiving?: IReceiving;
+    removedInventory?: IRemovedInventory;
+    receiving?: IReceiving;
 }
 
 export default IInventory;

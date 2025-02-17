@@ -24,6 +24,7 @@ export default {
     try {
       return await db.inventory.findAll({
         where: { productId },
+        attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
         include: [
           {
             model: db.receiving,
@@ -90,10 +91,34 @@ export default {
     }
   },
 
+  async EditMultiple(inventoryList: IInventory[]): Promise<IInventory[]> {
+    const transaction: Transaction = await db.sequelize.transaction();
+    try {
+      inventoryList.forEach((inventory) => {
+        db.inventory.update(
+          inventory,
+          {
+            where: {
+              id: inventory.id,
+            },
+          },
+          { transaction },
+        );
+      });
+      await transaction.commit();
+      return Promise.resolve(inventoryList);
+    } catch (err) {
+      // Rollback the transaction in case of error
+      await transaction.rollback();
+      standardError(`${err.name} ${err.message}`);
+      return Promise.reject(repoErr);
+    }
+  },
+
   async Delete(inventory: IInventory): Promise<any[]> {
     try {
       const transaction: Transaction = await db.sequelize.transaction();
-      const removedProductObj: IRemovedInventory = inventory.RemovedInventory;
+      const removedProductObj: IRemovedInventory = inventory.removedInventory;
       delete removedProductObj.id;
       // Create the Removed Entry + return the ID
       const createdRemovedProduct = await db.removedInventory.create(removedProductObj, { transaction });

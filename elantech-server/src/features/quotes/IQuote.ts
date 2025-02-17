@@ -4,11 +4,10 @@ interface IQuote {
     id?: number;
     companyId: number;
     userId: number;
-    dateQuoted: Date;
+    dateQuoted: string;
     sold: boolean;
-    /// Extra fields
-    User?: {firstName: string, lastName: string};
-    QuotedProducts?: IQuotedProduct[];
+    user?: { firstName: string, lastName: string };
+    quotedProducts?: IQuotedProduct[];
 }
 
 export default IQuote;

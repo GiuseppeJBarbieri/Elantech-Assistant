@@ -46,6 +46,18 @@ export default {
     }
   },
 
+  async EditMultiple(inventory: IInventory[]): Promise<IHTTPResponse> {
+    try {
+      await InventoryRepository.EditMultiple(inventory);
+
+      return {
+        ...constants.HTTP.SUCCESS.UPDATE,
+      };
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  },
+
   async Delete(inventory: IInventory) {
     try {
       await InventoryRepository.Delete(inventory);

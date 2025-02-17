@@ -4,7 +4,7 @@ interface ISession {
     active?: boolean
     expired?: boolean
     expiresAt?: Date
-    User?: { userTypeId: number }
+    user?: { userTypeId: number }
 }
 
 export default ISession;

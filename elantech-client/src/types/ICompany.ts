@@ -8,7 +8,7 @@ interface ICompany {
     email?: string;
     location?: string;
     comment?: string;
-    User?: {
+    user?: {
         firstName: string,
         lastName: string,
     };

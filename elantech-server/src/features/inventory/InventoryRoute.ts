@@ -37,7 +37,6 @@ router.post('/', validate(InventoryValidation.PostInventory),
 router.put('/', authenticationMiddleware, validate(InventoryValidation.PutInventory),
   (req, res, next) => {
     logger.info('PUT INVENTORY');
-
     InventoryController.Edit(req.body)
       .then((response) => {
         res.status(201).json(response);
@@ -46,20 +45,19 @@ router.put('/', authenticationMiddleware, validate(InventoryValidation.PutInvent
   });
 
 /**
-* This route will delete a inventory by id
+* This route will update multiple inventory
+*/
+router.put('/multiple', authenticationMiddleware, validate(InventoryValidation.PutMultipleInventory),
+  (req, res, next) => {
+    logger.info('PUT Multiple INVENTORY');
 
-router.delete('/:id',
-  authenticationMiddleware,
-  validate(InventoryValidation.DeleteInventory), (req, res, next) => {
-    logger.info('DELETE INVENTORY');
-
-    InventoryController.Delete(Number(req.params.id))
+    InventoryController.EditMultiple(req.body)
       .then((response) => {
         res.status(201).json(response);
       })
       .catch((err) => next(err));
   });
-*/
+
 /**
 * This route will remove an inventory obj and create the removed inventory obj
 */

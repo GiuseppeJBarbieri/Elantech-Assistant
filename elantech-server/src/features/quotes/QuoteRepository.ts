@@ -26,7 +26,7 @@ export default {
       // Create the quote
       const createdQuote = await db.quote.create(quote, { transaction });
       // Create the quoted products using the quote ID
-      const quotedProducts = quote.QuotedProducts.map((product: IQuotedProduct) => ({
+      const quotedProducts = quote.quotedProducts.map((product: IQuotedProduct) => ({
         ...product,
         quoteId: createdQuote.id,
       }));
@@ -162,7 +162,7 @@ export default {
       });
 
       // Iterate over the provided quoted products list
-      quote.QuotedProducts.forEach(async (product: IQuotedProduct) => {
+      quote.quotedProducts.forEach(async (product: IQuotedProduct) => {
         if (product.id && existingQuotedProductsMap.has(product.id)) {
           // Update existing product
           await db.quotedProduct.update(product,
@@ -178,7 +178,7 @@ export default {
       });
       // Delete remaining products that were not in the provided list
       existingQuotedProductsMap.forEach(async (product: IQuotedProduct) => {
-        if (product.id && !quote.QuotedProducts.find((p) => p.id === product.id)) {
+        if (product.id && !quote.quotedProducts.find((p) => p.id === product.id)) {
           await db.quotedProduct.destroy({
             where: { id: product.id },
           }, transaction);

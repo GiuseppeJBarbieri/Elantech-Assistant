@@ -7,7 +7,7 @@ interface IQuotedProduct {
     quotedPrice: number;
     productCondition: string;
     comment: string;
-    Product?: {
+    product?: {
         productNumber: string,
         productType: string,
         brand: string,
@@ -22,14 +22,14 @@ interface IQuotedProduct {
         websiteUrl?: string;
         quickSpecsUrl?: string;
     };
-    Quote?: {
+    quote?: {
         dateQuoted: string,
         sold: boolean,
-        Company?: {
+        company?: {
             name: string,
             representative: string
         },
-        User?: {
+        user?: {
             firstName: string,
             lastName: string
         }
