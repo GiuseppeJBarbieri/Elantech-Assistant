@@ -69,19 +69,43 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
             setAlert({ ...alert, label: 'Please enter required information.', show: true });
             setTimeout(() => setAlert({ ...alert, show: false }), 5000);
             return false;
-        } else if(isDuplicate){
+        } else if (isDuplicate) {
             setAlert({ ...alert, label: 'Cannot contain duplicate product numbers.', show: true });
+            setTimeout(() => setAlert({ ...alert, show: false }), 5000);
+            return false;
+        }
+
+        if (product.ebayUrl !== '' && product.ebayUrl !== null) {
+            if (isValidWebAddress(product.ebayUrl ?? '')){
+                return true;
+            }
+            setAlert({ ...alert, label: 'Cannot contain invalid ebay url.', show: true });
+            setTimeout(() => setAlert({ ...alert, show: false }), 5000);
+            return false;
+        } else if (product.websiteUrl !== '' && product.websiteUrl !== null) {
+            if (isValidWebAddress(product.websiteUrl ?? '')){
+                return true;
+            }
+            setAlert({ ...alert, label: 'Cannot contain invalid website url.', show: true });
+            setTimeout(() => setAlert({ ...alert, show: false }), 5000);
+            return false;
+        } else if (product.quickSpecsUrl !== '' && product.quickSpecsUrl !== null) {
+            if (isValidWebAddress(product.quickSpecsUrl ?? '')){
+                return true;
+            }
+            setAlert({ ...alert, label: 'Cannot contain invalid quick specs url.', show: true });
             setTimeout(() => setAlert({ ...alert, show: false }), 5000);
             return false;
         }
 
         return true;
     }
+
     const isValidWebAddress = (url: string): boolean => {
         const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
         return regex.test(url);
-      };
-      
+    };
+
     const submitProduct = () => {
         if (validateProduct()) {
             console.log(product);
@@ -157,7 +181,7 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                                             id="timeFrame"
                                             type="text"
                                             placeholder="Description"
-                                            value={product.description}
+                                            value={product.description ?? ''}
                                             onChange={(e) => setProduct({ ...product, description: (e.target.value) })}
                                         />
                                     </Form.Group>
@@ -169,7 +193,7 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                                             id="timeFrame"
                                             type="text"
                                             placeholder="Alt Number 1"
-                                            value={product.altNumber1}
+                                            value={product.altNumber1 ?? ''}
                                             onChange={(e) => setProduct({ ...product, altNumber1: (e.target.value) })}
                                         />
                                     </Form.Group>
@@ -179,7 +203,7 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                                             id="timeFrame"
                                             type="text"
                                             placeholder="Alt Number 2"
-                                            value={product.altNumber2}
+                                            value={product.altNumber2 ?? ''}
                                             onChange={(e) => setProduct({ ...product, altNumber2: (e.target.value) })}
                                         />
                                     </Form.Group>
@@ -191,7 +215,7 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                                             id="timeFrame"
                                             type="text"
                                             placeholder="Alt Number 3"
-                                            value={product.altNumber3}
+                                            value={product.altNumber3 ?? ''}
                                             onChange={(e) => setProduct({ ...product, altNumber3: (e.target.value) })}
                                         />
                                     </Form.Group>
@@ -201,7 +225,7 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                                             id="timeFrame"
                                             type="text"
                                             placeholder="Alt Number 4"
-                                            value={product.altNumber4}
+                                            value={product.altNumber4 ?? ''}
                                             onChange={(e) => setProduct({ ...product, altNumber4: (e.target.value) })}
                                         />
                                     </Form.Group>
@@ -213,7 +237,7 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                                             id="timeFrame"
                                             type="text"
                                             placeholder="Alt Number 5"
-                                            value={product.altNumber5}
+                                            value={product.altNumber5 ?? ''}
                                             onChange={(e) => setProduct({ ...product, altNumber5: (e.target.value) })}
                                         />
                                     </Form.Group>
@@ -223,7 +247,7 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                                             id="timeFrame"
                                             type="text"
                                             placeholder="Alt Number 6"
-                                            value={product.altNumber6}
+                                            value={product.altNumber6 ?? ''}
                                             onChange={(e) => setProduct({ ...product, altNumber6: (e.target.value) })}
                                         />
                                     </Form.Group>
@@ -234,7 +258,7 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                                         id="timeFrame"
                                         type="text"
                                         placeholder="Ebay Link"
-                                        value={product.ebayUrl}
+                                        value={product.ebayUrl ?? ''}
                                         onChange={(e) => setProduct({ ...product, ebayUrl: (e.target.value) })}
                                     />
                                 </Form.Group>
@@ -244,7 +268,7 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                                         id="timeFrame"
                                         type="text"
                                         placeholder="Website Link"
-                                        value={product.websiteUrl}
+                                        value={product.websiteUrl ?? ''}
                                         onChange={(e) => setProduct({ ...product, websiteUrl: (e.target.value) })}
                                     />
                                 </Form.Group>
@@ -254,7 +278,7 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                                         id="timeFrame"
                                         type="text"
                                         placeholder="Quick Specs"
-                                        value={product.quickSpecsUrl}
+                                        value={product.quickSpecsUrl ?? ''}
                                         onChange={(e) => setProduct({ ...product, quickSpecsUrl: (e.target.value) })}
                                     />
                                 </Form.Group>
@@ -264,7 +288,7 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                                         id="timeFrame"
                                         type="text"
                                         placeholder="Related Tags"
-                                        value={product.relatedTags}
+                                        value={product.relatedTags ?? ''}
                                         onChange={(e) => setProduct({ ...product, relatedTags: (e.target.value) })}
                                     />
                                 </Form.Group>

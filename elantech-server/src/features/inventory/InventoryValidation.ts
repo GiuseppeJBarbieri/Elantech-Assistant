@@ -3,6 +3,12 @@ import * as Joi from 'joi';
 export default {
   Get: {
     params: {
+      id: Joi.number().required(),
+    },
+  },
+
+  GetByProductId: {
+    params: {
       productId: Joi.number().required(),
     },
   },

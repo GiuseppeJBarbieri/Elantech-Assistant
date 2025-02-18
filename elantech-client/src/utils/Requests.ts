@@ -29,8 +29,8 @@ export const requestDeleteProduct = async (id: number): Promise<any> => {
 }
 
 // INVENTORY
-export const requestAllInventoryByProductID = async (productId: number): Promise<IInventory[]> => {
-    return axios.get(`${BASE_API_URL}${ROUTES.INVENTORY}/${productId}`, { withCredentials: true }).then((response) => response?.data?.payload[0]);
+export const requestAllInventoryByProductID = async (id: number): Promise<IInventory[]> => {
+    return axios.get(`${BASE_API_URL}${ROUTES.INVENTORY}/product/${id}`, { withCredentials: true }).then((response) => response?.data?.payload[0]);
 }
 export const requestUpdateInventory = async (inventory: IInventory): Promise<any> => {
     axios.put(`${BASE_API_URL}${ROUTES.INVENTORY}`, inventory, { withCredentials: true }).then((response) => response?.data?.payload[0]);
