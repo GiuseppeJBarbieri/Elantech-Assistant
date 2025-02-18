@@ -77,12 +77,18 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
 
         return true;
     }
+    const isValidWebAddress = (url: string): boolean => {
+        const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+        return regex.test(url);
+      };
+      
     const submitProduct = () => {
         if (validateProduct()) {
             console.log(product);
             handleProduct(product);
         }
     };
+
     useEffect(() => {
         props.modalSwitch === 0 ? setTitle('Create Product') : setTitle('Edit Product');
     }, [])

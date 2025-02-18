@@ -1,7 +1,7 @@
 import IHTTPResponse from '../../utils/interfaces/IHTTPResponse';
 import QuotedProductsRepository from './QuotedProductsRepository';
 import constants from '../../utils/constants/Constants';
-import BaseController from '../../utils/BaseController';
+import BaseController from '../BaseController';
 
 const QuotedProductsController = {
   ...BaseController(QuotedProductsRepository),

@@ -1,7 +1,7 @@
 import IHTTPResponse from '../../utils/interfaces/IHTTPResponse';
 import QuoteRepository from './QuoteRepository';
 import constants from '../../utils/constants/Constants';
-import BaseController from '../../utils/BaseController';
+import BaseController from '../BaseController';
 import IQuote from './IQuote';
 
 const QuoteController = {

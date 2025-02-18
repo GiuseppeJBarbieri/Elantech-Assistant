@@ -1,7 +1,7 @@
 import * as Joi from 'joi';
 
 export default {
-  GetAllProducts: {
+  GetAll: {
     params: {
 
     },
@@ -10,19 +10,19 @@ export default {
     },
   },
 
-  GetProduct: {
+  Get: {
     params: {
       productNumber: Joi.string().required(),
     },
   },
 
-  DeleteProduct: {
+  Delete: {
     params: {
       id: Joi.number().required(),
     },
   },
 
-  PostProduct: {
+  Post: {
     body: {
       id: Joi.number().optional(),
       userId: Joi.number().required(),
@@ -45,7 +45,7 @@ export default {
     },
   },
 
-  PutProduct: {
+  Put: {
     body: {
       id: Joi.number().required(),
       productNumber: Joi.string().required(),

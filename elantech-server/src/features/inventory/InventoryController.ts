@@ -2,7 +2,7 @@ import IHTTPResponse from '../../utils/interfaces/IHTTPResponse';
 import InventoryRepository from './InventoryRepository';
 import constants from '../../utils/constants/Constants';
 import IInventory from './IInventory';
-import BaseController from '../../utils/BaseController';
+import BaseController from '../BaseController';
 
 const InventoryController = {
   ...BaseController(InventoryRepository),

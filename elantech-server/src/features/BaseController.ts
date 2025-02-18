@@ -1,6 +1,9 @@
-import IHTTPResponse from './interfaces/IHTTPResponse';
-import constants from './constants/Constants';
+import IHTTPResponse from '../utils/interfaces/IHTTPResponse';
+import constants from '../utils/constants/Constants';
 
+/**
+ * This is a base controller which will be extended by other controllers
+ */
 const BaseController = (repository: any) => ({
   async GetAll(): Promise<IHTTPResponse> {
     try {

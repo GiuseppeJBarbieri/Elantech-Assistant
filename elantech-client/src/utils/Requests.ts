@@ -16,10 +16,10 @@ export const requestLogout = async (): Promise<AxiosResponse<unknown, unknown>> 
 
 // PRODUCTS
 export const requestAllProducts = async (): Promise<IProduct[]> => {
-    return axios.get(`${BASE_API_URL}${ROUTES.PRODUCTS}`, { withCredentials: true }).then((response) => response.data.payload[0]);
+    return axios.get(`${BASE_API_URL}${ROUTES.PRODUCTS}`, { withCredentials: true }).then((response: AxiosResponse) => response.data.payload[0]);
 }
 export const requestAddProduct = async (product: IProduct): Promise<any> => {
-    return axios.post(`${BASE_API_URL}${ROUTES.PRODUCTS}`, product, { withCredentials: true }).then((response) => response.data.payload[0]);
+    return axios.post(`${BASE_API_URL}${ROUTES.PRODUCTS}`, product, { withCredentials: true }).then((response) => response.data.payload);
 }
 export const requestUpdateProduct = async (product: IProduct): Promise<any> => {
     return axios.put(`${BASE_API_URL}${ROUTES.PRODUCTS}`, product, { withCredentials: true }).then((response) => response.data.payload[0]);
@@ -39,7 +39,7 @@ export const requestUpdateMultipleInventory = async (inventory: IInventory[]): P
     axios.put(`${BASE_API_URL}${ROUTES.INVENTORY}/multiple`, inventory, { withCredentials: true }).then((response) => response?.data?.payload[0]);
 }
 export const requestAddInventory = async (inventory: IInventory): Promise<any> => {
-    return axios.post(`${BASE_API_URL}${ROUTES.INVENTORY}`, inventory, { withCredentials: true }).then((response) => response?.data?.payload[0]);
+    return axios.post(`${BASE_API_URL}${ROUTES.INVENTORY}`, inventory, { withCredentials: true }).then((response) => response?.data?.payload);
 }
 export const requestRemoveInventory = async (inventory: IInventory): Promise<any> => {
     return axios.put(`${BASE_API_URL}${ROUTES.INVENTORY}/removal`, inventory, { withCredentials: true }).then((response) => response?.data?.payload[0]);
@@ -50,7 +50,7 @@ export const requestAllCompanies = async (): Promise<ICompany[]> => {
     return axios.get(`${BASE_API_URL}${ROUTES.COMPANY}`, { withCredentials: true }).then((response) => response.data.payload[0]);
 }
 export const requestAddCompany = async (company: ICompany): Promise<any> => {
-    return axios.post(`${BASE_API_URL}${ROUTES.COMPANY}`, company, { withCredentials: true }).then((response) => response.data.payload[0]);
+    return axios.post(`${BASE_API_URL}${ROUTES.COMPANY}`, company, { withCredentials: true }).then((response) => response.data.payload);
 }
 export const requestUpdateCompany = async (company: ICompany): Promise<any> => {
     return axios.put(`${BASE_API_URL}${ROUTES.COMPANY}`, company, { withCredentials: true }).then((response) => response.data.payload[0]);

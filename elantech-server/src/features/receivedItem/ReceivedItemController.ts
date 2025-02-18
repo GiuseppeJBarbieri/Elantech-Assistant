@@ -1,5 +1,5 @@
 import ReceivedItemRepository from './ReceivedItemRepository';
-import BaseController from '../../utils/BaseController';
+import BaseController from '../BaseController';
 import IHTTPResponse from '../../utils/interfaces/IHTTPResponse';
 import constants from '../../utils/constants/Constants';
 

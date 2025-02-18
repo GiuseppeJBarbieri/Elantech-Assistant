@@ -1,5 +1,5 @@
 import CompanyRepository from './CompanyRepository';
-import BaseController from '../../utils/BaseController';
+import BaseController from '../BaseController';
 
 const CompanyController = {
   ...BaseController(CompanyRepository),
