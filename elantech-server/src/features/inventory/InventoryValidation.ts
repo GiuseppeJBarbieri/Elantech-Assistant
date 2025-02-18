@@ -1,13 +1,13 @@
 import * as Joi from 'joi';
 
 export default {
-  GetInventory: {
+  Get: {
     params: {
       productId: Joi.number().required(),
     },
   },
 
-  DeleteInventory: {
+  Delete: {
     body: {
       id: Joi.number(),
       productId: Joi.number().required(),
@@ -32,7 +32,7 @@ export default {
     },
   },
 
-  PostInventory: {
+  Post: {
     body: {
       id: Joi.number(),
       productId: Joi.number().required(),
@@ -68,7 +68,7 @@ export default {
     })),
   },
 
-  PutInventory: {
+  Put: {
     body: {
       id: Joi.number().required(),
       productId: Joi.number().required(),

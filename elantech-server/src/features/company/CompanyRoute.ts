@@ -10,7 +10,7 @@ const router = BaseRoute(CompanyController, CompanyValidation);
 /**
  * This route will add new company
  */
-router.post('/', authenticationMiddleware, validate(CompanyValidation.PostCompany),
+router.post('/', authenticationMiddleware, validate(CompanyValidation.Post),
   (req, res, next) => {
     logger.info('POST COMPANY');
     const copy = JSON.parse(JSON.stringify(req.body));
@@ -26,7 +26,7 @@ router.post('/', authenticationMiddleware, validate(CompanyValidation.PostCompan
 /**
 * This route will delete a company by id
 */
-router.delete('/:id', authenticationMiddleware, validate(CompanyValidation.DeleteCompany),
+router.delete('/:id', authenticationMiddleware, validate(CompanyValidation.Delete),
   (req, res, next) => {
     // eslint-disable-next-line dot-notation
     if (req.session['userType'] === 1) {

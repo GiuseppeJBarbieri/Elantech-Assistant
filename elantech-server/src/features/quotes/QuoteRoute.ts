@@ -1,25 +1,103 @@
-import BaseRoute from '../BaseRoute';
+import validate from '../../middleware/JoiValidator';
+import logger from '../../utils/logging/Logger';
+import authenticationMiddleware from '../../middleware/Auth';
 import QuoteController from './QuoteController';
 import QuoteValidation from './QuoteValidation';
+import BaseRoute from '../BaseRoute';
 
 const router = BaseRoute(QuoteController, QuoteValidation);
 
-router.get('/company/:companyId', async (req, res, next) => {
-  try {
-    const response = await QuoteController.GetByCompanyId(Number(req.params.companyId));
-    res.status(200).json(response);
-  } catch (err) {
-    next(err);
-  }
-});
+/**
+ * This route will add new quote
+ */
+router.post('/', authenticationMiddleware, validate(QuoteValidation.Post),
+  (req, res, next) => {
+    logger.info('POST QUOTE');
+    const copy = JSON.parse(JSON.stringify(req.body));
+    // eslint-disable-next-line dot-notation
+    copy.userId = req.session['userId'];
+    QuoteController.Add(copy)
+      .then((response) => {
+        res.status(201).json(response);
+      })
+      .catch((err) => next(err));
+  });
 
-router.put('/quotedProduct', async (req, res, next) => {
-  try {
-    const response = await QuoteController.UpdateQuotedProducts(req.body);
-    res.status(201).json(response);
-  } catch (err) {
-    next(err);
-  }
-});
+/**
+* This route will fetch all quotes.
+*/
+router.get('/', authenticationMiddleware, validate(QuoteValidation.GetAll),
+  (req, res, next) => {
+    logger.info('GET ALL QUOTES');
+
+    QuoteController.GetAll()
+      .then((quotes) => res.status(200).json(quotes))
+      .catch((err) => next(err));
+  });
+
+/**
+* This route will fetch a quote by id
+*/
+router.get('/:id', authenticationMiddleware, validate(QuoteValidation.Get),
+  (req, res, next) => {
+    logger.info('GET QUOTE');
+
+    QuoteController.Get(Number(req.params.id))
+      .then((quote) => res.status(200).json(quote))
+      .catch((err) => next(err));
+  });
+
+/**
+* This route will fetch all quotes by company id
+*/
+router.get('/company/:companyId', authenticationMiddleware, validate(QuoteValidation.GetQuoteByCompanyId),
+  (req, res, next) => {
+    logger.info('GET QUOTE BY COMPANY ID');
+    QuoteController.GetByCompanyId(Number(req.params.companyId))
+      .then((quotes) => res.status(200).json(quotes))
+      .catch((err) => next(err));
+  });
+
+/**
+* This route will update a quote
+*/
+router.put('/', authenticationMiddleware, validate(QuoteValidation.Put),
+  (req, res, next) => {
+    logger.info('PUT QUOTE');
+
+    QuoteController.Edit(req.body)
+      .then((response) => {
+        res.status(201).json(response);
+      })
+      .catch((err) => next(err));
+  });
+
+/**
+* This route will update a quote
+*/
+router.put('/quotedProduct', authenticationMiddleware, validate(QuoteValidation.PutQuoteAndProducts),
+  (req, res, next) => {
+    logger.info('PUT QUOTE WITH QUOTED PRODUCTS');
+
+    QuoteController.UpdateQuotedProducts(req.body)
+      .then((response) => {
+        res.status(201).json(response);
+      })
+      .catch((err) => next(err));
+  });
+
+/**
+* This route will delete a quote by id
+*/
+router.delete('/:id', authenticationMiddleware, validate(QuoteValidation.Delete),
+  (req, res, next) => {
+    logger.info('DELETE QUOTE');
+
+    QuoteController.Delete(Number(req.params.id))
+      .then((response) => {
+        res.status(201).json(response);
+      })
+      .catch((err) => next(err));
+  });
 
 export default router;
