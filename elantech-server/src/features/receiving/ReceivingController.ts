@@ -48,10 +48,11 @@ export default {
 
   async Edit(receiving: IReceiving): Promise<IHTTPResponse> {
     try {
-      ReceivingRepository.Edit(receiving);
+      const editedItemId = await ReceivingRepository.Edit(receiving);
 
       return {
         ...constants.HTTP.SUCCESS.UPDATE,
+        id: editedItemId,
       };
     } catch (err) {
       return Promise.reject(err);

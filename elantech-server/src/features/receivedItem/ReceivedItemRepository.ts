@@ -68,13 +68,13 @@ export default {
     }
   },
 
-  async Edit(ReceivedItem: IReceivedItem): Promise<IReceivedItem> {
+  async Edit(receivedItem: IReceivedItem): Promise<number> {
     try {
-      return await db.receivedItem.update(ReceivedItem, {
-        where: {
-          id: ReceivedItem.id,
-        },
+      const editedItemIds = await db.receivedItem.update(receivedItem, {
+        where: { id: receivedItem.id },
       });
+
+      return editedItemIds[0];
     } catch (err) {
       standardError(`${err.name} ${err.message}`);
       throw repoErr;

@@ -46,17 +46,22 @@ export default {
 
   PutReceiving: {
     body: {
-      id: Joi.number().optional().allow(null, ''),
-      companyId: Joi.number().required(),
-      purchaseOrderNumber: Joi.string().required(),
-      orderType: Joi.string().required(),
-      trackingNumber: Joi.string().required(),
-      dateReceived: Joi.date(),
-      shippedVia: Joi.string().required(),
-      comment: Joi.string(),
-      createdAt: Joi.string().optional(),
-      updatedAt: Joi.string().optional(),
-      deletedAt: Joi.string().optional().allow(null),
+        id: Joi.number().required(),
+        userId: Joi.number().optional().allow(null, ''),
+        companyId: Joi.number().required(),
+        purchaseOrderNumber: Joi.string().required(),
+        orderType: Joi.string().required(),
+        trackingNumber: Joi.string().required(),
+        dateReceived: Joi.date(),
+        shippedVia: Joi.string().required(),
+        comment: Joi.string().optional().allow(null, ''),
+        company: Joi.object().optional().allow(null, ''),
+        user: Joi.object().optional().allow(null, ''),
+
+        // Interanal sequelize columns
+        createdAt: Joi.string().optional(),
+        updatedAt: Joi.string().optional(),
+        deletedAt: Joi.string().optional().allow(null),
     },
   },
 };

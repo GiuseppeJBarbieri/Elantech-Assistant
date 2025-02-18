@@ -69,6 +69,9 @@ export default {
             required: false,
             as: 'user',
           }],
+        // order: [
+        //   ['id', 'ASC'],
+        // ],
       }) as IReceiving[];
     } catch (err) {
       standardError(err.message);
@@ -87,13 +90,13 @@ export default {
     }
   },
 
-  async Edit(receiving: IReceiving): Promise<IReceiving> {
+  async Edit(receiving: IReceiving): Promise<number> {
     try {
-      return await db.receiving.update(receiving, {
-        where: {
-          id: receiving.id,
-        },
+      const editedItemIds = await db.receiving.update(receiving, {
+        where: { id: receiving.id },
       });
+
+      return editedItemIds[0];
     } catch (err) {
       standardError(`${err.name} ${err.message}`);
       throw repoErr;

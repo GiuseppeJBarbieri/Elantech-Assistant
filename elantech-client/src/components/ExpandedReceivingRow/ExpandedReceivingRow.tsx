@@ -18,10 +18,10 @@ interface ExpandedReceivingRowProps extends RouteComponentProps, HTMLAttributes<
 }
 
 const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps> = (props) => {
-    const [editProductSwitch, setEditProductSwitch] = useState(false);
     const [addInventorySwitch, setAddInventorySwitch] = useState(false);
     const [addProductSwitch, setAddProductSwitch] = useState(false);
     const [receivedItemList, setReceivedItemList] = useState<IReceivedItem[]>([]);
+    const [selectedItem, setSelectedItem] = useState<IReceivedItem | null>(null);
 
     const rankFormatterAdd = () => {
         return (
@@ -43,7 +43,7 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
             </div>
         );
     };
-    const rankFormatterEdit = () => {
+    const rankFormatterEdit = (cell: any, row: any) => {
         return (
             <div
                 style={{
@@ -51,12 +51,11 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
                     cursor: 'pointer',
                     lineHeight: 'normal',
                     zIndex: 0
-                }}
-                onClick={(e) => {
-                    e.stopPropagation()
-                }} >
-                <div onClick={() => {
-                    setEditProductSwitch(true);
+                }}>
+                <div onClick={(e) => {
+                    e.stopPropagation();
+
+                    setSelectedItem(row);
                 }}
                 >
                     <Pencil style={{ fontSize: 20, color: 'white' }} />
@@ -64,9 +63,9 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
             </div>
         );
     };
-    const rankFormatterRemove = () => {
+    const rankFormatterRemove = (cell: any, row: any) => {
         return (
-            <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }} onClick={() => console.log('Remove Column')} >
+            <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }} onClick={() => console.log(`Remove Column ${row.id} (${row.product.productNumber})`)} >
                 <Trash style={{ fontSize: 20, color: 'white' }} />
             </div>
         );
@@ -146,7 +145,6 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
     const getAllReceivedItems = async () => {
         if (props.receiving.id !== undefined) {
             const receiving = await requestAllReceivedItems(props.receiving.id);
-            console.log(receiving);
             setReceivedItemList(receiving);
         }
     }
@@ -201,12 +199,13 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
             </div>
             <hr />
             {
-                editProductSwitch &&
+                selectedItem &&
                 <div className='modal-dialog'>
                     <EditReceivedProductOrderModal
-                        modalVisible={editProductSwitch}
+                        selectedItem={selectedItem}
+                        getAllReceivedItems={getAllReceivedItems}
                         onClose={async () => {
-                            setEditProductSwitch(false);
+                            setSelectedItem(null);
                         }}
                     />
                 </div>

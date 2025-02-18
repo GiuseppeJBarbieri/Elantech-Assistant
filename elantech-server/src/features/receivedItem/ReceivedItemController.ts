@@ -60,10 +60,11 @@ export default {
 
   async Edit(ReceivedItem: IReceivedItem): Promise<IHTTPResponse> {
     try {
-      ReceivedItemRepository.Edit(ReceivedItem);
+      const editedItemId = await ReceivedItemRepository.Edit(ReceivedItem);
 
       return {
         ...constants.HTTP.SUCCESS.UPDATE,
+        id: editedItemId,
       };
     } catch (err) {
       return Promise.reject(err);

@@ -1,14 +1,14 @@
 import React, { HTMLAttributes, FunctionComponent, useEffect } from 'react';
 import { useState } from 'react';
 import { Modal, Spinner, Form, Button, Row, Col, Container, Collapse, InputGroup } from 'react-bootstrap';
-import BootstrapTable, { SelectRowProps } from 'react-bootstrap-table-next';
+import BootstrapTable, { ColumnDescription, SelectRowProps } from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import ICompany from '../../../types/ICompany';
 import { RequestAddReceivingOrder, requestAllCompanies, requestAllProducts } from '../../../utils/Requests';
 import IProduct from '../../../types/IProduct';
 import moment from 'moment';
-import { Search } from 'react-bootstrap-icons';
+import { Search, Trash } from 'react-bootstrap-icons';
 import { DebounceInput } from 'react-debounce-input';
 import filterFactory from 'react-bootstrap-table2-filter';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
@@ -23,7 +23,7 @@ interface AddReceivingOrderModalProps extends RouteComponentProps, HTMLAttribute
     getAllReceiving: () => void;
 }
 
-const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalProps> = (props) => {
+const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalProps> = ({ getAllReceiving, onClose }) => {
 	const [mainAlert, setMainAlert] = useState(defaultAlert);
     const [productSectionAlert, setProductSectionAlert] = useState(defaultAlert);
     const [isSaving, setIsSaving] = useState(false);
@@ -43,6 +43,39 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
         productInfoExpander: false,
         productsInOrderExpander: false,
     });
+
+    const rankFormatterRemove = (cell: any, row: any) => {
+        return (
+          <div
+            style={{
+              textAlign: 'center',
+              cursor: 'pointer',
+              lineHeight: 'normal'
+            }}>
+            <div onClick={(e) => {
+              e.stopPropagation();
+
+              // TODO-SC: Delete confirmation popup modal
+              // ...
+
+              // setSelectedReceiving(data);
+              // setRemoveOrderSwitch(true);
+
+              // Delete received item row from table and internal state
+              const indexToDelete = row.id
+              
+              const newOrderList = [...orderList];
+              newOrderList.splice(indexToDelete, 1);
+
+              setOrderList(newOrderList);
+            }}
+            >
+              <Trash style={{ fontSize: 20, color: 'white' }} />
+            </div>
+          </div>
+        );
+    };
+
     const companyColumn = [
         {
             id: 1,
@@ -149,7 +182,7 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
             sort: false,
         },
     ];
-    const selectedProductColumn = [
+    const selectedProductColumn: ColumnDescription<any, any>[] = [
         {
             dataField: 'quantity',
             text: 'QTY',
@@ -157,7 +190,7 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
             headerAlign: 'center',
         },
         {
-            dataField: 'condition',
+            dataField: 'cud',
             text: 'Condition',
             sort: true,
             headerAlign: 'center',
@@ -180,9 +213,19 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
             sort: true,
         },
         {
-            dataField: 'comments',
+            dataField: 'comment',
             text: 'Comments',
             sort: false,
+        },
+        {
+            dataField: 'remove',
+            text: 'Delete',
+            sort: false,
+            formatter: rankFormatterRemove,
+            headerAlign: 'center',
+            style: {
+                textAlign: 'center'
+            }
         },
     ]
     const options = {
@@ -244,15 +287,12 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
     };
     const addProductToOrder = async () => {
         // Validate form
-        // quantity not empty, seller selected, product selected
+        console.log(receivedItemState.quantity, receivingOrderState.companyId);
         let isEmpty = false;
-        if (receivedItemState.quantity) isEmpty = true;
+        if (receivedItemState.quantity === 0) isEmpty = true;
 
         // A seller must be selected
         if (receivingOrderState.companyId === 0) isEmpty = true;
-
-        // At least ONE product must be created
-        if (orderList.length < 1) isEmpty = true;
 
 		if (isEmpty) {
 			setProductSectionAlert({ ...mainAlert, label: 'Please enter required product information.', show: true });
@@ -266,7 +306,7 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
         });
 
         // Add item to orderList
-        setOrderList((prev) => [...prev, { ...receivedItemState }]);
+        setOrderList((prev) => [...prev, { ...receivedItemState, id: orderList.length }]);
 
         // clear receivedState form
         setReceivedItemState({...receivedItemState, quantity: 0, cud: '', comment: ''});
@@ -281,13 +321,13 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
                 await RequestAddReceivingOrder(receivingOrderState);
 
                 // Refresh parent page
-				props.getAllReceiving && await props.getAllReceiving();
+				getAllReceiving && await getAllReceiving();
 
                 // Hide modal
                 setIsSaving(false);
 
                 // Invoke given close event handler
-				props.onClose && await props.onClose();
+				onClose && onClose();
 			} catch (err) {
 				setMainAlert({ ...mainAlert, label: `${err}`, show: true });
 				setTimeout(() => setMainAlert({ ...mainAlert, show: false }), 3000);
@@ -300,7 +340,7 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
     }, []);
     return (
         <div>
-            <Modal backdrop="static" show onHide={props.onClose} fullscreen={true}>
+            <Modal backdrop="static" show onHide={onClose} fullscreen={true}>
                 <Modal.Header
                     style={{ background: '#212529', color: 'white', borderBottom: '1px solid rgb(61 66 70)' }}
                     closeButton
@@ -377,8 +417,8 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
                                                             <Form.Label className={'required-text-asterisk'}>*</Form.Label>
                                                         </Form.Label>
                                                         <Form.Control id="dateReceived" type="date"
-                                                            value={`${moment(receivingOrderState.dateReceived).format('YYYY-MM-DD')}`}
-                                                            onChange={(e) => {;
+                                                            value={moment(receivingOrderState.dateReceived).format('YYYY-MM-DD')}
+                                                            onChange={(e) => {
                                                                 setReceivingOrderState({
                                                                     ...receivingOrderState,
                                                                     dateReceived: new Date(e.target.value),
