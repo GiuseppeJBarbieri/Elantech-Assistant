@@ -99,16 +99,16 @@ export const requestAddRemovedInventory = async (removedInventory: IRemovedInven
 
 // Receiving
 export const RequestAddReceivingOrder = async (receiving: IReceiving): Promise<any> => {
-    await axios.post(`${BASE_API_URL}${ROUTES.RECEIVING}`, receiving, { withCredentials: true });
+    axios.post(`${BASE_API_URL}${ROUTES.RECEIVING}`, receiving, { withCredentials: true });
 };
 export const requestAllReceiving = async (): Promise<IReceiving[]> => {
     return axios.get(`${BASE_API_URL}${ROUTES.RECEIVING}`, { withCredentials: true }).then((response) => response?.data?.payload);
 }
 export const RequestUpdateReceivingOrder = async (receiving: IReceiving): Promise<number> => {
-    return await axios.put(`${BASE_API_URL}${ROUTES.RECEIVING}`, receiving, { withCredentials: true });
+    return axios.put(`${BASE_API_URL}${ROUTES.RECEIVING}`, receiving, { withCredentials: true });
 };
 export const RequestDeleteReceivingOrder = async (receiving: IReceiving): Promise<void> => {
-    await axios.delete(`${BASE_API_URL}${ROUTES.RECEIVING}/${receiving.id}`, { withCredentials: true });
+    axios.delete(`${BASE_API_URL}${ROUTES.RECEIVING}/${receiving.id}`, { withCredentials: true });
 };
 
 // Received Items
@@ -117,4 +117,7 @@ export const requestAllReceivedItems = async (receivingId: number): Promise<IRec
 }
 export const requestEditReceivedItem = async (receivedItem: IReceivedItem): Promise<number> => {
     return axios.put(`${BASE_API_URL}${ROUTES.RECEIVED_ITEM}`, receivedItem, { withCredentials: true }).then((response) => response?.data?.payload);
+}
+export const requestRemoveReceivedItem = async (id: number): Promise<void> => {
+    axios.delete(`${BASE_API_URL}${ROUTES.RECEIVED_ITEM}/${id}`, { withCredentials: true }).then((response) => response);
 }

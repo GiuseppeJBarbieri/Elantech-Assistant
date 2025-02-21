@@ -1,10 +1,10 @@
 import React, { HTMLAttributes, FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { Modal, Spinner, Form, Button } from 'react-bootstrap';
-import { requestDeleteProduct } from '../../../utils/Requests';
 import { defaultAlert } from '../../../constants/Defaults';
 import { CustomAlert } from '../../Alerts/CustomAlert';
 import IReceiving from '../../../types/IReceiving';
+import { RequestDeleteReceivingOrder, requestRemoveReceivedItem } from '../../../utils/Requests';
 
 interface RemoveReceivingOrderModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     selectedReceiving: IReceiving;
@@ -19,24 +19,25 @@ const RemoveReceivingOrderModalComponent: FunctionComponent<RemoveReceivingOrder
     const [reasonForRemoval, setReasonForRemoval] = useState('Duplicate Listing');
     const [alert, setAlert] = useState(defaultAlert);
 
-    const removeProduct = async () => {
+    const removeProduct = () => {
         setIsSaving(true);
-        const copyProduct: IReceiving = JSON.parse(JSON.stringify(props.selectedReceiving));
         
-        // TODO: "reason for deletion" logic here
-        
-        // setTimeout(async () => {
-        //     try {
-        //         // await requestUpdateProduct(copyProduct)
-        //         await requestDeleteProduct(props.selectedReceiving.id as number);
-        //         props.onClose();
+        setTimeout(async () => {
+            try {
+                await RequestDeleteReceivingOrder(props.selectedReceiving)
 
-        //     } catch (err) {
-        //         setAlert({ ...alert, label: `${err}`, show: true });
-        //         setTimeout(() => setAlert({ ...alert, show: false }), 3000);
-        //         setIsSaving(false);
-        //     }
-        // }, 500);
+                setIsSaving(false);
+
+                props.getAllReceiving();
+
+                props.onClose();
+
+            } catch (err) {
+                setAlert({ ...alert, label: `${err}`, show: true });
+                setTimeout(() => setAlert({ ...alert, show: false }), 3000);
+                setIsSaving(false);
+            }
+        }, 500);
     };
     return (
         <div>
@@ -102,9 +103,7 @@ const RemoveReceivingOrderModalComponent: FunctionComponent<RemoveReceivingOrder
                     <div style={{ textAlign: 'center' }}>
                         <Button
                             variant="dark"
-                            onClick={async () => {
-                                removeProduct()
-                            }}>
+                            onClick={removeProduct}>
                             Finish
                         </Button>
                     </div>

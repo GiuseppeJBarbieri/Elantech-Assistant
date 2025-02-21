@@ -83,7 +83,7 @@ export default {
 
   async Delete(id: number): Promise<IReceivedItem[]> {
     try {
-      return await db.receivedItem.delete({
+      return await db.receivedItem.destroy({
         where: { id },
       });
     } catch (err) {

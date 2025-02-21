@@ -103,15 +103,29 @@ export default {
     }
   },
 
-  async Delete(id: number): Promise<IReceiving[]> {
+  async Delete(id: number): Promise<number> {
+    let transaction: Transaction;
+
     try {
-      return await db.receiving.delete({
-        where: { id },
+      transaction = await db.sequelize.transaction();
+
+      const deletedOrders = await db.receivedItem.destroy({
+        where: { receivingId: id }, transaction,
       });
+
+      const deletedOrderItems = await db.receiving.destroy({
+        where: { id }, transaction,
+      });
+
+      await transaction.commit();
+
+      return deletedOrders + deletedOrderItems;
     } catch (err) {
+      // Rollback the transaction in case of error
+      await transaction.rollback();
+
       standardError(`${err.name} ${err.message}`);
       return Promise.reject(repoErr);
     }
   },
-
 };

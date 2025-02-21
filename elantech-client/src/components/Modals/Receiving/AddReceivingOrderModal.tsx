@@ -17,6 +17,7 @@ import { defaultAlert, defaultReceivedItem, defaultReceiving } from '../../../co
 import IReceiving from '../../../types/IReceiving';
 import IReceivedItem from '../../../types/IReceivedItem';
 import { CustomAlert } from '../../Alerts/CustomAlert';
+import { UnsavedChangesModal } from '../UnsavedChangesModal';
 
 interface AddReceivingOrderModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
@@ -24,6 +25,7 @@ interface AddReceivingOrderModalProps extends RouteComponentProps, HTMLAttribute
 }
 
 const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalProps> = ({ getAllReceiving, onClose }) => {
+    const [unsavedModalVisible, setUnsavedModalVisible] = useState(false);
 	const [mainAlert, setMainAlert] = useState(defaultAlert);
     const [productSectionAlert, setProductSectionAlert] = useState(defaultAlert);
     const [isSaving, setIsSaving] = useState(false);
@@ -53,21 +55,10 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
               lineHeight: 'normal'
             }}>
             <div onClick={(e) => {
-              e.stopPropagation();
+                e.stopPropagation();
 
-              // TODO-SC: Delete confirmation popup modal
-              // ...
-
-              // setSelectedReceiving(data);
-              // setRemoveOrderSwitch(true);
-
-              // Delete received item row from table and internal state
-              const indexToDelete = row.id
-              
-              const newOrderList = [...orderList];
-              newOrderList.splice(indexToDelete, 1);
-
-              setOrderList(newOrderList);
+              // TODO: Delete received item row from table and internal state
+              const indexToDelete: number = row.id;
             }}
             >
               <Trash style={{ fontSize: 20, color: 'white' }} />
@@ -285,14 +276,17 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
 
 		return true;
     };
+
     const addProductToOrder = async () => {
-        // Validate form
-        console.log(receivedItemState.quantity, receivingOrderState.companyId);
+        // Validate seller information section
         let isEmpty = false;
         if (receivedItemState.quantity === 0) isEmpty = true;
 
         // A seller must be selected
         if (receivingOrderState.companyId === 0) isEmpty = true;
+
+        // A product must be selected
+        if (!receivedItemState.product?.id) isEmpty = true;
 
 		if (isEmpty) {
 			setProductSectionAlert({ ...mainAlert, label: 'Please enter required product information.', show: true });
@@ -311,7 +305,8 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
         // clear receivedState form
         setReceivedItemState({...receivedItemState, quantity: 0, cud: '', comment: ''});
     };
-	const onSubmit = async () => {
+
+	const onSubmit = () => {
         if (!validateForm()) return
         
 		setIsSaving(true);
@@ -320,14 +315,14 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
                 // Add receiving order into the database
                 await RequestAddReceivingOrder(receivingOrderState);
 
-                // Refresh parent page
-				getAllReceiving && await getAllReceiving();
-
                 // Hide modal
                 setIsSaving(false);
 
+                // Refresh parent page
+				getAllReceiving();
+
                 // Invoke given close event handler
-				onClose && onClose();
+				onClose();
 			} catch (err) {
 				setMainAlert({ ...mainAlert, label: `${err}`, show: true });
 				setTimeout(() => setMainAlert({ ...mainAlert, show: false }), 3000);
@@ -335,12 +330,40 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
 			}
 		}, 500);
 	};
+
     useEffect(() => {
         requestAllData();
     }, []);
+
+    const onCloseModal = () => {
+        const defaultReceivingState = defaultReceiving();
+
+        // Check for any unsaved changes
+        let changeDetected = false;
+        if (receivingOrderState.purchaseOrderNumber !== defaultReceivingState.purchaseOrderNumber) changeDetected = true;
+        if (receivingOrderState.trackingNumber !== defaultReceivingState.trackingNumber) changeDetected = true;
+        if (receivingOrderState.orderType !== defaultReceivingState.orderType) changeDetected = true;
+        if (receivingOrderState.shippedVia !== defaultReceivingState.shippedVia) changeDetected = true;
+        if (receivingOrderState.companyId !== defaultReceivingState.companyId) changeDetected = true;
+
+        // A seller must be selected
+        if (receivingOrderState.companyId !== defaultReceivingState.companyId) changeDetected = true;
+
+        // At least ONE product must be created
+        if (orderList.length >= 1) changeDetected = true;
+        
+        // Alert when form can not validate
+        if (changeDetected) {
+            setUnsavedModalVisible(true);
+			return;
+        }
+
+        onClose();
+    };
+
     return (
         <div>
-            <Modal backdrop="static" show onHide={onClose} fullscreen={true}>
+            <Modal backdrop="static" show onHide={onCloseModal} fullscreen={true}>
                 <Modal.Header
                     style={{ background: '#212529', color: 'white', borderBottom: '1px solid rgb(61 66 70)' }}
                     closeButton
@@ -606,12 +629,14 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
                                                                                 </Form.Group>
                                                                                 <Form.Group className="mb-4">
                                                                                     <Form.Control id="quantity" type="number" placeholder="Quantity"
+                                                                                    value={receivedItemState.quantity}
                                                                                         onChange={(e) => {
                                                                                             setReceivedItemState({ ...receivedItemState, quantity: Number(e.target.value) });
                                                                                         }} />
                                                                                 </Form.Group>
                                                                                 <Form.Group className="mb-3">
                                                                                     <Form.Select aria-label="Default select example"
+                                                                                        value={receivedItemState.cud}
                                                                                         onChange={(e) => {
                                                                                             setReceivedItemState({ ...receivedItemState, cud: e.target.value })
                                                                                         }}>
@@ -625,6 +650,7 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
                                                                                 </Form.Group>
                                                                                 <Form.Group className="mb-1">
                                                                                     <Form.Control id="comment" placeholder="Comments"
+                                                                                        value={receivedItemState.comment}
                                                                                         onChange={(e) => {
                                                                                             setReceivedItemState({ ...receivedItemState, comment: e.target.value })
                                                                                         }} />
@@ -706,7 +732,16 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
                     </div>
                 </Modal.Footer>
             </Modal>
-        </div >
+
+            {/* Unsaved changes confirmation modal */}
+            {
+                unsavedModalVisible &&
+                <UnsavedChangesModal
+                    onLeave={() => {setUnsavedModalVisible(false); onClose && onClose(); }}
+                    onStay={() => {setUnsavedModalVisible(false)}}
+                />
+            }
+        </div>
     );
 };
 

@@ -65,7 +65,7 @@ router.put('/', authenticationMiddleware, validate(ReceivingValidation.PutReceiv
 */
 router.delete('/:id', authenticationMiddleware, validate(ReceivingValidation.DeleteReceivedOrder),
   (req, res, next) => {
-    logger.info('DELETE QUOTE');
+    logger.info('DELETE RECEIVING');
 
     ReceivingController.Delete(Number(req.params.id))
       .then((response) => {

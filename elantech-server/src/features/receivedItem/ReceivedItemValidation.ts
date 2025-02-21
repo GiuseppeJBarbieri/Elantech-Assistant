@@ -28,7 +28,7 @@ export default {
       receivingId: Joi.number().required(),
       productId: Joi.number().required(),
       cud: Joi.string().required(),
-      comment: Joi.string(),
+      comment: Joi.string().optional().allow(null, ''),
       finishedAdding: Joi.boolean().required(),
     },
   },
@@ -40,7 +40,7 @@ export default {
       productId: Joi.number().required(),
       quantity: Joi.number().required(),
       cud: Joi.string().required(),
-      comment: Joi.string(),
+      comment: Joi.string().optional().allow(null, ''),
       finishedAdding: Joi.boolean().required(),
       product: Joi.object().optional().allow(null, ''),
 
