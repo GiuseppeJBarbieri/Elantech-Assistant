@@ -8,11 +8,11 @@ import IReceivedItem from '../../../types/IReceivedItem';
 
 interface RemoveReceivedItemModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     receivedItem: IReceivedItem;
-    getAllReceiving: () => Promise<void>;
+    getAllReceivedItems: () => Promise<void>;
     onClose: () => Promise<void>;
 }
 
-const RemoveReceivedItemModalComponent: FunctionComponent<RemoveReceivedItemModalProps> = ({ getAllReceiving, receivedItem, onClose}) => {
+const RemoveReceivedItemModalComponent: FunctionComponent<RemoveReceivedItemModalProps> = ({ getAllReceivedItems, receivedItem, onClose}) => {
     const [isSaving, setIsSaving] = useState(false);
     const [alert, setAlert] = useState(defaultAlert);
 
@@ -25,7 +25,7 @@ const RemoveReceivedItemModalComponent: FunctionComponent<RemoveReceivedItemModa
 
                 setIsSaving(false);
 
-                getAllReceiving();
+                getAllReceivedItems();
 
                 onClose();
             } catch (err) {

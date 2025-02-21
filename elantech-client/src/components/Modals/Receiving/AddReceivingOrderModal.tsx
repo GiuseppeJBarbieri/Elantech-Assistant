@@ -55,7 +55,7 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
               lineHeight: 'normal'
             }}>
             <div onClick={(e) => {
-                e.stopPropagation();
+              e.stopPropagation();
 
               // TODO: Delete received item row from table and internal state
               const indexToDelete: number = row.id;

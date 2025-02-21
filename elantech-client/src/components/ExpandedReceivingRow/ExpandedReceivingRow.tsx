@@ -172,6 +172,7 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
     React.useEffect(() => {
         getAllReceivedItems();
     }, []);
+
     return (
         <div style={{ padding: 20 }} className='expandedProductRow'>
             <Navbar bg="dark" variant="dark">
@@ -261,8 +262,8 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
             {
                 (removeProductModalVisible && selectedItem) &&
                 <RemoveReceivedItemModal
-                    getAllReceiving={getAllReceiving}
                     receivedItem={selectedItem}
+                    getAllReceivedItems={getAllReceivedItems}
                     onClose={async () => {
                         setRemoveProductModalVisible(false);
                     }}
@@ -274,7 +275,9 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
                 <RemoveReceivingOrderModal
                     getAllReceiving={getAllReceiving}
                     selectedReceiving={receiving}
-                    onClose={async () => { setRemoveOrderModalVisible(false) }}
+                    onClose={async () => {
+                        setRemoveOrderModalVisible(false);
+                    }}
                 />
             }
         </ div>
