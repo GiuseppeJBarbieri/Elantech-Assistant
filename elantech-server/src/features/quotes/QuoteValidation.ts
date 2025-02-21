@@ -1,7 +1,7 @@
 import * as Joi from 'joi';
 
 export default {
-  GetAllQuotes: {
+  GetAll: {
     params: {
 
     },
@@ -16,19 +16,19 @@ export default {
     },
   },
 
-  GetQuote: {
+  Get: {
     params: {
       id: Joi.number().required(),
     },
   },
 
-  DeleteQuote: {
+  Delete: {
     params: {
       id: Joi.number().required(),
     },
   },
 
-  PostQuote: {
+  Post: {
     body: {
       id: Joi.number().optional().allow(null, ''),
       companyId: Joi.number().required(),
@@ -47,7 +47,7 @@ export default {
     },
   },
 
-  PutQuote: {
+  Put: {
     body: {
       id: Joi.number().required(),
       companyId: Joi.number().required(),

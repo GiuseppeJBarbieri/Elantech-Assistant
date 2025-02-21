@@ -45,6 +45,13 @@ function createWindow() {
   mainWindow.on('closed', () => {
     mainWindow = null
   });
+
+  // Open urls in the user's browser instead of Electron's webview
+  mainWindow.webContents.on('new-window', function(e, url) {
+    e.preventDefault();
+    require('electron').shell.openExternal(url);
+  });
+  
 }
 
 app.on('ready', createWindow);

@@ -1,7 +1,7 @@
 import * as Joi from 'joi';
 
 export default {
-  GetAllCompanies: {
+  GetAll: {
     params: {
 
     },
@@ -10,19 +10,19 @@ export default {
     },
   },
 
-  GetCompany: {
+  Get: {
     params: {
       id: Joi.number().required(),
     },
   },
 
-  DeleteCompany: {
+  Delete: {
     params: {
       id: Joi.number().required(),
     },
   },
 
-  PostCompany: {
+  Post: {
     body: {
       id: Joi.number().optional().allow(null, ''),
       userId: Joi.number().required(),
@@ -36,7 +36,7 @@ export default {
     },
   },
 
-  PutCompany: {
+  Put: {
     body: {
       id: Joi.number().required(),
       userId: Joi.number().required(),

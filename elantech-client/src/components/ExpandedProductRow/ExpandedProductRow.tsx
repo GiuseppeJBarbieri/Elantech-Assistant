@@ -14,6 +14,7 @@ import { requestAllInventoryByProductID, requestAllQuotesByProductId as requestA
 import IQuotedProduct from '../../types/IQuotedProduct';
 import { AddOrEditOrderModal } from '../Modals/Inventory/AddOrEditOrderModal';
 
+
 interface ExpandedProductRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     selectedProduct: IProduct;
     getAllProducts: () => void;
@@ -173,7 +174,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                 <Nav className="me-auto">
                     {(props.selectedProduct.ebayUrl as string) != null &&
                         <Nav.Link onClick={async () => {
-                            window.open(props.selectedProduct.ebayUrl)
+                            window.open(props.selectedProduct.ebayUrl, "_blank", 'noopener,noreferrer')
                         }}>
                             Ebay Listing
                         </Nav.Link>

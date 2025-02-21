@@ -1,40 +1,10 @@
 import db from '../../models';
 import logger from '../../utils/logging/Logger';
-import IRepoError from '../../utils/interfaces/IRepoError';
 import IQuotedProduct from './IQuotedProduct';
+import BaseRepository from '../BaseRepository';
 
-/// ////////////// ///
-/// / INTERNALS // ///
-/// ////////////// ///
-
-const repoErr: IRepoError = {
-  location: 'QuotedProductRepository.js',
-  statusCode: 500,
-};
-
-const standardError = (message: string) => {
-  repoErr.message = message;
-  logger.warn(repoErr);
-};
-
-export default {
-  async Add(quotedProduct: IQuotedProduct): Promise<IQuotedProduct> {
-    try {
-      return await db.quotedProduct.create(quotedProduct);
-    } catch (err) {
-      standardError(`${err.name} ${err.message}`);
-      throw repoErr;
-    }
-  },
-
-  async GetAllQuotes(): Promise<IQuotedProduct[]> {
-    try {
-      return await db.quotedProduct.findAll();
-    } catch (err) {
-      standardError(err.message);
-      return Promise.reject(repoErr);
-    }
-  },
+const QuotedProductRepository = {
+  ...BaseRepository(db.quotedProduct),
 
   async GetByQuoteId(quoteId: number): Promise<IQuotedProduct[]> {
     try {
@@ -80,8 +50,8 @@ export default {
         ],
       }) as IQuotedProduct[];
     } catch (err) {
-      standardError(err.message);
-      return Promise.reject(repoErr);
+      logger.warn(err.message);
+      throw err;
     }
   },
 
@@ -170,44 +140,10 @@ export default {
       });
       return list;
     } catch (err) {
-      standardError(err.message);
-      return Promise.reject(repoErr);
+      logger.warn(err.message);
+      throw err;
     }
   },
-
-  async Get(id: number): Promise<IQuotedProduct> {
-    try {
-      return await db.quotedProduct.findOne({
-        where: { id },
-      });
-    } catch (err) {
-      standardError(err.message);
-      return Promise.reject(repoErr);
-    }
-  },
-
-  async Edit(quotedProduct: IQuotedProduct): Promise<IQuotedProduct> {
-    try {
-      return await db.quotedProduct.update(quotedProduct, {
-        where: {
-          id: quotedProduct.id,
-        },
-      });
-    } catch (err) {
-      standardError(`${err.name} ${err.message}`);
-      throw repoErr;
-    }
-  },
-
-  async Delete(id: number): Promise<IQuotedProduct[]> {
-    try {
-      return await db.quotedProduct.delete({
-        where: { id },
-      });
-    } catch (err) {
-      standardError(`${err.name} ${err.message}`);
-      return Promise.reject(repoErr);
-    }
-  },
-
 };
+
+export default QuotedProductRepository;

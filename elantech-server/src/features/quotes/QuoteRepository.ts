@@ -1,25 +1,27 @@
 import { Transaction } from 'sequelize';
 import db from '../../models';
 import logger from '../../utils/logging/Logger';
-import IRepoError from '../../utils/interfaces/IRepoError';
 import IQuote from './IQuote';
 import IQuotedProduct from '../quotedProducts/IQuotedProduct';
+import BaseRepository from '../BaseRepository';
 
 /// ////////////// ///
 /// / INTERNALS // ///
 /// ////////////// ///
 
-const repoErr: IRepoError = {
-  location: 'QuoteRepository.js',
-  statusCode: 500,
-};
+// const repoErr: IRepoError = {
+//   location: 'QuoteRepository.js',
+//   statusCode: 500,
+// };
 
-const standardError = (message: string) => {
-  repoErr.message = message;
-  logger.warn(repoErr);
-};
+// const standardError = (message: string) => {
+//   repoErr.message = message;
+//   logger.warn(repoErr);
+// };
 
-export default {
+const QuoteRepository = {
+  ...BaseRepository(db.quote),
+
   async Add(quote: IQuote): Promise<IQuote> {
     const transaction: Transaction = await db.sequelize.transaction();
     try {
@@ -42,18 +44,8 @@ export default {
     } catch (err) {
       // Rollback the transaction in case of error
       await transaction.rollback();
-      standardError(`${err.name} ${err.message}`);
-      return Promise.reject(repoErr);
-    }
-  },
-
-  async GetAllQuotes(): Promise<IQuote[]> {
-    try {
-      return await db.quote.findAll();
-    } catch (err) {
-      standardError(err.message);
-      logger.error(err);
-      return Promise.reject(repoErr);
+      logger.warn(err.message);
+      throw err;
     }
   },
 
@@ -77,32 +69,8 @@ export default {
         ],
       }) as IQuote[];
     } catch (err) {
-      standardError(err.message);
-      return Promise.reject(repoErr);
-    }
-  },
-
-  async Get(id: number): Promise<IQuote> {
-    try {
-      return await db.quote.findOne({
-        where: { id },
-      });
-    } catch (err) {
-      standardError(err.message);
-      return Promise.reject(repoErr);
-    }
-  },
-
-  async Edit(quote: IQuote): Promise<IQuote> {
-    try {
-      return await db.quote.update(quote, {
-        where: {
-          id: quote.id,
-        },
-      });
-    } catch (err) {
-      standardError(`${err.name} ${err.message}`);
-      throw repoErr;
+      logger.warn(err.message);
+      throw err;
     }
   },
 
@@ -140,8 +108,8 @@ export default {
       return response;
     } catch (err) {
       await transaction.rollback();
-      standardError(`${err.name} ${err.message}`);
-      return Promise.reject(repoErr);
+      logger.warn(err.message);
+      throw err;
     }
   },
 
@@ -189,9 +157,10 @@ export default {
     } catch (err) {
       // Rollback the transaction in case of error
       await transaction.rollback();
-      standardError(`${err.name} ${err.message}`);
-      throw repoErr;
+      logger.warn(err.message);
+      throw err;
     }
   },
-
 };
+
+export default QuoteRepository;

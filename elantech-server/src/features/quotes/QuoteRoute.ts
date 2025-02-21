@@ -1,16 +1,16 @@
-import * as express from 'express';
 import validate from '../../middleware/JoiValidator';
 import logger from '../../utils/logging/Logger';
 import authenticationMiddleware from '../../middleware/Auth';
 import QuoteController from './QuoteController';
 import QuoteValidation from './QuoteValidation';
+import BaseRoute from '../BaseRoute';
 
-const router = express.Router();
+const router = BaseRoute(QuoteController, QuoteValidation);
 
 /**
  * This route will add new quote
  */
-router.post('/', authenticationMiddleware, validate(QuoteValidation.PostQuote),
+router.post('/', authenticationMiddleware, validate(QuoteValidation.Post),
   (req, res, next) => {
     logger.info('POST QUOTE');
     const copy = JSON.parse(JSON.stringify(req.body));
@@ -26,7 +26,7 @@ router.post('/', authenticationMiddleware, validate(QuoteValidation.PostQuote),
 /**
 * This route will fetch all quotes.
 */
-router.get('/', authenticationMiddleware, validate(QuoteValidation.GetAllQuotes),
+router.get('/', authenticationMiddleware, validate(QuoteValidation.GetAll),
   (req, res, next) => {
     logger.info('GET ALL QUOTES');
 
@@ -38,7 +38,7 @@ router.get('/', authenticationMiddleware, validate(QuoteValidation.GetAllQuotes)
 /**
 * This route will fetch a quote by id
 */
-router.get('/:id', authenticationMiddleware, validate(QuoteValidation.GetQuote),
+router.get('/:id', authenticationMiddleware, validate(QuoteValidation.Get),
   (req, res, next) => {
     logger.info('GET QUOTE');
 
@@ -61,7 +61,7 @@ router.get('/company/:companyId', authenticationMiddleware, validate(QuoteValida
 /**
 * This route will update a quote
 */
-router.put('/', authenticationMiddleware, validate(QuoteValidation.PutQuote),
+router.put('/', authenticationMiddleware, validate(QuoteValidation.Put),
   (req, res, next) => {
     logger.info('PUT QUOTE');
 
@@ -89,7 +89,7 @@ router.put('/quotedProduct', authenticationMiddleware, validate(QuoteValidation.
 /**
 * This route will delete a quote by id
 */
-router.delete('/:id', authenticationMiddleware, validate(QuoteValidation.DeleteQuote),
+router.delete('/:id', authenticationMiddleware, validate(QuoteValidation.Delete),
   (req, res, next) => {
     logger.info('DELETE QUOTE');
 

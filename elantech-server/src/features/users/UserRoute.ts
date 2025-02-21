@@ -65,6 +65,7 @@ router.post('/login', validate(UserValidation.Login), passport.authenticate('loc
   res.cookie('sessionId', req.session['passport'].user.uuid, cookieOptions);
   return (res.status(200).json(response), req.session['passport'].user.uuid);
 });
+
 /**
  * This route will attempt to logout the user with the given session id and clear cookie
  */

@@ -3,6 +3,7 @@ import db from '../../models';
 import logger from '../../utils/logging/Logger';
 import IRepoError from '../../utils/interfaces/IRepoError';
 import IReceiving from './IReceiving';
+import BaseRepository from '../BaseRepository';
 
 /// ////////////// ///
 /// / INTERNALS // ///
@@ -18,7 +19,9 @@ const standardError = (message: string) => {
   logger.warn(repoErr);
 };
 
-export default {
+const ReceivingRepository = {
+  ...BaseRepository(db.receiving),
+  
   async Add(receiving: IReceiving): Promise<IReceiving> {
     let transaction: Transaction;
 
@@ -53,7 +56,7 @@ export default {
     }
   },
 
-  async GetAllReceiving(): Promise<IReceiving[]> {
+  async GetAll(): Promise<IReceiving[]> {
     try {
       return await db.receiving.findAll({
         include: [
@@ -78,31 +81,7 @@ export default {
       return Promise.reject(repoErr);
     }
   },
-
-  async Get(id: number): Promise<IReceiving> {
-    try {
-      return await db.receiving.findOne({
-        where: { id },
-      });
-    } catch (err) {
-      standardError(err.message);
-      return Promise.reject(repoErr);
-    }
-  },
-
-  async Edit(receiving: IReceiving): Promise<number> {
-    try {
-      const editedItemIds = await db.receiving.update(receiving, {
-        where: { id: receiving.id },
-      });
-
-      return editedItemIds[0];
-    } catch (err) {
-      standardError(`${err.name} ${err.message}`);
-      throw repoErr;
-    }
-  },
-
+  
   async Delete(id: number): Promise<number> {
     let transaction: Transaction;
 
@@ -129,3 +108,5 @@ export default {
     }
   },
 };
+
+export default ReceivingRepository;

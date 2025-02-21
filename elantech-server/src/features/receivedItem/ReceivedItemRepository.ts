@@ -2,6 +2,7 @@ import db from '../../models';
 import logger from '../../utils/logging/Logger';
 import IRepoError from '../../utils/interfaces/IRepoError';
 import IReceivedItem from './IReceivedItem';
+import BaseRepository from '../BaseRepository';
 
 /// ////////////// ///
 /// / INTERNALS // ///
@@ -17,35 +18,8 @@ const standardError = (message: string) => {
   logger.warn(repoErr);
 };
 
-export default {
-  async Add(ReceivedItem: IReceivedItem): Promise<IReceivedItem> {
-    try {
-      return db.receivedItem.create(ReceivedItem);
-    } catch (err) {
-      standardError(`${err.name} ${err.message}`);
-      throw repoErr;
-    }
-  },
-
-  async GetAllReceiving(): Promise<IReceivedItem[]> {
-    try {
-      return await db.receivedItem.findAll();
-    } catch (err) {
-      standardError(err.message);
-      return Promise.reject(repoErr);
-    }
-  },
-
-  async Get(id: number): Promise<IReceivedItem> {
-    try {
-      return await db.receivedItem.findOne({
-        where: { id },
-      });
-    } catch (err) {
-      standardError(err.message);
-      return Promise.reject(repoErr);
-    }
-  },
+const ReceivedItemRepository = {
+  ...BaseRepository(db.receivedItem),
 
   async GetByReceivingId(id: number): Promise<IReceivedItem[]> {
     try {
@@ -67,29 +41,6 @@ export default {
       return Promise.reject(repoErr);
     }
   },
-
-  async Edit(receivedItem: IReceivedItem): Promise<number> {
-    try {
-      const editedItemIds = await db.receivedItem.update(receivedItem, {
-        where: { id: receivedItem.id },
-      });
-
-      return editedItemIds[0];
-    } catch (err) {
-      standardError(`${err.name} ${err.message}`);
-      throw repoErr;
-    }
-  },
-
-  async Delete(id: number): Promise<IReceivedItem[]> {
-    try {
-      return await db.receivedItem.destroy({
-        where: { id },
-      });
-    } catch (err) {
-      standardError(`${err.name} ${err.message}`);
-      return Promise.reject(repoErr);
-    }
-  },
-
 };
+
+export default ReceivedItemRepository;
