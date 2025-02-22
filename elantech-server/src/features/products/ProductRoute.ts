@@ -6,7 +6,7 @@ import ProductController from './ProductController';
 import ProductValidation from './ProductValidation';
 import BaseRoute from '../BaseRoute';
 
-const router = BaseRoute(ProductController, ProductValidation);
+const router = BaseRoute(ProductController, ProductValidation, 'PRODUCT');
 
 // Override the POST route
 router.stack = router.stack.filter((layer) => !(layer.route
@@ -20,7 +20,9 @@ router.stack = router.stack.filter((layer) => !(layer.route
   && layer.route.methods.delete
 ));
 
-// Add custom POST implementation
+/**
+* This route will add a product
+*/
 router.post('/', authenticationMiddleware, validate(ProductValidation.Post),
   async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     logger.info('POST PRODUCT');
@@ -49,6 +51,7 @@ router.delete('/:id', authenticationMiddleware, validate(ProductValidation.Delet
       .catch((err) => next(err));
   } else {
     res.status(401).json({ message: 'Unauthorized' });
+    logger.warn('Delete Product: 401 Unauthorized');
   }
 });
 

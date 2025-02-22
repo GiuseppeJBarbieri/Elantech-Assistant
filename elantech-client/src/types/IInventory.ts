@@ -2,10 +2,10 @@ import IReceiving from "./IReceiving";
 import IRemovedInventory from "./IRemovedInventory";
 
 interface IInventory {
-    id: number;
+    id?: number;
     productId: number;
-    removedInventoryId: number;
-    purchaseOrderId: number;
+    removedInventoryId?: number;
+    purchaseOrderId?: number;
     serialNumber: string;
     condition: string;
     warrantyExpiration: Date;

@@ -25,7 +25,7 @@ export const requestUpdateProduct = async (product: IProduct): Promise<any> => {
     return axios.put(`${BASE_API_URL}${ROUTES.PRODUCTS}`, product, { withCredentials: true }).then((response) => response.data.payload[0]);
 }
 export const requestDeleteProduct = async (id: number): Promise<any> => {
-    axios.delete(`${BASE_API_URL}${ROUTES.PRODUCTS}/${id}`, { withCredentials: true }).then((response) => response.data.payload[0]);
+    return axios.delete(`${BASE_API_URL}${ROUTES.PRODUCTS}/${id}`, { withCredentials: true }).then((response) => response.data.payload[0]);
 }
 
 // INVENTORY
@@ -40,6 +40,9 @@ export const requestUpdateMultipleInventory = async (inventory: IInventory[]): P
 }
 export const requestAddInventory = async (inventory: IInventory): Promise<any> => {
     return axios.post(`${BASE_API_URL}${ROUTES.INVENTORY}`, inventory, { withCredentials: true }).then((response) => response?.data?.payload);
+}
+export const requestAddMultipleInventory = async (inventory: IInventory[]): Promise<any> => {
+    return axios.post(`${BASE_API_URL}${ROUTES.INVENTORY}/multiple`, inventory, { withCredentials: true }).then((response) => response?.data?.payload);
 }
 export const requestRemoveInventory = async (inventory: IInventory): Promise<any> => {
     return axios.put(`${BASE_API_URL}${ROUTES.INVENTORY}/removal`, inventory, { withCredentials: true }).then((response) => response?.data?.payload[0]);

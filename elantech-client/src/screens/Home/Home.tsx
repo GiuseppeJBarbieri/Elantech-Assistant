@@ -158,6 +158,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
     setSearchResults(results);
   };
   const getAllProducts = async () => {
+    setSearchString('');
     const products = await requestAllProducts();
     setProductList(products);
     setSearchResults(products);

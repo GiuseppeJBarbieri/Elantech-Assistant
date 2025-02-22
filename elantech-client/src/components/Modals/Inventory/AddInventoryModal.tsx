@@ -7,7 +7,7 @@ import IProduct from '../../../types/IProduct';
 import { CustomAlert } from '../../Alerts/CustomAlert';
 import { v4 } from 'uuid';
 import { defaultAlert } from '../../../constants/Defaults';
-import { requestAddInventory } from '../../../utils/Requests';
+import { requestAddInventory, requestAddMultipleInventory } from '../../../utils/Requests';
 
 interface AddInventoryModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
@@ -21,23 +21,19 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
     const [radioSwitch, setRadioSwitch] = useState(false);
     const [quantity, setQuantity] = useState(0);
     const [warrantyDate, setWarrantyDate] = useState<Date>(new Date());
-    const [dateTested, setDateTested] = useState<Date>(new Date());
+    const [testedDate, setTestedDate] = useState<Date>(new Date());
     const [inventoryObj, setInventoryObj] = useState<IInventory>({
-        id: 0,
         productId: props.selectedProduct.id || 0,
-        removedInventoryId: 0,
-        purchaseOrderId: 0,
         serialNumber: '',
         condition: 'Choose Condition',
-        warrantyExpiration: warrantyDate,
+        warrantyExpiration: new Date(),
         tested: false,
-        testedDate: dateTested,
+        testedDate: new Date(),
         comment: '',
         location: '',
         reserved: false,
     });
-
-    const addNextInventory = () => {
+    const addInventory = (finished: boolean = true) => {
         setTimeout(async () => {
             try {
                 setInventoryObj({ ...inventoryObj, productId: props.selectedProduct.id as number });
@@ -50,31 +46,20 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                 setTimeout(() => setAlert({ ...alert, show: false }), 3000);
                 setIsSaving(false);
             }
-        }, 500);
-    };
-    const addInventory = () => {
-        setTimeout(async () => {
-            try {
-                setInventoryObj({ ...inventoryObj, productId: props.selectedProduct.id as number });
-                const addInvObj: IInventory = inventoryObj;
-                await requestAddInventory(addInvObj);
-                setIsSaving(false);
+            if (finished) {
                 props.onClose();
-            } catch (err) {
-                setAlert({ ...alert, label: `${err}`, show: true });
-                setTimeout(() => setAlert({ ...alert, show: false }), 3000);
-                setIsSaving(false);
             }
         }, 500);
     };
     const addMultipleInventory = () => {
+        const tmpList: IInventory[] = [];
+        const addInvObj: IInventory = inventoryObj;
+        for (let i = 0; i < quantity; i++) {
+            tmpList.push({ ...addInvObj, serialNumber: v4() });
+        }
         setTimeout(async () => {
             try {
-                for (let i = 0; i < quantity; i++) {
-                    const addInvObj: IInventory = inventoryObj;
-                    addInvObj.serialNumber = v4();
-                    await requestAddInventory(addInvObj);
-                }
+                await requestAddMultipleInventory(tmpList);
                 setIsSaving(false);
                 props.onClose();
             } catch (err) {
@@ -96,7 +81,7 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
         }
 
         if (radioSwitch) {
-            if (inventoryObj.serialNumber === '') {
+            if (inventoryObj.serialNumber === '' || inventoryObj.serialNumber === null || inventoryObj.serialNumber === undefined) {
                 setIsSaving(false);
                 setAlert({ ...alert, label: 'Serial Number Cannot be Blank!', show: true });
                 return false;
@@ -110,25 +95,23 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
         }
         return true;
     };
-    const finish = async () => {
+    const finish = async (isFinished: boolean = true) => {
         setIsSaving(true);
         if (inventoryValidation()) {
-            if (radioSwitch) {
-                addInventory();
+            if (isFinished) {
+                if (radioSwitch) {
+                    addInventory();
+                } else {
+                    setInventoryObj({ ...inventoryObj, productId: props.selectedProduct.id || 0 });
+                    addMultipleInventory();
+                }
             } else {
-                setInventoryObj({ ...inventoryObj, productId: props.selectedProduct.id || 0 });
-                addMultipleInventory();
+                addInventory(false);
             }
         }
     };
-    const submitInventory = () => {
-        addNextInventory();
-    };
     useEffect(() => {
-        setWarrantyDate(new Date());
-        setDateTested(new Date());
     }, []);
-        
     return (
         <div>
             <Modal backdrop="static" show={props.modalVisible} onHide={props.onClose} fullscreen={true}>
@@ -160,23 +143,24 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                                     <InputGroup key={'inline-radio'}>
                                         <Form.Check
                                             inline
-                                            defaultChecked
                                             label="Generated Sku's"
+                                            checked={!radioSwitch}
                                             name='group1'
                                             type={'radio'}
                                             id={'inline-radio-2'}
-                                            onClick={() => {
+                                            onChange={() => {
                                                 setRadioSwitch(false);
                                                 setInventoryObj({ ...inventoryObj, serialNumber: '' });
                                             }}
                                         />
                                         <Form.Check
                                             inline
+                                            checked={radioSwitch}
                                             label="Unique Sku"
                                             name='group1'
                                             type={'radio'}
                                             id={'inline-radio-1'}
-                                            onClick={() => {
+                                            onChange={() => {
                                                 setRadioSwitch(true);
                                                 setQuantity(0);
                                             }}
@@ -227,20 +211,22 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                                     <Form.Group as={Col}>
                                         <Form.Label>Warranty Expiration<Form.Label style={{ color: '#ff2f2f', fontSize: 12, fontWeight: 300, marginLeft: 5 }}>*</Form.Label></Form.Label>
                                         <Form.Control id="orderNumber" type="date"
-                                            value={warrantyDate.valueOf()}
+                                            value={warrantyDate.toISOString().split("T")[0]}
                                             onChange={(e) => {
-                                                setWarrantyDate(new Date(e.target.value));
-                                                setInventoryObj({ ...inventoryObj, warrantyExpiration:new Date(e.target.value) });
+                                                const newDate = new Date(e.target.value);
+                                                setWarrantyDate(newDate);
+                                                setInventoryObj({ ...inventoryObj, warrantyExpiration: newDate });
                                             }}
                                         />
                                     </Form.Group>
                                     <Form.Group as={Col}>
                                         <Form.Label>Date Tested</Form.Label>
                                         <Form.Control id="dateTested" type="date"
-                                            value={dateTested.valueOf()}
+                                            value={testedDate.toISOString().split("T")[0]}
                                             onChange={(e) => {
-                                                setDateTested(new Date(e.target.value));
-                                                setInventoryObj({ ...inventoryObj, testedDate: new Date(e.target.value) })
+                                                const newDate = new Date(e.target.value);
+                                                setTestedDate(newDate);
+                                                setInventoryObj({ ...inventoryObj, testedDate: newDate })
                                             }}
                                         />
                                     </Form.Group>
@@ -252,7 +238,6 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                                             <div key={'inline-radio-2'} style={{ justifyContent: 'space-between' }}>
                                                 <Form.Check
                                                     inline
-                                                    defaultChecked
                                                     label="Tested"
                                                     name='group2'
                                                     type={'radio'}
@@ -264,6 +249,7 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                                                 <Form.Check
                                                     inline
                                                     label="Not Tested"
+                                                    defaultChecked
                                                     name='group2'
                                                     type={'radio'}
                                                     id={'inline-radio-4'}
@@ -308,7 +294,7 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                             <Button
                                 variant="dark"
                                 onClick={() => {
-                                    submitInventory();
+                                    finish(false);
                                 }}>
                                 Add Next
                             </Button>

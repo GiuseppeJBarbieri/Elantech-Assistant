@@ -5,7 +5,7 @@ import CompanyController from './CompanyController';
 import CompanyValidation from './CompanyValidation';
 import BaseRoute from '../BaseRoute';
 
-const router = BaseRoute(CompanyController, CompanyValidation);
+const router = BaseRoute(CompanyController, CompanyValidation, 'COMPANY');
 
 /**
  * This route will add new company
@@ -28,6 +28,7 @@ router.post('/', authenticationMiddleware, validate(CompanyValidation.Post),
 */
 router.delete('/:id', authenticationMiddleware, validate(CompanyValidation.Delete),
   (req, res, next) => {
+    logger.info('DELETE COMPANY');
     // eslint-disable-next-line dot-notation
     if (req.session['userType'] === 1) {
       CompanyController.Delete(Number(req.params.id))

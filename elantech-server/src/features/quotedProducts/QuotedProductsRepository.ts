@@ -2,9 +2,15 @@ import db from '../../models';
 import logger from '../../utils/logging/Logger';
 import IQuotedProduct from './IQuotedProduct';
 import BaseRepository from '../BaseRepository';
+import IRepoError from '../../utils/interfaces/IRepoError';
+
+const repoErr: IRepoError = {
+  location: 'QuotedProductRepository.js',
+  statusCode: 500,
+};
 
 const QuotedProductRepository = {
-  ...BaseRepository(db.quotedProduct),
+  ...BaseRepository(db.quotedProduct, repoErr),
 
   async GetByQuoteId(quoteId: number): Promise<IQuotedProduct[]> {
     try {

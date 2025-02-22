@@ -1,7 +1,7 @@
 import React, { HTMLAttributes, FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { Modal, Spinner, Form, Button } from 'react-bootstrap';
-import { requestDeleteProduct } from '../../../utils/Requests';
+import { requestDeleteProduct, requestUpdateProduct } from '../../../utils/Requests';
 import { defaultAlert } from '../../../constants/Defaults';
 import { CustomAlert } from '../../Alerts/CustomAlert';
 import IProduct from '../../../types/IProduct';
@@ -21,7 +21,7 @@ const RemoveProductModalComponent: FunctionComponent<RemoveProductModalProps> = 
 
     const removeProduct = async () => {
         setIsSaving(true);
-        const copyProduct: IProduct = JSON.parse(JSON.stringify(props.selectedProduct));
+        const copyProduct: IProduct = props.selectedProduct;
         if (reasonForRemoval === 'Other') {
             copyProduct.reasonForRemoval = otherReason;
         } else {
@@ -29,10 +29,9 @@ const RemoveProductModalComponent: FunctionComponent<RemoveProductModalProps> = 
         }
         setTimeout(async () => {
             try {
-                // await requestUpdateProduct(copyProduct)
                 await requestDeleteProduct(props.selectedProduct.id as number);
+                await requestUpdateProduct(copyProduct);
                 props.onClose();
-
             } catch (err) {
                 setAlert({ ...alert, label: `${err}`, show: true });
                 setTimeout(() => setAlert({ ...alert, show: false }), 3000);
@@ -42,12 +41,11 @@ const RemoveProductModalComponent: FunctionComponent<RemoveProductModalProps> = 
     };
     return (
         <div>
-            <Modal
-                backdrop="static" show={props.modalVisible} onHide={props.onClose}>
+            <Modal backdrop="static" show={props.modalVisible} onHide={props.onClose}>
                 <Modal.Header className='modal-header' closeButton>
                     <Modal.Title>
                         <h2 className='modal-title'>Removing Product</h2>
-                        <p className='modal-sub-title'>You are about to remove {props.selectedProduct.productNumber}</p>
+                        <p className='modal-sub-title'>You are about to remove the following product..</p>
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body style={{ background: '#2c3034', color: 'white' }}>
@@ -67,7 +65,6 @@ const RemoveProductModalComponent: FunctionComponent<RemoveProductModalProps> = 
                             <Form className="container d-grid" >
                                 <CustomAlert label={alert.label} type={alert.type} showAlert={alert.show} />
                                 <Form.Group className="mb-3">
-                                    <Form.Label>Please enter a reason for removal</Form.Label>
                                     <Form.Select
                                         value={reasonForRemoval}
                                         onChange={(e) => {
@@ -105,9 +102,16 @@ const RemoveProductModalComponent: FunctionComponent<RemoveProductModalProps> = 
                         <Button
                             variant="dark"
                             onClick={async () => {
+                                props.onClose();
+                            }}>
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="dark"
+                            onClick={async () => {
                                 removeProduct()
                             }}>
-                            Finish
+                            Confirm
                         </Button>
                     </div>
                 </Modal.Footer>

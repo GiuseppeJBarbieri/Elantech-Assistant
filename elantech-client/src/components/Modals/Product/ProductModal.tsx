@@ -5,7 +5,7 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { CustomAlert } from '../../Alerts/CustomAlert';
 import IProduct from '../../../types/IProduct';
 import { SpinnerBlock } from '../../LoadingAnimation/SpinnerBlock';
-import { brandList, typeList } from '../../../constants/Options';
+import { brandList, brandOptionsList, typeList, typeOptionsList } from '../../../constants/Options';
 import '../modal.css';
 import { defaultAlert } from '../../../constants/Defaults';
 
@@ -153,7 +153,7 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                                         >
                                             <option>Product Type</option>
                                             {
-                                                typeList.map(type => {
+                                                Object.values(typeOptionsList).map((type: string) => {
                                                     return (<option key={type} value={type}>{type}</option>);
                                                 })
                                             }
@@ -167,7 +167,7 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                                         >
                                             <option>Brand</option>
                                             {
-                                                brandList.map(brand => {
+                                                Object.values(brandOptionsList).map((brand: string) => {
                                                     return (<option key={brand} value={brand}>{brand}</option>);
                                                 })
                                             }

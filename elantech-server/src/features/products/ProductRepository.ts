@@ -3,9 +3,15 @@ import db from '../../models';
 import BaseRepository from '../BaseRepository';
 import IProduct from './IProduct';
 import logger from '../../utils/logging/Logger';
+import IRepoError from '../../utils/interfaces/IRepoError';
+
+const repoErr: IRepoError = {
+  location: 'ProductRepository.js',
+  statusCode: 500,
+};
 
 const ProductRepository = {
-  ...BaseRepository(db.product),
+  ...BaseRepository(db.product, repoErr),
 
   async GetByProductNumber(productNumber: string): Promise<IProduct> {
     try {
