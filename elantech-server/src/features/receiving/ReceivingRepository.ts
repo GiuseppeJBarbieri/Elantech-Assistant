@@ -1,7 +1,9 @@
+import { Transaction } from 'sequelize';
 import db from '../../models';
 import logger from '../../utils/logging/Logger';
 import IRepoError from '../../utils/interfaces/IRepoError';
 import IReceiving from './IReceiving';
+import BaseRepository from '../BaseRepository';
 
 /// ////////////// ///
 /// / INTERNALS // ///
@@ -12,22 +14,54 @@ const repoErr: IRepoError = {
   statusCode: 500,
 };
 
+/**
+ * @deprecated
+ */
 const standardError = (message: string) => {
   repoErr.message = message;
   logger.warn(repoErr);
 };
 
-export default {
+const ReceivingRepository = {
+  ...BaseRepository(db.receiving, repoErr),
+  
   async Add(receiving: IReceiving): Promise<IReceiving> {
+    let transaction: Transaction;
+
     try {
-      return db.receiving.create(receiving);
+      transaction = await db.sequelize.transaction();
+
+      // Create "Receiving" object
+      const receivingPayload = { ...receiving };
+      delete receivingPayload.receivedItems;
+      const createdReceivingObj = await db.receiving.create(receivingPayload, { transaction });
+
+      // Create "ReceivedItem" objects
+      const receivedItems = [...receiving.receivedItems];
+      await Promise.all(receivedItems.map(async (receivedItem) => {
+        const _receivedItemPayload = { ...receivedItem };
+
+        // Link current ReceivedItem to the newly created "Receiving" object
+        _receivedItemPayload.receivingId = createdReceivingObj.id;
+
+        await db.receivedItem.create(_receivedItemPayload, { transaction });
+      })).catch((err) => {
+        throw new Error(err);
+      });
+
+      await transaction.commit();
+      return createdReceivingObj;
     } catch (err) {
-      standardError(`${err.name} ${err.message}`);
-      throw repoErr;
+      // Rollback the transaction in case of error
+      await transaction.rollback();
+      
+      const repoError = { ...repoErr, message: err.message };
+      logger.warn(repoError);
+      throw repoError;
     }
   },
 
-  async GetAllReceiving(): Promise<IReceiving[]> {
+  async GetAll(): Promise<IReceiving[]> {
     try {
       return await db.receiving.findAll({
         include: [
@@ -43,46 +77,43 @@ export default {
             required: false,
             as: 'user',
           }],
+        // order: [
+        //   ['id', 'ASC'],
+        // ],
       }) as IReceiving[];
     } catch (err) {
-      standardError(err.message);
-      return Promise.reject(repoErr);
+      const repoError = { ...repoErr, message: err.message };
+      logger.warn(repoError);
+      throw repoError;
     }
   },
+  
+  async Delete(id: number): Promise<number> {
+    let transaction: Transaction;
 
-  async Get(id: number): Promise<IReceiving> {
     try {
-      return await db.receiving.findOne({
-        where: { id },
+      transaction = await db.sequelize.transaction();
+
+      const deletedOrders = await db.receivedItem.destroy({
+        where: { receivingId: id }, transaction,
       });
+
+      const deletedOrderItems = await db.receiving.destroy({
+        where: { id }, transaction,
+      });
+
+      await transaction.commit();
+
+      return deletedOrders + deletedOrderItems;
     } catch (err) {
-      standardError(err.message);
-      return Promise.reject(repoErr);
+      // Rollback the transaction in case of error
+      await transaction.rollback();
+
+      const repoError = { ...repoErr, message: err.message };
+      logger.warn(repoError);
+      throw repoError;
     }
   },
-
-  async Edit(receiving: IReceiving): Promise<IReceiving> {
-    try {
-      return await db.receiving.update(receiving, {
-        where: {
-          id: receiving.id,
-        },
-      });
-    } catch (err) {
-      standardError(`${err.name} ${err.message}`);
-      throw repoErr;
-    }
-  },
-
-  async Delete(id: number): Promise<IReceiving[]> {
-    try {
-      return await db.receiving.delete({
-        where: { id },
-      });
-    } catch (err) {
-      standardError(`${err.name} ${err.message}`);
-      return Promise.reject(repoErr);
-    }
-  },
-
 };
+
+export default ReceivingRepository;

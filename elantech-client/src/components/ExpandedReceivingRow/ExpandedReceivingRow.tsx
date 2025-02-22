@@ -11,17 +11,22 @@ import { ReceivingAddProductModal } from '../Modals/Receiving/ReceivingAddProduc
 import IReceivedItem from '../../types/IReceivedItem';
 import { requestAllReceivedItems } from '../../utils/Requests';
 import IReceiving from '../../types/IReceiving';
+import { RemoveReceivedItemModal } from '../Modals/Receiving/RemoveReceivedItemModal';
+import { RemoveReceivingOrderModal } from '../Modals/Receiving/RemoveReceivingOrderModal';
 
 interface ExpandedReceivingRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     receiving: IReceiving;
     getAllReceiving: () => void;
 }
 
-const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps> = (props) => {
-    const [editProductSwitch, setEditProductSwitch] = useState(false);
+const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps> = ({ receiving, getAllReceiving }) => {
     const [addInventorySwitch, setAddInventorySwitch] = useState(false);
     const [addProductSwitch, setAddProductSwitch] = useState(false);
     const [receivedItemList, setReceivedItemList] = useState<IReceivedItem[]>([]);
+    const [selectedItem, setSelectedItem] = useState<IReceivedItem | null>(null);
+    const [editProductModalVisible, setEditProductModalVisible] = useState(false);
+    const [removeProductModalVisible, setRemoveProductModalVisible] = useState<boolean>(false);
+    const [removeOrderModalVisible, setRemoveOrderModalVisible] = useState<boolean>(false);
 
     const rankFormatterAdd = () => {
         return (
@@ -43,7 +48,7 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
             </div>
         );
     };
-    const rankFormatterEdit = () => {
+    const rankFormatterEdit = (cell: any, row: any) => {
         return (
             <div
                 style={{
@@ -51,12 +56,12 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
                     cursor: 'pointer',
                     lineHeight: 'normal',
                     zIndex: 0
-                }}
-                onClick={(e) => {
-                    e.stopPropagation()
-                }} >
-                <div onClick={() => {
-                    setEditProductSwitch(true);
+                }}>
+                <div onClick={(e) => {
+                    e.stopPropagation();
+
+                    setSelectedItem(row);
+                    setEditProductModalVisible(true);
                 }}
                 >
                     <Pencil style={{ fontSize: 20, color: 'white' }} />
@@ -64,9 +69,24 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
             </div>
         );
     };
-    const rankFormatterRemove = () => {
+    const rankFormatterRemove = (cell: any, row: any) => {
         return (
-            <div style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }} onClick={() => console.log('Remove Column')} >
+            <div
+                style={{ textAlign: 'center', cursor: 'pointer', lineHeight: 'normal', }}
+                onClick={async (e) => {
+                    // Alert user if attempting to delete only product item in order
+                    if (receivedItemList.length === 1) {
+                        // If attempting to delete last product in order, display
+                        // "Received Order" deletion confirmation modal -- `RemoveReceivingOrderModal`
+                        setRemoveOrderModalVisible(true);
+                        return;
+                    }
+
+                    // Display confirmation modal for the received item being deleted -- `RemoveReceivedItemModal`
+                    setSelectedItem(row);
+                    setRemoveProductModalVisible(true);
+                }}
+            >
                 <Trash style={{ fontSize: 20, color: 'white' }} />
             </div>
         );
@@ -144,15 +164,15 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
         totalSize: receivedItemList.length
     };
     const getAllReceivedItems = async () => {
-        if (props.receiving.id !== undefined) {
-            const receiving = await requestAllReceivedItems(props.receiving.id);
-            console.log(receiving);
-            setReceivedItemList(receiving);
+        if (receiving.id !== undefined) {
+            const receivedItem = await requestAllReceivedItems(receiving.id);
+            setReceivedItemList(receivedItem);
         }
     }
     React.useEffect(() => {
         getAllReceivedItems();
     }, []);
+
     return (
         <div style={{ padding: 20 }} className='expandedProductRow'>
             <Navbar bg="dark" variant="dark">
@@ -201,12 +221,14 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
             </div>
             <hr />
             {
-                editProductSwitch &&
+                (editProductModalVisible && selectedItem) &&
                 <div className='modal-dialog'>
                     <EditReceivedProductOrderModal
-                        modalVisible={editProductSwitch}
+                        selectedItem={selectedItem}
+                        getAllReceivedItems={getAllReceivedItems}
                         onClose={async () => {
-                            setEditProductSwitch(false);
+                            setEditProductModalVisible(false)
+                            setSelectedItem(null);
                         }}
                     />
                 </div>
@@ -236,6 +258,27 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
                         }}
                     />
                 </div>
+            }
+            {
+                (removeProductModalVisible && selectedItem) &&
+                <RemoveReceivedItemModal
+                    receivedItem={selectedItem}
+                    getAllReceivedItems={getAllReceivedItems}
+                    onClose={async () => {
+                        setRemoveProductModalVisible(false);
+                    }}
+                />
+            }
+
+            {
+                removeOrderModalVisible &&
+                <RemoveReceivingOrderModal
+                    getAllReceiving={getAllReceiving}
+                    selectedReceiving={receiving}
+                    onClose={async () => {
+                        setRemoveOrderModalVisible(false);
+                    }}
+                />
             }
         </ div>
     );

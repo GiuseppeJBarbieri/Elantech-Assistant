@@ -1,7 +1,9 @@
+import IReceivedItem from "./IReceivedItem";
+
 interface IReceiving {
     id?: number;
     companyId: number;
-    userId: number;
+    userId?: number;
     purchaseOrderNumber: string;
     orderType: string;
     trackingNumber: string;
@@ -15,6 +17,7 @@ interface IReceiving {
         firstName: string,
         lastName: string,
     }
+    receivedItems?: IReceivedItem[];
 }
 
 export default IReceiving;

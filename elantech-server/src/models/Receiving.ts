@@ -46,7 +46,7 @@ export default (sequelize: Sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
-      unique: true,
+      autoIncrement: true,
     },
     companyId: {
       type: DataTypes.INTEGER,

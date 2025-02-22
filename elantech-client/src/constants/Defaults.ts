@@ -3,6 +3,8 @@ import ICompany from '../types/ICompany';
 import IProduct from '../types/IProduct';
 import IQuote from '../types/IQuote';
 import IQuotedProduct from '../types/IQuotedProduct';
+import IReceivedItem from '../types/IReceivedItem';
+import IReceiving from '../types/IReceiving';
 
 export const defaultProduct = (): IProduct => {
     return JSON.parse(JSON.stringify({
@@ -60,6 +62,31 @@ export const defaultQuotedProduct = (): IQuotedProduct => {
         comment: '',
     }))
 }
+
+export const defaultReceiving = (): IReceiving => {
+    return JSON.parse(JSON.stringify({
+        companyId: 0,
+        purchaseOrderNumber: '',
+        orderType: '',
+        trackingNumber: '',
+        dateReceived: new Date(),
+        shippedVia: '',
+        comment: '',
+    }))
+}
+
+export const defaultReceivedItem = (): IReceivedItem => {
+    return JSON.parse(JSON.stringify({
+        receivingId: 0,
+        productId: 0,
+        quantity: 0,
+        cud: '',
+        comment: '',
+        finishedAdding: false,
+        product: {}
+    }))
+}
+
 
 export const defaultAlert = (): IAlert => {
     return JSON.parse(JSON.stringify({
