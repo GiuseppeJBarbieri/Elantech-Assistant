@@ -9,14 +9,14 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { EditReceivedProductOrderModal } from '../Modals/Receiving/EditReceivedProductOrderModal';
 import { ReceivingAddProductModal } from '../Modals/Receiving/ReceivingAddProductModal';
 import IReceivedItem from '../../types/IReceivedItem';
-import { requestAllReceivedItems, requestRemoveReceivedItem } from '../../utils/Requests';
+import { requestAllReceivedItems } from '../../utils/Requests';
 import IReceiving from '../../types/IReceiving';
 import { RemoveReceivedItemModal } from '../Modals/Receiving/RemoveReceivedItemModal';
 import { RemoveReceivingOrderModal } from '../Modals/Receiving/RemoveReceivingOrderModal';
 
 interface ExpandedReceivingRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     receiving: IReceiving;
-    getAllReceiving: () => Promise<void>;
+    getAllReceiving: () => void;
 }
 
 const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps> = ({ receiving, getAllReceiving }) => {
