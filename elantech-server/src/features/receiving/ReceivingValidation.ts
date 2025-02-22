@@ -16,12 +16,6 @@ export default {
     },
   },
 
-  Delete: {
-    params: {
-      id: Joi.number().required(),
-    },
-  },
-
   Post: {
     body: {
       companyId: Joi.number().required(),
@@ -46,22 +40,27 @@ export default {
 
   Put: {
     body: {
-        id: Joi.number().required(),
-        userId: Joi.number().optional().allow(null, ''),
-        companyId: Joi.number().required(),
-        purchaseOrderNumber: Joi.string().required(),
-        orderType: Joi.string().required(),
-        trackingNumber: Joi.string().required(),
-        dateReceived: Joi.date(),
-        shippedVia: Joi.string().required(),
-        comment: Joi.string().optional().allow(null, ''),
-        company: Joi.object().optional().allow(null, ''),
-        user: Joi.object().optional().allow(null, ''),
+      id: Joi.number().required(),
+      userId: Joi.number().optional().allow(null, ''),
+      companyId: Joi.number().required(),
+      purchaseOrderNumber: Joi.string().required(),
+      orderType: Joi.string().required(),
+      trackingNumber: Joi.string().required(),
+      dateReceived: Joi.date(),
+      shippedVia: Joi.string().required(),
+      comment: Joi.string().optional().allow(null, ''),
+      company: Joi.object().optional().allow(null, ''),
+      user: Joi.object().optional().allow(null, ''),
+      // Internal sequelize columns
+      createdAt: Joi.string().optional(),
+      updatedAt: Joi.string().optional(),
+      deletedAt: Joi.string().optional().allow(null),
+    },
+  },
 
-        // Interanal sequelize columns
-        createdAt: Joi.string().optional(),
-        updatedAt: Joi.string().optional(),
-        deletedAt: Joi.string().optional().allow(null),
+  Delete: {
+    params: {
+      id: Joi.number().required(),
     },
   },
 };

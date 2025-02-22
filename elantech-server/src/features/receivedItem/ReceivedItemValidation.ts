@@ -22,12 +22,6 @@ export default {
     },
   },
 
-  Delete: {
-    params: {
-      id: Joi.number().required(),
-    },
-  },
-
   Post: {
     body: {
       id: Joi.number().optional().allow(null, ''),
@@ -54,6 +48,12 @@ export default {
       createdAt: Joi.string().optional(),
       updatedAt: Joi.string().optional(),
       deletedAt: Joi.string().optional().allow(null),
+    },
+  },
+
+  Delete: {
+    params: {
+      id: Joi.number().required(),
     },
   },
 };

@@ -10,21 +10,15 @@ export default {
     },
   },
 
-  GetQuoteByCompanyId: {
-    params: {
-      companyId: Joi.number().required(),
-    },
-  },
-
   Get: {
     params: {
       id: Joi.number().required(),
     },
   },
 
-  Delete: {
+  GetQuoteByCompanyId: {
     params: {
-      id: Joi.number().required(),
+      companyId: Joi.number().required(),
     },
   },
 
@@ -73,6 +67,12 @@ export default {
         productCondition: Joi.string().optional().allow(null, ''),
         comment: Joi.string().optional().allow(null, ''),
       })).required(),
+    },
+  },
+
+  Delete: {
+    params: {
+      id: Joi.number().required(),
     },
   },
 };

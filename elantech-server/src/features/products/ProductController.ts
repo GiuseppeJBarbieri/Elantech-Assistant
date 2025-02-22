@@ -6,6 +6,11 @@ import BaseController from '../BaseController';
 const ProductController = {
   ...BaseController(ProductRepository),
 
+  /**
+   * This function will find one product by it's product number
+   * @param productNumber
+   * @returns IHTTPResponse
+   */
   async GetByProductNumber(productNumber: string): Promise<IHTTPResponse> {
     try {
       return {

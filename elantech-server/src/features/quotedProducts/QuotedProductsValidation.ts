@@ -10,27 +10,21 @@ export default {
     },
   },
 
-  GetQuotedProductByQuoteId: {
-    params: {
-      quoteId: Joi.number().required(),
-    },
-  },
-
   Get: {
     params: {
       id: Joi.number().required(),
     },
   },
 
-  GetProductQuotesTable: {
+  GetQuotedProductByQuoteId: {
     params: {
-      productId: Joi.number().required(),
+      quoteId: Joi.number().required(),
     },
   },
 
-  Delete: {
+  GetProductQuotesTable: {
     params: {
-      id: Joi.number().required(),
+      productId: Joi.number().required(),
     },
   },
 
@@ -55,6 +49,12 @@ export default {
       quotedPrice: Joi.number().required(),
       productCondition: Joi.string().required(),
       comment: Joi.string().optional().allow(null),
+    },
+  },
+
+  Delete: {
+    params: {
+      id: Joi.number().required(),
     },
   },
 };

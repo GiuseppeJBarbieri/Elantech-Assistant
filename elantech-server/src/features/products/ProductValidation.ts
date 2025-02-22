@@ -16,12 +16,6 @@ export default {
     },
   },
 
-  Delete: {
-    params: {
-      id: Joi.number().required(),
-    },
-  },
-
   Post: {
     body: {
       id: Joi.number().optional(),
@@ -65,9 +59,12 @@ export default {
       quickSpecsUrl: Joi.string().optional().allow(null, ''),
       relatedTags: Joi.string().optional().allow(null, ''),
       reasonForRemoval: Joi.string().optional().allow(null, ''),
-      createdAt: Joi.string().optional(),
-      updatedAt: Joi.string().optional(),
-      deletedAt: Joi.string().optional().allow(null),
+    },
+  },
+
+  Delete: {
+    params: {
+      id: Joi.number().required(),
     },
   },
 };

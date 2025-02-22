@@ -10,11 +10,12 @@ const router = BaseRoute(QuoteController, QuoteValidation, 'QUOTE');
 /**
  * This route will add new quote
  */
-router.post('/', authenticationMiddleware, validate(QuoteValidation.Post),
+router.post('/',
+  authenticationMiddleware,
+  validate(QuoteValidation.Post),
   (req, res, next) => {
     logger.info('POST QUOTE');
     const copy = JSON.parse(JSON.stringify(req.body));
-    // eslint-disable-next-line dot-notation
     copy.userId = req.session['userId'];
     QuoteController.Add(copy)
       .then((response) => {

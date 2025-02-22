@@ -16,12 +16,6 @@ export default {
     },
   },
 
-  Delete: {
-    params: {
-      id: Joi.number().required(),
-    },
-  },
-
   Post: {
     body: {
       id: Joi.number().optional().allow(null, ''),
@@ -47,9 +41,12 @@ export default {
       email: Joi.string().optional().allow(null, ''),
       location: Joi.string().optional().allow(null, ''),
       comment: Joi.string().optional().allow(null, ''),
-      createdAt: Joi.string().optional().allow(null, ''),
-      updatedAt: Joi.string().optional().allow(null, ''),
-      deletedAt: Joi.string().optional().allow(null, ''),
+    },
+  },
+
+  Delete: {
+    params: {
+      id: Joi.number().required(),
     },
   },
 };

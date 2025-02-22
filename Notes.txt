@@ -4,13 +4,88 @@ Ask sam if
 2. Make is so that only Admin accounts are allowed to remove a quote from a company
 3. Make it so that only Admin accounts are allowed to remove products from the system
 
-Eventually
-Make it so that only warehouse admin accounts can remove items from inventory or remove products
 
-Products
-Remove inventory
-Edit Multiple inventory
-Lazy Load Lists?
-Export to CSV? - Keep or Remove for  now
+MVP
+1. Products
+2. Quotes
+3. Receiving
+4. Fix Auth Guard
+5. Add Users
+6. Reset Password
+
+2nd Phase
+1. Crash Analytics
+2. Outgoing
+3. Broker Bin
+4. Pub Sub, real time updates
+5. Lazy Pagination 
+6. Export CSV Functionality
+
+Ect
+1. Integrate with quick books
 
 
+TODO 2-18
+ Finish Inventory Modal  Inspection
+ Finish Product Page Inspection
+ Fix Conditions not transferring over to db in migration script
+
+
+ONGOING
+One final touch up for refactor on DB
+Make everything similar
+Comments
+Base Class
+Responses
+
+Permissions Implementations - https://www.youtube.com/watch?v=5GG-VUvruzE
+
+Log
+1. <DB>Validation
+    - BASE -
+        1. <DB>Route - Done
+        2. <DB>Controller - Done
+        3. <DB>Repository - Done
+        4. <DB>Validation - done
+    - products
+        1. <DB>Route - Done
+        2. <DB>Controller - Done
+        3. <DB>Repository - Done
+        4. <DB>Validation - Done
+    - company
+        1. <DB>Route - Done
+        2. <DB>Controller - Done
+        3. <DB>Repository - Done
+        4. <DB>Validation - Done
+    - inventory
+        1. <DB>Route
+        2. <DB>Controller
+        3. <DB>Repository
+        4. <DB>Validation
+    - quotedProducts
+        1. <DB>Route
+        2. <DB>Controller
+        3. <DB>Repository
+        4. <DB>Validation
+    - quotes
+        1. <DB>Route
+        2. <DB>Controller
+        3. <DB>Repository
+        4. <DB>Validation
+    - receivedItem
+        1. <DB>Route
+        2. <DB>Controller
+        3. <DB>Repository
+        4. <DB>Validation
+    - receiving
+        1. <DB>Route
+        2. <DB>Controller
+        3. <DB>Repository
+        4. <DB>Validation
+    - removedInventory - not mvp
+        1. <DB>Route
+        2. <DB>Controller
+        3. <DB>Repository
+        4. <DB>Validation
+
+Start Time: 2:07

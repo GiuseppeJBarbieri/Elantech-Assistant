@@ -1,4 +1,4 @@
-import * as express from 'express';
+import { NextFunction, Request, Response } from 'express';
 import validate from '../../middleware/JoiValidator';
 import logger from '../../utils/logging/Logger';
 import authenticationMiddleware from '../../middleware/Auth';
@@ -6,7 +6,9 @@ import ProductController from './ProductController';
 import ProductValidation from './ProductValidation';
 import BaseRoute from '../BaseRoute';
 
-const router = BaseRoute(ProductController, ProductValidation, 'PRODUCT');
+const TAG = 'PRODUCT';
+
+const router = BaseRoute(ProductController, ProductValidation, TAG);
 
 // Override the POST route
 router.stack = router.stack.filter((layer) => !(layer.route
@@ -21,38 +23,50 @@ router.stack = router.stack.filter((layer) => !(layer.route
 ));
 
 /**
-* This route will add a product
-*/
-router.post('/', authenticationMiddleware, validate(ProductValidation.Post),
-  async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    logger.info('POST PRODUCT');
-    try {
-      // eslint-disable-next-line dot-notation
-      req.body.userId = req.session['userId'];
-      const response = await ProductController.Add(req.body);
-      res.status(201).json(response);
-    } catch (err) {
-      logger.info(err, req.body);
-      next(err);
-    }
-  });
+ * This route will add new product
+ * @route POST /
+ * @group Product Table
+ * @param {IProduct} body.body.required - Product object
+ * @returns {IProduct} 201 - Product object
+ * @returns {Error}  default - Unexpected error
+ */
+router.post('/',
+  authenticationMiddleware,
+  validate(ProductValidation.Post),
+  (req: Request, res: Response, next: NextFunction) => {
+    logger.info(`POST ${TAG}`);
 
-/**
-* This route will delete a product by product number
-*/
-router.delete('/:id', authenticationMiddleware, validate(ProductValidation.Delete), (req, res, next) => {
-  logger.info('DELETE PRODUCT');
-  // eslint-disable-next-line dot-notation
-  if (req.session['userType'] === 1) {
-    ProductController.Delete(Number(req.params.id))
+    req.body.userId = req.session['userId'];
+    ProductController.Add(req.body)
       .then((response) => {
         res.status(201).json(response);
       })
       .catch((err) => next(err));
-  } else {
-    res.status(401).json({ message: 'Unauthorized' });
-    logger.warn('Delete Product: 401 Unauthorized');
-  }
-});
+  });
+
+/**
+ * This function will delete a product by it's id
+ * @route DELETE /{id}
+ * @group Product Table
+ * @param {number} id.path.required - Product id
+ * @returns {void} 201 - Product deleted
+ * @returns {Error}  default - Unexpected error
+ */
+router.delete('/:id',
+  authenticationMiddleware,
+  validate(ProductValidation.Delete),
+  (req: Request, res: Response, next: NextFunction) => {
+    logger.info(`DELETE ${TAG}`);
+
+    if (req.session['userType'] === 1) {
+      ProductController.Delete(Number(req.params.id))
+        .then((response) => {
+          res.status(201).json(response);
+        })
+        .catch((err) => next(err));
+    } else {
+      res.status(401).json({ message: 'Unauthorized' });
+    }
+  });
 
 export default router;
