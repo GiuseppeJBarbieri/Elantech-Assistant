@@ -6,7 +6,9 @@ import ReceivedItemController from './ReceivedItemController';
 import ReceivedItemValidation from './ReceivedItemValidation';
 import BaseRoute from '../BaseRoute';
 
-const router = BaseRoute(ReceivedItemController, ReceivedItemValidation);
+const TAG: string = 'RECEIVED ITEM';
+
+const router = BaseRoute(ReceivedItemController, ReceivedItemValidation, TAG);
 
 // Override the POST route
 router.stack = router.stack.filter((layer) => !(layer.route
@@ -19,7 +21,7 @@ router.stack = router.stack.filter((layer) => !(layer.route
  */
 router.post('/', authenticationMiddleware, validate(ReceivedItemValidation.Post),
   (req, res, next) => {
-    logger.info('POST Received Item');
+    logger.info(`POST ${TAG}`);
     const copy = JSON.parse(JSON.stringify(req.body));
     // eslint-disable-next-line dot-notation
     req.body.userId = req.session['userId'];
@@ -35,7 +37,7 @@ router.post('/', authenticationMiddleware, validate(ReceivedItemValidation.Post)
 */
 router.get('/receiving/:id', authenticationMiddleware, validate(ReceivedItemValidation.GetByOrderId),
   (req, res, next) => {
-    logger.info('GET Received Item by Receiving Id');
+    logger.info(`GET ${TAG} by Receiving Id`);
     ReceivedItemController.GetByReceivingId(Number(req.params.id))
       .then((receivedItems) => res.status(200).json(receivedItems))
       .catch((err) => next(err));

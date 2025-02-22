@@ -4,23 +4,15 @@ import logger from '../../utils/logging/Logger';
 import IQuote from './IQuote';
 import IQuotedProduct from '../quotedProducts/IQuotedProduct';
 import BaseRepository from '../BaseRepository';
+import IRepoError from '../../utils/interfaces/IRepoError';
 
-/// ////////////// ///
-/// / INTERNALS // ///
-/// ////////////// ///
-
-// const repoErr: IRepoError = {
-//   location: 'QuoteRepository.js',
-//   statusCode: 500,
-// };
-
-// const standardError = (message: string) => {
-//   repoErr.message = message;
-//   logger.warn(repoErr);
-// };
+const repoErr: IRepoError = {
+  location: 'QuoteRepository.js',
+  statusCode: 500,
+};
 
 const QuoteRepository = {
-  ...BaseRepository(db.quote),
+  ...BaseRepository(db.quote, repoErr),
 
   async Add(quote: IQuote): Promise<IQuote> {
     const transaction: Transaction = await db.sequelize.transaction();

@@ -1,16 +1,19 @@
+import IRepoError from '../utils/interfaces/IRepoError';
 import logger from '../utils/logging/Logger';
 
 /**
  * This is a base repository which will be extended by other repositories
  * @param dbModel - database model
  */
-const BaseRepository = (dbModel: any) => ({
+
+const BaseRepository = (dbModel: any, repoErr: IRepoError) => ({
   async Add(object: any): Promise<any> {
     try {
       return await dbModel.create(object);
     } catch (err) {
-      logger.warn(err.message);
-      throw err;
+      const repoError = { ...repoErr, message: err.message };
+      logger.warn(repoError);
+      throw repoError;
     }
   },
 
@@ -18,8 +21,9 @@ const BaseRepository = (dbModel: any) => ({
     try {
       return await dbModel.findAll();
     } catch (err) {
-      logger.warn(err.message);
-      throw err;
+      const repoError = { ...repoErr, message: err.message };
+      logger.warn(repoError);
+      throw repoError;
     }
   },
 
@@ -29,8 +33,9 @@ const BaseRepository = (dbModel: any) => ({
         where: { id },
       });
     } catch (err) {
-      logger.warn(err.message);
-      throw err;
+      const repoError = { ...repoErr, message: err.message };
+      logger.warn(repoError);
+      throw repoError;
     }
   },
 
@@ -42,8 +47,9 @@ const BaseRepository = (dbModel: any) => ({
         },
       });
     } catch (err) {
-      logger.warn(err.message);
-      throw err;
+      const repoError = { ...repoErr, message: err.message };
+      logger.warn(repoError);
+      throw repoError;
     }
   },
 
@@ -53,8 +59,9 @@ const BaseRepository = (dbModel: any) => ({
         where: { id },
       });
     } catch (err) {
-      logger.warn(err.message);
-      throw err;
+      const repoError = { ...repoErr, message: err.message };
+      logger.warn(repoError);
+      throw repoError;
     }
   },
 });

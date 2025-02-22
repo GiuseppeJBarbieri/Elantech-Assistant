@@ -6,7 +6,9 @@ import ReceivingController from './ReceivingController';
 import ReceivingValidation from './ReceivingValidation';
 import BaseRoute from '../BaseRoute';
 
-const router = BaseRoute(ReceivingController, ReceivingValidation);
+const TAG: string = 'RECEIVING';
+
+const router = BaseRoute(ReceivingController, ReceivingValidation, TAG);
 
 // Override the POST route
 router.stack = router.stack.filter((layer) => !(layer.route
@@ -19,7 +21,7 @@ router.stack = router.stack.filter((layer) => !(layer.route
  */
 router.post('/', authenticationMiddleware, validate(ReceivingValidation.Post),
   (req, res, next) => {
-    logger.info('POST RECEIVING');
+    logger.info(`POST ${TAG}`);
     const copy = JSON.parse(JSON.stringify(req.body));
     copy.userId = req.session['userId'];
     ReceivingController.Add(copy)

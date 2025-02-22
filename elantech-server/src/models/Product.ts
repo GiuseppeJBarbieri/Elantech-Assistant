@@ -158,5 +158,20 @@ export default (sequelize: Sequelize) => {
     paranoid: true,
   });
 
+  //  TOOD - make sure that we check that each field is unique
+  // Product.beforeValidate((product: Product) => {
+  //   // Add your validation logic here
+  //   // For example:
+  //   if (product.productNumber === product.altNumber1
+  //     || product.productNumber === product.altNumber2
+  //     || product.productNumber === product.altNumber3
+  //     || product.productNumber === product.altNumber4
+  //     || product.productNumber === product.altNumber5
+  //     || product.productNumber === product.altNumber6
+  //   ) {
+  //     throw new Error('A value in one column cannot exist in another column');
+  //   }
+  // });
+
   return Product;
 };

@@ -13,13 +13,16 @@ const repoErr: IRepoError = {
   statusCode: 500,
 };
 
+/**
+ * @deprecated
+ */
 const standardError = (message: string) => {
   repoErr.message = message;
   logger.warn(repoErr);
 };
 
 const ReceivedItemRepository = {
-  ...BaseRepository(db.receivedItem),
+  ...BaseRepository(db.receivedItem, repoErr),
 
   async GetByReceivingId(id: number): Promise<IReceivedItem[]> {
     try {
@@ -37,8 +40,9 @@ const ReceivedItemRepository = {
         ],
       }) as IReceivedItem[];
     } catch (err) {
-      standardError(err.message);
-      return Promise.reject(repoErr);
+      const repoError = { ...repoErr, message: err.message };
+      logger.warn(repoError);
+      throw repoError;
     }
   },
 };

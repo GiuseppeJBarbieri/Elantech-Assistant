@@ -18,6 +18,17 @@ const InventoryController = {
     }
   },
 
+  async AddMultiple(inventory: IInventory[]): Promise<IHTTPResponse> {
+    try {
+      return {
+        ...constants.HTTP.SUCCESS.SELECTED,
+        payload: [await InventoryRepository.AddMultiple(inventory)],
+      };
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  },
+
   async EditMultiple(inventory: IInventory[]): Promise<IHTTPResponse> {
     try {
       return {

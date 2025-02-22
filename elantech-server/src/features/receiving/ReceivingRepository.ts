@@ -14,13 +14,16 @@ const repoErr: IRepoError = {
   statusCode: 500,
 };
 
+/**
+ * @deprecated
+ */
 const standardError = (message: string) => {
   repoErr.message = message;
   logger.warn(repoErr);
 };
 
 const ReceivingRepository = {
-  ...BaseRepository(db.receiving),
+  ...BaseRepository(db.receiving, repoErr),
   
   async Add(receiving: IReceiving): Promise<IReceiving> {
     let transaction: Transaction;
@@ -51,8 +54,10 @@ const ReceivingRepository = {
     } catch (err) {
       // Rollback the transaction in case of error
       await transaction.rollback();
-      standardError(`${err.name} ${err.message}`);
-      return Promise.reject(repoErr);
+      
+      const repoError = { ...repoErr, message: err.message };
+      logger.warn(repoError);
+      throw repoError;
     }
   },
 
@@ -77,8 +82,9 @@ const ReceivingRepository = {
         // ],
       }) as IReceiving[];
     } catch (err) {
-      standardError(err.message);
-      return Promise.reject(repoErr);
+      const repoError = { ...repoErr, message: err.message };
+      logger.warn(repoError);
+      throw repoError;
     }
   },
   
@@ -103,8 +109,9 @@ const ReceivingRepository = {
       // Rollback the transaction in case of error
       await transaction.rollback();
 
-      standardError(`${err.name} ${err.message}`);
-      return Promise.reject(repoErr);
+      const repoError = { ...repoErr, message: err.message };
+      logger.warn(repoError);
+      throw repoError;
     }
   },
 };

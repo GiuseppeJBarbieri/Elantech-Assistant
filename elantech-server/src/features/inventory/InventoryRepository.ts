@@ -52,7 +52,7 @@ export default {
   async Add(inventory: IInventory): Promise<IInventory> {
     try {
       const _inventory = inventory;
-      delete _inventory.testedDate;
+
       await db.inventory.create(_inventory);
       const numOfInventory = await db.inventory.count({
         where: {
@@ -69,6 +69,38 @@ export default {
       );
       return;
     } catch (err) {
+      standardError(`${err.name} ${err.message}`);
+      throw repoErr;
+    }
+  },
+
+  async AddMultiple(inventory: IInventory[]): Promise<IInventory[]> {
+    const transaction: Transaction = await db.sequelize.transaction();
+    try {
+      let numOfInventory = await db.inventory.count({
+        where: {
+          productId: inventory[0].productId,
+        },
+      });
+
+      numOfInventory += inventory.length;
+
+      const list = await db.inventory.bulkCreate(inventory, { transaction });
+
+      await db.product.update(
+        { quantity: numOfInventory },
+        {
+          where: {
+            id: inventory[0].productId,
+          },
+        },
+        { transaction },
+      );
+      await transaction.commit();
+
+      return Promise.resolve(list);
+    } catch (err) {
+      await transaction.rollback();
       standardError(`${err.name} ${err.message}`);
       throw repoErr;
     }
@@ -108,7 +140,6 @@ export default {
       await transaction.commit();
       return Promise.resolve(inventoryList);
     } catch (err) {
-      // Rollback the transaction in case of error
       await transaction.rollback();
       standardError(`${err.name} ${err.message}`);
       return Promise.reject(repoErr);
