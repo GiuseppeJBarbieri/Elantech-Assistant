@@ -6,6 +6,11 @@ import constants from '../../utils/constants/Constants';
 const ReceivedItemController = {
   ...BaseController(ReceivedItemRepository),
 
+  /**
+   * This function will fetch a ReceivedItem by receiving id
+   * @param id
+   * @returns IHTTPResponse
+   */
   async GetByReceivingId(id: number): Promise<IHTTPResponse> {
     try {
       return {

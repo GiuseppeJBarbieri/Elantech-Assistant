@@ -44,7 +44,7 @@ export default {
       finishedAdding: Joi.boolean().required(),
       product: Joi.object().optional().allow(null, ''),
 
-      // Interanal sequelize columns
+      // Internal sequelize columns
       createdAt: Joi.string().optional(),
       updatedAt: Joi.string().optional(),
       deletedAt: Joi.string().optional().allow(null),

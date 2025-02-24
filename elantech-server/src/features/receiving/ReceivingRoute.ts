@@ -1,4 +1,3 @@
-import * as express from 'express';
 import validate from '../../middleware/JoiValidator';
 import logger from '../../utils/logging/Logger';
 import authenticationMiddleware from '../../middleware/Auth';
@@ -19,12 +18,14 @@ router.stack = router.stack.filter((layer) => !(layer.route
 /**
  * This route will add new quote
  */
-router.post('/', authenticationMiddleware, validate(ReceivingValidation.Post),
+router.post('/',
+  authenticationMiddleware,
+  validate(ReceivingValidation.Post),
   (req, res, next) => {
     logger.info(`POST ${TAG}`);
-    const copy = JSON.parse(JSON.stringify(req.body));
-    copy.userId = req.session['userId'];
-    ReceivingController.Add(copy)
+
+    req.body.userId = req.session['userId'];
+    ReceivingController.Add(req.body)
       .then((response) => {
         res.status(201).json(response);
       })

@@ -22,6 +22,12 @@ export default {
     },
   },
 
+  GetQuoteByProductId: {
+    params: {
+      productId: Joi.number().required(),
+    },
+  },
+
   Post: {
     body: {
       id: Joi.number().optional().allow(null, ''),

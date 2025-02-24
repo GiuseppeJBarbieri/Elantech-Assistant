@@ -8,6 +8,7 @@ import { BASE_API_URL } from '../../../constants/API';
 import IInventory from '../../../types/IInventory';
 import IProduct from '../../../types/IProduct';
 import { CustomAlert } from '../../Alerts/CustomAlert';
+import { ProductConditions } from '../../../constants/Options';
 
 interface EditInventoryModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
@@ -34,7 +35,9 @@ const EditInventoryComponent: FunctionComponent<EditInventoryModalProps> = (prop
     }
     const finished = () => {
         setIsSaving(true);
+        console.log(inventoryObj)
         if (inventoryObj.serialNumber === '' ||
+            inventoryObj.warrantyExpiration === null || inventoryObj.warrantyExpiration === undefined ||
             inventoryObj.condition === 'Choose Condition') {
             handleAlert(`Missing Required Information: ${inventoryObj.serialNumber === '' ? 'Serial Number' : 'Condition'}`);
             setIsSaving(false);
@@ -90,15 +93,12 @@ const EditInventoryComponent: FunctionComponent<EditInventoryModalProps> = (prop
                                 <Form.Group className="mb-3">
                                     <Form.Label>Condition<Form.Label style={{ color: '#ff2f2f', fontSize: 12, fontWeight: 300, marginLeft: 5 }}>*</Form.Label></Form.Label>
                                     <Form.Select aria-label="Default select example"
-                                        value={inventoryObj.condition}
+                                        value={inventoryObj.condition || ProductConditions.ChooseCondition}
                                         onChange={(e) => setInventoryObj({ ...inventoryObj, condition: (e.target.value) })}
                                     >
-                                        <option>Choose Condition</option>
-                                        <option value="New Factory Sealed">New Factory Sealed</option>
-                                        <option value="New Opened Box">New Opened Box</option>
-                                        <option value="Renew">Renew</option>
-                                        <option value="Used">Used</option>
-                                        <option value="Damaged">Damaged</option>
+                                        {Object.values(ProductConditions).map((value, key) => {
+                                            return <option key={key} value={value}>{value}</option>
+                                        })}
                                     </Form.Select>
                                 </Form.Group>
                                 <Form.Group className="mb-3">
@@ -153,7 +153,7 @@ const EditInventoryComponent: FunctionComponent<EditInventoryModalProps> = (prop
                                     <Form.Label>Comments</Form.Label>
                                     <Form.Control
                                         id="comments" type="text" placeholder="Comments"
-                                        value={inventoryObj.comment}
+                                        value={inventoryObj.comment || ''}
                                         onChange={(e) => setInventoryObj({ ...inventoryObj, comment: (e.target.value) })}
                                     />
                                 </Form.Group>

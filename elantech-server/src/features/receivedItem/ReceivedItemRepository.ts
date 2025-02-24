@@ -4,26 +4,19 @@ import IRepoError from '../../utils/interfaces/IRepoError';
 import IReceivedItem from './IReceivedItem';
 import BaseRepository from '../BaseRepository';
 
-/// ////////////// ///
-/// / INTERNALS // ///
-/// ////////////// ///
-
 const repoErr: IRepoError = {
   location: 'ReceivedItemRepository.js',
   statusCode: 500,
 };
 
-/**
- * @deprecated
- */
-const standardError = (message: string) => {
-  repoErr.message = message;
-  logger.warn(repoErr);
-};
-
 const ReceivedItemRepository = {
   ...BaseRepository(db.receivedItem, repoErr),
 
+  /**
+   * This function will find all received items by receiving id
+   * @param id
+   * @returns IReceivedItem[]
+   */
   async GetByReceivingId(id: number): Promise<IReceivedItem[]> {
     try {
       return await db.receivedItem.findAll({

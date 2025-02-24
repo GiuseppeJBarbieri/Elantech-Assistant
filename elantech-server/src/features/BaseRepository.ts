@@ -27,7 +27,9 @@ const BaseRepository = (dbModel: any, repoErr: IRepoError) => ({
    */
   async GetAll(): Promise<any[]> {
     try {
-      return await dbModel.findAll();
+      return await dbModel.findAll({
+        attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
+      });
     } catch (err) {
       const repoError = { ...repoErr, message: err.message };
       logger.warn(repoError);
@@ -44,6 +46,7 @@ const BaseRepository = (dbModel: any, repoErr: IRepoError) => ({
     try {
       return await dbModel.findOne({
         where: { id },
+        attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
       });
     } catch (err) {
       const repoError = { ...repoErr, message: err.message };

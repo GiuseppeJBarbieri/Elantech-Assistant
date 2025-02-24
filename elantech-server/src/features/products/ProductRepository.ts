@@ -22,6 +22,7 @@ const ProductRepository = {
     try {
       return await db.product.findOne({
         where: { productNumber },
+        attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
       });
     } catch (err) {
       const repoError = { ...repoErr, message: err.message };

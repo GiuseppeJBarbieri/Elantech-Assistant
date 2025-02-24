@@ -8,7 +8,7 @@ import authenticationMiddleware from '../middleware/Auth';
 * @param controller
 * @param validation
 */
-const BaseRoute = (controller: any, validation: any, name: string) => {
+const BaseRoute = (controller: any, validation: any, TAG: string) => {
   const router = express.Router();
 
   /**
@@ -20,7 +20,7 @@ const BaseRoute = (controller: any, validation: any, name: string) => {
    * @returns {Error}  default - Unexpected error
    */
   router.post('/', authenticationMiddleware, validate(validation.Post), async (req, res, next) => {
-    logger.info(`POST ${name}`);
+    logger.info(`POST ${TAG}`);
     try {
       const response = await controller.Add(req.body);
       res.status(201).json(response);
@@ -37,7 +37,7 @@ const BaseRoute = (controller: any, validation: any, name: string) => {
    * @returns {Error}  default - Unexpected error
    */
   router.get('/', authenticationMiddleware, validate(validation.GetAll), async (req, res, next) => {
-    logger.info(`GET ALL ${name}`);
+    logger.info(`GET ALL ${TAG}`);
     try {
       const response = await controller.GetAll();
       res.status(200).json(response);
@@ -55,7 +55,7 @@ const BaseRoute = (controller: any, validation: any, name: string) => {
   * @returns {Error}  default - Unexpected error
   */
   router.get('/:id', authenticationMiddleware, validate(validation.Get), async (req, res, next) => {
-    logger.info(`GET ${name}`);
+    logger.info(`GET ${TAG}`);
     try {
       const response = await controller.Get(Number(req.params.id));
       res.status(200).json(response);
@@ -73,7 +73,7 @@ const BaseRoute = (controller: any, validation: any, name: string) => {
   * @returns {Error}  default - Unexpected error
   */
   router.put('/', authenticationMiddleware, validate(validation.Put), async (req, res, next) => {
-    logger.info(`PUT ${name}`);
+    logger.info(`PUT ${TAG}`);
     try {
       const response = await controller.Edit(req.body);
       res.status(201).json(response);
@@ -91,7 +91,7 @@ const BaseRoute = (controller: any, validation: any, name: string) => {
   * @returns {Error}  default - Unexpected error
   */
   router.delete('/:id', authenticationMiddleware, validate(validation.Delete), async (req, res, next) => {
-    logger.info(`DELETE ${name}`);
+    logger.info(`DELETE ${TAG}`);
     try {
       const response = await controller.Delete(Number(req.params.id));
       res.status(201).json(response);

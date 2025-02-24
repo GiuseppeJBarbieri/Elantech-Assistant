@@ -92,7 +92,7 @@ export const requestGetQuotedProductsByQuoteId = async (quoteId: number): Promis
     return axios.get(`${BASE_API_URL}${ROUTES.QUOTED_PRODUCTS}/quote/${quoteId}`, { withCredentials: true }).then((response) => response?.data?.payload[0]);
 }
 export const requestAllQuotesByProductId = async (productId: number): Promise<IQuotedProduct[]> => {
-    return axios.get(`${BASE_API_URL}${ROUTES.QUOTED_PRODUCTS}/quote/quotedProduct/product/${productId}`, { withCredentials: true }).then((response) => response?.data?.payload[0]);
+    return axios.get(`${BASE_API_URL}${ROUTES.QUOTED_PRODUCTS}/product/${productId}`, { withCredentials: true }).then((response) => response?.data?.payload[0]);
 }
 
 // REMOVED INVENTORY

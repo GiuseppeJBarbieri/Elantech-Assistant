@@ -6,6 +6,11 @@ import BaseController from '../BaseController';
 const QuotedProductsController = {
   ...BaseController(QuotedProductsRepository),
 
+  /**
+   * This function will find all quoted products by quote id
+   * @param quoteId
+   * @returns IHTTPResponse
+   */
   async GetByQuoteId(quoteId: number): Promise<IHTTPResponse> {
     try {
       return {
@@ -17,6 +22,11 @@ const QuotedProductsController = {
     }
   },
 
+  /**
+   * This function will find all quoted products by product id
+   * @param productId
+   * @returns IHTTPResponse
+   */
   async GetByProductId(productId: number): Promise<IHTTPResponse> {
     try {
       return {

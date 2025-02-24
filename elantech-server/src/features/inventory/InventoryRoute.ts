@@ -5,70 +5,93 @@ import InventoryValidation from './InventoryValidation';
 import authenticationMiddleware from '../../middleware/Auth';
 import validate from '../../middleware/JoiValidator';
 
-const router = BaseRoute(InventoryController, InventoryValidation, 'INVENTORY');
+const TAG = 'INVENTORY';
+
+const router = BaseRoute(InventoryController, InventoryValidation, TAG);
 
 /**
  * This route will get all inventory by product id
+ * @route GET /product/{id}
+ * @group Inventory Table
+ * @param {number} id.path.required - Product id
+ * @returns {Array.<IInventory>} 201 - An array of inventory
+ * @returns {Error}  default - Unexpected error
  */
 router.get('/product/:id',
   authenticationMiddleware,
   validate(InventoryValidation.Get),
   async (req, res, next) => {
-    logger.info('GET INVENTORY BY PRODUCT ID');
-    try {
-      const response = await InventoryController.GetByProductId(Number(req.params.id));
-      res.status(200).json(response);
-    } catch (err) {
-      next(err);
-    }
+    logger.info(`GET ${TAG} BY PRODUCT ID`);
+
+    InventoryController.GetByProductId(Number(req.params.id))
+      .then((response) => {
+        res.status(201).json(response);
+      })
+      .catch((err) => next(err));
   });
 
 /**
-* This route will add new record
+* This route will add multiple inventory items
+* @route POST /multiple
+* @group Inventory Table
+* @param {Array.<IInventory>} body.body.required - Inventory object
+* @returns {Array.<IInventory>} 201 - An array of inventory
+* @returns {Error}  default - Unexpected error
 */
 router.post('/multiple',
   authenticationMiddleware,
-  validate(InventoryValidation.PostMultiple), async (req, res, next) => {
-    logger.info('POST MULTIPLE INVENTORY');
-    try {
-      const response = await InventoryController.AddMultiple(req.body);
-      res.status(201).json(response);
-    } catch (err) {
-      next(err);
-    }
+  validate(InventoryValidation.PostMultiple),
+  async (req, res, next) => {
+    logger.info(`POST MULTIPLE ${TAG}`);
+
+    InventoryController.AddMultiple(req.body)
+      .then((response) => {
+        res.status(201).json(response);
+      })
+      .catch((err) => next(err));
   });
 
 /**
  * This route will edit multiple inventory items
+ * @route PUT /multiple
+ * @group Inventory Table
+ * @param {Array.<IInventory>} body.body.required - Inventory object
+ * @returns {Array.<IInventory>} 201 - An array of inventory
+ * @returns {Error}  default - Unexpected error
  */
-router.put('/multiple', authenticationMiddleware,
-  validate(InventoryValidation.PutMultiple), async (req, res, next) => {
-    logger.info('PUT MULTIPLE INVENTORY');
-    try {
-      const response = await InventoryController.EditMultiple(req.body);
-      res.status(201).json(response);
-    } catch (err) {
-      next(err);
-    }
+router.put('/multiple',
+  authenticationMiddleware,
+  validate(InventoryValidation.PutMultiple),
+  async (req, res, next) => {
+    logger.info(`PUT MULTIPLE ${TAG}`);
+
+    InventoryController.EditMultiple(req.body)
+      .then((response) => {
+        res.status(201).json(response);
+      })
+      .catch((err) => next(err));
   });
 
 /**
  * This route will soft remove inventory
+ * @route DELETE /removal
+ * @group Inventory Table
+ * @param {number} id.body.required - Inventory id
+ * @returns {IInventory} 201 - Inventory object
+ * @returns {Error}  default - Unexpected error
  */
-router.put('/removal', authenticationMiddleware,
-  validate(InventoryValidation.Delete), async (req, res, next) => {
-    logger.info('DELETE INVENTORY');
-    try {
-      const copy = req.body;
-      // eslint-disable-next-line dot-notation
-      copy.userId = req.session['userId'];
-      // eslint-disable-next-line dot-notation
-      copy.RemovedInventory.userId = req.session['userId'];
-      const response = await InventoryController.Delete(copy);
-      res.status(201).json(response);
-    } catch (err) {
-      next(err);
-    }
+router.delete('/removal',
+  authenticationMiddleware,
+  validate(InventoryValidation.Delete),
+  async (req, res, next) => {
+    logger.info(`DELETE ${TAG}`);
+
+    req.body.userId = req.session['userId'];
+    InventoryController.Delete(req.body)
+      .then((response) => {
+        res.status(201).json(response);
+      })
+      .catch((err) => next(err));
   });
 
 export default router;

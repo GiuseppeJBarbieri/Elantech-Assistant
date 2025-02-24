@@ -77,6 +77,15 @@ export const conditionList = [
     'Damaged'
 ]
 
+export enum ProductConditions {
+    ChooseCondition = 'Choose Condition',
+    NewFactorySealed = 'New Factory Sealed',
+    NewOpenedBox = 'New Opened Box',
+    Renew = 'Renew',
+    Used = 'Used',
+    Damaged = 'Damaged'
+  }
+
 export const NavigationParams = [
     {
         PageRoute: PAGE_ROUTES.HOME,

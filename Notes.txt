@@ -31,13 +31,6 @@ TODO 2-18
  Fix Conditions not transferring over to db in migration script
 
 
-ONGOING
-One final touch up for refactor on DB
-Make everything similar
-Comments
-Base Class
-Responses
-
 Permissions Implementations - https://www.youtube.com/watch?v=5GG-VUvruzE
 
 Log
@@ -58,30 +51,30 @@ Log
         3. <DB>Repository - Done
         4. <DB>Validation - Done
     - inventory
-        1. <DB>Route
-        2. <DB>Controller
-        3. <DB>Repository
-        4. <DB>Validation
+        1. <DB>Route - Done
+        2. <DB>Controller - Done
+        3. <DB>Repository - 
+        4. <DB>Validation -Done
     - quotedProducts
-        1. <DB>Route
-        2. <DB>Controller
+        1. <DB>Route - Done
+        2. <DB>Controller - Done
         3. <DB>Repository
-        4. <DB>Validation
+        4. <DB>Validation - Done
     - quotes
-        1. <DB>Route
-        2. <DB>Controller
-        3. <DB>Repository
-        4. <DB>Validation
+        1. <DB>Route - Done
+        2. <DB>Controller - Done
+        3. <DB>Repository - 
+        4. <DB>Validation - Done
     - receivedItem
-        1. <DB>Route
-        2. <DB>Controller
-        3. <DB>Repository
-        4. <DB>Validation
+        1. <DB>Route - Done
+        2. <DB>Controller - Done
+        3. <DB>Repository - Done
+        4. <DB>Validation - Done
     - receiving
-        1. <DB>Route
-        2. <DB>Controller
+        1. <DB>Route - done
+        2. <DB>Controller - done
         3. <DB>Repository
-        4. <DB>Validation
+        4. <DB>Validation - done
     - removedInventory - not mvp
         1. <DB>Route
         2. <DB>Controller

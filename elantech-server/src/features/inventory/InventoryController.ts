@@ -7,6 +7,11 @@ import BaseController from '../BaseController';
 const InventoryController = {
   ...BaseController(InventoryRepository),
 
+  /**
+   * This function will find one inventory by it's product id
+   * @param productId
+   * @returns IHTTPResponse
+   */
   async GetByProductId(productId: number): Promise<IHTTPResponse> {
     try {
       return {
@@ -18,6 +23,11 @@ const InventoryController = {
     }
   },
 
+  /**
+   * This function will add multiple inventory
+   * @param inventory
+   * @returns IHTTPResponse
+   */
   async AddMultiple(inventory: IInventory[]): Promise<IHTTPResponse> {
     try {
       return {
@@ -29,6 +39,11 @@ const InventoryController = {
     }
   },
 
+  /**
+   * This function will edit multiple inventory
+   * @param inventory
+   * @returns IHTTPResponse
+   */
   async EditMultiple(inventory: IInventory[]): Promise<IHTTPResponse> {
     try {
       return {

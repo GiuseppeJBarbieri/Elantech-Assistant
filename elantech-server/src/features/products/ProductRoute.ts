@@ -33,7 +33,7 @@ router.stack = router.stack.filter((layer) => !(layer.route
 router.post('/',
   authenticationMiddleware,
   validate(ProductValidation.Post),
-  (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     logger.info(`POST ${TAG}`);
 
     req.body.userId = req.session['userId'];
@@ -55,7 +55,7 @@ router.post('/',
 router.delete('/:id',
   authenticationMiddleware,
   validate(ProductValidation.Delete),
-  (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     logger.info(`DELETE ${TAG}`);
 
     if (req.session['userType'] === 1) {
