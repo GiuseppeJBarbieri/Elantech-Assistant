@@ -8,6 +8,18 @@ import BaseRoute from '../BaseRoute';
 const TAG = 'COMPANY';
 const router = BaseRoute(CompanyController, CompanyValidation, TAG);
 
+// Override the POST route
+router.stack = router.stack.filter((layer) => !(layer.route
+  && layer.route.path === '/'
+  && layer.route.methods.post
+));
+
+// Override the DELETE route
+router.stack = router.stack.filter((layer) => !(layer.route
+  && layer.route.path === '/:id'
+  && layer.route.methods.delete
+));
+
 /**
  * This route will add new company
  * @route POST /

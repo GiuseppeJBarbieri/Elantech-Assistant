@@ -32,7 +32,7 @@ export default {
     body: {
       id: Joi.number().optional().allow(null, ''),
       companyId: Joi.number().required(),
-      userId: Joi.number().required(),
+      userId: Joi.number().optional().allow(null, ''),
       dateQuoted: Joi.date().required(),
       sold: Joi.boolean().required(),
       quotedProducts: Joi.array().items(Joi.object().keys({
@@ -43,7 +43,7 @@ export default {
         quotedPrice: Joi.number().required(),
         productCondition: Joi.string().optional().allow(null, ''),
         comment: Joi.string().optional().allow(null, ''),
-      })).required(),
+      })),
     },
   },
 

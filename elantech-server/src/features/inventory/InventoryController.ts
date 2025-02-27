@@ -54,6 +54,22 @@ const InventoryController = {
       return Promise.reject(err);
     }
   },
+
+  /**
+  * This function will edit multiple inventory
+  * @param inventory
+  * @returns IHTTPResponse
+  */
+  async Delete(inventory: IInventory): Promise<IHTTPResponse> {
+    try {
+      return {
+        ...constants.HTTP.SUCCESS.DELETE,
+        payload: [await InventoryRepository.Delete(inventory)],
+      };
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  },
 };
 
 export default InventoryController;

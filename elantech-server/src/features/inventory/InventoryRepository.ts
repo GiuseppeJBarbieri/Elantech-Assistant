@@ -14,11 +14,6 @@ const repoErr: IRepoError = {
   statusCode: 500,
 };
 
-const standardError = (message: string) => {
-  repoErr.message = message;
-  logger.warn(repoErr);
-};
-
 export default {
   async GetByProductId(productId: number): Promise<IInventory[]> {
     try {
@@ -44,8 +39,9 @@ export default {
         ],
       }) as IInventory[];
     } catch (err) {
-      standardError(err.message);
-      return Promise.reject(repoErr);
+      const repoError = { ...repoErr, message: err.message };
+      logger.warn(repoError);
+      throw repoError;
     }
   },
 
@@ -69,8 +65,9 @@ export default {
       );
       return;
     } catch (err) {
-      standardError(`${err.name} ${err.message}`);
-      throw repoErr;
+      const repoError = { ...repoErr, message: err.message };
+      logger.warn(repoError);
+      throw repoError;
     }
   },
 
@@ -101,8 +98,9 @@ export default {
       return Promise.resolve(list);
     } catch (err) {
       await transaction.rollback();
-      standardError(`${err.name} ${err.message}`);
-      throw repoErr;
+      const repoError = { ...repoErr, message: err.message };
+      logger.warn(repoError);
+      throw repoError;
     }
   },
 
@@ -118,8 +116,9 @@ export default {
         },
       });
     } catch (err) {
-      standardError(`${err.name} ${err.message}`);
-      throw repoErr;
+      const repoError = { ...repoErr, message: err.message };
+      logger.warn(repoError);
+      throw repoError;
     }
   },
 
@@ -141,21 +140,25 @@ export default {
       return Promise.resolve(inventoryList);
     } catch (err) {
       await transaction.rollback();
-      standardError(`${err.name} ${err.message}`);
-      return Promise.reject(repoErr);
+      const repoError = { ...repoErr, message: err.message };
+      logger.warn(repoError);
+      throw repoError;
     }
   },
 
-  async Delete(inventory: IInventory): Promise<any[]> {
+  async Delete(inventory: IInventory): Promise<void> {
     try {
       const transaction: Transaction = await db.sequelize.transaction();
+
       const removedProductObj: IRemovedInventory = inventory.removedInventory;
-      delete removedProductObj.id;
+
       // Create the Removed Entry + return the ID
       const createdRemovedProduct = await db.removedInventory.create(removedProductObj, { transaction });
+
       // add the removed entry id to the inventory obj
       const inventoryCopy = inventory;
       inventoryCopy.removedInventoryId = createdRemovedProduct.id;
+
       // update the inventory obj
       await db.inventory.update(inventoryCopy, {
         where: {
@@ -163,6 +166,7 @@ export default {
         },
         transaction,
       });
+
       // remove the inventory obj
       await db.inventory.destroy({
         where: {
@@ -170,6 +174,7 @@ export default {
         },
         transaction,
       });
+
       // Get the quantity of the product
       const product = await db.product.findOne({ where: { id: inventory.productId } });
       const quantity = product.quantity - 1;
@@ -183,11 +188,11 @@ export default {
         },
         transaction,
       );
-      await transaction.commit();
-      return Promise.resolve([]);
+      return transaction.commit();
     } catch (err) {
-      standardError(`${err.name} ${err.message}`);
-      return Promise.reject(repoErr);
+      const repoError = { ...repoErr, message: err.message };
+      logger.warn(repoError);
+      throw repoError;
     }
   },
 

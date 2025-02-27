@@ -1,14 +1,14 @@
-import axios from 'axios';
 import moment from 'moment';
 import React, { HTMLAttributes, FunctionComponent } from 'react';
 import { useState } from 'react';
 import { Modal, Spinner, Form, Button, InputGroup } from 'react-bootstrap';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { BASE_API_URL } from '../../../constants/API';
 import IInventory from '../../../types/IInventory';
 import IProduct from '../../../types/IProduct';
 import { CustomAlert } from '../../Alerts/CustomAlert';
 import { ProductConditions } from '../../../constants/Options';
+import { defaultAlert } from '../../../constants/Defaults';
+import { requestUpdateInventory } from '../../../utils/Requests';
 
 interface EditInventoryModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
@@ -20,42 +20,51 @@ interface EditInventoryModalProps extends RouteComponentProps, HTMLAttributes<HT
 
 const EditInventoryComponent: FunctionComponent<EditInventoryModalProps> = (props) => {
     const [isSaving, setIsSaving] = useState(false);
-    const [inventoryObj, setInventoryObj] = useState<IInventory>(props.selectedInventory);
-    const [showAlert, setShowAlert] = useState(false);
-    const [alertMessage, setAlertMessage] = useState('Missing Required Information');
-    const [warrantyDate, setWarrantyDate] = useState(new Date());
-    const [dateTested, setDateTested] = useState(new Date());
+    const [alert, setAlert] = useState(defaultAlert);
+    const [condition, setCondition] = useState(props.selectedInventory.condition || ProductConditions.ChooseCondition);
+    const [inventoryObj, setInventoryObj] = useState<IInventory>({
+        id: props.selectedInventory.id,
+        productId: props.selectedInventory.productId,
+        purchaseOrderId: props.selectedInventory.purchaseOrderId,
+        serialNumber: props.selectedInventory.serialNumber,
+        condition: props.selectedInventory.condition,
+        warrantyExpiration: moment(props.selectedInventory.warrantyExpiration).startOf('day').toDate(),
+        testedDate: moment(props.selectedInventory.testedDate).startOf('day').toDate(),
+        tested: props.selectedInventory.tested,
+        comment: props.selectedInventory.comment,
+        location: props.selectedInventory.location,
+        reserved: props.selectedInventory.reserved,
+    });
 
-    const handleAlert = (message: string) => {
-        setAlertMessage(message);
-        setShowAlert(true);
-        setTimeout(() => {
-            setShowAlert(false);
-        }, 2000)
-    }
     const finished = () => {
         setIsSaving(true);
-        console.log(inventoryObj)
-        if (inventoryObj.serialNumber === '' ||
-            inventoryObj.warrantyExpiration === null || inventoryObj.warrantyExpiration === undefined ||
-            inventoryObj.condition === 'Choose Condition') {
-            handleAlert(`Missing Required Information: ${inventoryObj.serialNumber === '' ? 'Serial Number' : 'Condition'}`);
-            setIsSaving(false);
-        } else {
-            setTimeout(() => {
-                axios.put(`${BASE_API_URL}inventory`, inventoryObj, { withCredentials: true })
-                    .then((response) => {
-                        setIsSaving(false);
-                        props.getAllInventory(props.selectedProduct.id as number)
-                        props.onClose();
-                    })
-                    .catch((err) => {
-                        setIsSaving(false);
-                        handleAlert(err)
-                    });
-            }, 500);
-        }
+        setTimeout(async () => {
+            try {
+                if (inventoryObj.serialNumber === '' ||
+                    inventoryObj.warrantyExpiration === null ||
+                    inventoryObj.warrantyExpiration === undefined ||
+                    condition === ProductConditions.ChooseCondition) {
+                    setAlert({ ...alert, label: `Missing Required Information: ${inventoryObj.serialNumber === '' ? 'Serial Number' : 'Condition'}`, show: true });
+                    setIsSaving(false);
+
+                } else if (inventoryObj.tested && inventoryObj.testedDate.toString() === 'Invalid Date') {
+                    setAlert({ ...alert, label: `Missing Required Information: Tested Date`, show: true });
+                    setIsSaving(false);
+                } else {
+                    await requestUpdateInventory(inventoryObj);
+                    setIsSaving(false);
+                    props.getAllInventory(props.selectedProduct.id as number)
+                    props.onClose();
+
+                }
+            } catch (err) {
+                setAlert({ ...alert, label: `${err}`, show: true });
+                setTimeout(() => setAlert({ ...alert, show: false }), 3000);
+                setIsSaving(false);
+            }
+        }, 500);
     };
+
     return (
         <div>
             <Modal backdrop="static" show={props.modalVisible} onHide={props.onClose} fullscreen={true}>
@@ -81,7 +90,7 @@ const EditInventoryComponent: FunctionComponent<EditInventoryModalProps> = (prop
                             </div>
                             :
                             <Form className="container d-grid" >
-                                <CustomAlert label={alertMessage} type={'danger'} showAlert={showAlert} />
+                                <CustomAlert label={alert.label} type={alert.type} showAlert={alert.show} />
                                 <Form.Group className="mb-3">
                                     <Form.Label>Serial Number<Form.Label style={{ color: '#ff2f2f', fontSize: 12, fontWeight: 300, marginLeft: 5 }}>*</Form.Label></Form.Label>
                                     <Form.Control
@@ -93,31 +102,39 @@ const EditInventoryComponent: FunctionComponent<EditInventoryModalProps> = (prop
                                 <Form.Group className="mb-3">
                                     <Form.Label>Condition<Form.Label style={{ color: '#ff2f2f', fontSize: 12, fontWeight: 300, marginLeft: 5 }}>*</Form.Label></Form.Label>
                                     <Form.Select aria-label="Default select example"
-                                        value={inventoryObj.condition || ProductConditions.ChooseCondition}
-                                        onChange={(e) => setInventoryObj({ ...inventoryObj, condition: (e.target.value) })}
+                                        value={condition}
+                                        onChange={(e) => {
+                                            setCondition(e.target.value)
+                                            setInventoryObj({ ...inventoryObj, condition: e.target.value })
+                                        }}
                                     >
-                                        {Object.values(ProductConditions).map((value, key) => {
-                                            return <option key={key} value={value}>{value}</option>
-                                        })}
+                                        <option key={ProductConditions.ChooseCondition} value={ProductConditions.ChooseCondition}>{ProductConditions.ChooseCondition}</option>
+                                        <option key={ProductConditions.NewFactorySealed} value={ProductConditions.NewFactorySealed}>{ProductConditions.NewFactorySealed}</option>
+                                        <option key={ProductConditions.NewOpenedBox} value={ProductConditions.NewOpenedBox}>{ProductConditions.NewOpenedBox}</option>
+                                        <option key={ProductConditions.Renew} value={ProductConditions.Renew}>{ProductConditions.Renew}</option>
+                                        <option key={ProductConditions.Used} value={ProductConditions.Used}>{ProductConditions.Used}</option>
+                                        <option key={ProductConditions.Damaged} value={ProductConditions.Damaged}>{ProductConditions.Damaged}</option>
                                     </Form.Select>
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Warranty Expiration<Form.Label style={{ color: '#ff2f2f', fontSize: 12, fontWeight: 300, marginLeft: 5 }}>*</Form.Label></Form.Label>
                                     <Form.Control id="orderNumber" type="date"
-                                        value={moment(warrantyDate).format('YYYY-MM-DD')}
+                                        value={moment(inventoryObj.warrantyExpiration).format('yyyy-MM-DD')}
                                         onChange={(e) => {
-                                            setWarrantyDate(new Date(e.target.value));
-                                            setInventoryObj({ ...inventoryObj, warrantyExpiration: new Date(e.target.value) });
+                                            if (e.target.value !== '') {
+                                                setInventoryObj({ ...inventoryObj, warrantyExpiration: moment(e.target.value).toDate() });
+                                            }
                                         }}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Date Tested</Form.Label>
                                     <Form.Control id="dateTested" type="date"
-                                        value={moment(dateTested).format('YYYY-MM-DD')}
+                                        value={moment(inventoryObj.testedDate).format('YYYY-MM-DD')}
                                         onChange={(e) => {
-                                            setDateTested(new Date(e.target.value));
-                                            setInventoryObj({ ...inventoryObj, testedDate: new Date(e.target.value) })
+                                            if (e.target.value !== '') {
+                                                setInventoryObj({ ...inventoryObj, testedDate: moment(e.target.value).toDate() })
+                                            }
                                         }}
                                     />
                                 </Form.Group>
@@ -127,7 +144,7 @@ const EditInventoryComponent: FunctionComponent<EditInventoryModalProps> = (prop
                                         <div key={'inline-radio-2'}>
                                             <Form.Check
                                                 inline
-                                                defaultChecked
+                                                defaultChecked={inventoryObj.tested}
                                                 label="Tested"
                                                 name='group2'
                                                 type={'radio'}
@@ -139,6 +156,7 @@ const EditInventoryComponent: FunctionComponent<EditInventoryModalProps> = (prop
                                             <Form.Check
                                                 inline
                                                 label="Not Tested"
+                                                defaultChecked={!inventoryObj.tested}
                                                 name='group2'
                                                 type={'radio'}
                                                 id={'inline-radio-4'}

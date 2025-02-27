@@ -91,7 +91,7 @@ export default {
   },
 
   Delete: {
-    body: {
+    data: {
       id: Joi.number(),
       productId: Joi.number().required(),
       removedInventoryId: Joi.number().allow(null, ''),

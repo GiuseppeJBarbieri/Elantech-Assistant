@@ -100,13 +100,6 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             </div>
         );
     };
-    const handleConditionSort = (order: string) => {
-        if (order === 'desc') {
-            inventoryList.sort((a, b) => b.condition.localeCompare(a.condition));
-        } else {
-            inventoryList.sort((a, b) => a.condition.localeCompare(b.condition));
-        }
-    }
     const columns = [
         {
             id: 1,
@@ -119,9 +112,6 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             dataField: 'condition',
             text: 'Condition',
             sort: true,
-            onSort: (field: any, order: string) => {
-                handleConditionSort(order);
-            }
         },
         {
             id: 3,

@@ -23,43 +23,42 @@ interface RemoveInventoryModalProps extends RouteComponentProps, HTMLAttributes<
 const RemoveInventoryModalComponent: FunctionComponent<RemoveInventoryModalProps> = (props) => {
     const [isSaving, setIsSaving] = useState(false);
     const [alert, setAlert] = useState(defaultAlert);
-    const [reasonForRemoval, setReasonForRemoval] = useState('');
-    const [reasonType, setReasonType] = useState('TOO_MANY_ADDED');
     const [showReasonForRemoval, setShowReasonForRemoval] = useState(false);
-    const removeProduct = () => {
+    const [removedInventory, setRemovedInventory] = useState<IRemovedInventory>({
+        reasonType: 'Too many added',
+        reason: '',
+        dateRemoved: new Date().toISOString()
+    });
+    const submit = () => {
         setIsSaving(true);
+        props.getAllProducts();
         setTimeout(async () => {
             try {
-                if (showReasonForRemoval && reasonForRemoval == 'OTHER') {
+                if (showReasonForRemoval && removedInventory.reasonType == 'OTHER' && removedInventory.reason == '') {
                     setAlert({ ...alert, label: `Please enter a reason for removal`, show: true });
                     setTimeout(() => setAlert({ ...alert, show: false }), 3000);
                     setIsSaving(false);
                 }
                 else {
-                    const removedInventory: IRemovedInventory = {
-                        reason: reasonForRemoval,
-                        reasonType: reasonType,
-                        userId: 0,
-                        orderId: 0,
-                        dateRemoved: new Date().toISOString()
-                    };
-                    const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
                     if (props.selectedInventoryList.length > 1) {
-                        for(let item of props.selectedInventoryList) {
-                            await delay(100);
-                            const inventoryCopy = item;
-                            inventoryCopy.removedInventory = removedInventory;
-                            await requestRemoveInventory(inventoryCopy)
-                        }
+                        const inventoryList: IInventory[] = props.selectedInventoryList;
+                        inventoryList.forEach(async (item) => {
+                            item.removedInventory = removedInventory;
+                        });
+                        // await requestRemoveInventory(inventoryList);
+
+                        // for (let item of props.selectedInventoryList) {
+                        //     const inventoryCopy = item;
+                        //     inventoryCopy.removedInventory = removedInventory;
+                        // }
                     } else {
                         const inventoryCopy = props.selectedInventory;
                         inventoryCopy.removedInventory = removedInventory;
+                        console.log(inventoryCopy);
                         await requestRemoveInventory(inventoryCopy);
                     }
-                    props.getAllInventory(props.selectedProduct.id as number);
-                    props.getAllProducts();
                     setIsSaving(false);
+                    props.getAllInventory(props.selectedProduct.id as number); 
                     props.onClose();
                 }
             } catch (err) {
@@ -67,7 +66,6 @@ const RemoveInventoryModalComponent: FunctionComponent<RemoveInventoryModalProps
                 setTimeout(() => setAlert({ ...alert, show: false }), 3000);
                 setIsSaving(false);
             }
-
         }, 500);
     };
     return (
@@ -82,7 +80,6 @@ const RemoveInventoryModalComponent: FunctionComponent<RemoveInventoryModalProps
                         <h2 style={{ verticalAlign: '', fontWeight: 300 }}>Removing Inventory</h2>
                         <p style={{ color: 'darkgray', fontSize: 18, fontWeight: 300 }}>You are about to remove {props.selectedInventory?.serialNumber as string}</p>
                     </Modal.Title>
-                    <CustomAlert label={alert.label} type={alert.type} showAlert={alert.show} />
                 </Modal.Header>
                 <Modal.Body style={{ background: '#2c3034', color: 'white' }}>
                     <div className='container d-grid gap-2' style={{ marginBottom: 15 }}>
@@ -99,6 +96,7 @@ const RemoveInventoryModalComponent: FunctionComponent<RemoveInventoryModalProps
                             </div>
                             :
                             <Form className="container d-grid" >
+                                <CustomAlert label={alert.label} type={alert.type} showAlert={alert.show} />
                                 <Form.Group className="mb-3">
                                     <Form.Label>Please select a reason for removal</Form.Label>
                                     <Form.Select aria-label="Default select example"
@@ -106,12 +104,12 @@ const RemoveInventoryModalComponent: FunctionComponent<RemoveInventoryModalProps
                                             if (e.target.value == 'OTHER') {
                                                 setShowReasonForRemoval(true);
                                             } else {
-                                                setReasonType(e.target.value);
                                                 setShowReasonForRemoval(false);
                                             }
+                                            setRemovedInventory({ ...removedInventory, reasonType: e.target.value });
                                         }}>
-                                        <option value="TOO_MANY_ADDED">Too many added</option>
-                                        <option value="NO_LONGER_HERE">No longer here</option>
+                                        <option value="Too many added">Too many added</option>
+                                        <option value="No longer here">No longer here</option>
                                         <option value="OTHER">Other</option>
                                     </Form.Select>
                                 </Form.Group>
@@ -123,7 +121,7 @@ const RemoveInventoryModalComponent: FunctionComponent<RemoveInventoryModalProps
                                             type="text"
                                             placeholder="Reason for removal"
                                             disabled={showReasonForRemoval}
-                                            onChange={(e) => setReasonForRemoval(e.target.value)}
+                                            onChange={(e) => setRemovedInventory({ ...removedInventory, reason: e.target.value })}
                                         />
                                     </Form.Group>
                                 }
@@ -136,7 +134,7 @@ const RemoveInventoryModalComponent: FunctionComponent<RemoveInventoryModalProps
                         <Button
                             variant="dark"
                             onClick={async () => {
-                                removeProduct();
+                                submit();
                             }}>
                             Finish
                         </Button>

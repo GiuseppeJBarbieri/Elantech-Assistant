@@ -9,6 +9,12 @@ const TAG = 'INVENTORY';
 
 const router = BaseRoute(InventoryController, InventoryValidation, TAG);
 
+// Override the DELETE route
+router.stack = router.stack.filter((layer) => !(layer.route
+  && layer.route.path === '/:id'
+  && layer.route.methods.delete
+));
+
 /**
  * This route will get all inventory by product id
  * @route GET /product/{id}
@@ -80,13 +86,13 @@ router.put('/multiple',
  * @returns {IInventory} 201 - Inventory object
  * @returns {Error}  default - Unexpected error
  */
-router.delete('/removal',
+router.delete('/',
   authenticationMiddleware,
   validate(InventoryValidation.Delete),
   async (req, res, next) => {
     logger.info(`DELETE ${TAG}`);
-
     req.body.userId = req.session['userId'];
+    req.body.removedInventory.userId = req.session['userId'];
     InventoryController.Delete(req.body)
       .then((response) => {
         res.status(201).json(response);

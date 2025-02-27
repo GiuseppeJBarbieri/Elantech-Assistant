@@ -5,7 +5,7 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { CustomAlert } from '../../Alerts/CustomAlert';
 import IProduct from '../../../types/IProduct';
 import { SpinnerBlock } from '../../LoadingAnimation/SpinnerBlock';
-import { brandList, brandOptionsList, typeList, typeOptionsList } from '../../../constants/Options';
+import { brandOptionsList, typeOptionsList } from '../../../constants/Options';
 import '../modal.css';
 import { defaultAlert } from '../../../constants/Defaults';
 

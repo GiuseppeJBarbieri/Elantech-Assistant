@@ -33,7 +33,7 @@ export const requestAllInventoryByProductID = async (id: number): Promise<IInven
     return axios.get(`${BASE_API_URL}${ROUTES.INVENTORY}/product/${id}`, { withCredentials: true }).then((response) => response?.data?.payload[0]);
 }
 export const requestUpdateInventory = async (inventory: IInventory): Promise<any> => {
-    axios.put(`${BASE_API_URL}${ROUTES.INVENTORY}`, inventory, { withCredentials: true }).then((response) => response?.data?.payload[0]);
+    return axios.put(`${BASE_API_URL}${ROUTES.INVENTORY}`, inventory, { withCredentials: true }).then((response) => response?.data?.payload[0]);
 }
 export const requestUpdateMultipleInventory = async (inventory: IInventory[]): Promise<any> => {
     axios.put(`${BASE_API_URL}${ROUTES.INVENTORY}/multiple`, inventory, { withCredentials: true }).then((response) => response?.data?.payload[0]);
@@ -45,7 +45,7 @@ export const requestAddMultipleInventory = async (inventory: IInventory[]): Prom
     return axios.post(`${BASE_API_URL}${ROUTES.INVENTORY}/multiple`, inventory, { withCredentials: true }).then((response) => response?.data?.payload);
 }
 export const requestRemoveInventory = async (inventory: IInventory): Promise<any> => {
-    return axios.put(`${BASE_API_URL}${ROUTES.INVENTORY}/removal`, inventory, { withCredentials: true }).then((response) => response?.data?.payload[0]);
+    return axios.delete(`${BASE_API_URL}${ROUTES.INVENTORY}`, { withCredentials: true, data: inventory }).then((response) => response?.data?.payload[0]);
 }
 
 // COMPANY
@@ -62,31 +62,26 @@ export const requestDeleteCompany = async (id: number): Promise<any> => {
     return axios.delete(`${BASE_API_URL}${ROUTES.COMPANY}/${id}`, { withCredentials: true }).then((response) => response.data.payload[0]);
 }
 
-// Product Quotes
-export const requestAllProductQuotes = async (): Promise<any> => {
-    return undefined;
-}
-export const requestAllProductQuotesByQuoteId = async (quoteId: number): Promise<IQuotedProduct[]> => {
-    return axios.get(`${BASE_API_URL}${ROUTES.QUOTED_PRODUCTS}/${ROUTES.QUOTE}/${ROUTES.QUOTED_PRODUCTS}/${quoteId}`, { withCredentials: true }).then((response) => response?.data?.payload[0]);
-}
-
 // QUOTES
 export const requestAllQuotesByCompanyID = async (companyId: number): Promise<IQuote[]> => {
-    return axios.get(`${BASE_API_URL}${ROUTES.QUOTE}/${ROUTES.COMPANY}/${companyId}`, { withCredentials: true }).then((response) => response?.data?.payload[0]);
+    return axios.get(`${BASE_API_URL}${ROUTES.QUOTE}/${ROUTES.COMPANY}/${companyId}`, { withCredentials: true }).then((response) => response.data.payload[0]);
 };
 export const requestAddQuote = async (quote: IQuote): Promise<any> => {
-    return axios.post(`${BASE_API_URL}${ROUTES.QUOTE}`, quote, { withCredentials: true }).then((response) => response?.data?.payload[0]);
+    return axios.post(`${BASE_API_URL}${ROUTES.QUOTE}`, quote, { withCredentials: true }).then((response) => response.data.payload);
 }
 export const requestUpdateQuoteAndQuotedProducts = async (quote: IQuote): Promise<any> => {
-    return axios.put(`${BASE_API_URL}${ROUTES.QUOTE}/${ROUTES.QUOTED_PRODUCTS}`, quote, { withCredentials: true }).then((response) => response?.data?.payload[0]);
+    return axios.put(`${BASE_API_URL}${ROUTES.QUOTE}/${ROUTES.QUOTED_PRODUCTS}`, quote, { withCredentials: true }).then((response) => response.data.payload[0]);
 }
 export const requestDeleteQuote = async (id: number): Promise<any> => {
-    return axios.delete(`${BASE_API_URL}${ROUTES.QUOTE}/${id}`, { withCredentials: true }).then((response) => response?.data?.payload[0]);
+    return axios.delete(`${BASE_API_URL}${ROUTES.QUOTE}/${id}`, { withCredentials: true }).then((response) => response.data.payload[0]);
+}
+export const requestAllProductQuotesByQuoteId = async (quoteId: number): Promise<IQuotedProduct[]> => {
+    return axios.get(`${BASE_API_URL}${ROUTES.QUOTED_PRODUCTS}/${ROUTES.QUOTE}/${ROUTES.QUOTED_PRODUCTS}/${quoteId}`, { withCredentials: true }).then((response) => response.data.payload[0]);
 }
 
 // QUOTED PRODUCTS
 export const requestAddQuotedProduct = async (quotedProduct: IQuotedProduct): Promise<any> => {
-    return axios.post(`${BASE_API_URL}${ROUTES.QUOTED_PRODUCTS}`, quotedProduct, { withCredentials: true }).then((response) => response?.data?.payload[0]);
+    return axios.post(`${BASE_API_URL}${ROUTES.QUOTED_PRODUCTS}`, quotedProduct, { withCredentials: true }).then((response) => response.data.payload);
 }
 export const requestGetQuotedProductsByQuoteId = async (quoteId: number): Promise<IQuotedProduct[]> => {
     return axios.get(`${BASE_API_URL}${ROUTES.QUOTED_PRODUCTS}/quote/${quoteId}`, { withCredentials: true }).then((response) => response?.data?.payload[0]);
@@ -102,7 +97,7 @@ export const requestAddRemovedInventory = async (removedInventory: IRemovedInven
 
 // Receiving
 export const RequestAddReceivingOrder = async (receiving: IReceiving): Promise<any> => {
-    axios.post(`${BASE_API_URL}${ROUTES.RECEIVING}`, receiving, { withCredentials: true });
+    return axios.post(`${BASE_API_URL}${ROUTES.RECEIVING}`, receiving, { withCredentials: true });
 };
 export const requestAllReceiving = async (): Promise<IReceiving[]> => {
     return axios.get(`${BASE_API_URL}${ROUTES.RECEIVING}`, { withCredentials: true }).then((response) => response?.data?.payload[0]);
@@ -111,7 +106,7 @@ export const RequestUpdateReceivingOrder = async (receiving: IReceiving): Promis
     return axios.put(`${BASE_API_URL}${ROUTES.RECEIVING}`, receiving, { withCredentials: true });
 };
 export const RequestDeleteReceivingOrder = async (receiving: IReceiving): Promise<void> => {
-    axios.delete(`${BASE_API_URL}${ROUTES.RECEIVING}/${receiving.id}`, { withCredentials: true });
+    return axios.delete(`${BASE_API_URL}${ROUTES.RECEIVING}/${receiving.id}`, { withCredentials: true });
 };
 
 // Received Items
