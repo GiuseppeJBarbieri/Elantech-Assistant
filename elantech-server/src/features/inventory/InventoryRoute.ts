@@ -4,6 +4,7 @@ import InventoryController from './InventoryController';
 import InventoryValidation from './InventoryValidation';
 import authenticationMiddleware from '../../middleware/Auth';
 import validate from '../../middleware/JoiValidator';
+import IInventory from './IInventory';
 
 const TAG = 'INVENTORY';
 
@@ -91,9 +92,17 @@ router.delete('/',
   validate(InventoryValidation.Delete),
   async (req, res, next) => {
     logger.info(`DELETE ${TAG}`);
-    req.body.userId = req.session['userId'];
-    req.body.removedInventory.userId = req.session['userId'];
-    InventoryController.Delete(req.body)
+
+    const tempArr: IInventory[] = [];
+    (req.body as IInventory[]).forEach((inventory: IInventory) => {
+      const inv: IInventory = {
+        ...inventory,
+        removedInventory: { ...inventory.removedInventory, userId: req.session['userId'] },
+      };
+      tempArr.push(inv);
+    });
+
+    InventoryController.Delete(tempArr)
       .then((response) => {
         res.status(201).json(response);
       })

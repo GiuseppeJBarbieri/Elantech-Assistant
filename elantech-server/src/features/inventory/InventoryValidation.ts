@@ -91,7 +91,7 @@ export default {
   },
 
   Delete: {
-    data: {
+    data: Joi.array().items(Joi.object({
       id: Joi.number(),
       productId: Joi.number().required(),
       removedInventoryId: Joi.number().allow(null, ''),
@@ -112,6 +112,6 @@ export default {
         orderId: Joi.number().required(),
         dateRemoved: Joi.date().required(),
       }),
-    },
+    })),
   },
 };

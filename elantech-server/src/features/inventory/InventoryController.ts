@@ -60,7 +60,7 @@ const InventoryController = {
   * @param inventory
   * @returns IHTTPResponse
   */
-  async Delete(inventory: IInventory): Promise<IHTTPResponse> {
+  async Delete(inventory: IInventory[]): Promise<IHTTPResponse> {
     try {
       return {
         ...constants.HTTP.SUCCESS.DELETE,

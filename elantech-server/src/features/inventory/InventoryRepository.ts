@@ -146,38 +146,74 @@ export default {
     }
   },
 
-  async Delete(inventory: IInventory): Promise<void> {
+  async Delete(inventoryList: IInventory[]): Promise<void> {
+    const transaction: Transaction = await db.sequelize.transaction();
     try {
-      const transaction: Transaction = await db.sequelize.transaction();
+      // This should be temporary, need to make sure the corret quantity has been given.
+      // Want to actually track what's getting added.
+      // Will log inconsistencies
+      const currInvList = await db.inventory.findAll({
+        where: { productId: inventoryList[0].productId },
+        attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
+        include: [
+          {
+            model: db.receiving,
+            required: false,
+            attributes: ['id', 'companyId', 'userId', 'purchaseOrderNumber',
+              'orderType', 'trackingNumber', 'dateReceived', 'shippedVia', 'comment'],
+            as: 'receiving',
+            include: [
+              {
+                model: db.company,
+                attributes: ['name'],
+                required: false,
+                as: 'company',
+              },
+            ],
+          },
+        ],
+      }) as IInventory[];
 
-      const removedProductObj: IRemovedInventory = inventory.removedInventory;
+      await Promise.all(inventoryList.map(async (inventory) => {
+        const removedProductObj: IRemovedInventory = inventory.removedInventory;
 
-      // Create the Removed Entry + return the ID
-      const createdRemovedProduct = await db.removedInventory.create(removedProductObj, { transaction });
+        // Create the Removed Entry + return the ID
+        const createdRemovedProduct = await db.removedInventory.create(removedProductObj, { transaction });
 
-      // add the removed entry id to the inventory obj
-      const inventoryCopy = inventory;
-      inventoryCopy.removedInventoryId = createdRemovedProduct.id;
+        // add the removed entry id to the inventory obj
+        const inventoryCopy = { ...inventory, removedInventoryId: createdRemovedProduct.id };
 
-      // update the inventory obj
-      await db.inventory.update(inventoryCopy, {
-        where: {
-          id: inventoryCopy.id,
-        },
-        transaction,
-      });
+        // update the inventory obj
+        await db.inventory.update(inventoryCopy, {
+          where: {
+            id: inventoryCopy.id,
+          },
+          transaction,
+        });
 
-      // remove the inventory obj
-      await db.inventory.destroy({
-        where: {
-          id: inventoryCopy.id,
-        },
-        transaction,
-      });
-
+        // remove the inventory obj
+        await db.inventory.destroy({
+          where: {
+            id: inventoryCopy.id,
+          },
+          transaction,
+        });
+      }));
       // Get the quantity of the product
-      const product = await db.product.findOne({ where: { id: inventory.productId } });
-      const quantity = product.quantity - 1;
+      const product = await db.product.findOne({ where: { id: inventoryList[0].productId }, transaction });
+      let quantity = 0;
+      if (currInvList.length !== product.quantity) {
+        const repoError = {
+          ...repoErr,
+          message:
+            `Product.Quantity and Actual Inventory items do not match up! 
+          Inventory: ${currInvList.length} + Product.Quantity: ${product.quantity}`,
+        };
+        logger.warn(repoError);
+        quantity = currInvList.length - inventoryList.length;
+      } else {
+        quantity = product.quantity - inventoryList.length;
+      }
       // Update quantity for the product
       await db.product.update(
         { quantity },
@@ -188,7 +224,7 @@ export default {
         },
         transaction,
       );
-      return transaction.commit();
+      return await transaction.commit();
     } catch (err) {
       const repoError = { ...repoErr, message: err.message };
       logger.warn(repoError);

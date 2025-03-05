@@ -44,8 +44,8 @@ export const requestAddInventory = async (inventory: IInventory): Promise<any> =
 export const requestAddMultipleInventory = async (inventory: IInventory[]): Promise<any> => {
     return axios.post(`${BASE_API_URL}${ROUTES.INVENTORY}/multiple`, inventory, { withCredentials: true }).then((response) => response?.data?.payload);
 }
-export const requestRemoveInventory = async (inventory: IInventory): Promise<any> => {
-    return axios.delete(`${BASE_API_URL}${ROUTES.INVENTORY}`, { withCredentials: true, data: inventory }).then((response) => response?.data?.payload[0]);
+export const requestRemoveInventory = async (inventoryList: IInventory[]): Promise<any> => {
+    return axios.delete(`${BASE_API_URL}${ROUTES.INVENTORY}`, { withCredentials: true, data: inventoryList }).then((response) => response?.data?.payload[0]);
 }
 
 // COMPANY

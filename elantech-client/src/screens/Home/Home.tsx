@@ -157,15 +157,11 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
     );
     setSearchResults(results);
   };
-  const isCancelled = React.useRef(false);
   const getAllProducts = async () => {
     setSearchString('');
-    await requestAllProducts().then(products => {
-      if (!isCancelled.current) {
-        setProductList(products);
-        setSearchResults(products);
-      }
-    });
+    const products = await requestAllProducts();
+    setProductList(products);
+    setSearchResults(products);
   };
   const logout = async () => {
     const response = await requestLogout();
@@ -188,10 +184,6 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
   };
   useEffect(() => {
     getAllProducts();
-
-    return () => {
-      isCancelled.current = true;
-    }
   }, []);
   return (
     <section className="text-white main-section overflow-auto">

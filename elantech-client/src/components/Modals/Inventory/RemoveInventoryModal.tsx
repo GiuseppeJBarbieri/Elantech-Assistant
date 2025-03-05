@@ -41,26 +41,20 @@ const RemoveInventoryModalComponent: FunctionComponent<RemoveInventoryModalProps
                     setIsSaving(false);
                 }
                 else {
+                    const inventoryList: IInventory[] = props.selectedInventoryList;
                     if (props.selectedInventoryList.length > 1) {
-                        const inventoryList: IInventory[] = props.selectedInventoryList;
                         inventoryList.forEach(async (item) => {
                             item.removedInventory = removedInventory;
                         });
-                        // await requestRemoveInventory(inventoryList);
-
-                        // for (let item of props.selectedInventoryList) {
-                        //     const inventoryCopy = item;
-                        //     inventoryCopy.removedInventory = removedInventory;
-                        // }
                     } else {
-                        const inventoryCopy = props.selectedInventory;
-                        inventoryCopy.removedInventory = removedInventory;
-                        console.log(inventoryCopy);
-                        await requestRemoveInventory(inventoryCopy);
+                        const inventoryCopy = {...props.selectedInventory, removedInventory: removedInventory};
+                        inventoryList.push(inventoryCopy);
                     }
+
+                    await requestRemoveInventory(inventoryList);
                     setIsSaving(false);
-                    props.getAllProducts();
                     props.getAllInventory(props.selectedProduct.id as number); 
+                    props.getAllProducts();
                     props.onClose();
                 }
             } catch (err) {
