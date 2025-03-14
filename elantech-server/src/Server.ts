@@ -97,7 +97,10 @@ export default class Server {
     // this.app.use(cors({ origin: 'http://69.119.197.202:3000', credentials: true, exposedHeaders: ['set-cookie'] }));
     this.app.use(cors({ origin: 'http://localhost:3000', credentials: true, exposedHeaders: ['set-cookie'] }));
 
-    this.app.use(bodyParser.json());
+    this.app.use(bodyParser.json({
+      type: 'json',
+      limit: '100mb',
+    }));
     this.app.use(bodyParser.text({
       type: 'text/plain',
       limit: '10mb',

@@ -195,7 +195,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
             keyField="id"
             data={searchResults}
             columns={column}
-            search //00KC570
+            search
           >
             {
               props => {
