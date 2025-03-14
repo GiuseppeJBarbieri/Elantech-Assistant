@@ -26,9 +26,9 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
         productId: props.selectedProduct.id || 0,
         serialNumber: '',
         condition: 'Choose Condition',
-        warrantyExpiration: new Date(),
+        warrantyExpiration: new Date() as Date,
         tested: false,
-        testedDate: new Date(),
+        testedDate: new Date() as Date,
         comment: '',
         location: '',
         reserved: false,
@@ -57,6 +57,7 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
         for (let i = 0; i < quantity; i++) {
             tmpList.push({ ...addInvObj, serialNumber: v4() });
         }
+        console.log(addInvObj)
         setTimeout(async () => {
             try {
                 await requestAddMultipleInventory(tmpList);
@@ -213,9 +214,11 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                                         <Form.Control id="orderNumber" type="date"
                                             value={warrantyDate.toISOString().split("T")[0]}
                                             onChange={(e) => {
-                                                const newDate = new Date(e.target.value);
-                                                setWarrantyDate(newDate);
-                                                setInventoryObj({ ...inventoryObj, warrantyExpiration: newDate });
+                                                if (e.target.value !== '') {
+                                                    const newDate = new Date(e.target.value);
+                                                    setWarrantyDate(newDate);
+                                                    setInventoryObj({ ...inventoryObj, warrantyExpiration: newDate });
+                                                }
                                             }}
                                         />
                                     </Form.Group>
@@ -224,9 +227,11 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                                         <Form.Control id="dateTested" type="date"
                                             value={testedDate.toISOString().split("T")[0]}
                                             onChange={(e) => {
-                                                const newDate = new Date(e.target.value);
-                                                setTestedDate(newDate);
-                                                setInventoryObj({ ...inventoryObj, testedDate: newDate })
+                                                if (e.target.value !== '') {
+                                                    const newDate = new Date(e.target.value);
+                                                    setTestedDate(newDate);
+                                                    setInventoryObj({ ...inventoryObj, testedDate: newDate })
+                                                }
                                             }}
                                         />
                                     </Form.Group>

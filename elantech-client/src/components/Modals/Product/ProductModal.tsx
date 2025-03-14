@@ -108,7 +108,6 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
 
     const submitProduct = () => {
         if (validateProduct()) {
-            console.log(product);
             handleProduct(product);
         }
     };

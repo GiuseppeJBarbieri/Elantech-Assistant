@@ -23,7 +23,7 @@ interface IQuotedProduct {
         quickSpecsUrl?: string;
     };
     quote?: {
-        dateQuoted: string,
+        dateQuoted: Date,
         sold: boolean,
         company?: {
             name: string,

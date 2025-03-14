@@ -10,7 +10,6 @@ import ICompany from '../../../types/ICompany';
 import IProduct from '../../../types/IProduct';
 import { SpinnerBlock } from '../../LoadingAnimation/SpinnerBlock';
 import { CustomAlert } from '../../Alerts/CustomAlert';
-import moment from 'moment';
 import { Search } from 'react-bootstrap-icons';
 import { DebounceInput } from 'react-debounce-input';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
@@ -30,6 +29,7 @@ const AddSimpleQuoteModalComponent: FunctionComponent<AddSimpleQuoteModalProps> 
     const [quotedProduct, setQuotedProduct] = useState(defaultQuotedProduct);
     const [searchString] = useState<string>('');
     const [isSearching] = useState(false);
+    const [dateQuoted, setDateQuoted] = useState<Date>(new Date());
 
     const customTotal = (from: number, to: number, size: number) => {
         return (
@@ -96,7 +96,7 @@ const AddSimpleQuoteModalComponent: FunctionComponent<AddSimpleQuoteModalProps> 
     const submitQuote = () => {
         setIsSaving(true);
         setTimeout(async () => {
-            if (quotedProduct.productCondition === '' || quotedProduct.quantity === 0 || quote.dateQuoted === '') {
+            if (quotedProduct.productCondition === '' || quotedProduct.quantity === 0 || !quote.dateQuoted) {
                 setAlert({ ...alert, label: 'Missing Required Information!', show: true });
                 setTimeout(() => setAlert({ ...alert, show: false }), 3000);
                 setIsSaving(false);
@@ -161,9 +161,15 @@ const AddSimpleQuoteModalComponent: FunctionComponent<AddSimpleQuoteModalProps> 
                                 <Form.Group className="mb-3">
                                     <Form.Label>Quantity<Form.Label className={'required-text-asterisk'}>*</Form.Label></Form.Label>
                                     <Form.Control
-                                        id="Quantity" type="text" placeholder="Quantity"
+                                        id="Quantity" type="number" placeholder="Quantity"
                                         value={quotedProduct.quantity}
-                                        onChange={(e) => setQuotedProduct({ ...quotedProduct, quantity: Number.parseInt(e.target.value) })}
+                                        onChange={(e) => {
+                                            if (e.target.value != '') {
+                                                setQuotedProduct({ ...quotedProduct, quantity: Number.parseInt(e.target.value) })
+                                            } else {
+                                                setQuotedProduct({ ...quotedProduct, quantity: 0 })
+                                            }
+                                        }}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
@@ -171,14 +177,26 @@ const AddSimpleQuoteModalComponent: FunctionComponent<AddSimpleQuoteModalProps> 
                                     <Form.Control
                                         id="Price" type="text" placeholder="Price"
                                         value={quotedProduct.quotedPrice}
-                                        onChange={(e) => setQuotedProduct({ ...quotedProduct, quotedPrice: Number.parseInt(e.target.value) })}
+                                        onChange={(e) => {
+                                            if (e.target.value != '') {
+                                                setQuotedProduct({ ...quotedProduct, quotedPrice: Number.parseInt(e.target.value) })
+                                            } else {
+                                                setQuotedProduct({ ...quotedProduct, quotedPrice: 0 })
+                                            }
+                                        }}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Date<Form.Label className={'required-text-asterisk'}>*</Form.Label></Form.Label>
                                     <Form.Control id="Date" type="date"
-                                        value={quote.dateQuoted}
-                                        onChange={(e) => setQuote({ ...quote, dateQuoted: moment(e.target.value).format('YYYY-MM-DD') })}
+                                        value={dateQuoted.toISOString().split("T")[0]}
+                                        onChange={(e) => {
+                                            if (e.target.value != '') {
+                                                const newDate = new Date(e.target.value);
+                                                setDateQuoted(newDate);
+                                                setQuote({ ...quote, dateQuoted: newDate });
+                                            }
+                                        }}
                                     />
                                 </Form.Group>
                                 <Form.Group as={Col} className="mb-3">

@@ -9,7 +9,6 @@ import { CustomAlert } from '../../Alerts/CustomAlert';
 import { defaultAlert } from '../../../constants/Defaults';
 import { requestRemoveInventory } from '../../../utils/Requests';
 import IRemovedInventory from '../../../types/IRemovedInventory';
-import { PAGE_ROUTES } from '../../../constants/PageRoutes';
 
 interface RemoveInventoryModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;

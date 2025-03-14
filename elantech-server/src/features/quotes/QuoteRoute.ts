@@ -27,7 +27,6 @@ router.post('/',
   validate(QuoteValidation.Post),
   (req, res, next) => {
     logger.info(`POST ${TAG}`);
-    console.log(req.body);
     req.body.userId = req.session['userId'];
     QuoteController.Add(req.body)
       .then((response) => {

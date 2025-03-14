@@ -2,7 +2,7 @@ interface IProductQuotesTable {
     quantity: number,
     companyName: string,
     price: number,
-    dateQuoted: string,
+    dateQuoted: Date,
     quotedBy: string,
     comments: string,
     sold: string,

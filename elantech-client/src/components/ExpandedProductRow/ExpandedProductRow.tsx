@@ -48,14 +48,17 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
             text: 'Qty',
             sort: true,
         }, {
-            dataField: 'Quote.Company.name',
+            dataField: 'quote.company.name',
             text: 'Company Name',
             sort: true,
         }, {
             dataField: 'quotedBy',
             text: 'Quoted By',
             formatter: (cell: any, row: any) => {
-                return `${row.Quote.User.firstName}  ${row.Quote.User.lastName}`;
+                if (row.quote.user.firstName != undefined || row.quote.user.lastName != undefined) {
+                    return `${row.quote.user.firstName}  ${row.quote.user.lastName}`;
+                }
+                return '';
             },
             sort: true,
         }, {
@@ -63,11 +66,11 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
             text: 'Price',
             sort: false
         }, {
-            dataField: 'Quote.dateQuoted',
+            dataField: 'quote.dateQuoted',
             text: 'Date',
             sort: true,
         }, {
-            dataField: 'Quote.sold',
+            dataField: 'quote.sold',
             text: 'Sold ',
             sort: true,
             headerAlign: 'center',
@@ -97,14 +100,14 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                 if (request.length > 0) {
                     let avgQuote = 0;
                     let earliestDate = {
-                        date: request[0].quote?.dateQuoted as string,
+                        date: request[0].quote?.dateQuoted as Date,
                         index: 0,
                     };
                     request.forEach((quote, index) => {
                         avgQuote += quote.quotedPrice;
-                        if (new Date(earliestDate.date as string) < new Date(quote.quote?.dateQuoted as string)) {
+                        if (new Date(earliestDate.date as Date) < new Date(quote.quote?.dateQuoted as Date)) {
                             earliestDate = {
-                                date: quote.quote?.dateQuoted as string,
+                                date: quote.quote?.dateQuoted as Date,
                                 index: index
                             };
                         }

@@ -130,12 +130,20 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             dataField: 'receiving.dateReceived',
             text: 'Date Received',
             sort: true,
+            formatter: (cell: any, row: any) => {
+                if(row.receiving.dateReceived === undefined) return '';
+                return (new Date(row.receiving.dateReceived)).toISOString().split("T")[0];
+            },
         },
         {
             id: 6,
             dataField: 'warrantyExpiration',
             text: 'Warranty Expiration',
             sort: false,
+            formatter: (cell: any, row: any) => {
+                if(row.warrantyExpiration === undefined) return '';
+                return (new Date(row.warrantyExpiration)).toISOString().split("T")[0];
+            },
         },
         {
             id: 7,

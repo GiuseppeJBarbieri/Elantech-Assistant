@@ -47,7 +47,7 @@ export const defaultQuote = (): IQuote => {
         id: 0,
         companyId: 0,
         userId: 0,
-        dateQuoted: '',
+        dateQuoted: new Date(),
         sold: false,
     }))
 }

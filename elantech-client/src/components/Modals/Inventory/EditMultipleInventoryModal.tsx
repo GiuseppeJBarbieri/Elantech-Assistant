@@ -26,16 +26,17 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
     const [inventoryTableList, setInventoryTableList] = useState<IInventory[]>([]);
     const [selectedInventoryList, setSelectedInventoryList] = useState<IInventory[]>([]);
     const [alert, setAlert] = useState(defaultAlert);
+    const [changeIsTested, setChangeIsTested] = useState(false);
 
-    const attributeState = {
-        condition: undefined as unknown as string,
-        warrantyExpiration: undefined as unknown as string,
-        tested: undefined as unknown as boolean | undefined,
-        testedDate: undefined as unknown as string,
-        comment: undefined as unknown as string,
-        location: undefined as unknown as string,
+    const defaultAttributes = {
+        condition: '',
+        warrantyExpiration: new Date(0).toISOString().split("T")[0],
+        tested: false,
+        testedDate: new Date(0).toISOString().split("T")[0],
+        comment: '',
+        location: '',
     }
-    const [attributes, setAttributes] = useState(attributeState)
+    const [attributes, setAttributes] = useState(defaultAttributes)
 
     const handleConditionSort = (order: string) => {
         if (order === 'desc') {
@@ -145,21 +146,45 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
     };
     const submitChanges = () => {
         // Make changes on selected items
+        const tmpList: IInventory[] = [];
         selectedInventoryList.forEach((selectedInventory) => {
-            (Object.keys(attributes) as (keyof typeof attributes)[]).forEach((key, index) => {
-                if (attributes[key] !== undefined) {
-                    (selectedInventory[key] as string | boolean) = attributes[key];
-                }
-            })
-        });
-        const updatedList = inventoryTableList.map(oldItem => {
-            const newItem = selectedInventoryList.find(newItem => newItem.id === oldItem.id);
-            return newItem ? newItem : oldItem;
+            let tempObj: IInventory = selectedInventory;
+            // Check condition update
+            if (attributes.condition != defaultAttributes.condition) {
+                tempObj = { ...tempObj, condition: attributes.condition };
+            }
+            // Check Location Update
+            if (attributes.location != defaultAttributes.location) {
+                tempObj = { ...tempObj, location: attributes.location };
+            }
+            // Check warranty expiration date
+            if (attributes.warrantyExpiration != defaultAttributes.warrantyExpiration) {
+                tempObj = { ...tempObj, warrantyExpiration: attributes.warrantyExpiration };
+            }
+            // check comments
+            if (attributes.comment != defaultAttributes.comment) {
+                tempObj = { ...tempObj, comment: attributes.comment };
+            }
+            // check date tested
+            if (attributes.testedDate != defaultAttributes.testedDate) {
+                console.log(new Date(attributes.testedDate).getDate());
+                tempObj = { ...tempObj, testedDate: attributes.testedDate };
+            }
+            // check tested flags
+            if (changeIsTested) {
+                tempObj = { ...tempObj, tested: attributes.tested };
+            }
+            tmpList.push(tempObj);
         });
 
-        setAttributes(attributeState);
+        const updatedList: IInventory[] = []
+        inventoryTableList.forEach(oldItem => {
+            const newItem = tmpList.find(newItem => newItem.id === oldItem.id);
+            console.log(newItem);
+            updatedList.push(newItem ? newItem : oldItem);
+        });
+        setAttributes(defaultAttributes);
         setInventoryTableList(updatedList);
-        console.log(selectedInventoryList);
     };
     const finish = () => {
         setIsSaving(true);
@@ -183,7 +208,7 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
     }
     useEffect(() => {
         setInventoryList(props.selectedInventory);
-    }, [setInventoryTableList])
+    }, []);
     return (
         <div>
             <Modal backdrop="static" show={props.modalVisible} onHide={props.onClose} fullscreen={true}>
@@ -241,7 +266,12 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
                                                     <Form.Label>Date Tested</Form.Label>
                                                     <Form.Control id="dateTested" type="date"
                                                         value={attributes.testedDate}
-                                                        onChange={(e) => setAttributes({ ...attributes, testedDate: (e.target.value) })} />
+                                                        onChange={(e) => {
+                                                            if (e.target.value !== '') {
+                                                                const newDate = new Date(e.target.value).toISOString().split("T")[0];
+                                                                setAttributes({ ...attributes, testedDate: newDate })
+                                                            }
+                                                        }} />
                                                 </Form.Group>
                                             </div>
                                             <div className="container">
@@ -249,7 +279,12 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
                                                     <Form.Label>Warranty Expiration</Form.Label>
                                                     <Form.Control id="orderNumber" type="date"
                                                         value={attributes.warrantyExpiration}
-                                                        onChange={(e) => setAttributes({ ...attributes, warrantyExpiration: (e.target.value) })} />
+                                                        onChange={(e) => {
+                                                            if (e.target.value !== '') {
+                                                                const newDate = new Date(e.target.value).toISOString().split("T")[0];
+                                                                setAttributes({ ...attributes, warrantyExpiration: newDate })
+                                                            }
+                                                        }} />
                                                 </Form.Group>
                                                 <Form.Group className="mb-3">
                                                     <Form.Label>Tested</Form.Label>
@@ -263,7 +298,7 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
                                                                 type={'radio'}
                                                                 id={'inline-radio-4'}
                                                                 onClick={() => {
-                                                                    setAttributes({ ...attributes, tested: undefined })
+                                                                    setChangeIsTested(false);
                                                                 }}
                                                             />
                                                             <Form.Check
@@ -274,6 +309,7 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
                                                                 id={'inline-radio-3'}
                                                                 onClick={() => {
                                                                     setAttributes({ ...attributes, tested: (true) })
+                                                                    setChangeIsTested(true);
                                                                 }}
                                                             />
                                                             <Form.Check
@@ -284,6 +320,7 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
                                                                 id={'inline-radio-4'}
                                                                 onClick={() => {
                                                                     setAttributes({ ...attributes, tested: (false) })
+                                                                    setChangeIsTested(true);
                                                                 }}
                                                             />
                                                         </div>
@@ -299,6 +336,7 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
                                 <hr />
                                 <div>
                                     <BootstrapTable
+                                        key='inventory_table'
                                         keyField='serialNumber'
                                         data={inventoryTableList}
                                         columns={columns}
