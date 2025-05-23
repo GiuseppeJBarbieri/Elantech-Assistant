@@ -26,6 +26,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
     const [tempSelected, setTempSelected] = useState<string[]>([]);
     const [editMultipleInventorySwitch, setEditMultipleInventorySwitch] = useState(false);
     const [lastSelected, setLastSelected] = useState(-1);
+    const tableRef: any = React.useRef();
     const [selectedInventory, setSelectedInventory] = useState<IInventory>(
         {
             id: 0,
@@ -130,8 +131,9 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             dataField: 'receiving.dateReceived',
             text: 'Date Received',
             sort: true,
-            formatter: (cell: any, row: any) => {
-                if(row.receiving.dateReceived === undefined) return '';
+            formatter: (cell: any, row: IInventory) => {
+                if(row.receiving?.dateReceived === undefined 
+                    || row.receiving?.dateReceived === null) return '';
                 return (new Date(row.receiving.dateReceived)).toISOString().split("T")[0];
             },
         },
@@ -140,8 +142,8 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             dataField: 'warrantyExpiration',
             text: 'Warranty Expiration',
             sort: false,
-            formatter: (cell: any, row: any) => {
-                if(row.warrantyExpiration === undefined) return '';
+            formatter: (cell: any, row: IInventory) => {
+                if(row.warrantyExpiration === undefined || row.warrantyExpiration === null) return '';
                 return (new Date(row.warrantyExpiration)).toISOString().split("T")[0];
             },
         },
@@ -162,6 +164,10 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             dataField: 'testedDate',
             text: 'Date Tested',
             sort: false,
+            formatter: (cell: any, row: IInventory) => {
+                if(row.testedDate === undefined || row.testedDate === null) return '';
+                return (new Date(row.testedDate)).toISOString().split("T")[0];
+            },
         },
         {
             id: 10,
@@ -297,7 +303,9 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                             <div className='fade-in-right' aria-controls="example-fade-text">
                                 <Button variant='dark' style={{ marginLeft: 5 }}
                                     onClick={() => {
+                                        tableRef.current.selectionContext.selected = [];
                                         setEditMultipleInventorySwitch(true);
+                                        
                                     }}
                                 >
                                     Edit Multiple Inventory
@@ -316,6 +324,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             </div>
             <div style={{ overflowX: 'auto', maxHeight: 500 }} className='no-highlight'>
                 <BootstrapTable
+                    ref={tableRef}
                     key='inventory_table'
                     bootstrap4
                     condensed
@@ -368,7 +377,12 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                         selectedProduct={props.selectedProduct}
                         getAllProducts={props.getAllProducts}
                         onClose={async () => {
+                            props.getAllProducts();
                             setEditMultipleInventorySwitch(false);
+                            setSelectedInventoryList([]);
+                            if (props.selectedProduct.id !== undefined) {
+                                props.getAllInventory(props.selectedProduct.id);
+                            }
                         }}
                     />
                 </div>

@@ -27,12 +27,12 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
     const [selectedInventoryList, setSelectedInventoryList] = useState<IInventory[]>([]);
     const [alert, setAlert] = useState(defaultAlert);
     const [changeIsTested, setChangeIsTested] = useState(false);
-
+    const tableRef: any = React.useRef();
     const defaultAttributes = {
         condition: '',
-        warrantyExpiration: new Date(0).toISOString().split("T")[0],
+        warrantyExpiration: new Date(0),
         tested: false,
-        testedDate: new Date(0).toISOString().split("T")[0],
+        testedDate: new Date(0),
         comment: '',
         location: '',
     }
@@ -78,12 +78,21 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
             dataField: 'receiving.dateReceived',
             text: 'Date Received',
             sort: true,
+            formatter: (cell: any, row: IInventory) => {
+                if (row.receiving?.dateReceived === undefined
+                    || row.receiving?.dateReceived === null) return '';
+                return (new Date(row.receiving.dateReceived)).toISOString().split("T")[0];
+            },
         },
         {
             id: 6,
             dataField: 'warrantyExpiration',
             text: 'Warranty Expiration',
             sort: false,
+            formatter: (cell: any, row: IInventory) => {
+                if (row.warrantyExpiration === undefined || row.warrantyExpiration === null) return '';
+                return (new Date(row.warrantyExpiration)).toISOString().split("T")[0];
+            },
         },
         {
             id: 7,
@@ -102,6 +111,10 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
             dataField: 'testedDate',
             text: 'Date Tested',
             sort: false,
+            formatter: (cell: any, row: IInventory) => {
+                if (row.testedDate === undefined || row.testedDate === null) return '';
+                return (new Date(row.testedDate)).toISOString().split("T")[0];
+            },
         },
         {
             id: 10,
@@ -116,7 +129,7 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
             text: 'Reserved',
             sort: false,
             headerAlign: 'center',
-        }
+        },
     ];
     const selectRow = {
         mode: 'checkbox',
@@ -146,45 +159,50 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
     };
     const submitChanges = () => {
         // Make changes on selected items
-        const tmpList: IInventory[] = [];
-        selectedInventoryList.forEach((selectedInventory) => {
-            let tempObj: IInventory = selectedInventory;
-            // Check condition update
-            if (attributes.condition != defaultAttributes.condition) {
-                tempObj = { ...tempObj, condition: attributes.condition };
-            }
-            // Check Location Update
-            if (attributes.location != defaultAttributes.location) {
-                tempObj = { ...tempObj, location: attributes.location };
-            }
-            // Check warranty expiration date
-            if (attributes.warrantyExpiration != defaultAttributes.warrantyExpiration) {
-                tempObj = { ...tempObj, warrantyExpiration: attributes.warrantyExpiration };
-            }
-            // check comments
-            if (attributes.comment != defaultAttributes.comment) {
-                tempObj = { ...tempObj, comment: attributes.comment };
-            }
-            // check date tested
-            if (attributes.testedDate != defaultAttributes.testedDate) {
-                console.log(new Date(attributes.testedDate).getDate());
-                tempObj = { ...tempObj, testedDate: attributes.testedDate };
-            }
-            // check tested flags
-            if (changeIsTested) {
-                tempObj = { ...tempObj, tested: attributes.tested };
-            }
-            tmpList.push(tempObj);
-        });
-
-        const updatedList: IInventory[] = []
-        inventoryTableList.forEach(oldItem => {
-            const newItem = tmpList.find(newItem => newItem.id === oldItem.id);
-            console.log(newItem);
-            updatedList.push(newItem ? newItem : oldItem);
-        });
-        setAttributes(defaultAttributes);
-        setInventoryTableList(updatedList);
+        if (selectedInventoryList.length === 0) {
+            setAlert({ ...alert, label: 'Please select at least one item to edit.', show: true });
+            setTimeout(() => setAlert({ ...alert, show: false }), 3000);
+        } else {
+            const tmpList: IInventory[] = [];
+            selectedInventoryList.forEach((selectedInventory) => {
+                let tempObj: IInventory = selectedInventory;
+                // Check condition update
+                if (attributes.condition != defaultAttributes.condition) {
+                    tempObj = { ...tempObj, condition: attributes.condition };
+                }
+                // Check Location Update
+                if (attributes.location != defaultAttributes.location) {
+                    tempObj = { ...tempObj, location: attributes.location };
+                }
+                // Check warranty expiration date
+                if (attributes.warrantyExpiration.toUTCString() != defaultAttributes.warrantyExpiration.toUTCString()) {
+                    tempObj = { ...tempObj, warrantyExpiration: attributes.warrantyExpiration };
+                }
+                // check comments
+                if (attributes.comment != defaultAttributes.comment) {
+                    tempObj = { ...tempObj, comment: attributes.comment };
+                }
+                // check date tested
+                if (attributes.testedDate.toUTCString() != defaultAttributes.testedDate.toUTCString()) {
+                    tempObj = { ...tempObj, testedDate: attributes.testedDate };
+                }
+                // check tested flags
+                if (changeIsTested) {
+                    tempObj = { ...tempObj, tested: attributes.tested };
+                }
+                tmpList.push(tempObj);
+            });
+            const updatedList: IInventory[] = []
+            inventoryTableList.forEach(oldItem => {
+                const newItem = tmpList.find(newItem => newItem.serialNumber === oldItem.serialNumber);
+                updatedList.push(newItem ? newItem : oldItem);
+            });
+            tableRef.current.selectionContext.selected = [];
+            setSelectedInventoryList([]);
+            setChangeIsTested(false);
+            setAttributes(defaultAttributes);
+            setInventoryTableList(updatedList);
+        }
     };
     const finish = () => {
         setIsSaving(true);
@@ -198,8 +216,6 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
                 setIsSaving(false);
                 return;
             }
-            props.getAllProducts();
-            props.getAllInventory(props.selectedProduct.id as number)
             props.onClose();
         }, 500)
     }
@@ -225,9 +241,9 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
                             :
                             <div>
                                 <div>
-                                    <h2 style={{ fontWeight: 300 }}>Editable Fields</h2>
+                                    <CustomAlert label={alert.label} type={alert.type} showAlert={alert.show} />
                                     <Form className="d-grid" >
-                                        <CustomAlert label={alert.label} type={alert.type} showAlert={alert.show} />
+                                        <h2 style={{ fontWeight: 300 }}>Editable Fields</h2>
                                         <div className='d-flex justify-content-between'>
                                             <div className="container">
                                                 <Form.Group className="mb-3">
@@ -236,7 +252,7 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
                                                         value={attributes.condition}
                                                         onChange={(e) => setAttributes({ ...attributes, condition: (e.target.value) })}
                                                     >
-                                                        <option value={undefined}>Choose Condition</option>
+                                                        <option value={''}>Choose Condition</option>
                                                         <option value="New Factory Sealed">New Factory Sealed</option>
                                                         <option value="New Opened Box">New Opened Box</option>
                                                         <option value="Renew">Renew</option>
@@ -265,10 +281,10 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
                                                 <Form.Group className="mb-3">
                                                     <Form.Label>Date Tested</Form.Label>
                                                     <Form.Control id="dateTested" type="date"
-                                                        value={attributes.testedDate}
+                                                        value={attributes.testedDate.toISOString().split("T")[0]}
                                                         onChange={(e) => {
                                                             if (e.target.value !== '') {
-                                                                const newDate = new Date(e.target.value).toISOString().split("T")[0];
+                                                                const newDate = new Date(e.target.value);
                                                                 setAttributes({ ...attributes, testedDate: newDate })
                                                             }
                                                         }} />
@@ -278,10 +294,10 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
                                                 <Form.Group className="mb-3">
                                                     <Form.Label>Warranty Expiration</Form.Label>
                                                     <Form.Control id="orderNumber" type="date"
-                                                        value={attributes.warrantyExpiration}
+                                                        value={attributes.warrantyExpiration.toISOString().split("T")[0]}
                                                         onChange={(e) => {
                                                             if (e.target.value !== '') {
-                                                                const newDate = new Date(e.target.value).toISOString().split("T")[0];
+                                                                const newDate = new Date(e.target.value)
                                                                 setAttributes({ ...attributes, warrantyExpiration: newDate })
                                                             }
                                                         }} />
@@ -296,7 +312,7 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
                                                                 label="Don't Change"
                                                                 name='group2'
                                                                 type={'radio'}
-                                                                id={'inline-radio-4'}
+                                                                id={'inline-radio-5'}
                                                                 onClick={() => {
                                                                     setChangeIsTested(false);
                                                                 }}
@@ -336,6 +352,7 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
                                 <hr />
                                 <div>
                                     <BootstrapTable
+                                        ref={tableRef}
                                         key='inventory_table'
                                         keyField='serialNumber'
                                         data={inventoryTableList}

@@ -175,6 +175,12 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
             }
         },
     };
+
+    const quotedProductValidation = (quotedProducts: IQuotedProduct[]) => {
+
+
+    }
+
     const addQuotedProductToTable = () => {
         if (JSON.stringify(selectedProduct) === '{}') {
             setAlert({ ...alert, label: 'Please select a product.', show: true });
@@ -240,7 +246,7 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
                     const quote: IQuote = {
                         companyId: props.selectedCompany.id as number,
                         userId: 0,
-                        dateQuoted: new Date().toString(),
+                        dateQuoted: new Date(),
                         sold: false,
                         quotedProducts: quotedProductCopy,
                     };

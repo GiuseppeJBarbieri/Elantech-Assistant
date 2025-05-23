@@ -82,3 +82,11 @@ Log
         4. <DB>Validation
 
 Start Time: 2:07
+
+
+
+
+
+
+3/15
+ Need to figure out how to uncheck the the inventory table after editing
