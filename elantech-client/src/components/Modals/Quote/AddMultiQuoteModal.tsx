@@ -39,7 +39,7 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
     const [condition, setCondition] = useState('');
     const [quantity, setQuantity] = useState(0);
     const [price, setPrice] = useState(0);
-    const [comment] = useState('');
+    const [comment, setComment] = useState('');
 
     const rankFormatterRemove = (_: unknown, data: IQuotedProduct) => {
         return (
@@ -113,24 +113,24 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
             headerAlign: 'center',
         },
         {
-            dataField: 'Product.productNumber',
+            dataField: 'product.productNumber',
             text: 'Product Number',
             sort: true,
         },
         {
-            dataField: 'Product.productType',
+            dataField: 'product.productType',
             text: 'Type',
             sort: true,
             headerAlign: 'center',
         },
         {
-            dataField: 'Product.brand',
+            dataField: 'product.brand',
             text: 'Brand',
             sort: true,
             headerAlign: 'center',
         },
         {
-            dataField: 'Product.description',
+            dataField: 'product.description',
             text: 'Description',
             sort: false,
         },
@@ -142,6 +142,11 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
         {
             dataField: 'quotedPrice',
             text: 'Price',
+            sort: false,
+        },
+         {
+            dataField: 'comment',
+            text: 'Comment',
             sort: false,
         },
         {
@@ -182,6 +187,7 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
     }
 
     const addQuotedProductToTable = () => {
+        console.log('Selected Product:', selectedProduct);
         if (JSON.stringify(selectedProduct) === '{}') {
             setAlert({ ...alert, label: 'Please select a product.', show: true });
             setTimeout(() => setAlert({ ...alert, show: false }), 5000);
@@ -250,7 +256,7 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
                         sold: false,
                         quotedProducts: quotedProductCopy,
                     };
-                    
+
                     await requestAddQuote(quote);
                     setIsSaving(false);
                     props.getAllQuotes(props.selectedCompany.id as number);
@@ -287,6 +293,18 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
                             :
                             <Form className="container d-grid" >
                                 <CustomAlert label={alert.label} type={alert.type} showAlert={alert.show} />
+                                <Form.Group className="mb-3">
+                                    <Form.Label style={{ fontWeight: 300, fontSize: 18 }}>Company Information</Form.Label>
+                                    <hr />
+                                    <div className="container" style={{ display: 'inline-grid' }}>
+                                        <Form.Label style={{ fontWeight: 300 }}>Company Type: {props.selectedCompany.type}</Form.Label>
+                                        <Form.Label style={{ fontWeight: 300 }}>Company Name: {props.selectedCompany.name}</Form.Label>
+                                        <Form.Label style={{ fontWeight: 300 }}>Company Rep: {props.selectedCompany.representative}</Form.Label>
+                                        <Form.Label style={{ fontWeight: 300 }}>Phone Number: {props.selectedCompany.phone}</Form.Label>
+                                        <Form.Label style={{ fontWeight: 300 }}>Email: {props.selectedCompany.email}</Form.Label>
+                                    </div>
+                                </Form.Group>
+                                <hr />
                                 <Form.Group className="mb-3">
                                     <h3 style={{ fontWeight: 300 }}>Select Product</h3>
                                     <p style={{ fontWeight: 300 }}>
@@ -340,7 +358,19 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
                                                 }}
                                             />
                                         </div>
-                                        <div>
+                                        <div style={{ marginRight: 5 }}>
+                                            <Form.Label style={{ display: 'flex' }}>Comment</Form.Label>
+                                            <input type='text'
+                                                className="form-control custom-input"
+                                                placeholder="Comment"
+                                                style={{ width: 400 }}
+                                                value={comment}
+                                                onChange={(e) => {
+                                                    setComment(e.target.value);
+                                                }}
+                                            />
+                                        </div>
+                                        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
                                             <Button variant="dark"
                                                 onClick={() => {
                                                     // Add quoted product to list
