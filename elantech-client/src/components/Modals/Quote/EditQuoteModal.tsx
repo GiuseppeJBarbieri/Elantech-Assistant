@@ -31,7 +31,7 @@ const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) 
     const [condition, setCondition] = useState('');
     const [quantity, setQuantity] = useState(0);
     const [price, setPrice] = useState(0);
-    const [comment] = useState('');
+    const [comment, setComment] = useState('');
     const [products, setProducts] = useState<IProduct[]>([]);
     const [searchString] = useState<string>('');
     const [isSearching] = useState(false);
@@ -99,7 +99,7 @@ const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) 
             text: 'Condition',
         },
         {
-            dataField: 'Product.productNumber',
+            dataField: 'product.productNumber',
             text: 'Product Number',
             sort: true,
             style: {
@@ -107,7 +107,7 @@ const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) 
             }
         },
         {
-            dataField: 'Product.altNumber1',
+            dataField: 'product.altNumber1',
             text: 'Alt 1',
             sort: true,
             style: {
@@ -115,7 +115,7 @@ const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) 
             }
         },
         {
-            dataField: 'Product.altNumber2',
+            dataField: 'product.altNumber2',
             text: 'Alt 2',
             sort: true,
             style: {
@@ -123,7 +123,7 @@ const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) 
             }
         },
         {
-            dataField: 'Product.altNumber3',
+            dataField: 'product.altNumber3',
             text: 'Alt 3',
             sort: true,
             style: {
@@ -131,7 +131,7 @@ const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) 
             }
         },
         {
-            dataField: 'Product.altNumber4',
+            dataField: 'product.altNumber4',
             text: 'Alt 4',
             sort: true,
             style: {
@@ -139,7 +139,7 @@ const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) 
             }
         },
         {
-            dataField: 'Product.brand',
+            dataField: 'product.brand',
             text: 'Brand',
             sort: true,
             headerAlign: 'center',
@@ -148,7 +148,7 @@ const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) 
             }
         },
         {
-            dataField: 'Product.description',
+            dataField: 'product.description',
             text: 'Description',
             sort: false,
             style: {
@@ -236,7 +236,7 @@ const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) 
             setAlert({ ...alert, label: 'Please select a product.', show: true });
             setTimeout(() => setAlert({ ...alert, show: false }), 5000);
         }
-        else if (condition === '' || quantity === 0 || price === 0) {
+        else if (condition === '' || condition === 'Condition' || quantity === 0 || price === 0) {
             const errorMessage = JSON.stringify(selectedProduct) === '{}'
                 ? 'Please select a product.'
                 : condition === ''
@@ -423,7 +423,19 @@ const EditQuoteModalComponent: FunctionComponent<EditQuoteModalProps> = (props) 
                                                 }}
                                             />
                                         </div>
-                                        <div>
+                                        <div style={{ marginRight: 5 }}>
+                                            <Form.Label style={{ display: 'flex' }}>Comment</Form.Label>
+                                            <input type='text'
+                                                className="form-control custom-input"
+                                                placeholder="Comment"
+                                                style={{ width: 400 }}
+                                                value={comment}
+                                                onChange={(e) => {
+                                                    setComment(e.target.value);
+                                                }}
+                                            />
+                                        </div>
+                                        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
                                             <Button variant="dark"
                                                 onClick={() => {
                                                     // Add quoted product to list

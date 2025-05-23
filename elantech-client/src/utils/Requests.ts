@@ -76,7 +76,7 @@ export const requestDeleteQuote = async (id: number): Promise<any> => {
     return axios.delete(`${BASE_API_URL}${ROUTES.QUOTE}/${id}`, { withCredentials: true }).then((response) => response.data.payload[0]);
 }
 export const requestAllProductQuotesByQuoteId = async (quoteId: number): Promise<IQuotedProduct[]> => {
-    return axios.get(`${BASE_API_URL}${ROUTES.QUOTED_PRODUCTS}/${ROUTES.QUOTE}/${ROUTES.QUOTED_PRODUCTS}/${quoteId}`, { withCredentials: true }).then((response) => response.data.payload[0]);
+    return axios.get(`${BASE_API_URL}${ROUTES.QUOTED_PRODUCTS}/${ROUTES.QUOTE}/${quoteId}`, { withCredentials: true }).then((response) => response.data.payload[0]);
 }
 
 // QUOTED PRODUCTS

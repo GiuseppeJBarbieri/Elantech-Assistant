@@ -181,18 +181,13 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
         },
     };
 
-    const quotedProductValidation = (quotedProducts: IQuotedProduct[]) => {
-
-
-    }
-
     const addQuotedProductToTable = () => {
         console.log('Selected Product:', selectedProduct);
         if (JSON.stringify(selectedProduct) === '{}') {
             setAlert({ ...alert, label: 'Please select a product.', show: true });
             setTimeout(() => setAlert({ ...alert, show: false }), 5000);
         }
-        else if (condition === '' || quantity === 0 || price === 0) {
+        else if (condition === '' || condition === 'Condition' || quantity === 0 || price === 0) {
             const errorMessage = JSON.stringify(selectedProduct) === '{}'
                 ? 'Please select a product.'
                 : condition === ''

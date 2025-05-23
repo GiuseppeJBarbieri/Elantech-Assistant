@@ -215,8 +215,8 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
             <Modal backdrop="static" show={props.modalVisible} onHide={props.onClose} fullscreen={true}>
                 <Modal.Header style={{ background: '#212529', color: 'white', borderBottom: '1px solid rgb(61 66 70)' }} closeButton>
                     <Modal.Title>
-                        <h2 style={{ verticalAlign: '', fontWeight: 300 }} >View Quote</h2>
-                        <p style={{ color: 'darkgray', fontSize: 18, fontWeight: 300 }}>Quoted products from this quote IDK what to put here.</p>
+                        <h2 style={{ verticalAlign: '', fontWeight: 300 }} >View Quote Information</h2>
+                        <p style={{ color: 'darkgray', fontSize: 18, fontWeight: 300 }}>All details and products included in this quote are shown below for your review.</p>
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body style={{ background: '#2c3034', color: 'white' }}>

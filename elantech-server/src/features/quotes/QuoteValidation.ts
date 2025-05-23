@@ -72,6 +72,10 @@ export default {
         quotedPrice: Joi.number().required(),
         productCondition: Joi.string().optional().allow(null, ''),
         comment: Joi.string().optional().allow(null, ''),
+        // Internal sequelize columns
+        createdAt: Joi.string().optional(),
+        updatedAt: Joi.string().optional(),
+        deletedAt: Joi.string().optional().allow(null),
       })).required(),
     },
   },

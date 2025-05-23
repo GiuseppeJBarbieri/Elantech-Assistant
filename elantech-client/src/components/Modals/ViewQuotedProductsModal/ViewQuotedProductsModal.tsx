@@ -39,7 +39,7 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
             text: 'Condition',
         },
         {
-            dataField: 'Product.productNumber',
+            dataField: 'product.productNumber',
             text: 'Product Number',
             sort: true,
             style: {
@@ -47,7 +47,7 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
             }
         },
         {
-            dataField: 'Product.altNumber1',
+            dataField: 'product.altNumber1',
             text: 'Alt 1',
             sort: true,
             style: {
@@ -55,7 +55,7 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
             }
         },
         {
-            dataField: 'Product.altNumber2',
+            dataField: 'product.altNumber2',
             text: 'Alt 2',
             sort: true,
             style: {
@@ -63,7 +63,7 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
             }
         },
         {
-            dataField: 'Product.altNumber3',
+            dataField: 'product.altNumber3',
             text: 'Alt 3',
             sort: true,
             style: {
@@ -71,7 +71,7 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
             }
         },
         {
-            dataField: 'Product.altNumber4',
+            dataField: 'product.altNumber4',
             text: 'Alt 4',
             sort: true,
             style: {
@@ -79,7 +79,7 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
             }
         },
         {
-            dataField: 'Product.brand',
+            dataField: 'product.brand',
             text: 'Brand',
             sort: true,
             headerAlign: 'center',
@@ -88,7 +88,7 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
             }
         },
         {
-            dataField: 'Product.description',
+            dataField: 'product.description',
             text: 'Description',
             sort: false,
             style: {
@@ -105,7 +105,7 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
             try {
                 const quotedProducts = await requestAllProductQuotesByQuoteId(quoteId);
                 setQuotedProducts(quotedProducts);
-
+                console.log(quotedProducts);
                 let totalQuote = 0;
                 quotedProducts.forEach(element => {
                     totalQuote += element.quotedPrice;
@@ -126,8 +126,8 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
             <Modal backdrop="static" show={props.modalVisible} onHide={props.onClose} fullscreen={true}>
                 <Modal.Header style={{ background: '#212529', color: 'white', borderBottom: '1px solid rgb(61 66 70)' }} closeButton>
                     <Modal.Title>
-                        <h2 style={{ verticalAlign: '', fontWeight: 300 }} >View Quote</h2>
-                        <p style={{ color: 'darkgray', fontSize: 18, fontWeight: 300 }}>Quoted products from this quote IDK what to put here.</p>
+                        <h2 style={{ verticalAlign: '', fontWeight: 300 }} >View Quote Information</h2>
+                        <p style={{ color: 'darkgray', fontSize: 18, fontWeight: 300 }}>All details and products included in this quote are shown below for your review.</p>
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body style={{ background: '#2c3034', color: 'white' }}>
@@ -186,13 +186,13 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
                 </Modal.Body>
                 <Modal.Footer style={{ background: '#212529', color: 'white', borderTop: '1px solid rgb(61 66 70)', display: 'left' }}>
                     <div style={{ textAlign: 'center' }}>
-                        <Button
+                        {/* <Button
                             variant="dark"
                             onClick={async () => {
                                 console.log('');
                             }}>
                             Finish
-                        </Button>
+                        </Button> */}
                     </div>
                 </Modal.Footer>
             </Modal>

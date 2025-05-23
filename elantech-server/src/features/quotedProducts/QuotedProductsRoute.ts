@@ -20,7 +20,7 @@ const router = BaseRoute(QuotedProductsController, QuotedProductsValidation, TAG
  */
 router.get('/quote/:quoteId',
   authenticationMiddleware,
-  validate(QuoteValidation.Get),
+  validate(QuotedProductsValidation.GetQuotedProductByQuoteId),
   async (req, res, next) => {
     logger.info(`GET ${TAG} BY QUOTE ID`);
 
