@@ -1,6 +1,4 @@
 # Elantech-Inventory-Management
- 
-# Elantech Assistant
 
 Elantech Assistant is a full-stack inventory and quoting management system designed to streamline product, inventory, and quote workflows for businesses. It features a React frontend and a Python-based migration script for database operations.
 
