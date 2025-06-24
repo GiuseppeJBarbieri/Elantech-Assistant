@@ -11,6 +11,14 @@ Elantech Assistant is a full-stack inventory and quoting management system desig
 - Responsive UI with React and Bootstrap
 - RESTful API backend with authentication and session management
 
+![image](https://github.com/user-attachments/assets/9bbfe6d5-8dfe-49e2-acd1-22417d1292f1)
+![image](https://github.com/user-attachments/assets/2b66c345-8e94-4706-a1f5-13bb905ca496)
+![image](https://github.com/user-attachments/assets/c26c3edf-e03b-40d6-9411-86a6c54ad235)
+![image](https://github.com/user-attachments/assets/987207c8-0159-401c-948c-a3ca0653d5f8)
+![image](https://github.com/user-attachments/assets/150bee9f-7239-4722-9599-53cf3030d9fc)
+![image](https://github.com/user-attachments/assets/54373365-c17a-48bd-ab76-1b97637acbdc)
+
+
 ## Project Structure
 
 ```
