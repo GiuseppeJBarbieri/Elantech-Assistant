@@ -88,7 +88,7 @@ MigrationScript/         # Python scripts for data migration
 ## Technologies Used
 
 - **Frontend:** React, TypeScript, Bootstrap, react-bootstrap-table2
-- **Backend/Migration:** Python 3
+- **Backend/Migration:** Express, Sequalize, PostgreSQL, Python
 
 ## Contributing
 
