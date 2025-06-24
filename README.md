@@ -174,6 +174,9 @@ MigrationScript/         # Python scripts for data migration
 
 Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
 
+List of features to be completed:
+https://trello.com/b/ENUemrVV/elantech-management-system
+
 ## License
 
 This project is licensed under the MIT License.
