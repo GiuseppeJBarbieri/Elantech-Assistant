@@ -95,7 +95,7 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) 
         {
             dataField: 'orderType',
             text: 'Order Type',
-            sort: false,
+            sort: true,
         },
         {
             dataField: 'trackingNumber',
@@ -110,7 +110,7 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) 
         {
             dataField: 'dateReceived',
             text: 'Date Received',
-            sort: false,
+            sort: true,
         },
         {
             dataField: 'comment',
@@ -120,7 +120,7 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) 
         {
             dataField: 'completed',
             text: 'Completed',
-            sort: false,
+            sort: true,
         },
         {
             dataField: 'edit',

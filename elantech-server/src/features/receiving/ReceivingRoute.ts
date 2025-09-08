@@ -16,7 +16,7 @@ router.stack = router.stack.filter((layer) => !(layer.route
 ));
 
 /**
- * This route will add new quote
+ * This route will add new receiving order along with its received items.
  */
 router.post('/',
   authenticationMiddleware,

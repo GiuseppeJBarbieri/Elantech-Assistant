@@ -26,7 +26,7 @@ interface AddReceivingOrderModalProps extends RouteComponentProps, HTMLAttribute
 
 const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalProps> = ({ getAllReceiving, onClose }) => {
     const [unsavedModalVisible, setUnsavedModalVisible] = useState(false);
-	const [mainAlert, setMainAlert] = useState(defaultAlert);
+    const [mainAlert, setMainAlert] = useState(defaultAlert);
     const [productSectionAlert, setProductSectionAlert] = useState(defaultAlert);
     const [isSaving, setIsSaving] = useState(false);
     const [companyList, setCompanyList] = useState<ICompany[]>([]);
@@ -34,11 +34,11 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
     const [isSearching] = useState(false);
     const [searchCompanyString, setSearchCompanyString] = useState<string>('');
     const [searchProductString, setSearchProductString] = useState<string>('');
-    
+
     const [receivingOrderState, setReceivingOrderState] = useState<IReceiving>(defaultReceiving);
     const [receivedItemState, setReceivedItemState] = useState<IReceivedItem>(defaultReceivedItem);
     const [orderList, setOrderList] = useState<IReceivedItem[]>([]);
-    
+
     const [expanderState, setExpanderState] = useState({
         orderInfoExpander: true,
         sellerInfoExpander: false,
@@ -46,24 +46,25 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
         productsInOrderExpander: false,
     });
 
-    const rankFormatterRemove = (cell: any, row: any) => {
+    const rankFormatterRemove = (cell: any, row: IReceivedItem) => {
         return (
-          <div
-            style={{
-              textAlign: 'center',
-              cursor: 'pointer',
-              lineHeight: 'normal'
-            }}>
-            <div onClick={(e) => {
-              e.stopPropagation();
-
-              // TODO: Delete received item row from table and internal state
-              const indexToDelete: number = row.id;
-            }}
+            <div
+                style={{
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    lineHeight: 'normal'
+                }}
+                onClick={e => e.stopPropagation()}
             >
-              <Trash style={{ fontSize: 20, color: 'white' }} />
+                <div
+                    onClick={() => {
+                        // Only remove the item with the exact id
+                        setOrderList(prev => prev.filter(order => order.id === undefined ? true : order.id !== row.id));
+                    }}
+                >
+                    <Trash style={{ fontSize: 20, color: 'white' }} />
+                </div>
             </div>
-          </div>
         );
     };
 
@@ -233,7 +234,7 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
         mode: 'radio',
         clickToSelect: true,
         onSelect: (row: IProduct) => {
-            setReceivedItemState({ ...receivedItemState, productId: row.id as number, product: row});
+            setReceivedItemState({ ...receivedItemState, productId: row.id as number, product: row });
         },
     };
     const selectCompanyRow: SelectRowProps<ICompany> = {
@@ -268,13 +269,13 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
         // At least ONE product must be created
         if (orderList.length < 1) isEmpty = true;
 
-		if (isEmpty) {
-			setMainAlert({ ...mainAlert, label: 'Please enter required information.', show: true });
-			setTimeout(() => setMainAlert({ ...mainAlert, show: false }), 5000);
-			return false;
-		}
+        if (isEmpty) {
+            setMainAlert({ ...mainAlert, label: 'Please enter required information.', show: true });
+            setTimeout(() => setMainAlert({ ...mainAlert, show: false }), 5000);
+            return false;
+        }
 
-		return true;
+        return true;
     };
 
     const addProductToOrder = async () => {
@@ -288,48 +289,50 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
         // A product must be selected
         if (!receivedItemState.product?.id) isEmpty = true;
 
-		if (isEmpty) {
-			setProductSectionAlert({ ...mainAlert, label: 'Please enter required product information.', show: true });
-			setTimeout(() => setProductSectionAlert({ ...mainAlert, show: false }), 5000);
-			return;
-		}
-        
-        setReceivingOrderState({
-            ...receivingOrderState,
-            receivedItems: [...orderList, receivedItemState],
-        });
+        if (isEmpty) {
+            setProductSectionAlert({ ...mainAlert, label: 'Please enter required product information.', show: true });
+            setTimeout(() => setProductSectionAlert({ ...mainAlert, show: false }), 5000);
+            return;
+        }
 
         // Add item to orderList
-        setOrderList((prev) => [...prev, { ...receivedItemState, id: orderList.length }]);
-
+        orderList.push({ ...receivedItemState, id: Math.floor(Math.random() * 10000) });
+        setOrderList(JSON.parse(JSON.stringify(orderList)));
         // clear receivedState form
-        setReceivedItemState({...receivedItemState, quantity: 0, cud: '', comment: ''});
+        setReceivedItemState({ ...receivedItemState, quantity: 0, cud: '', comment: '' });
     };
 
-	const onSubmit = () => {
+    const onSubmit = () => {
         if (!validateForm()) return
-        
-		setIsSaving(true);
-		setTimeout(async () => {
-			try {
+
+        setIsSaving(true);
+        setTimeout(async () => {
+            try {
+                // Remove id from each item in orderList before saving
+                const receivedItems = orderList.map(({ id, ...rest }) => ({ ...rest }));
+                setReceivingOrderState({
+                    ...receivingOrderState,
+                    receivedItems,
+                });
+                
                 // Add receiving order into the database
-                await RequestAddReceivingOrder(receivingOrderState);
+                await RequestAddReceivingOrder({ ...receivingOrderState, receivedItems });
 
                 // Hide modal
                 setIsSaving(false);
 
                 // Refresh parent page
-				getAllReceiving();
+                getAllReceiving();
 
                 // Invoke given close event handler
-				onClose();
-			} catch (err) {
-				setMainAlert({ ...mainAlert, label: `${err}`, show: true });
-				setTimeout(() => setMainAlert({ ...mainAlert, show: false }), 3000);
-				setIsSaving(false);
-			}
-		}, 500);
-	};
+                onClose();
+            } catch (err) {
+                setMainAlert({ ...mainAlert, label: `${err}`, show: true });
+                setTimeout(() => setMainAlert({ ...mainAlert, show: false }), 3000);
+                setIsSaving(false);
+            }
+        }, 500);
+    };
 
     useEffect(() => {
         requestAllData();
@@ -351,11 +354,11 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
 
         // At least ONE product must be created
         if (orderList.length >= 1) changeDetected = true;
-        
+
         // Alert when form can not validate
         if (changeDetected) {
             setUnsavedModalVisible(true);
-			return;
+            return;
         }
 
         onClose();
@@ -629,7 +632,7 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
                                                                                 </Form.Group>
                                                                                 <Form.Group className="mb-4">
                                                                                     <Form.Control id="quantity" type="number" placeholder="Quantity"
-                                                                                    value={receivedItemState.quantity}
+                                                                                        value={receivedItemState.quantity}
                                                                                         onChange={(e) => {
                                                                                             setReceivedItemState({ ...receivedItemState, quantity: Number(e.target.value) });
                                                                                         }} />
@@ -737,8 +740,8 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
             {
                 unsavedModalVisible &&
                 <UnsavedChangesModal
-                    onLeave={() => {setUnsavedModalVisible(false); onClose && onClose(); }}
-                    onStay={() => {setUnsavedModalVisible(false)}}
+                    onLeave={() => { setUnsavedModalVisible(false); onClose && onClose(); }}
+                    onStay={() => { setUnsavedModalVisible(false) }}
                 />
             }
         </div>

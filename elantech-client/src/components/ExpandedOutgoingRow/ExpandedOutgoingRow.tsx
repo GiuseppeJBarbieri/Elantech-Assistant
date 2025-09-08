@@ -38,6 +38,7 @@ const ExpandedOutgoingRowComponent: FunctionComponent<ExpandedOutgoingRowProps> 
             </div>
         );
     };
+
     const column_inner: ColumnDescription<any, any>[] = [
         {
             dataField: 'quantity',
@@ -174,6 +175,8 @@ const ExpandedOutgoingRowComponent: FunctionComponent<ExpandedOutgoingRowProps> 
                 <div className='modal-dialog'>
                     <EditReceivedProductOrderModal
                         modalVisible={editProductSwitch}
+                        getAllReceivedItems={async () => { /* TODO: Implement */ }}
+                        selectedItem={{}} // TODO: Pass in selected
                         onClose={async () => {
                             setEditProductSwitch(false);
                         }}

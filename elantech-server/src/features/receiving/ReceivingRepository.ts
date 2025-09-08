@@ -19,7 +19,6 @@ const ReceivingRepository = {
 
   async Add(receiving: IReceiving): Promise<IReceiving> {
     let transaction: Transaction;
-
     try {
       transaction = await db.sequelize.transaction();
 
