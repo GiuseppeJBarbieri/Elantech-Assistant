@@ -61,7 +61,12 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
                     e.stopPropagation();
 
                     setSelectedItem(row);
-                    setEditProductModalVisible(true);
+                    if (row.finishedAdding === false) {
+                        // Alert user if attempting to edit a product that has not been marked as "added"
+                        setEditProductModalVisible(true);
+                    } else {
+                        alert('This item has already been marked as added and can no longer be edited.');
+                    }
                 }}
                 >
                     <Pencil style={{ fontSize: 20, color: 'white' }} />
@@ -84,7 +89,12 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
 
                     // Display confirmation modal for the received item being deleted -- `RemoveReceivedItemModal`
                     setSelectedItem(row);
-                    setRemoveProductModalVisible(true);
+                    if (row.finishedAdding === false) {
+                        // Alert user if attempting to edit a product that has not been marked as "added"
+                        setRemoveProductModalVisible(true);
+                    } else {
+                        alert('This item has already been marked as added and can no longer be deleted.');
+                    }
                 }}
             >
                 <Trash style={{ fontSize: 20, color: 'white' }} />
@@ -178,9 +188,9 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
             <Navbar bg="dark" variant="dark">
                 <Navbar.Brand>Received Products</Navbar.Brand>
                 <Nav className="me-auto" style={{ marginBottom: -3 }}>
-                    {/* <Nav.Link onClick={() => {
+                    <Nav.Link onClick={() => {
                         setAddProductSwitch(true);
-                    }}>Add Product</Nav.Link> */}
+                    }}>Add Product</Nav.Link>
                 </Nav>
             </Navbar>
             <hr />
@@ -238,10 +248,12 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
                 <div className='modal-dialog'>
                     {/* <AddInventoryModal
                         modalVisible={addInventorySwitch}
+                        selectedProduct={props.selectedProduct}
+                        getAllInventory={getAllInventory}
                         onClose={async () => {
                             setAddInventorySwitch(false);
-                            // if it was added
-                            // set to added for product
+                            
+                            getAllInventory(props.selectedProduct.id as number);
                         }}
                     /> */}
                 </div>
@@ -250,11 +262,11 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
                 addProductSwitch &&
                 <div className='modal-dialog'>
                     <ReceivingAddProductModal
+                        receivingOrder={receiving}
+                        getAllReceiving={getAllReceiving}
                         modalVisible={addProductSwitch}
                         onClose={async () => {
                             setAddProductSwitch(false);
-                            // if it was added
-                            // set to added for product
                         }}
                     />
                 </div>

@@ -314,7 +314,7 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
                     ...receivingOrderState,
                     receivedItems,
                 });
-                
+
                 // Add receiving order into the database
                 await RequestAddReceivingOrder({ ...receivingOrderState, receivedItems });
 
@@ -511,7 +511,6 @@ const AddReceivingOrderModalComponent: FunctionComponent<AddReceivingOrderModalP
                                     </div>
                                     <Collapse in={expanderState.sellerInfoExpander}>
                                         <Container>
-                                            {/* TODO Search Functionality of Quote Table */}
                                             <p
                                                 style={{ fontWeight: 300 }}
                                             >

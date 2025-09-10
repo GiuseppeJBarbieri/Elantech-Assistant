@@ -10,6 +10,7 @@ interface IReceiving {
     dateReceived: Date;
     shippedVia: string;
     comment: string;
+    completed?: boolean;
     company?: {
         name: string,
     },

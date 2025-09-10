@@ -36,6 +36,28 @@ router.post('/', authenticationMiddleware, validate(ReceivedItemValidation.Post)
   });
 
 /**
+ * This route will add multiple ReceivedItems
+ * @route POST /multiple
+ * @group ReceivedItem Table
+ * @param {Array.<IReceivedItem>} body.body.required - Array of ReceivedItem objects
+ * @returns {Array.<number>} 201 - An array of ReceivedItem ids
+ * @returns {Error}  default - Unexpected error
+ */
+router.post('/multiple',
+  authenticationMiddleware,
+  validate(ReceivedItemValidation.PostMultiple),
+  async (req, res, next) => {
+    logger.info(`POST MULTIPLE ${TAG}`);
+    ReceivedItemController.AddMultiple(req.body)
+      .then((response) => {
+        res.status(201).json(response);
+      })
+      .catch((err) => {
+        next(err);
+      });
+  });
+
+/**
 * This route will fetch a ReceivedItem by receiving id
 * @route GET /receiving/{id}
 * @group ReceivedItem Table

@@ -33,6 +33,19 @@ export default {
     },
   },
 
+  PostMultiple: {
+    body: Joi.array().items(Joi.object({
+      comment: Joi.string().optional().allow(null, ''),
+      cud: Joi.string().required(),
+      finishedAdding: Joi.boolean().required(),
+      id: Joi.number().optional().allow(null, ''),
+      product: Joi.object().optional().allow(null, ''),
+      productId: Joi.number().required(),
+      quantity: Joi.number().min(0).required(),
+      receivingId: Joi.number().required(),
+    })),
+  },
+
   Put: {
     body: {
       id: Joi.number().optional().allow(null, ''),

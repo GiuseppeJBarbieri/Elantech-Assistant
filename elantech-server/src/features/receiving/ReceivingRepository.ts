@@ -1,4 +1,4 @@
-import { Transaction } from 'sequelize';
+import { Transaction, Sequelize } from 'sequelize';
 import db from '../../models';
 import logger from '../../utils/logging/Logger';
 import IRepoError from '../../utils/interfaces/IRepoError';
@@ -54,7 +54,27 @@ const ReceivingRepository = {
 
   async GetAll(): Promise<IReceiving[]> {
     try {
+      // This subquery will ensure that we only return `receiving` records
+      // where there are no associated `receivedItem` records having `finishedAdding` as false.
+      // This effectively means all `receivedItems` for a `receiving` must have `finishedAdding: true`.
+      // It also correctly handles cases where a `receiving` has no `receivedItems`.
       return await db.receiving.findAll({
+        attributes: {
+          include: [
+            [
+              Sequelize.literal(`(
+            NOT EXISTS (
+            SELECT 1
+            FROM "receivedItems" AS "item"
+            WHERE
+              "item"."finishedAdding" = false
+              AND "item"."receivingId" = "receiving"."id"
+          )
+        )`),
+              'completed',
+            ],
+          ],
+        },
         include: [
           {
             model: db.company,
@@ -67,10 +87,8 @@ const ReceivingRepository = {
             attributes: ['firstName', 'lastName'],
             required: false,
             as: 'user',
-          }],
-        // order: [
-        //   ['id', 'ASC'],
-        // ],
+          },
+        ],
       }) as IReceiving[];
     } catch (err) {
       const repoError = { ...repoErr, message: err.message };
