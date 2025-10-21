@@ -79,6 +79,21 @@ router.put('/multiple',
       .catch((err) => next(err));
   });
 
+router.post('/receiving/multiple',
+  authenticationMiddleware,
+  validate(InventoryValidation.PutReceivingMultiple),
+  async (req, res, next) => {
+    logger.info(`PUT RECEIVING MULTIPLE ${TAG}`);
+    const receivedItemId: number = req.body?.receivedItemId;
+    delete req.body.receivedItemId;
+    const inventoryList: IInventory[] = req.body.inventory;
+    InventoryController.EditReceivingMultiple(inventoryList, receivedItemId)
+      .then((response) => {
+        res.status(201).json(response);
+      })
+      .catch((err) => next(err));
+  });
+
 /**
  * This route will soft remove inventory
  * @route DELETE /removal

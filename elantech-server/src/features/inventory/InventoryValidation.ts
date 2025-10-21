@@ -90,6 +90,28 @@ export default {
     })),
   },
 
+  PutReceivingMultiple: {
+    body: Joi.object({
+      inventory: Joi.array().items(Joi.object({
+        id: Joi.number(),
+        productId: Joi.number().required(),
+        removedInventoryId: Joi.number().allow(null, ''),
+        purchaseOrderId: Joi.number().optional().allow(null, ''),
+        serialNumber: Joi.string().optional().allow(null, ''),
+        condition: Joi.string().required(),
+        warrantyExpiration: Joi.date(),
+        tested: Joi.boolean().required(),
+        testedDate: Joi.date().optional().allow(null, ''),
+        comment: Joi.string().optional().allow(null, ''),
+        location: Joi.string().optional().allow(null, ''),
+        reserved: Joi.boolean().optional().allow(null, ''),
+        removedInventory: Joi.object().optional().allow(null, ''),
+        receiving: Joi.object().optional().allow(null, ''),
+      })),
+      receivedItemId: Joi.number().required(),
+    }),
+  },
+
   Delete: {
     data: Joi.array().items(Joi.object({
       id: Joi.number(),

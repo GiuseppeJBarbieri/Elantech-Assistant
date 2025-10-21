@@ -55,6 +55,16 @@ const InventoryController = {
     }
   },
 
+  async EditReceivingMultiple(inventory: IInventory[], receivedItemId: number): Promise<IHTTPResponse> {
+    try {
+      return {
+        ...constants.HTTP.SUCCESS.UPDATE,
+        payload: [await InventoryRepository.EditReceivingMultiple(inventory, receivedItemId)],
+      };
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  },
   /**
   * This function will edit multiple inventory
   * @param inventory

@@ -4,6 +4,7 @@ import logger from '../../utils/logging/Logger';
 import IRepoError from '../../utils/interfaces/IRepoError';
 import IInventory from './IInventory';
 import IRemovedInventory from '../removedInventory/IRemovedInventory';
+import { log } from 'console';
 
 /// /////////////////
 /// / INTERNALS /////
@@ -138,6 +139,48 @@ export default {
       });
       await transaction.commit();
       return Promise.resolve(inventoryList);
+    } catch (err) {
+      await transaction.rollback();
+      const repoError = { ...repoErr, message: err.message };
+      logger.warn(repoError);
+      throw repoError;
+    }
+  },
+  async EditReceivingMultiple(inventoryList: IInventory[], receivedItemId: number): Promise<IInventory[]> {
+    const transaction: Transaction = await db.sequelize.transaction();
+    try {
+      let numOfInventory = await db.inventory.count({
+        where: {
+          productId: inventoryList[0].productId,
+        },
+      });
+
+      numOfInventory += inventoryList.length;
+
+      const list = await db.inventory.bulkCreate(inventoryList, { transaction });
+
+      await db.product.update(
+        { quantity: numOfInventory },
+        {
+          where: {
+            id: inventoryList[0].productId,
+          },
+        },
+        { transaction },
+      );
+      db.receivedItem.update(
+        { finishedAdding: true },
+        {
+          where: {
+            id: receivedItemId,
+          },
+        },
+        { transaction },
+      );
+
+      await transaction.commit();
+
+      return Promise.resolve(list);
     } catch (err) {
       await transaction.rollback();
       const repoError = { ...repoErr, message: err.message };

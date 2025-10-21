@@ -13,6 +13,7 @@ import { requestAllReceivedItems } from '../../utils/Requests';
 import IReceiving from '../../types/IReceiving';
 import { RemoveReceivedItemModal } from '../Modals/Receiving/RemoveReceivedItemModal';
 import { RemoveReceivingOrderModal } from '../Modals/Receiving/RemoveReceivingOrderModal';
+import { AddProductFromReceivingModal } from '../Modals/Receiving/AddProductFromReceivingModal';
 
 interface ExpandedReceivingRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     receiving: IReceiving;
@@ -27,8 +28,7 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
     const [editProductModalVisible, setEditProductModalVisible] = useState(false);
     const [removeProductModalVisible, setRemoveProductModalVisible] = useState<boolean>(false);
     const [removeOrderModalVisible, setRemoveOrderModalVisible] = useState<boolean>(false);
-
-    const rankFormatterAdd = () => {
+    const rankFormatterAdd = (cell: any, row: any) => {
         return (
             <div
                 style={{
@@ -41,7 +41,12 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
                 }}>
                 <div onClick={() => {
                     // add 3rd switch for adding inventory from here
-                    setAddInventorySwitch(true);
+                    if (row.finishedAdding === false) {
+                        setSelectedItem(row);
+                        setAddInventorySwitch(true);
+                    } else {
+                        alert('This item has already been marked as added to inventory.');
+                    }
                 }}>
                     <Plus style={{ fontSize: 20, color: 'white' }} />
                 </div>
@@ -246,16 +251,15 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
             {
                 addInventorySwitch &&
                 <div className='modal-dialog'>
-                    {/* <AddInventoryModal
+                    <AddProductFromReceivingModal
                         modalVisible={addInventorySwitch}
-                        selectedProduct={props.selectedProduct}
-                        getAllInventory={getAllInventory}
+                        receivedItems={selectedItem as IReceivedItem}
+                        receivedOrder={receiving}
+                        generateSkuSwitch={true}
                         onClose={async () => {
                             setAddInventorySwitch(false);
-                            
-                            getAllInventory(props.selectedProduct.id as number);
                         }}
-                    /> */}
+                    />
                 </div>
             }
             {
