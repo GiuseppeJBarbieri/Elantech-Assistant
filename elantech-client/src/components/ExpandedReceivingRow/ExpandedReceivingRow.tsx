@@ -256,6 +256,7 @@ const ExpandedReceivingRowComponent: FunctionComponent<ExpandedReceivingRowProps
                         receivedItems={selectedItem as IReceivedItem}
                         receivedOrder={receiving}
                         generateSkuSwitch={true}
+                        getAllReceiving={getAllReceiving}
                         onClose={async () => {
                             setAddInventorySwitch(false);
                         }}

@@ -16,6 +16,7 @@ interface AddProductFromReceivingModalProps extends RouteComponentProps, HTMLAtt
     receivedOrder: IReceiving;
     receivedItems: IReceivedItem;
     generateSkuSwitch: boolean;
+    getAllReceiving: () => void
 }
 const AddProductFromReceivingModalComponent: FunctionComponent<AddProductFromReceivingModalProps> = (props) => {
     const [alert, setAlert] = useState(defaultAlert);
@@ -45,6 +46,7 @@ const AddProductFromReceivingModalComponent: FunctionComponent<AddProductFromRec
             try {
                 await requestAddMultipleInventoryReceiving(tmpList, props.receivedItems.id || 0);
                 setIsSaving(false);
+                props.getAllReceiving();
                 props.onClose();
             } catch (err) {
                 setAlert({ ...alert, label: `${err}`, show: true });
