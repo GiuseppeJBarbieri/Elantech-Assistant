@@ -4,6 +4,7 @@ import BaseRepository from '../BaseRepository';
 import IProduct from './IProduct';
 import logger from '../../utils/logging/Logger';
 import IRepoError from '../../utils/interfaces/IRepoError';
+import EventBus from '../../utils/EventBus';
 
 const repoErr: IRepoError = {
   location: 'ProductRepository',
@@ -11,7 +12,7 @@ const repoErr: IRepoError = {
 };
 
 const ProductRepository = {
-  ...BaseRepository(db.product, repoErr),
+  ...BaseRepository(db.product, repoErr, 'product'),
 
   /**
    * This function will find one product by it's product number
@@ -59,6 +60,14 @@ const ProductRepository = {
         transaction,
       });
       const resolution = transaction.commit();
+      // Emit event after successful deletion
+
+      EventBus.emit('product.updated', {
+        action: 'delete',
+        ids: [id],
+        timestamp: Date.now(),
+      });
+
       return resolution;
     } catch (err) {
       const repoError = { ...repoErr, message: err.message };

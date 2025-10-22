@@ -1,5 +1,8 @@
 import { Express } from 'express';
 
+import { Server as IOServer, Socket } from 'socket.io';
+import http from 'http';
+
 // Library imports
 import * as rateLimit from 'express-rate-limit';
 import * as bodyParser from 'body-parser';
@@ -10,6 +13,7 @@ import upload from 'express-fileupload';
 
 // Application imports
 import cors from 'cors';
+import EventBus from './utils/EventBus';
 import config from './config/index';
 import logger from './utils/logging/Logger';
 import router from './Routes';
@@ -22,8 +26,73 @@ const DB_PARAMS = config.db;
 export default class Server {
   private app: Express;
 
+  private io: IOServer | null = null;
+
+  private httpServer: http.Server | null = null;
+
   constructor(app: Express) {
     this.app = app;
+  }
+
+  private setupSocketIO(): void {
+    if (!this.httpServer) {
+      throw new Error('HTTP Server must be created before Socket.IO setup');
+    }
+
+    this.io = new IOServer(this.httpServer, {
+      cors: {
+        origin: 'http://localhost:3000',
+        methods: ['GET', 'POST'],
+        credentials: true,
+      },
+    });
+
+    this.registerSocketEvents();
+    this.subscribeToEventBus();
+
+    logger.info('Socket.IO server configured successfully');
+  }
+
+  private registerSocketEvents(): void {
+    if (!this.io) return;
+
+    this.io.on('connection', (socket: Socket) => {
+      logger.info(`Client connected with ID: ${socket.id}`);
+
+      socket.on('disconnect', (reason) => {
+        logger.info(`Client ${socket.id} disconnected: ${reason}`);
+      });
+
+      socket.on('join-room', (room: string) => {
+        socket.join(room);
+        logger.info(`Client ${socket.id} joined room: ${room}`);
+      });
+    });
+  }
+
+  private subscribeToEventBus(): void {
+    EventBus.on('products.updated', (data) => {
+      this.broadcastToClients('products.updated', data);
+    });
+
+    EventBus.on('quotes.updated', (data) => {
+      this.broadcastToClients('quotes.updated', data);
+    });
+
+    EventBus.on('inventory.updated', (data) => {
+      this.broadcastToClients('inventory.updated', data);
+    });
+  }
+
+  private broadcastToClients(event: string, data: any): void {
+    if (this.io) {
+      this.io.emit(event, data);
+      logger.info(`Broadcasting ${event} to all connected clients`);
+    }
+  }
+
+  public getIOInstance(): IOServer | null {
+    return this.io;
   }
 
   public async start(): Promise<void> {
@@ -155,6 +224,9 @@ export default class Server {
     // =============================================================================================== //
     // start the server
     try {
+      this.httpServer = http.createServer(this.app);
+      this.setupSocketIO();
+
       this.app.listen(config.app.PORT, () => {
         logger.info(
           `****************************** Server Listening on Port:${config.app.PORT} ******************************`,

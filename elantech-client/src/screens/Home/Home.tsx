@@ -21,6 +21,7 @@ import IProduct from '../../types/IProduct';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import './Home.css';
+import SocketService from '../../utils/SocketService';
 
 interface HomeProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
   loggedIn: boolean;
@@ -184,6 +185,27 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
   };
   useEffect(() => {
     getAllProducts();
+
+    // Listen for real-time updates
+    const handleProductsUpdated = (payload: any) => {
+      console.log('Products updated:', payload);
+      // Simple approach: refetch all products
+      getAllProducts();
+
+      // Alternative: update specific items based on payload.ids
+      // if (payload.action === 'update') {
+      //   setProducts(prev => prev.map(product => 
+      //     payload.ids.includes(product.id) ? { ...product, ...payload.data } : product
+      //   ));
+      // }
+    };
+
+    SocketService.on('products.updated', handleProductsUpdated);
+
+    // Cleanup listener on unmount
+    return () => {
+      SocketService.off('products.updated', handleProductsUpdated);
+    };
   }, []);
   return (
     <section className="text-white main-section overflow-auto">
