@@ -6,16 +6,16 @@ import { ThreeDots } from 'react-bootstrap-icons';
 import BootstrapTable, { ColumnDescription } from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { EditReceivedProductOrderModal } from '../Modals/Receiving/EditReceivedProductOrderModal';
-import { ReceivingAddProductModal } from '../Modals/Receiving/ReceivingAddProductModal';
+// import { EditReceivedProductOrderModal } from '../Modals/Receiving/EditReceivedProductOrderModal';
+// import { ReceivingAddProductModal } from '../Modals/Receiving/ReceivingAddProductModal';
 
 interface ExpandedOutgoingRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
 }
 
 const ExpandedOutgoingRowComponent: FunctionComponent<ExpandedOutgoingRowProps> = (_props) => {
-    const [editProductSwitch, setEditProductSwitch] = useState(false);
+    // const [editProductSwitch, setEditProductSwitch] = useState(false);
     const [addInventorySwitch] = useState(false);
-    const [addProductSwitch, setAddProductSwitch] = useState(false);
+    // const [setAddProductSwitch] = useState(false);e
 
     const rankFormatterViewMore = (_: any, _data: any, _index: any) => {
         return (
@@ -129,7 +129,7 @@ const ExpandedOutgoingRowComponent: FunctionComponent<ExpandedOutgoingRowProps> 
                 <Navbar.Brand>Products in Order</Navbar.Brand>
                 <Nav className="me-auto" style={{ marginBottom: -3 }}>
                     <Nav.Link onClick={() => {
-                        setAddProductSwitch(true);
+                        // setAddProductSwitch(true);
                     }}>Add Product</Nav.Link>
                 </Nav>
             </Navbar>
@@ -171,17 +171,17 @@ const ExpandedOutgoingRowComponent: FunctionComponent<ExpandedOutgoingRowProps> 
             </div>
             <hr />
             {
-                editProductSwitch &&
-                <div className='modal-dialog'>
-                    <EditReceivedProductOrderModal
-                        modalVisible={editProductSwitch}
-                        getAllReceivedItems={async () => { /* TODO: Implement */ }}
-                        selectedItem={{}} // TODO: Pass in selected
-                        onClose={async () => {
-                            setEditProductSwitch(false);
-                        }}
-                    />
-                </div>
+                // editProductSwitch &&
+                // <div className='modal-dialog'>
+                //     <EditReceivedProductOrderModal
+                //         modalVisible={editProductSwitch}
+                //         getAllReceivedItems={async () => { /* TODO: Implement */ }}
+                //         // selectedItem={{}} // TODO: Pass in selected
+                //         onClose={async () => {
+                //             setEditProductSwitch(false);
+                //         }}
+                //     />
+                // </div>
             }
             {
                 addInventorySwitch &&
@@ -195,15 +195,15 @@ const ExpandedOutgoingRowComponent: FunctionComponent<ExpandedOutgoingRowProps> 
                 </div>
             }
             {
-                addProductSwitch &&
-                <div className='modal-dialog'>
-                    <ReceivingAddProductModal
-                        modalVisible={addProductSwitch}
-                        onClose={async () => {
-                            setAddProductSwitch(false);
-                        }}
-                    />
-                </div>
+                // addProductSwitch &&
+                // <div className='modal-dialog'>
+                //     <ReceivingAddProductModal
+                //         modalVisible={addProductSwitch}
+                //         onClose={async () => {
+                //             setAddProductSwitch(false);
+                //         }}
+                //     />
+                // </div>
             }
         </ div>
     );

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { HTMLAttributes, FunctionComponent, useEffect } from 'react';
 import { useState } from 'react';
-import { Modal, Spinner, Form, Button, Col, Row } from 'react-bootstrap';
+import { Modal, Spinner, Form, Col, Row } from 'react-bootstrap';
 import BootstrapTable, { ColumnDescription } from 'react-bootstrap-table-next';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import ICompany from '../../../types/ICompany';

@@ -10,10 +10,10 @@ import { DebounceInput } from 'react-debounce-input';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { CustomAlert } from '../../Alerts/CustomAlert';
 import { SpinnerBlock } from '../../LoadingAnimation/SpinnerBlock';
-import { defaultAlert, defaultReceivedItem, defaultReceiving } from '../../../constants/Defaults';
+import { defaultAlert, defaultReceivedItem } from '../../../constants/Defaults';
 import IProduct from '../../../types/IProduct';
 import IReceivedItem from '../../../types/IReceivedItem';
-import { requestAddReceivedItems, RequestAddReceivingOrder, requestAllProducts } from '../../../utils/Requests';
+import { requestAddReceivedItems, requestAllProducts } from '../../../utils/Requests';
 import IReceiving from '../../../types/IReceiving';
 
 interface ReceivingAddProductModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {

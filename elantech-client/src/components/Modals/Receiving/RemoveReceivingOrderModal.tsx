@@ -4,7 +4,7 @@ import { Modal, Spinner, Form, Button } from 'react-bootstrap';
 import { defaultAlert } from '../../../constants/Defaults';
 import { CustomAlert } from '../../Alerts/CustomAlert';
 import IReceiving from '../../../types/IReceiving';
-import { RequestDeleteReceivingOrder, requestRemoveReceivedItem } from '../../../utils/Requests';
+import { RequestDeleteReceivingOrder } from '../../../utils/Requests';
 
 interface RemoveReceivingOrderModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     selectedReceiving: IReceiving;
