@@ -6,7 +6,7 @@ import EventBus from '../utils/EventBus';
  * This is a base repository which will be extended by other repositories
  * @param dbModel - database model
  */
-const BaseRepository = (dbModel: any, repoErr: IRepoError, entityName: string) => ({
+const BaseRepository = (dbModel: any, repoErr: IRepoError, entityName?: string) => ({
   /**
    * This function will add new record
    * @param object

@@ -71,8 +71,8 @@ export default class Server {
   }
 
   private subscribeToEventBus(): void {
-    EventBus.on('products.updated', (data) => {
-      this.broadcastToClients('products.updated', data);
+    EventBus.on('product.updated', (data) => {
+      this.broadcastToClients('product.updated', data);
     });
 
     EventBus.on('quotes.updated', (data) => {
@@ -227,7 +227,7 @@ export default class Server {
       this.httpServer = http.createServer(this.app);
       this.setupSocketIO();
 
-      this.app.listen(config.app.PORT, () => {
+      this.httpServer.listen(config.app.PORT, () => {
         logger.info(
           `****************************** Server Listening on Port:${config.app.PORT} ******************************`,
         );

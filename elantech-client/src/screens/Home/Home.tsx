@@ -186,6 +186,9 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
   useEffect(() => {
     getAllProducts();
 
+    // Establish the socket connection
+    SocketService.connect();
+
     // Listen for real-time updates
     const handleProductsUpdated = (payload: any) => {
       console.log('Products updated:', payload);
@@ -200,11 +203,11 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
       // }
     };
 
-    SocketService.on('products.updated', handleProductsUpdated);
+    SocketService.on('product.updated', handleProductsUpdated);
 
     // Cleanup listener on unmount
     return () => {
-      SocketService.off('products.updated', handleProductsUpdated);
+      SocketService.off('product.updated', handleProductsUpdated);
     };
   }, []);
   return (
