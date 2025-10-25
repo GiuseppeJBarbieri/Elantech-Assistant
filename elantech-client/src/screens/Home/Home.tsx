@@ -146,14 +146,6 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
       setSearchHistory(newHistory);
     }
   };
-  const logout = async () => {
-    const response = await requestLogout();
-    if (response.status === 200) {
-      history.replace(PAGE_ROUTES.LOGIN);
-      clearCookie();
-      setLoggedIn(false);
-    }
-  };
   const customTotal = (from: number, to: number, size: number) => {
     return (
       <span className='react-bootstrap-table-pagination-total pagination-total'>
@@ -168,7 +160,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
     <section className='text-white main-section overflow-auto'>
       <div className='home-container'>
         <CustomAlert label={alert.label} type={alert.type} showAlert={alert.show} />
-        <TopHomeBar logout={logout} setAddProductSwitch={() => setActiveModal(ModalType.ADD)} />
+        <TopHomeBar setAddProductSwitch={() => setActiveModal(ModalType.ADD)} />
         <hr />
         <div>
           <ToolkitProvider

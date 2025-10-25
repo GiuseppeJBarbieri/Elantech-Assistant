@@ -13,11 +13,10 @@ export const UseProducts = () => {
       const fetchedProducts = await requestAllProducts();
       setProducts(fetchedProducts);
     } catch (error) {
-      console.error("Failed to fetch products:", error);
       setAlert({ ...alert, label: `${error}`, show: true });
       setTimeout(() => setAlert({ ...alert, show: false }), 3000);
     } finally {
-      setAlert({ ...alert, label: 'Table has been updated', show: true });
+      setAlert({ ...alert, label: 'Table has been updated', type: 'success', show: true });
       setTimeout(() => setAlert({ ...alert, show: false }), 3000);
     }
   }, []);
