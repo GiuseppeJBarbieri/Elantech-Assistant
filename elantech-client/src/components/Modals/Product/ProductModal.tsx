@@ -13,8 +13,8 @@ interface ProductModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivE
     modalVisible: boolean;
     selectedProduct: IProduct;
     modalSwitch: number;
-    getAllProducts: () => void;
-    onClose: () => Promise<void>;
+    onClose: () => void;
+    onSuccess?: () => void;
 }
 
 const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
@@ -32,7 +32,7 @@ const ProductModalComponent: FunctionComponent<ProductModalProps> = (props) => {
                     :
                     await requestUpdateProduct(productObj);
                 setIsSaving(false);
-                props.getAllProducts();
+                props.onSuccess && props.onSuccess();
                 props.onClose();
             } catch (err) {
                 setAlert({ ...alert, label: `${err}`, show: true });

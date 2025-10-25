@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { FunctionComponent, HTMLAttributes, useState } from 'react';
+import { FunctionComponent, HTMLAttributes, useRef, useState } from 'react';
 import { Navbar, Nav, Button, Collapse } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
@@ -17,9 +17,11 @@ import { AddOrEditOrderModal } from '../Modals/Inventory/AddOrEditOrderModal';
 
 interface ExpandedProductRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     selectedProduct: IProduct;
-    getAllProducts: () => void;
+    refetchProducts: () => void;
 }
 const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = (props) => {
+    const inventoryTimeout = useRef<NodeJS.Timeout>();
+    const quotesTimeout = useRef<NodeJS.Timeout>();
     const [openState, setOpenState] = useState(false);
     const [addInventorySwitch, setAddInventorySwitch] = useState(false);
     const [showHasOrderAlert, setShowHasOrderAlert] = useState(false);
@@ -82,7 +84,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
         totalSize: quoteProductsList.length
     };
     const getAllInventory = (productId: number) => {
-        setTimeout(async () => {
+        inventoryTimeout.current = setTimeout(async () => {
             try {
                 const inventoryList = await requestAllInventoryByProductID(productId);
                 setInventory(inventoryList);
@@ -93,7 +95,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
         }, 400)
     };
     const getAllQuotedProducts = async (productId: number) => {
-        setTimeout(async () => {
+        quotesTimeout.current = setTimeout(async () => {
             try {
                 const request = await requestAllQuotedProductsByProductId(productId);
                 setQuotedProductsList(request);
@@ -169,7 +171,13 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
             getAllInventory(props.selectedProduct.id);
             getAllQuotedProducts(props.selectedProduct.id);
         }
-    }, []);
+
+        return () => {
+            // Clear timeouts when the component unmounts
+            inventoryTimeout.current && clearTimeout(inventoryTimeout.current);
+            quotesTimeout.current && clearTimeout(quotesTimeout.current);
+        }
+    }, [props.selectedProduct.id]);
     return (
         <div style={{ padding: 20 }} className='expandedProductRow'>
             <Navbar bg="dark" variant="dark">
@@ -292,8 +300,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                                 <InventoryTable
                                     inventory={inventory}
                                     selectedProduct={props.selectedProduct}
-                                    getAllInventory={getAllInventory}
-                                    getAllProducts={props.getAllProducts}
+                                    onInventoryUpdate={getAllInventory}
                                 />
                             </div>
                         </Collapse>
@@ -358,11 +365,11 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                     <AddInventoryModal
                         modalVisible={addInventorySwitch}
                         selectedProduct={props.selectedProduct}
-                        getAllInventory={getAllInventory}
+                        onSuccess={() => {
+                            props.refetchProducts();
+                        }}
                         onClose={async () => {
                             setAddInventorySwitch(false);
-                            props.getAllProducts();
-                            getAllInventory(props.selectedProduct.id as number);
                         }}
                     />
                 </div>

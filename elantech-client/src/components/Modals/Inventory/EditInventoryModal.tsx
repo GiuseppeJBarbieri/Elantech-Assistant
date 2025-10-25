@@ -12,9 +12,9 @@ import { requestUpdateInventory } from '../../../utils/Requests';
 
 interface EditInventoryModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
+    onSuccess: () => void;
     selectedInventory: IInventory;
     modalVisible: boolean;
-    getAllInventory: (productId: number) => void
     selectedProduct: IProduct;
 }
 
@@ -52,8 +52,7 @@ const EditInventoryComponent: FunctionComponent<EditInventoryModalProps> = (prop
                     setIsSaving(false);
                 } else {
                     await requestUpdateInventory(inventoryObj);
-                    setIsSaving(false);
-                    props.getAllInventory(props.selectedProduct.id as number)
+                    props.onSuccess();
                     props.onClose();
 
                 }

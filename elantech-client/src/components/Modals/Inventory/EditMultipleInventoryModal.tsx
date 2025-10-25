@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { HTMLAttributes, FunctionComponent, useEffect } from 'react';
 import { useState } from 'react';
 import { Modal, Form, Button, InputGroup } from 'react-bootstrap';
@@ -15,9 +13,8 @@ import { SpinnerBlock } from '../../LoadingAnimation/SpinnerBlock';
 interface EditMultipleInventoryModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     selectedInventory: IInventory[];
     onClose: () => Promise<void>;
+    onSuccess: () => void;
     modalVisible: boolean;
-    getAllInventory: (productId: number) => void
-    getAllProducts: () => void
     selectedProduct: IProduct;
 }
 
@@ -216,6 +213,7 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
                 setIsSaving(false);
                 return;
             }
+            props.onSuccess();
             props.onClose();
         }, 500)
     }

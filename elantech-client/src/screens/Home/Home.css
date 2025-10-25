@@ -57,7 +57,7 @@ td {
   border-bottom-left-radius: 0;
   position: relative;
   flex: 1 1 auto;
-  width: 1%;
+  width: 5%;
   min-width: 0;
 }
 .sr-only {
@@ -66,4 +66,35 @@ td {
 
 th {
   min-width: 90px;
+}
+.action-cell {
+  text-align: center;
+  cursor: pointer;
+  line-height: normal;
+  z-index: 0;
+}
+
+.action-icon {
+  font-size: 20px;
+  color: white;
+}
+
+.table-container {
+  position: relative;
+  min-height: 200px; /* Or any height that makes sense */
+}
+
+.table-loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(33, 37, 41, 0.7); /* Match dark theme with some transparency */
+  z-index: 10;
+}
+
+.home-container {
+  padding: 20px;
+}
+
+.pagination-total {
+  margin-left: 5px;
 }

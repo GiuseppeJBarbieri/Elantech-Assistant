@@ -13,9 +13,8 @@ import { EditMultipleInventoryModal } from '../Modals/Inventory/EditMultipleInve
 
 interface InventoryTableProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     inventory: IInventory[];
-    getAllInventory: (productId: number) => void
     selectedProduct: IProduct;
-    getAllProducts: () => void;
+    onInventoryUpdate: (productId: number) => void;
 }
 
 const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) => {
@@ -132,7 +131,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             text: 'Date Received',
             sort: true,
             formatter: (cell: any, row: IInventory) => {
-                if(row.receiving?.dateReceived === undefined 
+                if (row.receiving?.dateReceived === undefined
                     || row.receiving?.dateReceived === null) return '';
                 return (new Date(row.receiving.dateReceived)).toISOString().split("T")[0];
             },
@@ -143,7 +142,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             text: 'Warranty Expiration',
             sort: false,
             formatter: (cell: any, row: IInventory) => {
-                if(row.warrantyExpiration === undefined || row.warrantyExpiration === null) return '';
+                if (row.warrantyExpiration === undefined || row.warrantyExpiration === null) return '';
                 return (new Date(row.warrantyExpiration)).toISOString().split("T")[0];
             },
         },
@@ -165,7 +164,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             text: 'Date Tested',
             sort: false,
             formatter: (cell: any, row: IInventory) => {
-                if(row.testedDate === undefined || row.testedDate === null) return '';
+                if (row.testedDate === undefined || row.testedDate === null) return '';
                 return (new Date(row.testedDate)).toISOString().split("T")[0];
             },
         },
@@ -268,7 +267,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
             requestUpdateInventory(inventory);
         });
         if (props.selectedProduct.id !== undefined) {
-            props.getAllInventory(props.selectedProduct.id);
+            props.onInventoryUpdate(props.selectedProduct.id);
         }
     };
     useEffect(() => {
@@ -305,7 +304,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                                     onClick={() => {
                                         tableRef.current.selectionContext.selected = [];
                                         setEditMultipleInventorySwitch(true);
-                                        
+
                                     }}
                                 >
                                     Edit Multiple Inventory
@@ -342,8 +341,10 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                     <EditInventoryModal
                         modalVisible={editInventorySwitch}
                         selectedInventory={selectedInventory}
-                        getAllInventory={props.getAllInventory}
                         selectedProduct={props.selectedProduct}
+                        onSuccess={() => {
+                            props.onInventoryUpdate(props.selectedProduct.id as number);
+                        }}
                         onClose={async () => {
                             setEditInventorySwitch(false);
                         }}
@@ -357,9 +358,8 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                         modalVisible={removeInventorySwitch}
                         selectedInventory={selectedInventory}
                         selectedInventoryList={selectedInventoryList}
-                        getAllInventory={props.getAllInventory}
-                        getAllProducts={props.getAllProducts}
                         selectedProduct={props.selectedProduct}
+                        onSuccess={() => props.onInventoryUpdate(props.selectedProduct.id as number)}
                         onClose={async () => {
                             setRemoveInventorySwitch(false);
                             setSelectedInventoryList([]);
@@ -373,16 +373,13 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                     <EditMultipleInventoryModal
                         modalVisible={editMultipleInventorySwitch}
                         selectedInventory={selectedInventoryList}
-                        getAllInventory={props.getAllInventory}
                         selectedProduct={props.selectedProduct}
-                        getAllProducts={props.getAllProducts}
+                        onSuccess={() => {
+                            props.onInventoryUpdate(props.selectedProduct.id as number);
+                        }}
                         onClose={async () => {
-                            props.getAllProducts();
                             setEditMultipleInventorySwitch(false);
                             setSelectedInventoryList([]);
-                            if (props.selectedProduct.id !== undefined) {
-                                props.getAllInventory(props.selectedProduct.id);
-                            }
                         }}
                     />
                 </div>

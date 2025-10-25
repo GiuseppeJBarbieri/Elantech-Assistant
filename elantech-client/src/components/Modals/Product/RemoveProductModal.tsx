@@ -9,7 +9,8 @@ import IProduct from '../../../types/IProduct';
 interface RemoveProductModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     modalVisible: boolean;
     selectedProduct: IProduct;
-    onClose: () => Promise<void>;
+    onClose: () => void;
+    onSuccess?: () => void;
 }
 
 const RemoveProductModalComponent: FunctionComponent<RemoveProductModalProps> = (props) => {

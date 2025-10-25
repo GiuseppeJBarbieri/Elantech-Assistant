@@ -12,11 +12,10 @@ import IRemovedInventory from '../../../types/IRemovedInventory';
 
 interface RemoveInventoryModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
+    onSuccess: () => void;
     modalVisible: boolean;
     selectedInventory: IInventory;
     selectedInventoryList: IInventory[];
-    getAllInventory: (productId: number) => void;
-    getAllProducts: () => void;
     selectedProduct: IProduct;
 }
 
@@ -31,7 +30,6 @@ const RemoveInventoryModalComponent: FunctionComponent<RemoveInventoryModalProps
     });
     const submit = () => {
         setIsSaving(true);
-        props.getAllProducts();
         setTimeout(async () => {
             try {
                 if (showReasonForRemoval && removedInventory.reasonType == 'OTHER' && removedInventory.reason == '') {
@@ -51,9 +49,7 @@ const RemoveInventoryModalComponent: FunctionComponent<RemoveInventoryModalProps
                     }
 
                     await requestRemoveInventory(inventoryList);
-                    setIsSaving(false);
-                    props.getAllInventory(props.selectedProduct.id as number); 
-                    props.getAllProducts();
+                    props.onSuccess();
                     props.onClose();
                 }
             } catch (err) {

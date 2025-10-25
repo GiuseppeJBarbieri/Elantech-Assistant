@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FunctionComponent, HTMLAttributes, useEffect, useState } from 'react';
+import { FunctionComponent, HTMLAttributes, useCallback, useMemo, useState } from 'react';
 import filterFactory, { selectFilter } from 'react-bootstrap-table2-filter';
 import { Dropdown, DropdownButton, InputGroup } from 'react-bootstrap';
 import { Pencil, Search as SearchIcon, Trash } from 'react-bootstrap-icons';
@@ -13,156 +13,135 @@ import { RemoveProductModal } from '../../components/Modals/Product/RemoveProduc
 import { PAGE_ROUTES } from '../../constants/PageRoutes';
 import { clearCookie } from '../../utils/Auth';
 import { TopHomeBar } from '../../components/TopPageBars/TopHomeBar';
-import { SpinnerBlock } from '../../components/LoadingAnimation/SpinnerBlock';
-import { requestAllProducts, requestLogout } from '../../utils/Requests';
+import { requestLogout } from '../../utils/Requests';
 import { defaultProduct } from '../../constants/Defaults';
 import { brandOptionsList, typeOptionsList } from '../../constants/Options';
+
 import IProduct from '../../types/IProduct';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import './Home.css';
-import SocketService from '../../utils/SocketService';
+import { SpinnerBlock } from '../../components/LoadingAnimation/SpinnerBlock';
+import { UseProducts } from '../../hooks/UseProducts';
 
 interface HomeProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
   loggedIn: boolean;
   setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+type ModalType = 'add' | 'edit' | 'remove' | null;
+
+const getColumns = (
+  rankFormatterEdit: (cell: any, row: IProduct) => JSX.Element,
+  rankFormatterRemove: (cell: any, row: IProduct) => JSX.Element
+) => ([
+  {
+    dataField: 'quantity',
+    text: 'QTY',
+    sort: true,
+    headerAlign: 'center',
+  },
+  {
+    dataField: 'productNumber',
+    text: 'Product Number',
+    sort: true,
+  },
+  {
+    text: '',
+    dataField: 'productType',
+    headerAlign: 'center',
+    filter: selectFilter({
+      options: typeOptionsList,
+      placeholder: 'Type',
+      className: 'btn btn-dark',
+      style: { height: 25, padding: 0 }
+    }),
+    sort: true,
+  },
+  {
+    text: '',
+    dataField: 'brand',
+    headerAlign: 'center',
+    sort: true,
+    filter: selectFilter({
+      options: brandOptionsList,
+      placeholder: 'Brand',
+      className: 'btn btn-dark',
+      style: { height: 25, padding: 0 }
+    }),
+  },
+  {
+    dataField: 'description',
+    text: 'Description',
+    sort: false,
+  },
+  {
+    dataField: 'edit',
+    text: 'Edit',
+    sort: false,
+    formatter: rankFormatterEdit,
+    headerAlign: 'center',
+  },
+  {
+    dataField: 'remove',
+    text: 'Remove',
+    sort: false,
+    formatter: rankFormatterRemove,
+    headerAlign: 'center',
+  }
+]);
+
 export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, setLoggedIn }) => {
-  const [addProductSwitch, setAddProductSwitch] = useState(false);
-  const [editProductSwitch, setEditProductSwitch] = useState(false);
-  const [removeProductSwitch, setRemoveProductSwitch] = useState(false);
-  const [searchHistoryFilterText, setSearchHistoryFilterText] = useState('Search History');
-  const [isSearching] = useState(false);
+  const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [searchString, setSearchString] = useState<string>('');
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
-  const [productList, setProductList] = useState<IProduct[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<IProduct>(defaultProduct);
-  const [searchResults, setSearchResults] = useState<IProduct[]>([]);
 
-  const rankFormatterRemove = (_: unknown, data: IProduct) => {
-    return (
-      <div
-        style={{
-          textAlign: 'center',
-          cursor: 'pointer',
-          lineHeight: 'normal'
-        }}
-        onClick={(e) => {
-          e.stopPropagation()
-        }} >
-        <div onClick={() => {
-          setSelectedProduct(data);
-          setRemoveProductSwitch(true);
-        }}
-        >
-          <Trash style={{ fontSize: 20, color: 'white' }} />
-        </div>
-      </div>
-    );
-  };
-  const rankFormatterEdit = (_: unknown, data: IProduct) => {
-    return (
-      <div
-        style={{
-          textAlign: 'center',
-          cursor: 'pointer',
-          lineHeight: 'normal',
-          zIndex: 0
-        }}
-        onClick={(e) => {
-          e.stopPropagation()
-        }} >
-        <div onClick={(e) => {
-          setEditProductSwitch(true);
-          setSelectedProduct(data);
-        }}
-        >
-          <Pencil style={{ fontSize: 20, color: 'white' }} />
-        </div>
-      </div>
-    );
-  };
-  const column = [
-    {
-      dataField: 'quantity',
-      text: 'QTY',
-      sort: true,
-      headerAlign: 'center',
-    },
-    {
-      dataField: 'productNumber',
-      text: 'Product Number',
-      sort: true,
-    },
-    {
-      text: '',
-      dataField: 'productType',
-      headerAlign: 'center',
-      filter: selectFilter({
-        options: typeOptionsList,
-        placeholder: 'Type',
-        className: 'btn btn-dark',
-        style: { height: 25, padding: 0 }
-      }),
-      sort: true,
-    },
-    {
-      text: '',
-      dataField: 'brand',
-      headerAlign: 'center',
-      sort: true,
-      filter: selectFilter({
-        options: brandOptionsList,
-        placeholder: 'Brand',
-        className: 'btn btn-dark',
-        style: { height: 25, padding: 0 }
-      }),
-    },
-    {
-      dataField: 'description',
-      text: 'Description',
-      sort: false,
-    },
-    {
-      dataField: 'edit',
-      text: 'Edit',
-      sort: false,
-      formatter: rankFormatterEdit,
-      headerAlign: 'center',
-    },
-    {
-      dataField: 'remove',
-      text: 'Remove',
-      sort: false,
-      formatter: rankFormatterRemove,
-      headerAlign: 'center',
-    }
-  ];
-  const handleSearch = (input: string, props: { searchText?: string; onSearch: any; onClear?: () => void; }) => {
-    if (input !== '' || input !== undefined) {
-      const result = searchHistory.includes(input);
-      if (!result) { input.length > 0 && searchHistory.push(input) }
+  const { products, isLoading, refetchProducts } = UseProducts();
 
-      searchHistory.length > 5 && setSearchHistory(searchHistory.slice(1, searchHistory.length));
-      setSearchString(input);
-    } else {
-      setSearchHistoryFilterText('Search History');
+  const handleEditClick = useCallback((product: IProduct) => {
+    setSelectedProduct(product);
+    setActiveModal('edit');
+  }, []);
+
+  const handleRemoveClick = useCallback((product: IProduct) => {
+    setSelectedProduct(product);
+    setActiveModal('remove');
+  }, []);
+
+  const rankFormatterRemove = useCallback((_: unknown, data: IProduct) => (
+    <div className="action-cell" onClick={() => handleRemoveClick(data)}>
+      <Trash className="action-icon" />
+    </div>
+  ), [handleRemoveClick]);
+
+  const rankFormatterEdit = useCallback((_: unknown, data: IProduct) => (
+    <div className="action-cell" onClick={() => handleEditClick(data)}>
+      <Pencil className="action-icon" />
+    </div>
+  ), [handleEditClick]);
+
+  const columns = useMemo(() => getColumns(rankFormatterEdit, rankFormatterRemove), [rankFormatterEdit, rankFormatterRemove]);
+
+  const displayedProducts = useMemo(() => {
+    if (!searchString) {
+      return products;
     }
-    // I need to search by all fields than grab the product number associated with it
-    // props.onSearch(input.toLowerCase().trim());
-    const results = productList.filter(product =>
+    return products.filter(product =>
       Object.values(product).some(value =>
-        value?.toString().toLowerCase().includes(input.toLowerCase())
+        value?.toString().toLowerCase().includes(searchString.toLowerCase())
       )
     );
-    setSearchResults(results);
-  };
-  const getAllProducts = async () => {
-    setSearchString('');
-    const products = await requestAllProducts();
-    setProductList(products);
-    setSearchResults(products);
+  }, [products, searchString]);
+
+  const handleSearch = (input: string) => {
+    setSearchString(input);
+
+    // Add to search history if it's a new, non-whitespace term
+    if (input.trim() && !searchHistory.includes(input)) {
+      const newHistory = [input, ...searchHistory].slice(0, 5);
+      setSearchHistory(newHistory);
+    }
   };
   const logout = async () => {
     const response = await requestLogout();
@@ -174,8 +153,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
   };
   const customTotal = (from: number, to: number, size: number) => {
     return (
-      <span className="react-bootstrap-table-pagination-total"
-        style={{ marginLeft: 5 }}>
+      <span className="react-bootstrap-table-pagination-total pagination-total">
         {size} Results
       </span>)
   };
@@ -183,51 +161,24 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
     showTotal: true,
     paginationTotalRenderer: customTotal
   };
-  useEffect(() => {
-    getAllProducts();
-
-    // Establish the socket connection
-    SocketService.connect();
-
-    // Listen for real-time updates
-    const handleProductsUpdated = (payload: any) => {
-      console.log('Products updated:', payload);
-      // Simple approach: refetch all products
-      getAllProducts();
-
-      // Alternative: update specific items based on payload.ids
-      // if (payload.action === 'update') {
-      //   setProducts(prev => prev.map(product => 
-      //     payload.ids.includes(product.id) ? { ...product, ...payload.data } : product
-      //   ));
-      // }
-    };
-
-    SocketService.on('product.updated', handleProductsUpdated);
-
-    // Cleanup listener on unmount
-    return () => {
-      SocketService.off('product.updated', handleProductsUpdated);
-    };
-  }, []);
   return (
     <section className="text-white main-section overflow-auto">
-      <div style={{ padding: 20 }}>
-        <TopHomeBar logout={logout} setAddProductSwitch={setAddProductSwitch} />
+      <div className="home-container">
+        <TopHomeBar logout={logout} setAddProductSwitch={() => setActiveModal('add')} />
         <hr />
         <div>
           <ToolkitProvider
             keyField="id"
-            data={searchResults}
-            columns={column}
+            data={displayedProducts}
+            columns={columns}
             search
           >
             {
               props => {
                 return (
-                  <div>
-                    {isSearching ?
-                      <SpinnerBlock />
+                  <div className='table-container'>
+                    {isLoading ?
+                      <div className="table-loading-overlay"><SpinnerBlock /></div>
                       :
                       <div>
                         <div className='d-flex justify-content-between'>
@@ -243,7 +194,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
                                 debounceTimeout={500}
                                 value={searchString}
                                 onChange={e => {
-                                  handleSearch(e.target.value, { ...props.searchProps });
+                                  handleSearch(e.target.value);
                                 }} />
                             </InputGroup>
                             <InputGroup className="mb-3">
@@ -251,14 +202,14 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
                                 key={'dark'}
                                 variant="dark"
                                 menuVariant="dark"
-                                title={searchHistoryFilterText}
+                                title="History"
                                 onSelect={e => {
-                                  setTimeout(() => handleSearch(e as string, { ...props.searchProps }), 100);
+                                  setTimeout(() => { handleSearch(e as string) }, 100);
                                 }}
                               >
                                 {searchHistory.length > 0 ?
                                   searchHistory.map((o, index) => {
-                                    return <Dropdown.Item key={index} eventKey={o}>{o}</Dropdown.Item>;
+                                    return <Dropdown.Item key={index} eventKey={o} >{o}</Dropdown.Item>;
                                   })
                                   :
                                   <Dropdown.Item disabled>No History</Dropdown.Item>}
@@ -283,7 +234,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
                               return (
                                 <ExpandedProductRow
                                   selectedProduct={row}
-                                  getAllProducts={getAllProducts} />
+                                  refetchProducts={refetchProducts} />
                               );
                             }
                           }} />
@@ -296,43 +247,37 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
         </div>
       </div>
       {
-        addProductSwitch &&
+        activeModal === 'add' &&
         <div className='modal-dialog'>
           <ProductModal
-            modalVisible={addProductSwitch}
+            modalVisible={activeModal === 'add'}
             modalSwitch={0}
             selectedProduct={defaultProduct()}
-            getAllProducts={getAllProducts}
-            onClose={async () => {
-              setAddProductSwitch(false);
-            }}
+            onClose={() => setActiveModal(null)}
+            onSuccess={refetchProducts}
           />
         </div>
       }
       {
-        editProductSwitch &&
+        activeModal === 'edit' &&
         <div className='modal-dialog'>
           <ProductModal
-            modalVisible={editProductSwitch}
+            modalVisible={activeModal === 'edit'}
             modalSwitch={1}
             selectedProduct={selectedProduct}
-            getAllProducts={getAllProducts}
-            onClose={async () => {
-              setEditProductSwitch(false);
-            }}
+            onClose={() => setActiveModal(null)}
+            onSuccess={refetchProducts}
           />
         </div>
       }
       {
-        removeProductSwitch &&
+        activeModal === 'remove' &&
         <div className='modal-dialog'>
           <RemoveProductModal
-            modalVisible={removeProductSwitch}
+            modalVisible={activeModal === 'remove'}
             selectedProduct={selectedProduct}
-            onClose={async () => {
-              setRemoveProductSwitch(false);
-              getAllProducts();
-            }}
+            onClose={() => setActiveModal(null)}
+            onSuccess={refetchProducts}
           />
         </div>
       }
