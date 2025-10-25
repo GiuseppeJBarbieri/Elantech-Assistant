@@ -2,21 +2,23 @@ import { useState, useEffect, useCallback } from 'react';
 import { requestAllProducts } from '../utils/Requests';
 import SocketService from '../utils/SocketService';
 import IProduct from '../types/IProduct';
+import { defaultAlert } from '../constants/Defaults';
 
 export const UseProducts = () => {
   const [products, setProducts] = useState<IProduct[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [alert, setAlert] = useState(defaultAlert);
 
   const fetchProducts = useCallback(async () => {
-    setIsLoading(true);
     try {
       const fetchedProducts = await requestAllProducts();
       setProducts(fetchedProducts);
     } catch (error) {
       console.error("Failed to fetch products:", error);
-      // Optionally set an error state here
+      setAlert({ ...alert, label: `${error}`, show: true });
+      setTimeout(() => setAlert({ ...alert, show: false }), 3000);
     } finally {
-      setIsLoading(false);
+      setAlert({ ...alert, label: 'Table has been updated', show: true });
+      setTimeout(() => setAlert({ ...alert, show: false }), 3000);
     }
   }, []);
 
@@ -29,5 +31,5 @@ export const UseProducts = () => {
     return () => SocketService.off('product.updated', fetchProducts);
   }, [fetchProducts]);
 
-  return { products, isLoading, refetchProducts: fetchProducts };
+  return { products, alert, refetchProducts: fetchProducts };
 };

@@ -21,15 +21,19 @@ import IProduct from '../../types/IProduct';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import './Home.css';
-import { SpinnerBlock } from '../../components/LoadingAnimation/SpinnerBlock';
 import { UseProducts } from '../../hooks/UseProducts';
+import { CustomAlert } from '../../components/Alerts/CustomAlert';
 
 interface HomeProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
   loggedIn: boolean;
   setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-type ModalType = 'add' | 'edit' | 'remove' | null;
+enum ModalType {
+  ADD = 'add',
+  EDIT = 'edit',
+  REMOVE = 'remove',
+}
 
 const getColumns = (
   rankFormatterEdit: (cell: any, row: IProduct) => JSX.Element,
@@ -92,32 +96,31 @@ const getColumns = (
 ]);
 
 export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, setLoggedIn }) => {
-  const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const [activeModal, setActiveModal] = useState<ModalType | null>(null);
   const [searchString, setSearchString] = useState<string>('');
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<IProduct>(defaultProduct);
-
-  const { products, isLoading, refetchProducts } = UseProducts();
+  const { products, alert, refetchProducts } = UseProducts();
 
   const handleEditClick = useCallback((product: IProduct) => {
     setSelectedProduct(product);
-    setActiveModal('edit');
+    setActiveModal(ModalType.EDIT);
   }, []);
 
   const handleRemoveClick = useCallback((product: IProduct) => {
     setSelectedProduct(product);
-    setActiveModal('remove');
+    setActiveModal(ModalType.REMOVE);
   }, []);
 
   const rankFormatterRemove = useCallback((_: unknown, data: IProduct) => (
-    <div className="action-cell" onClick={() => handleRemoveClick(data)}>
-      <Trash className="action-icon" />
+    <div className='action-cell' onClick={() => handleRemoveClick(data)}>
+      <Trash className='action-icon' />
     </div>
   ), [handleRemoveClick]);
 
   const rankFormatterEdit = useCallback((_: unknown, data: IProduct) => (
-    <div className="action-cell" onClick={() => handleEditClick(data)}>
-      <Pencil className="action-icon" />
+    <div className='action-cell' onClick={() => handleEditClick(data)}>
+      <Pencil className='action-icon' />
     </div>
   ), [handleEditClick]);
 
@@ -153,7 +156,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
   };
   const customTotal = (from: number, to: number, size: number) => {
     return (
-      <span className="react-bootstrap-table-pagination-total pagination-total">
+      <span className='react-bootstrap-table-pagination-total pagination-total'>
         {size} Results
       </span>)
   };
@@ -162,13 +165,14 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
     paginationTotalRenderer: customTotal
   };
   return (
-    <section className="text-white main-section overflow-auto">
-      <div className="home-container">
-        <TopHomeBar logout={logout} setAddProductSwitch={() => setActiveModal('add')} />
+    <section className='text-white main-section overflow-auto'>
+      <div className='home-container'>
+        <CustomAlert label={alert.label} type={alert.type} showAlert={alert.show} />
+        <TopHomeBar logout={logout} setAddProductSwitch={() => setActiveModal(ModalType.ADD)} />
         <hr />
         <div>
           <ToolkitProvider
-            keyField="id"
+            keyField='id'
             data={displayedProducts}
             columns={columns}
             search
@@ -177,32 +181,29 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
               props => {
                 return (
                   <div className='table-container'>
-                    {isLoading ?
-                      <div className="table-loading-overlay"><SpinnerBlock /></div>
-                      :
                       <div>
                         <div className='d-flex justify-content-between'>
                           <div className='d-flex justify-space-between'>
-                            <InputGroup className="mb-3">
-                              <InputGroup.Text id="basic-addon2">
+                            <InputGroup className='mb-3'>
+                              <InputGroup.Text id='basic-addon2'>
                                 <SearchIcon />
                               </InputGroup.Text>
                               <DebounceInput
-                                type="text"
+                                type='text'
                                 className='debounce'
-                                placeholder="Search..."
+                                placeholder='Search...'
                                 debounceTimeout={500}
                                 value={searchString}
                                 onChange={e => {
                                   handleSearch(e.target.value);
                                 }} />
                             </InputGroup>
-                            <InputGroup className="mb-3">
+                            <InputGroup className='mb-3'>
                               <DropdownButton
                                 key={'dark'}
-                                variant="dark"
-                                menuVariant="dark"
-                                title="History"
+                                variant='dark'
+                                menuVariant='dark'
+                                title='History'
                                 onSelect={e => {
                                   setTimeout(() => { handleSearch(e as string) }, 100);
                                 }}
@@ -227,7 +228,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
                           noDataIndication='TABLE IS EMPTY'
                           pagination={paginationFactory(options)}
                           filter={filterFactory()}
-                          classes="table table-dark table-hover table-striped table-responsive"
+                          classes='table table-dark table-hover table-striped table-responsive'
                           expandRow={{
                             onlyOneExpanding: true,
                             renderer: (row: IProduct) => {
@@ -238,7 +239,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
                               );
                             }
                           }} />
-                      </div>}
+                      </div>
                   </div>
                 );
               }
@@ -247,10 +248,10 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
         </div>
       </div>
       {
-        activeModal === 'add' &&
+        activeModal === ModalType.ADD &&
         <div className='modal-dialog'>
           <ProductModal
-            modalVisible={activeModal === 'add'}
+            modalVisible={activeModal === ModalType.ADD}
             modalSwitch={0}
             selectedProduct={defaultProduct()}
             onClose={() => setActiveModal(null)}
@@ -259,10 +260,10 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
         </div>
       }
       {
-        activeModal === 'edit' &&
+        activeModal === ModalType.EDIT &&
         <div className='modal-dialog'>
           <ProductModal
-            modalVisible={activeModal === 'edit'}
+            modalVisible={activeModal === ModalType.EDIT}
             modalSwitch={1}
             selectedProduct={selectedProduct}
             onClose={() => setActiveModal(null)}
@@ -271,10 +272,10 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
         </div>
       }
       {
-        activeModal === 'remove' &&
+        activeModal === ModalType.REMOVE &&
         <div className='modal-dialog'>
           <RemoveProductModal
-            modalVisible={activeModal === 'remove'}
+            modalVisible={activeModal === ModalType.REMOVE}
             selectedProduct={selectedProduct}
             onClose={() => setActiveModal(null)}
             onSuccess={refetchProducts}
