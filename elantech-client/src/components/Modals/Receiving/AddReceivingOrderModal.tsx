@@ -17,7 +17,7 @@ import { defaultAlert, defaultReceivedItem, defaultReceiving } from '../../../co
 import IReceiving from '../../../types/IReceiving';
 import IReceivedItem from '../../../types/IReceivedItem';
 import { CustomAlert } from '../../Alerts/CustomAlert';
-import { UnsavedChangesModal } from '../UnsavedChangesModal';
+import { UnsavedChangesModal } from '../../Alerts/UnsavedChangesModal';
 
 interface AddReceivingOrderModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;

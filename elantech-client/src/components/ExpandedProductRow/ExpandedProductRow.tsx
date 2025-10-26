@@ -7,7 +7,7 @@ import IProduct from '../../types/IProduct';
 import { AddInventoryModal } from '../Modals/Inventory/AddInventoryModal';
 import { AddSimpleQuoteModal } from '../Modals/Quote/AddSimpleQuoteModal';
 import { InventoryTable } from '../Tables/InventoryTable';
-import { EditInventoryAlertModal } from '../Modals/EditInventoryAlertModal';
+import { EditInventoryAlertModal } from '../Alerts/EditInventoryAlertModal';
 import IQuotedProduct from '../../types/IQuotedProduct';
 import { AddOrEditOrderModal } from '../Modals/Inventory/AddOrEditOrderModal';
 import { useExpandedRowData } from '../../hooks/useExpandedRowData';
@@ -25,8 +25,6 @@ interface ExpandedProductRowProps extends RouteComponentProps, HTMLAttributes<HT
     fetchProducts: () => void;
 }
 const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = (props) => {
-    const inventoryTimeout = useRef<NodeJS.Timeout>();
-    const quotesTimeout = useRef<NodeJS.Timeout>();
     const [isInventoryExpanded, setInventoryExpanded] = useState(false);
     const [isQuotesView, setQuotesView] = useState(false);
     const [activeModal, setActiveModal] = useState<ModalType | null>(null);

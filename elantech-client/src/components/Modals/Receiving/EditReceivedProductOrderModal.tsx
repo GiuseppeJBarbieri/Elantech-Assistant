@@ -5,7 +5,7 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import IReceivedItem from '../../../types/IReceivedItem';
 import { CustomAlert } from '../../Alerts/CustomAlert';
 import { defaultAlert } from '../../../constants/Defaults';
-import { UnsavedChangesModal } from '../UnsavedChangesModal';
+import { UnsavedChangesModal } from '../../Alerts/UnsavedChangesModal';
 import { requestEditReceivedItem } from '../../../utils/Requests';
 
 interface EditReceivedProductOrderModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {

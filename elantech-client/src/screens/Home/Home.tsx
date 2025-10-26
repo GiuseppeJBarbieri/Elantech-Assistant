@@ -10,7 +10,7 @@ import { ExpandedProductRow } from '../../components/ExpandedProductRow/Expanded
 import { ProductModal } from '../../components/Modals/Product/ProductModal';
 import { RemoveProductModal } from '../../components/Modals/Product/RemoveProductModal';
 import { defaultProduct } from '../../constants/Defaults';
-import { brandOptionsList, typeOptionsList } from '../../constants/Options';
+import { brandOptions, typeOptions } from '../../constants/Options';
 import IProduct from '../../types/IProduct';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import { UseProducts } from '../../hooks/UseProducts';
@@ -49,7 +49,7 @@ const getColumns = (
     dataField: 'productType',
     headerAlign: 'center',
     filter: selectFilter({
-      options: typeOptionsList,
+      options: typeOptions,
       placeholder: 'Type',
       className: 'btn btn-dark',
       style: { height: 25, padding: 0 }
@@ -62,7 +62,7 @@ const getColumns = (
     headerAlign: 'center',
     sort: true,
     filter: selectFilter({
-      options: brandOptionsList,
+      options: brandOptions,
       placeholder: 'Brand',
       className: 'btn btn-dark',
       style: { height: 25, padding: 0 }

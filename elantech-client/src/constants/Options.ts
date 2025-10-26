@@ -1,6 +1,6 @@
 import { PAGE_ROUTES } from './PageRoutes'
 
-export const brandOptionsList = {
+export const brandOptions = {
     'HPE': 'HPE',
     'Dell': 'Dell',
     'Cisco': 'Cisco',
@@ -22,7 +22,7 @@ export const brandOptionsList = {
     'Qualcomm': 'Qualcomm',
     'Xiaomi': 'Xiaomi'
 }
-export const typeOptionsList = { 
+export const typeOptions = { 
     "DVD Drive": "DVD Drive", 
     "Module": "Module", 
     "Network Switch": "Network Switch", 

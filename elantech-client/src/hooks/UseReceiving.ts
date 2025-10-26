@@ -13,11 +13,11 @@ export const UseReceiving = () => {
         try {
             const fetchedReceiving = await requestAllReceiving();
             setReceivingList(fetchedReceiving);
-            setAlert({ ...alert, label: 'Table has been updated', type: 'success', show: true });
-            setTimeout(() => setAlert({ ...alert, show: false }), 3000);
+            setAlert((prev) => ({ ...prev, label: 'Table has been updated', type: 'success', show: true }));
+            setTimeout(() => setAlert((prev) => ({ ...prev, show: false })), 3000);
         } catch (error) {
-            setAlert({ ...alert, label: `${error}`, show: true, type: 'danger' });
-            setTimeout(() => setAlert({ ...alert, show: false }), 3000);
+            setAlert((prev) => ({ ...prev, label: `${error}`, show: true, type: 'danger' }));
+            setTimeout(() => setAlert((prev) => ({ ...prev, show: false })), 3000);
         }
     }, []);
 

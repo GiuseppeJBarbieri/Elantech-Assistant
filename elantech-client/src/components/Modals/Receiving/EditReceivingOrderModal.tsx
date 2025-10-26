@@ -15,7 +15,7 @@ import ICompany from '../../../types/ICompany';
 import { requestAllCompanies, RequestUpdateReceivingOrder } from '../../../utils/Requests';
 import { defaultAlert } from '../../../constants/Defaults';
 import { CustomAlert } from '../../Alerts/CustomAlert';
-import { UnsavedChangesModal } from '../UnsavedChangesModal';
+import { UnsavedChangesModal } from '../../Alerts/UnsavedChangesModal';
 
 interface EditReceivingOrderModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;

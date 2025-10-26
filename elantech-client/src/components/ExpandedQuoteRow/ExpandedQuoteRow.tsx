@@ -11,7 +11,7 @@ import IQuotedProduct from '../../types/IQuotedProduct';
 import { requestAllQuotesByCompanyID } from '../../utils/Requests';
 import { AddMultiQuoteModal } from '../Modals/Quote/AddMultiQuoteModal';
 import { EditQuoteModal } from '../Modals/Quote/EditQuoteModal';
-import { ViewQuotedProductsModal } from '../Modals/ViewQuotedProductsModal/ViewQuotedProductsModal';
+import { ViewQuotedProductsModal } from '../Modals/QuotedProducts/ViewQuotedProductsModal';
 import { defaultQuote } from '../../constants/Defaults';
 import { RemoveQuoteModal } from '../Modals/Quote/RemoveQuoteModal';
 

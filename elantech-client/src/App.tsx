@@ -17,9 +17,6 @@ import { Settings } from './screens/Settings/Settings';
 import { Home } from './screens/Home/Home';
 import { Quotes } from './screens/Quotes/Quotes';
 import { Receiving } from './screens/Receiving/Receiving';
-import { Procurement } from './screens/Procurement/Procurement';
-import { Outgoing } from './screens/Outgoing/Outgoing';
-import { BrokerBin } from './screens/BrokerBin/BrokerBin';
 import { useEffect } from 'react';
 import SocketService from './utils/SocketService';
 
@@ -65,9 +62,6 @@ const App: React.FunctionComponent<AppProps> = (props) => {
           <Route exact path="/register" component={Register} />
           <Route exact path="/quotes" component={Quotes} />
           <Route exact path="/receiving" component={Receiving} />
-          <Route exact path="/procurement" component={Procurement} />
-          <Route exact path="/outgoing" component={Outgoing} />
-          <Route exact path="/brokerBin" component={BrokerBin} />
           <Route exact path="/settings" render={() => <Settings loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
           {/* </AuthGuard> */}
           <Route component={NotFound} />
