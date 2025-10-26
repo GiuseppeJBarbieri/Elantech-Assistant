@@ -5,6 +5,7 @@ import IQuote from './IQuote';
 import IQuotedProduct from '../quotedProducts/IQuotedProduct';
 import BaseRepository from '../BaseRepository';
 import IRepoError from '../../utils/interfaces/IRepoError';
+import EventBus from '../../utils/EventBus';
 
 const repoErr: IRepoError = {
   location: 'QuoteRepository.js',
@@ -12,7 +13,7 @@ const repoErr: IRepoError = {
 };
 
 const QuoteRepository = {
-  ...BaseRepository(db.quote, repoErr),
+  ...BaseRepository(db.quote, repoErr, 'quote'),
 
   async Add(quote: IQuote): Promise<IQuote> {
     const transaction: Transaction = await db.sequelize.transaction();
@@ -32,6 +33,18 @@ const QuoteRepository = {
       }
       // Commit the transaction
       await transaction.commit();
+      EventBus.emit('quote.updated', {
+        action: 'create',
+        ids: [createdQuote.id],
+        timestamp: Date.now(),
+        data: createdQuote,
+      });
+      EventBus.emit('quotedProduct.updated', {
+        action: 'create',
+        ids: quotedProducts.map((p) => p.id),
+        timestamp: Date.now(),
+        data: quotedProducts,
+      });
       return createdQuote;
     } catch (err) {
       // Rollback the transaction in case of error
@@ -97,6 +110,11 @@ const QuoteRepository = {
 
       // Commit the transaction
       await transaction.commit();
+      EventBus.emit('quote.updated', {
+        action: 'delete',
+        ids: [id],
+        timestamp: Date.now(),
+      });
       return response;
     } catch (err) {
       await transaction.rollback();
@@ -146,6 +164,18 @@ const QuoteRepository = {
       });
       // Commit the transaction
       await transaction.commit();
+      EventBus.emit('quotedProduct.updated', {
+        action: 'update',
+        ids: quote.quotedProducts.map((p) => p.id),
+        timestamp: Date.now(),
+        data: quote.quotedProducts,
+      });
+      EventBus.emit('quote.updated', {
+        action: 'update',
+        ids: [quote.id],
+        timestamp: Date.now(),
+        data: quote,
+      });
     } catch (err) {
       // Rollback the transaction in case of error
       await transaction.rollback();

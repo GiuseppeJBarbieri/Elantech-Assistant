@@ -10,17 +10,15 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { ExpandedProductRow } from '../../components/ExpandedProductRow/ExpandedProductRow';
 import { ProductModal } from '../../components/Modals/Product/ProductModal';
 import { RemoveProductModal } from '../../components/Modals/Product/RemoveProductModal';
-import { PAGE_ROUTES } from '../../constants/PageRoutes';
 import { TopHomeBar } from '../../components/TopPageBars/TopHomeBar';
 import { defaultProduct } from '../../constants/Defaults';
 import { brandOptionsList, typeOptionsList } from '../../constants/Options';
-
 import IProduct from '../../types/IProduct';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
-import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
-import './Home.css';
 import { UseProducts } from '../../hooks/UseProducts';
 import { CustomAlert } from '../../components/Alerts/CustomAlert';
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+import './Home.css';
 
 interface HomeProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
   loggedIn: boolean;
@@ -98,7 +96,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = () => {
   const [searchString, setSearchString] = useState<string>('');
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<IProduct>(defaultProduct);
-  const { products, alert, refetchProducts } = UseProducts();
+  const { products, alert, fetchProducts } = UseProducts();
 
   const handleEditClick = useCallback((product: IProduct) => {
     setSelectedProduct(product);
@@ -171,65 +169,65 @@ export const HomeLayout: FunctionComponent<HomeProps> = () => {
               props => {
                 return (
                   <div className='table-container'>
-                      <div>
-                        <div className='d-flex justify-content-between'>
-                          <div className='d-flex justify-space-between'>
-                            <InputGroup className='mb-3'>
-                              <InputGroup.Text id='basic-addon2'>
-                                <SearchIcon />
-                              </InputGroup.Text>
-                              <DebounceInput
-                                type='text'
-                                className='debounce'
-                                placeholder='Search...'
-                                debounceTimeout={500}
-                                value={searchString}
-                                onChange={e => {
-                                  handleSearch(e.target.value);
-                                }} />
-                            </InputGroup>
-                            <InputGroup className='mb-3'>
-                              <DropdownButton
-                                key={'dark'}
-                                variant='dark'
-                                menuVariant='dark'
-                                title=''
-                                onSelect={e => {
-                                  setTimeout(() => { handleSearch(e as string) }, 100);
-                                }}
-                              >
-                                {searchHistory.length > 0 ?
-                                  searchHistory.map((o, index) => {
-                                    return <Dropdown.Item key={index} eventKey={o} >{o}</Dropdown.Item>;
-                                  })
-                                  :
-                                  <Dropdown.Item disabled>No History</Dropdown.Item>}
-                                <Dropdown.Item eventKey=''>Clear</Dropdown.Item>
-                              </DropdownButton>
-                            </InputGroup>
-                          </div>
+                    <div>
+                      <div className='d-flex justify-content-between'>
+                        <div className='d-flex justify-space-between'>
+                          <InputGroup className='mb-3'>
+                            <InputGroup.Text id='basic-addon2'>
+                              <SearchIcon />
+                            </InputGroup.Text>
+                            <DebounceInput
+                              type='text'
+                              className='debounce'
+                              placeholder='Search...'
+                              debounceTimeout={500}
+                              value={searchString}
+                              onChange={e => {
+                                handleSearch(e.target.value);
+                              }} />
+                          </InputGroup>
+                          <InputGroup className='mb-3'>
+                            <DropdownButton
+                              key={'dark'}
+                              variant='dark'
+                              menuVariant='dark'
+                              title=''
+                              onSelect={e => {
+                                setTimeout(() => { handleSearch(e as string) }, 100);
+                              }}
+                            >
+                              {searchHistory.length > 0 ?
+                                searchHistory.map((o, index) => {
+                                  return <Dropdown.Item key={index} eventKey={o} >{o}</Dropdown.Item>;
+                                })
+                                :
+                                <Dropdown.Item disabled>No History</Dropdown.Item>}
+                              <Dropdown.Item eventKey=''>Clear</Dropdown.Item>
+                            </DropdownButton>
+                          </InputGroup>
                         </div>
-                        <br />
-                        <BootstrapTable
-                          {...props.baseProps}
-                          bootstrap4
-                          striped
-                          hover
-                          noDataIndication='TABLE IS EMPTY'
-                          pagination={paginationFactory(options)}
-                          filter={filterFactory()}
-                          classes='table table-dark table-hover table-striped table-responsive'
-                          expandRow={{
-                            onlyOneExpanding: true,
-                            renderer: (row: IProduct) => {
-                              return (
-                                <ExpandedProductRow
-                                  selectedProduct={row}
-                                  refetchProducts={refetchProducts} />
-                              );
-                            }
-                          }} />
                       </div>
+                      <br />
+                      <BootstrapTable
+                        {...props.baseProps}
+                        bootstrap4
+                        striped
+                        hover
+                        noDataIndication='TABLE IS EMPTY'
+                        pagination={paginationFactory(options)}
+                        filter={filterFactory()}
+                        classes='table table-dark table-hover table-striped table-responsive'
+                        expandRow={{
+                          onlyOneExpanding: true,
+                          renderer: (row: IProduct) => {
+                            return (
+                              <ExpandedProductRow
+                                selectedProduct={row}
+                                fetchProducts={fetchProducts} />
+                            );
+                          }
+                        }} />
+                    </div>
                   </div>
                 );
               }
@@ -245,7 +243,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = () => {
             modalSwitch={0}
             selectedProduct={defaultProduct()}
             onClose={() => setActiveModal(null)}
-            onSuccess={refetchProducts}
+            onSuccess={fetchProducts}
           />
         </div>
       }
@@ -257,7 +255,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = () => {
             modalSwitch={1}
             selectedProduct={selectedProduct}
             onClose={() => setActiveModal(null)}
-            onSuccess={refetchProducts}
+            onSuccess={fetchProducts}
           />
         </div>
       }
@@ -268,7 +266,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = () => {
             modalVisible={activeModal === ModalType.REMOVE}
             selectedProduct={selectedProduct}
             onClose={() => setActiveModal(null)}
-            onSuccess={refetchProducts}
+            onSuccess={fetchProducts}
           />
         </div>
       }

@@ -3,10 +3,11 @@ import { requestAllProducts } from '../utils/Requests';
 import SocketService from '../utils/SocketService';
 import IProduct from '../types/IProduct';
 import { defaultAlert } from '../constants/Defaults';
+import IAlert from '../types/IAlert';
 
 export const UseProducts = () => {
   const [products, setProducts] = useState<IProduct[]>([]);
-  const [alert, setAlert] = useState(defaultAlert);
+  const [alert, setAlert] = useState<IAlert>(defaultAlert);
 
   const fetchProducts = useCallback(async () => {
     try {
@@ -29,5 +30,5 @@ export const UseProducts = () => {
     return () => SocketService.off('product.updated', fetchProducts);
   }, [fetchProducts]);
 
-  return { products, alert, refetchProducts: fetchProducts };
+  return { products, alert, fetchProducts };
 };

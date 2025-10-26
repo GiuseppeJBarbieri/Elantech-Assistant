@@ -17,6 +17,7 @@ import { RemoveQuoteModal } from '../Modals/Quote/RemoveQuoteModal';
 
 interface ExpandedQuoteRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     selectedCompany: ICompany;
+    fetchCompanies: () => void;
 }
 
 const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (props) => {
@@ -27,25 +28,6 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
     const [viewMoreSwitch, setViewMoreSwitch] = useState(false);
     const [removeQuoteSwitch, setRemoveQuoteSwitch] = useState(false);
 
-    // const rankFormatterAdd = (_: any, _data: IQuote, _index: any) => {
-    //     return (
-    //         <div
-    //             style={{
-    //                 textAlign: 'center',
-    //                 cursor: 'pointer',
-    //                 lineHeight: 'normal'
-    //             }}
-    //             onClick={(e) => {
-    //                 e.stopPropagation()
-    //             }}>
-    //             <div onClick={(_e) => {
-    //                 console.log('Create Order');
-    //             }}>
-    //                 <Plus style={{ fontSize: 20, color: 'white' }} />
-    //             </div>
-    //         </div>
-    //     );
-    // };
     const rankFormatterViewMore = (hm: any, _data: any, _index: any) => {
         return (
             <div

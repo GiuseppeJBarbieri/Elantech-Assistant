@@ -17,7 +17,7 @@ import { AddOrEditOrderModal } from '../Modals/Inventory/AddOrEditOrderModal';
 
 interface ExpandedProductRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     selectedProduct: IProduct;
-    refetchProducts: () => void;
+    fetchProducts: () => void;
 }
 const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = (props) => {
     const inventoryTimeout = useRef<NodeJS.Timeout>();

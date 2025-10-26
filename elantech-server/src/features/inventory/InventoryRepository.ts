@@ -50,7 +50,7 @@ export default {
     try {
       const _inventory = inventory;
 
-      await db.inventory.create(_inventory);
+      const newInventoryItem = await db.inventory.create(_inventory);
       const numOfInventory = await db.inventory.count({
         where: {
           productId: _inventory.productId,
@@ -69,7 +69,12 @@ export default {
         ids: [updatedProduct.id],
         timestamp: Date.now(),
       });
-      return;
+      EventBus.emit('inventory.updated', {
+        action: 'updated',
+        ids: [newInventoryItem.id],
+        timestamp: Date.now(),
+      });
+      return newInventoryItem;
     } catch (err) {
       const repoError = { ...repoErr, message: err.message };
       logger.warn(repoError);
@@ -106,7 +111,11 @@ export default {
         ids: [updatedProduct.id],
         timestamp: Date.now(),
       });
-
+      EventBus.emit('inventory.updated', {
+        action: 'updated',
+        ids: [...list.map((inv: { id: number; }) => inv.id)],
+        timestamp: Date.now(),
+      });
       return Promise.resolve(list);
     } catch (err) {
       await transaction.rollback();
@@ -122,11 +131,17 @@ export default {
       delete _inventory.purchaseOrderId;
       delete _inventory.removedInventoryId;
 
-      return await db.inventory.update(_inventory, {
+      const updatedInventory = await db.inventory.update(_inventory, {
         where: {
           id: _inventory.id,
         },
       });
+      EventBus.emit('inventory.updated', {
+        action: 'updated',
+        ids: [updatedInventory.id],
+        timestamp: Date.now(),
+      });
+      return updatedInventory;
     } catch (err) {
       const repoError = { ...repoErr, message: err.message };
       logger.warn(repoError);
@@ -149,6 +164,11 @@ export default {
         );
       });
       await transaction.commit();
+      EventBus.emit('inventory.updated', {
+        action: 'updated',
+        ids: [...inventoryList.map((inv) => inv.id)],
+        timestamp: Date.now(),
+      });
       return Promise.resolve(inventoryList);
     } catch (err) {
       await transaction.rollback();
@@ -179,7 +199,7 @@ export default {
         },
         { transaction },
       );
-      db.receivedItem.update(
+      const updatedReceivedItem = await db.receivedItem.update(
         { finishedAdding: true },
         {
           where: {
@@ -194,7 +214,16 @@ export default {
         ids: [updatedProduct.id],
         timestamp: Date.now(),
       });
-
+      EventBus.emit('inventory.updated', {
+        action: 'updated',
+        ids: [...list.map((inv: { id: any; }) => inv.id)],
+        timestamp: Date.now(),
+      });
+      EventBus.emit('receivedItem.updated', {
+        action: 'updated',
+        ids: [updatedReceivedItem.id],
+        timestamp: Date.now(),
+      });
       await transaction.commit();
 
       return Promise.resolve(list);
@@ -288,6 +317,11 @@ export default {
       EventBus.emit('product.updated', {
         action: 'updated',
         ids: [updatedProduct.id],
+        timestamp: Date.now(),
+      });
+      EventBus.emit('inventory.updated', {
+        action: 'updated',
+        ids: [...inventoryList.map((inv) => inv.id)],
         timestamp: Date.now(),
       });
       return;

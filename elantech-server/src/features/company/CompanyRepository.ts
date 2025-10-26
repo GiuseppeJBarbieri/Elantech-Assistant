@@ -8,7 +8,7 @@ const repoErr: IRepoError = {
 };
 
 const CompanyRepository = {
-  ...BaseRepository(db.company, repoErr),
+  ...BaseRepository(db.company, repoErr, 'company'),
 };
 
 export default CompanyRepository;

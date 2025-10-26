@@ -4,6 +4,7 @@ import logger from '../../utils/logging/Logger';
 import IRepoError from '../../utils/interfaces/IRepoError';
 import IReceiving from './IReceiving';
 import BaseRepository from '../BaseRepository';
+import EventBus from '../../utils/EventBus';
 
 /// ////////////// ///
 /// / INTERNALS // ///
@@ -15,7 +16,7 @@ const repoErr: IRepoError = {
 };
 
 const ReceivingRepository = {
-  ...BaseRepository(db.receiving, repoErr),
+  ...BaseRepository(db.receiving, repoErr, 'receiving'),
 
   async Add(receiving: IReceiving): Promise<IReceiving> {
     let transaction: Transaction;
@@ -35,7 +36,13 @@ const ReceivingRepository = {
         // Link current ReceivedItem to the newly created "Receiving" object
         _receivedItemPayload.receivingId = createdReceivingObj.id;
 
-        await db.receivedItem.create(_receivedItemPayload, { transaction });
+        const createdReceivedItem = await db.receivedItem.create(_receivedItemPayload, { transaction });
+        EventBus.emit('receivedItem.updated', {
+          action: 'create',
+          ids: [createdReceivedItem.id],
+          timestamp: Date.now(),
+          data: createdReceivedItem,
+        });
       })).catch((err) => {
         throw new Error(err);
       });
@@ -112,6 +119,11 @@ const ReceivingRepository = {
       });
 
       await transaction.commit();
+      EventBus.emit('receiving.updated', {
+        action: 'delete',
+        ids: [id],
+        timestamp: Date.now(),
+      });
 
       return deletedOrders + deletedOrderItems;
     } catch (err) {

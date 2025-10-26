@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { FunctionComponent, HTMLAttributes, useState, useEffect } from 'react';
+import React, { FunctionComponent, HTMLAttributes, useState, useCallback, useMemo } from 'react';
 import { Button, DropdownButton, Dropdown, InputGroup } from 'react-bootstrap';
 import { Pencil, Plus, Search, Trash } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
@@ -9,70 +7,131 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { CompanyModal } from '../../components/Modals/Company/CompanyModal';
 import { ExpandedQuoteRow } from '../../components/ExpandedQuoteRow/ExpandedQuoteRow';
 import ICompany from '../../types/ICompany';
-import { requestAllCompanies } from '../../utils/Requests';
 import { defaultCompany } from '../../constants/Defaults';
 import './Quotes.css';
 import { RemoveCompanyModal } from '../../components/Modals/Company/RemoveCompanyModal';
 import { DebounceInput } from 'react-debounce-input';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
-import { SpinnerBlock } from '../../components/LoadingAnimation/SpinnerBlock';
+import { UseCompany } from '../../hooks/UseCompany';
+import { CustomAlert } from '../../components/Alerts/CustomAlert';
 
 interface QuotesProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> { }
 
-export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
-  const [addCompanySwitch, setAddCompanySwitch] = useState(false);
-  const [editCompanySwitch, setEditCompanySwitch] = useState(false);
-  const [removeCompanySwitch, setRemoveCompanySwitch] = useState(false);
-  const [companyList, setCompanyList] = useState<ICompany[]>([]);
-  const [selectedCompany, setSelectedCompany] = useState<ICompany>(defaultCompany);
-  const [searchString, setSearchString] = useState<string>('');
-  const [isSearching] = useState(false);
-  const [searchHistory, setSearchHistory] = useState<string[]>([]);
-  const [searchHistoryFilterText, setSearchHistoryFilterText] = useState('Search History');
+enum ModalType {
+  ADD = 'add',
+  EDIT = 'edit',
+  REMOVE = 'remove',
+}
 
-  const rankFormatterRemove = (_: any, data: any, index: any) => {
-    return (
-      <div
-        style={{
-          textAlign: 'center',
-          cursor: 'pointer',
-          lineHeight: 'normal'
-        }}
-        onClick={(e) => {
-          e.stopPropagation()
-        }} >
-        <div onClick={() => {
-          setSelectedCompany(data);
-          setRemoveCompanySwitch(true);
-        }}
-        >
-          <Trash style={{ fontSize: 20, color: 'white' }} />
-        </div>
-      </div>
+const getColumns = (
+  rankFormatterEdit: (cell: any, row: ICompany) => JSX.Element,
+  rankFormatterRemove: (cell: any, row: ICompany) => JSX.Element
+) => ([
+  {
+    dataField: 'type',
+    text: 'Type',
+    sort: true,
+  },
+  {
+    dataField: 'name',
+    text: 'Company Name',
+    sort: true,
+  },
+  {
+    dataField: 'representative',
+    text: 'Representative',
+    sort: true,
+  },
+  {
+    dataField: 'phone',
+    text: 'Phone Number',
+    sort: false,
+    headerAlign: 'center',
+  },
+  {
+    dataField: 'email',
+    text: 'Email',
+    sort: false,
+    headerAlign: 'center',
+  },
+  {
+    dataField: 'location',
+    text: 'Location',
+    sort: false,
+  },
+  {
+    dataField: 'comment',
+    text: 'Comments',
+    sort: false,
+  },
+  {
+    dataField: 'edit',
+    text: 'Edit',
+    sort: false,
+    formatter: rankFormatterEdit,
+    headerAlign: 'center',
+  },
+  {
+    dataField: 'remove',
+    text: 'Remove',
+    sort: false,
+    formatter: rankFormatterRemove,
+    headerAlign: 'center',
+  },
+]);
+
+export const QuotesLayout: FunctionComponent<QuotesProps> = () => {
+  const [activeModal, setActiveModal] = useState<ModalType | null>(null);
+  const [searchString, setSearchString] = useState<string>('');
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
+  const [selectedCompany, setSelectedCompany] = useState<ICompany>(defaultCompany);
+  const { companies, alert, fetchCompanies } = UseCompany();
+
+  const handleEditClick = useCallback((company: ICompany) => {
+    setSelectedCompany(company);
+    setActiveModal(ModalType.EDIT);
+  }, []);
+
+  const handleRemoveClick = useCallback((company: ICompany) => {
+    setSelectedCompany(company);
+    setActiveModal(ModalType.REMOVE);
+  }, []);
+
+  const rankFormatterRemove = useCallback((_: unknown, data: ICompany) => (
+    <div className='action-cell' onClick={(e) => { e.stopPropagation(); handleRemoveClick(data); }}>
+      <Trash style={{ fontSize: 20, color: 'white' }} />
+    </div>
+  ), [handleRemoveClick]);
+
+  const rankFormatterEdit = useCallback((_: unknown, data: ICompany) => (
+    <div className='action-cell' onClick={(e) => { e.stopPropagation(); handleEditClick(data); }}>
+      <Pencil style={{ fontSize: 20, color: 'white' }} />
+    </div>
+  ), [handleEditClick]);
+
+  const columns = useMemo(() => getColumns(rankFormatterEdit, rankFormatterRemove), [rankFormatterEdit, rankFormatterRemove]);
+
+  const displayedCompanies = useMemo(() => {
+    if (!searchString) {
+      return companies;
+    }
+    return companies.filter(company =>
+      Object.values(company).some(value =>
+        value?.toString().toLowerCase().includes(searchString.toLowerCase())
+      )
     );
+  }, [companies, searchString]);
+
+  const handleSearch = (input: string) => {
+    setSearchString(input);
+
+    // Add to search history if it's a new, non-whitespace term
+    if (input.trim() && !searchHistory.includes(input)) {
+      const newHistory = [input, ...searchHistory].slice(0, 5);
+      setSearchHistory(newHistory);
+    }
   };
-  const rankFormatterEdit = (_: any, data: any, index: any) => {
-    return (
-      <div
-        style={{
-          textAlign: 'center',
-          cursor: 'pointer',
-          lineHeight: 'normal',
-          zIndex: 0
-        }}
-        onClick={(e) => {
-          e.stopPropagation()
-        }} >
-        <div onClick={(e) => {
-          setSelectedCompany(data);
-          setEditCompanySwitch(true);
-        }}
-        >
-          <Pencil style={{ fontSize: 20, color: 'white' }} />
-        </div>
-      </div>
-    );
-  };
+
   const customTotal = (from: number, to: number, size: number) => {
     return (
       <span className="react-bootstrap-table-pagination-total"
@@ -80,98 +139,20 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
         {size} Results
       </span>)
   };
-  const column = [
 
-    {
-      id: 1,
-      dataField: 'type',
-      text: 'Type',
-      sort: true,
-    },
-    {
-      id: 2,
-      dataField: 'name',
-      text: 'Company Name',
-      sort: true,
-    },
-    {
-      id: 3,
-      dataField: 'representative',
-      text: 'Representative',
-      sort: true,
-    },
-    {
-      id: 4,
-      dataField: 'phone',
-      text: 'Phone Number',
-      sort: false,
-      headerAlign: 'center',
-    },
-    {
-      id: 5,
-      dataField: 'email',
-      text: 'Email',
-      sort: false,
-      headerAlign: 'center',
-    },
-    {
-      id: 6,
-      dataField: 'location',
-      text: 'Location',
-      sort: false,
-    },
-    {
-      id: 7,
-      dataField: 'comment',
-      text: 'Comments',
-      sort: false,
-    },
-    {
-      id: 8,
-      dataField: 'edit',
-      text: 'Edit',
-      sort: false,
-      formatter: rankFormatterEdit,
-      headerAlign: 'center',
-    },
-    {
-      id: 9,
-      dataField: 'remove',
-      text: 'Remove',
-      sort: false,
-      formatter: rankFormatterRemove,
-      headerAlign: 'center',
-    },
-  ];
   const options = {
     showTotal: true,
     paginationTotalRenderer: customTotal,
   };
-  const getAllCompanies = async () => {
-    setCompanyList(await requestAllCompanies());
-  };
-  const handleSearch = (input: string, props: { searchText?: string; onSearch: any; onClear?: () => void; }) => {
-    if (input !== '' || input !== undefined) {
-      const result = searchHistory.includes(input);
-      if (!result) { input.length > 0 && searchHistory.push(input) }
 
-      searchHistory.length > 5 && setSearchHistory(searchHistory.slice(1, searchHistory.length));
-      setSearchString(input);
-    } else {
-      setSearchHistoryFilterText('Search History');
-    }
-    props.onSearch(input);
-  };
-  useEffect(() => {
-    getAllCompanies();
-  }, []);
   return (
     <section className="text-white main-section overflow-auto">
+      <CustomAlert label={alert.label} type={alert.type} showAlert={alert.show} />
       <div style={{ padding: 20 }}>
         <div className='d-flex justify-content-between'>
           <h2 style={{ fontWeight: 300 }}>Quotes by Company</h2>
           <div>
-            <Button variant="dark" onClick={() => { setAddCompanySwitch(true) }}>
+            <Button variant="dark" onClick={() => setActiveModal(ModalType.ADD)}>
               <Plus height="25" width="25" style={{ marginTop: -3, marginLeft: -10 }} />Company
             </Button>
           </div>
@@ -179,75 +160,72 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
         <hr />
         <ToolkitProvider
           keyField="id"
-          data={companyList}
-          columns={column}
+          data={displayedCompanies}
+          columns={columns}
           search >
           {
             props => {
               return (
                 <div>
-                  {isSearching ?
-                    <SpinnerBlock />
-                    :
-                    <div>
-                      <div className='d-flex' style={{ width: 'max-content' }}>
-                        <InputGroup className="mb-1">
-                          <InputGroup.Text id="basic-addon2">
-                            <Search />
-                          </InputGroup.Text>
-                          <DebounceInput
-                            type="text"
-                            className='debounce'
-                            placeholder="Search..."
-                            debounceTimeout={500}
-                            value={searchString}
-                            onChange={e => {
-                              handleSearch(e.target.value, { ...props.searchProps });
-                            }} />
-                        </InputGroup>
-                        <div className='d-flex'>
-                          <DropdownButton
-                            key={'dark'}
-                            variant="dark"
-                            menuVariant="dark"
-                            title={searchHistoryFilterText}
-                            onSelect={e => {
-                              setTimeout(() => handleSearch(e as string, { ...props.searchProps }), 100);
-                            }}
-                          >
-                            {searchHistory.length > 0 ?
-                              searchHistory.map((o, index) => {
-                                return <Dropdown.Item key={index} eventKey={o}>{o}</Dropdown.Item>;
-                              })
-                              :
-                              <Dropdown.Item disabled>No History</Dropdown.Item>}
-                            <Dropdown.Item eventKey=''>Clear</Dropdown.Item>
-                          </DropdownButton>
-                        </div>
+                  <div>
+                    <div className='d-flex' style={{ width: 'max-content' }}>
+                      <InputGroup className="mb-1">
+                        <InputGroup.Text id="basic-addon2">
+                          <Search />
+                        </InputGroup.Text>
+                        <DebounceInput
+                          type="text"
+                          className='debounce'
+                          placeholder="Search..."
+                          debounceTimeout={500}
+                          value={searchString}
+                          onChange={e => {
+                            handleSearch(e.target.value);
+                          }} />
+                      </InputGroup>
+                      <div className='d-flex'>
+                        <DropdownButton
+                          key={'dark'}
+                          variant="dark"
+                          menuVariant="dark"
+                          title="Search History"
+                          onSelect={e => {
+                            setTimeout(() => handleSearch(e as string), 100);
+                          }}
+                        >
+                          {searchHistory.length > 0 ?
+                            searchHistory.map((o, index) => {
+                              return <Dropdown.Item key={index} eventKey={o}>{o}</Dropdown.Item>;
+                            })
+                            :
+                            <Dropdown.Item disabled>No History</Dropdown.Item>}
+                          <Dropdown.Item eventKey=''>Clear</Dropdown.Item>
+                        </DropdownButton>
                       </div>
-                      <br />
-                      <BootstrapTable
-                        {...props.baseProps}
-                        keyField="id"
-                        bootstrap4
-                        data={companyList}
-                        columns={column}
-                        classes="table table-dark table-hover table-striped table-responsive"
-                        noDataIndication="Table is Empty"
-                        pagination={paginationFactory(options)}
-                        expandRow={{
-                          onlyOneExpanding: true,
-                          renderer: (row) => {
-                            return (
-                              <ExpandedQuoteRow
-                                selectedCompany={row}
-                              />
-                            )
-                          }
-                        }}
-                      />
                     </div>
-                  }
+                    <br />
+                    <BootstrapTable
+                      {...props.baseProps}
+                      keyField="id"
+                      bootstrap4
+                      data={displayedCompanies}
+                      columns={columns}
+                      classes="table table-dark table-hover table-striped table-responsive"
+                      noDataIndication="Table is Empty"
+                      pagination={paginationFactory(options)}
+                      expandRow={{
+                        onlyOneExpanding: true,
+                        renderer: (row) => {
+                          return (
+                            <ExpandedQuoteRow
+                              selectedCompany={row}
+                              fetchCompanies={fetchCompanies}
+                            />
+                          )
+                        }
+                      }}
+                    />
+                  </div>
                 </div>
               );
             }
@@ -255,43 +233,37 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = ({ history }) => {
         </ToolkitProvider>
       </div >
       {
-        addCompanySwitch &&
+        activeModal === ModalType.ADD &&
         <div className='modal-dialog'>
           <CompanyModal
-            modalVisible={addCompanySwitch}
+            modalVisible={activeModal === ModalType.ADD}
             modalSwitch={0}
             selectedCompany={defaultCompany()}
-            getAllCompanies={getAllCompanies}
-            onClose={async () => {
-              setAddCompanySwitch(false);
-            }}
+            onClose={() => setActiveModal(null)}
+            onSuccess={fetchCompanies}
           />
         </div>
       }
       {
-        editCompanySwitch &&
+        activeModal === ModalType.EDIT &&
         <div className='modal-dialog'>
           <CompanyModal
-            modalVisible={editCompanySwitch}
+            modalVisible={activeModal === ModalType.EDIT}
             modalSwitch={1}
             selectedCompany={selectedCompany}
-            getAllCompanies={getAllCompanies}
-            onClose={async () => {
-              setEditCompanySwitch(false);
-            }}
+            onClose={() => setActiveModal(null)}
+            onSuccess={fetchCompanies}
           />
         </div>
       }
       {
-        removeCompanySwitch &&
+        activeModal === ModalType.REMOVE &&
         <div className='modal-dialog'>
           <RemoveCompanyModal
-            modalVisible={removeCompanySwitch}
+            modalVisible={activeModal === ModalType.REMOVE}
             selectedCompany={selectedCompany}
-            getAllCompanies={getAllCompanies}
-            onClose={async () => {
-              setRemoveCompanySwitch(false);
-            }}
+            onClose={() => setActiveModal(null)}
+            onSuccess={fetchCompanies}
           />
         </div>
       }

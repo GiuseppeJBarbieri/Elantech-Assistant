@@ -14,8 +14,8 @@ interface CompanyModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivE
     modalVisible: boolean;
     selectedCompany: ICompany;
     modalSwitch: number;
-    getAllCompanies: () => void;
-    onClose: () => Promise<void>;
+    onClose: () => void;
+    onSuccess: () => void;
 }
 
 const CompanyModalComponent: FunctionComponent<CompanyModalProps> = (props) => {
@@ -33,7 +33,7 @@ const CompanyModalComponent: FunctionComponent<CompanyModalProps> = (props) => {
                     :
                     await requestUpdateCompany(companyObj);
                 setIsSaving(false);
-                props.getAllCompanies();
+                props.onSuccess();
                 props.onClose();
             } catch (err) {
                 setAlert({ ...alert, label: `${err}`, show: true });

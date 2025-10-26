@@ -10,7 +10,7 @@ const repoErr: IRepoError = {
 };
 
 const QuotedProductRepository = {
-  ...BaseRepository(db.quotedProduct, repoErr),
+  ...BaseRepository(db.quotedProduct, repoErr, 'quotedProduct'),
 
   async GetByQuoteId(quoteId: number): Promise<IQuotedProduct[]> {
     try {

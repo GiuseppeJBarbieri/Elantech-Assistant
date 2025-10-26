@@ -75,12 +75,27 @@ export default class Server {
       this.broadcastToClients('product.updated', data);
     });
 
-    EventBus.on('quotes.updated', (data) => {
-      this.broadcastToClients('quotes.updated', data);
+    EventBus.on('quote.updated', (data) => {
+      this.broadcastToClients('quote.updated', data);
     });
 
+    EventBus.on('quotedProduct.updated', (data) => {
+      this.broadcastToClients('quotedProduct.updated', data);
+    });
     EventBus.on('inventory.updated', (data) => {
       this.broadcastToClients('inventory.updated', data);
+    });
+
+    EventBus.on('receiving.updated', (data) => {
+      this.broadcastToClients('receiving.updated', data);
+    });
+
+    EventBus.on('receivedItem.updated', (data) => {
+      this.broadcastToClients('receivedItem.updated', data);
+    });
+
+    EventBus.on('company.updated', (data) => {
+      this.broadcastToClients('company.updated', data);
     });
   }
 

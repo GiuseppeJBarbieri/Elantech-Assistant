@@ -4,6 +4,7 @@ import logger from '../../utils/logging/Logger';
 import IRepoError from '../../utils/interfaces/IRepoError';
 import IReceivedItem from './IReceivedItem';
 import BaseRepository from '../BaseRepository';
+import EventBus from '../../utils/EventBus';
 
 const repoErr: IRepoError = {
   location: 'ReceivedItemRepository.js',
@@ -11,7 +12,7 @@ const repoErr: IRepoError = {
 };
 
 const ReceivedItemRepository = {
-  ...BaseRepository(db.receivedItem, repoErr),
+  ...BaseRepository(db.receivedItem, repoErr, 'receivedItem'),
 
   /**
    * This function will add multiple ReceivedItems
@@ -26,8 +27,14 @@ const ReceivedItemRepository = {
         return rest;
       });
 
-      await db.receivedItem.bulkCreate(itemsToCreate, { transaction });
+      const createdItems = await db.receivedItem.bulkCreate(itemsToCreate, { transaction });
       await transaction.commit();
+      EventBus.emit('receivedItem.updated', {
+        action: 'bulkCreate',
+        ids: createdItems.map((item) => item.id),
+        timestamp: Date.now(),
+        data: createdItems,
+      });
       return Promise.resolve(receivedItems.map((item) => item.id));
     } catch (err) {
       await transaction.rollback();

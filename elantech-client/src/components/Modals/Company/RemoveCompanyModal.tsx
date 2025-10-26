@@ -10,8 +10,8 @@ import { SpinnerBlock } from '../../LoadingAnimation/SpinnerBlock';
 interface RemoveCompanyModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     modalVisible: boolean;
     selectedCompany: ICompany;
-    getAllCompanies: () => void;
-    onClose: () => Promise<void>;
+    onClose: () => void;
+    onSuccess: () => void;
 }
 
 const RemoveCompanyModalComponent: FunctionComponent<RemoveCompanyModalProps> = (props) => {
@@ -26,7 +26,7 @@ const RemoveCompanyModalComponent: FunctionComponent<RemoveCompanyModalProps> = 
         setTimeout(async () => {
             try {
                 await requestDeleteCompany(props.selectedCompany.id as number);
-                props.getAllCompanies();
+                props.onSuccess();
                 props.onClose();
             } catch (err) {
                 err == 'Error: Request failed with status code 401' ?
