@@ -8,12 +8,12 @@ import { CompanyModal } from '../../components/Modals/Company/CompanyModal';
 import { ExpandedQuoteRow } from '../../components/ExpandedQuoteRow/ExpandedQuoteRow';
 import ICompany from '../../types/ICompany';
 import { defaultCompany } from '../../constants/Defaults';
-import './Quotes.css';
 import { RemoveCompanyModal } from '../../components/Modals/Company/RemoveCompanyModal';
 import { DebounceInput } from 'react-debounce-input';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import { UseCompany } from '../../hooks/UseCompany';
 import { CustomAlert } from '../../components/Alerts/CustomAlert';
+import './Quotes.css';
 
 interface QuotesProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> { }
 
@@ -134,7 +134,7 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = () => {
 
   const customTotal = (from: number, to: number, size: number) => {
     return (
-      <span className="react-bootstrap-table-pagination-total"
+      <span className='react-bootstrap-table-pagination-total'
         style={{ marginLeft: 5 }}>
         {size} Results
       </span>)
@@ -146,37 +146,38 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = () => {
   };
 
   return (
-    <section className="text-white main-section overflow-auto">
+    <section className='text-white main-section overflow-auto'>
       <CustomAlert label={alert.label} type={alert.type} showAlert={alert.show} />
       <div style={{ padding: 20 }}>
         <div className='d-flex justify-content-between'>
           <h2 style={{ fontWeight: 300 }}>Quotes by Company</h2>
           <div>
-            <Button variant="dark" onClick={() => setActiveModal(ModalType.ADD)}>
-              <Plus height="25" width="25" style={{ marginTop: -3, marginLeft: -10 }} />Company
+            <Button variant='dark' onClick={() => setActiveModal(ModalType.ADD)}>
+              <Plus height='25' width='25' style={{ marginTop: -3, marginLeft: -10 }} />Company
             </Button>
           </div>
         </div>
         <hr />
         <ToolkitProvider
-          keyField="id"
+          keyField='id'
           data={displayedCompanies}
           columns={columns}
-          search >
+          search
+        >
           {
             props => {
               return (
                 <div>
                   <div>
                     <div className='d-flex' style={{ width: 'max-content' }}>
-                      <InputGroup className="mb-1">
-                        <InputGroup.Text id="basic-addon2">
+                      <InputGroup className='mb-1'>
+                        <InputGroup.Text id='basic-addon2'>
                           <Search />
                         </InputGroup.Text>
                         <DebounceInput
-                          type="text"
+                          type='text'
                           className='debounce'
-                          placeholder="Search..."
+                          placeholder='Search...'
                           debounceTimeout={500}
                           value={searchString}
                           onChange={e => {
@@ -186,9 +187,9 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = () => {
                       <div className='d-flex'>
                         <DropdownButton
                           key={'dark'}
-                          variant="dark"
-                          menuVariant="dark"
-                          title="Search History"
+                          variant='dark'
+                          menuVariant='dark'
+                          title=''
                           onSelect={e => {
                             setTimeout(() => handleSearch(e as string), 100);
                           }}
@@ -206,12 +207,12 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = () => {
                     <br />
                     <BootstrapTable
                       {...props.baseProps}
-                      keyField="id"
+                      keyField='id'
                       bootstrap4
                       data={displayedCompanies}
                       columns={columns}
-                      classes="table table-dark table-hover table-striped table-responsive"
-                      noDataIndication="Table is Empty"
+                      classes='table table-dark table-hover table-striped table-responsive'
+                      noDataIndication='Table is Empty'
                       pagination={paginationFactory(options)}
                       expandRow={{
                         onlyOneExpanding: true,
