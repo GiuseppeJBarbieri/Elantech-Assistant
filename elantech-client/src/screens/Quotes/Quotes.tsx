@@ -168,66 +168,64 @@ export const QuotesLayout: FunctionComponent<QuotesProps> = () => {
             props => {
               return (
                 <div>
-                  <div>
-                    <div className='d-flex' style={{ width: 'max-content' }}>
-                      <InputGroup className='mb-1'>
-                        <InputGroup.Text id='basic-addon2'>
-                          <Search />
-                        </InputGroup.Text>
-                        <DebounceInput
-                          type='text'
-                          className='debounce'
-                          placeholder='Search...'
-                          debounceTimeout={500}
-                          value={searchString}
-                          onChange={e => {
-                            handleSearch(e.target.value);
-                          }} />
-                      </InputGroup>
-                      <div className='d-flex'>
-                        <DropdownButton
-                          key={'dark'}
-                          variant='dark'
-                          menuVariant='dark'
-                          title=''
-                          onSelect={e => {
-                            setTimeout(() => handleSearch(e as string), 100);
-                          }}
-                        >
-                          {searchHistory.length > 0 ?
-                            searchHistory.map((o, index) => {
-                              return <Dropdown.Item key={index} eventKey={o}>{o}</Dropdown.Item>;
-                            })
-                            :
-                            <Dropdown.Item disabled>No History</Dropdown.Item>}
-                          <Dropdown.Item eventKey=''>Clear</Dropdown.Item>
-                        </DropdownButton>
-                      </div>
+                  <div className='d-flex' style={{ width: 'max-content' }}>
+                    <InputGroup className='mb-1'>
+                      <InputGroup.Text id='basic-addon2'>
+                        <Search />
+                      </InputGroup.Text>
+                      <DebounceInput
+                        type='text'
+                        className='debounce'
+                        placeholder='Search...'
+                        debounceTimeout={500}
+                        value={searchString}
+                        onChange={e => {
+                          handleSearch(e.target.value);
+                        }}
+                      />
+                    </InputGroup>
+                    <div className='d-flex'>
+                      <DropdownButton
+                        key={'dark'}
+                        variant='dark'
+                        menuVariant='dark'
+                        title=''
+                        onSelect={e => {
+                          setTimeout(() => handleSearch(e as string), 100);
+                        }}
+                      >
+                        {searchHistory.length > 0 ?
+                          searchHistory.map((o, index) => {
+                            return <Dropdown.Item key={index} eventKey={o}>{o}</Dropdown.Item>;
+                          })
+                          :
+                          <Dropdown.Item disabled>No History</Dropdown.Item>}
+                        <Dropdown.Item eventKey=''>Clear</Dropdown.Item>
+                      </DropdownButton>
                     </div>
-                    <br />
-                    <BootstrapTable
-                      {...props.baseProps}
-                      keyField='id'
-                      bootstrap4
-                      data={displayedCompanies}
-                      columns={columns}
-                      classes='table table-dark table-hover table-striped table-responsive'
-                      noDataIndication='Table is Empty'
-                      pagination={paginationFactory(options)}
-                      expandRow={{
-                        onlyOneExpanding: true,
-                        renderer: (row) => {
-                          return (
-                            <ExpandedQuoteRow
-                              selectedCompany={row}
-                              fetchCompanies={fetchCompanies}
-                            />
-                          )
-                        }
-                      }}
-                    />
                   </div>
+                  <br />
+                  <BootstrapTable
+                    {...props.baseProps}
+                    keyField='id'
+                    bootstrap4
+                    classes='table table-dark table-hover table-striped table-responsive'
+                    noDataIndication='Table is Empty'
+                    pagination={paginationFactory(options)}
+                    expandRow={{
+                      onlyOneExpanding: true,
+                      renderer: (row) => {
+                        return (
+                          <ExpandedQuoteRow
+                            selectedCompany={row}
+                            fetchCompanies={fetchCompanies}
+                          />
+                        )
+                      }
+                    }}
+                  />
                 </div>
+
               );
             }
           }

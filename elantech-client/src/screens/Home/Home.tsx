@@ -1,8 +1,7 @@
-import * as React from 'react';
-import { FunctionComponent, HTMLAttributes, useCallback, useMemo, useState } from 'react';
+import React, { FunctionComponent, HTMLAttributes, useState, useCallback, useMemo } from 'react';
 import filterFactory, { selectFilter } from 'react-bootstrap-table2-filter';
-import { Dropdown, DropdownButton, InputGroup } from 'react-bootstrap';
-import { Pencil, Search as SearchIcon, Trash } from 'react-bootstrap-icons';
+import { Button, Dropdown, DropdownButton, InputGroup } from 'react-bootstrap';
+import { Pencil, Plus, Search, Trash } from 'react-bootstrap-icons';
 import { DebounceInput } from 'react-debounce-input';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
@@ -156,84 +155,85 @@ export const HomeLayout: FunctionComponent<HomeProps> = () => {
     <section className='text-white main-section overflow-auto'>
       <div className='home-container'>
         <CustomAlert label={alert.label} type={alert.type} showAlert={alert.show} />
-        <TopHomeBar setAddProductSwitch={() => setActiveModal(ModalType.ADD)} />
+        <div className='d-flex justify-content-between'>
+          <h2 style={{ fontWeight: 300 }}>Products</h2>
+          <div>
+            <Button variant="dark" onClick={() => { setActiveModal(ModalType.ADD) }}>
+              <Plus height="25" width="25" style={{ marginTop: -3, marginLeft: -10 }} />New Product
+            </Button>
+          </div>
+        </div>
         <hr />
-        <div>
-          <ToolkitProvider
-            keyField='id'
-            data={displayedProducts}
-            columns={columns}
-            search
-          >
-            {
-              props => {
-                return (
-                  <div className='table-container'>
-                    <div>
-                      <div className='d-flex justify-content-between'>
-                        <div className='d-flex justify-space-between'>
-                          <InputGroup className='mb-3'>
-                            <InputGroup.Text id='basic-addon2'>
-                              <SearchIcon />
-                            </InputGroup.Text>
-                            <DebounceInput
-                              type='text'
-                              className='debounce'
-                              placeholder='Search...'
-                              debounceTimeout={500}
-                              value={searchString}
-                              onChange={e => {
-                                handleSearch(e.target.value);
-                              }} />
-                          </InputGroup>
-                          <InputGroup className='mb-3'>
-                            <DropdownButton
-                              key={'dark'}
-                              variant='dark'
-                              menuVariant='dark'
-                              title=''
-                              onSelect={e => {
-                                setTimeout(() => { handleSearch(e as string) }, 100);
-                              }}
-                            >
-                              {searchHistory.length > 0 ?
-                                searchHistory.map((o, index) => {
-                                  return <Dropdown.Item key={index} eventKey={o} >{o}</Dropdown.Item>;
-                                })
-                                :
-                                <Dropdown.Item disabled>No History</Dropdown.Item>}
-                              <Dropdown.Item eventKey=''>Clear</Dropdown.Item>
-                            </DropdownButton>
-                          </InputGroup>
-                        </div>
-                      </div>
-                      <br />
-                      <BootstrapTable
-                        {...props.baseProps}
-                        bootstrap4
-                        striped
-                        hover
-                        noDataIndication='TABLE IS EMPTY'
-                        pagination={paginationFactory(options)}
-                        filter={filterFactory()}
-                        classes='table table-dark table-hover table-striped table-responsive'
-                        expandRow={{
-                          onlyOneExpanding: true,
-                          renderer: (row: IProduct) => {
-                            return (
-                              <ExpandedProductRow
-                                selectedProduct={row}
-                                fetchProducts={fetchProducts} />
-                            );
-                          }
-                        }} />
+        <ToolkitProvider
+          keyField='id'
+          data={displayedProducts}
+          columns={columns}
+          search
+        >
+          {
+            props => {
+              return (
+                <div>
+                  <div className='d-flex' style={{ width: 'max-content' }}>
+                    <InputGroup className='mb-3'>
+                      <InputGroup.Text id='basic-addon2'>
+                        <Search />
+                      </InputGroup.Text>
+                      <DebounceInput
+                        type='text'
+                        className='debounce'
+                        placeholder='Search...'
+                        debounceTimeout={500}
+                        value={searchString}
+                        onChange={e => {
+                          handleSearch(e.target.value);
+                        }}
+                      />
+                    </InputGroup>
+                    <div className='d-flex'>
+                      <DropdownButton
+                        key={'dark'}
+                        variant='dark'
+                        menuVariant='dark'
+                        title=''
+                        onSelect={e => {
+                          setTimeout(() => { handleSearch(e as string) }, 100);
+                        }}
+                      >
+                        {searchHistory.length > 0 ?
+                          searchHistory.map((o, index) => {
+                            return <Dropdown.Item key={index} eventKey={o} >{o}</Dropdown.Item>;
+                          })
+                          :
+                          <Dropdown.Item disabled>No History</Dropdown.Item>}
+                        <Dropdown.Item eventKey=''>Clear</Dropdown.Item>
+                      </DropdownButton>
                     </div>
                   </div>
-                );
-              }
+                  <br />
+                  <BootstrapTable
+                    {...props.baseProps}
+                    bootstrap4
+                    classes='table table-dark table-hover table-striped table-responsive'
+                    noDataIndication='Table is Empty'
+                    pagination={paginationFactory(options)}
+                    filter={filterFactory()}
+                    expandRow={{
+                      onlyOneExpanding: true,
+                      renderer: (row: IProduct) => {
+                        return (
+                          <ExpandedProductRow
+                            selectedProduct={row}
+                            fetchProducts={fetchProducts} />
+                        );
+                      }
+                    }}
+                  />
+                </div>
+              );
             }
-          </ToolkitProvider>
-        </div>
+          }
+        </ToolkitProvider>
       </div>
       {
         activeModal === ModalType.ADD &&

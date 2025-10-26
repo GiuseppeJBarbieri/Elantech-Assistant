@@ -1,6 +1,6 @@
 import React, { FunctionComponent, HTMLAttributes, useState, useCallback, useMemo } from 'react';
 import { Button, DropdownButton, Dropdown, InputGroup } from 'react-bootstrap';
-import { Pencil, Plus, Search as SearchIcon, Trash } from 'react-bootstrap-icons';
+import { Pencil, Plus, Search, Trash } from 'react-bootstrap-icons';
 import BootstrapTable, { ColumnDescription } from 'react-bootstrap-table-next';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { AddReceivingOrderModal } from '../../components/Modals/Receiving/AddReceivingOrderModal';
@@ -9,7 +9,6 @@ import { ExpandedReceivingRow } from '../../components/ExpandedReceivingRow/Expa
 import IReceiving from '../../types/IReceiving';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import { DebounceInput } from 'react-debounce-input';
-import filterFactory from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { defaultReceiving } from '../../constants/Defaults';
 import { RemoveReceivingOrderModal } from '../../components/Modals/Receiving/RemoveReceivingOrderModal';
@@ -188,69 +187,61 @@ export const ReceivingLayout: FunctionComponent<ReceivingProps> = ({ history }) 
                         props => {
                             return (
                                 <div>
-                                    <div>
-                                        <div className='d-flex justify-content-between'>
-                                            <div className='d-flex justify-space-between'>
-                                                <InputGroup className='mb-3'>
-                                                    <InputGroup.Text id='basic-addon2'>
-                                                        <SearchIcon />
-                                                    </InputGroup.Text>
-                                                    <DebounceInput
-                                                        type='text'
-                                                        className='debounce'
-                                                        placeholder='Search...'
-                                                        debounceTimeout={500}
-                                                        value={searchString}
-                                                        onChange={e => {
-                                                            handleSearch(e.target.value);
-                                                        }} />
-                                                </InputGroup>
-                                                <InputGroup className='mb-3'>
-                                                    <DropdownButton
-                                                        key={'dark'}
-                                                        variant='dark'
-                                                        menuVariant='dark'
-                                                        title='Search History'
-                                                        onSelect={e => {
-                                                            setTimeout(() => handleSearch(e as string), 100);
-                                                        }}
-                                                    >
-                                                        {searchHistory.length > 0 ?
-                                                            searchHistory.map((o, index) => {
-                                                                return <Dropdown.Item key={index} eventKey={o}>{o}</Dropdown.Item>;
-                                                            })
-                                                            :
-                                                            <Dropdown.Item disabled>No History</Dropdown.Item>}
-                                                        <Dropdown.Item eventKey=''>Clear</Dropdown.Item>
-                                                    </DropdownButton>
-                                                </InputGroup>
-                                            </div>
+                                    <div className='d-flex' style={{ width: 'max-content' }}>
+                                        <InputGroup className='mb-1'>
+                                            <InputGroup.Text id='basic-addon2'>
+                                                <Search />
+                                            </InputGroup.Text>
+                                            <DebounceInput
+                                                type='text'
+                                                className='debounce'
+                                                placeholder='Search...'
+                                                debounceTimeout={500}
+                                                value={searchString}
+                                                onChange={e => {
+                                                    handleSearch(e.target.value);
+                                                }}
+                                            />
+                                        </InputGroup>
+                                        <div className='d-flex'>
+                                            <DropdownButton
+                                                key={'dark'}
+                                                variant='dark'
+                                                menuVariant='dark'
+                                                title=''
+                                                onSelect={e => {
+                                                    setTimeout(() => handleSearch(e as string), 100);
+                                                }}
+                                            >
+                                                {searchHistory.length > 0 ?
+                                                    searchHistory.map((o, index) => {
+                                                        return <Dropdown.Item key={index} eventKey={o}>{o}</Dropdown.Item>;
+                                                    })
+                                                    :
+                                                    <Dropdown.Item disabled>No History</Dropdown.Item>}
+                                                <Dropdown.Item eventKey=''>Clear</Dropdown.Item>
+                                            </DropdownButton>
                                         </div>
-                                        <br />
-                                        <BootstrapTable
-                                            {...props.baseProps}
-                                            data={displayedReceiving}
-                                            columns={columns}
-                                            bootstrap4
-                                            striped
-                                            hover
-                                            noDataIndication='TABLE IS EMPTY'
-                                            pagination={paginationFactory(options)}
-                                            filter={filterFactory()}
-                                            classes='table table-dark table-hover table-striped table-responsive'
-                                            expandRow={{
-                                                onlyOneExpanding: true,
-                                                renderer: (row, index) => {
-                                                    return (
-                                                        <ExpandedReceivingRow
-                                                            receiving={row}
-                                                            getAllReceiving={fetchReceiving}
-                                                        />
-                                                    )
-                                                }
-                                            }}
-                                        />
                                     </div>
+                                    <br />
+                                    <BootstrapTable
+                                        {...props.baseProps}
+                                        bootstrap4
+                                        classes='table table-dark table-hover table-striped table-responsive'
+                                        noDataIndication='Table is Empty'
+                                        pagination={paginationFactory(options)}
+                                        expandRow={{
+                                            onlyOneExpanding: true,
+                                            renderer: (row) => {
+                                                return (
+                                                    <ExpandedReceivingRow
+                                                        receiving={row}
+                                                        getAllReceiving={fetchReceiving}
+                                                    />
+                                                );
+                                            }
+                                        }}
+                                    />
                                 </div>
                             );
                         }
