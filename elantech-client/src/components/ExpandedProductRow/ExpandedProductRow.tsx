@@ -1,19 +1,24 @@
-import React, { useEffect } from 'react';
-import { FunctionComponent, HTMLAttributes, useRef, useState } from 'react';
+import React, { FunctionComponent, HTMLAttributes, useCallback, useRef, useMemo, useState } from 'react';
 import { Navbar, Nav, Button, Collapse } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import IInventory from '../../types/IInventory';
 import IProduct from '../../types/IProduct';
 import { AddInventoryModal } from '../Modals/Inventory/AddInventoryModal';
 import { AddSimpleQuoteModal } from '../Modals/Quote/AddSimpleQuoteModal';
 import { InventoryTable } from '../Tables/InventoryTable';
 import { EditInventoryAlertModal } from '../Modals/EditInventoryAlertModal';
-import { requestAllInventoryByProductID, requestAllQuotesByProductId as requestAllQuotedProductsByProductId } from '../../utils/Requests';
 import IQuotedProduct from '../../types/IQuotedProduct';
 import { AddOrEditOrderModal } from '../Modals/Inventory/AddOrEditOrderModal';
+import { useExpandedRowData } from '../../hooks/useExpandedRowData';
+import { SpinnerBlock } from '../LoadingAnimation/SpinnerBlock';
 
+enum ModalType {
+    ADD_INVENTORY = 'addInventory',
+    ADD_SIMPLE_QUOTE = 'addSimpleQuote',
+    ADD_INVENTORY_ALERT = 'addInventoryAlert',
+    HAS_ORDER_ALERT = 'hasOrderAlert',
+}
 
 interface ExpandedProductRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     selectedProduct: IProduct;
@@ -22,29 +27,13 @@ interface ExpandedProductRowProps extends RouteComponentProps, HTMLAttributes<HT
 const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = (props) => {
     const inventoryTimeout = useRef<NodeJS.Timeout>();
     const quotesTimeout = useRef<NodeJS.Timeout>();
-    const [openState, setOpenState] = useState(false);
-    const [addInventorySwitch, setAddInventorySwitch] = useState(false);
-    const [showHasOrderAlert, setShowHasOrderAlert] = useState(false);
-    const [addSimpleQuoteSwitch, setAddSimpleQuoteSwitch] = useState(false);
-    const [hideQuotes, setHideQuotes] = useState(true);
-    const [addInventoryAlertSwitch, setAddInventoryAlertSwitch] = useState(false);
-    const [viewQuotesLbl, setViewQuotesLbl] = useState('View Quotes');
-    const [expandInventoryLbl, setExpandInventoryLbl] = useState('Expand Inventory Table');
-    const [factorySealed, setFactorySealed] = useState(0);
-    const [newOpenedBox, setNewOpenedBox] = useState(0);
-    const [refurbished, setRefurbished] = useState(0);
-    const [renew, setRenew] = useState(0);
-    const [used, setUsed] = useState(0);
-    const [damaged, setDamaged] = useState(0);
-    const [inventory, setInventory] = useState<IInventory[]>([]);
-    const [quoteProductsList, setQuotedProductsList] = useState<IQuotedProduct[]>([]);
-    const [displayedQuoteInfo, setDisplayedQuoteInfo] = useState({
-        averageQuote: 0,
-        lastQuotedPrice: 0,
-        quotedBy: '',
-        quotedTo: '',
-    });
-    const quotes_column = [
+    const [isInventoryExpanded, setInventoryExpanded] = useState(false);
+    const [isQuotesView, setQuotesView] = useState(false);
+    const [activeModal, setActiveModal] = useState<ModalType | null>(null);
+
+    const { inventory, quotedProducts, loading, conditionCounts, quoteInfo, refetchData } = useExpandedRowData(props.selectedProduct.id);
+
+    const quotes_column = useMemo(() => [
         {
             dataField: 'quantity',
             text: 'Qty',
@@ -56,11 +45,9 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
         }, {
             dataField: 'quotedBy',
             text: 'Quoted By',
-            formatter: (cell: any, row: any) => {
-                if (row.quote.user.firstName != undefined || row.quote.user.lastName != undefined) {
-                    return `${row.quote.user.firstName}  ${row.quote.user.lastName}`;
-                }
-                return '';
+            formatter: (_: unknown, row: IQuotedProduct) => {
+                const { firstName, lastName } = row.quote?.user || {};
+                return `${firstName || ''}  ${lastName || ''}`.trim();
             },
             sort: true,
         }, {
@@ -77,107 +64,20 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
             sort: true,
             headerAlign: 'center',
         }
-    ];
+    ], []);
+
     const options = {
         custom: true,
         sizePerPage: 5,
-        totalSize: quoteProductsList.length
+        totalSize: quotedProducts.length
     };
-    const getAllInventory = (productId: number) => {
-        inventoryTimeout.current = setTimeout(async () => {
-            try {
-                const inventoryList = await requestAllInventoryByProductID(productId);
-                setInventory(inventoryList);
-                setConditionAmount(inventoryList);
-            } catch (err) {
-                console.log(err);
-            }
-        }, 400)
-    };
-    const getAllQuotedProducts = async (productId: number) => {
-        quotesTimeout.current = setTimeout(async () => {
-            try {
-                const request = await requestAllQuotedProductsByProductId(productId);
-                setQuotedProductsList(request);
-                if (request.length > 0) {
-                    let avgQuote = 0;
-                    let earliestDate = {
-                        date: request[0].quote?.dateQuoted as Date,
-                        index: 0,
-                    };
-                    request.forEach((quote, index) => {
-                        avgQuote += quote.quotedPrice;
-                        if (new Date(earliestDate.date as Date) < new Date(quote.quote?.dateQuoted as Date)) {
-                            earliestDate = {
-                                date: quote.quote?.dateQuoted as Date,
-                                index: index
-                            };
-                        }
-                    });
-                    avgQuote = avgQuote / request.length;
-                    setDisplayedQuoteInfo({
-                        averageQuote: avgQuote,
-                        quotedTo: request[earliestDate.index].quote?.company?.name as string,
-                        quotedBy: request[earliestDate.index].quote?.user?.firstName as string,
-                        lastQuotedPrice: request[earliestDate.index].quotedPrice,
-                    });
-                    return;
-                } else {
-                    setDisplayedQuoteInfo({
-                        averageQuote: 0,
-                        quotedTo: '',
-                        quotedBy: '',
-                        lastQuotedPrice: 0,
-                    });
-                }
-            } catch (err) {
-                console.log(err);
-            }
-        }, 400)
-    }
-    const setConditionAmount = (inventory: IInventory[]) => {
-        const cond = {
-            nob: 0,
-            dmg: 0,
-            fs: 0,
-            ref: 0,
-            ren: 0,
-            usd: 0,
-        };
-        for (const item of inventory) {
-            if (item.condition === 'New Factory Sealed') {
-                cond.fs = cond.fs + 1;
-            } else if (item.condition === 'New Opened Box') {
-                cond.nob = cond.nob + 1;
-            } else if (item.condition === 'Refurbished') {
-                cond.ref = cond.ref + 1;
-            } else if (item.condition === 'Renew') {
-                cond.ren = cond.ren + 1;
-            } else if (item.condition === 'Used') {
-                cond.usd = cond.usd + 1;
-            } else if (item.condition === 'Damaged') {
-                cond.dmg = cond.dmg + 1;
-            }
-        }
-        setNewOpenedBox(cond.nob);
-        setFactorySealed(cond.fs);
-        setRefurbished(cond.ref);
-        setRenew(cond.ren);
-        setUsed(cond.usd);
-        setDamaged(cond.dmg);
-    };
-    useEffect(() => {
-        if (props.selectedProduct.id !== undefined) {
-            getAllInventory(props.selectedProduct.id);
-            getAllQuotedProducts(props.selectedProduct.id);
-        }
 
-        return () => {
-            // Clear timeouts when the component unmounts
-            inventoryTimeout.current && clearTimeout(inventoryTimeout.current);
-            quotesTimeout.current && clearTimeout(quotesTimeout.current);
+    const handleOpenLink = useCallback((url: string | null | undefined) => {
+        if (url) {
+            window.open(url, "_blank", 'noopener,noreferrer');
         }
-    }, [props.selectedProduct.id]);
+    }, []);
+
     return (
         <div style={{ padding: 20 }} className='expandedProductRow'>
             <Navbar bg="dark" variant="dark">
@@ -185,55 +85,80 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                 <Nav className="me-auto">
                     {(props.selectedProduct.ebayUrl as string) != null &&
                         <Nav.Link onClick={async () => {
-                            window.open(props.selectedProduct.ebayUrl, "_blank", 'noopener,noreferrer')
+                            handleOpenLink(props.selectedProduct.ebayUrl)
                         }}>
                             Ebay Listing
                         </Nav.Link>
                     }
                     {(props.selectedProduct.websiteUrl as string) != null &&
-                        <Nav.Link onClick={async () => {
-                            window.open(props.selectedProduct.websiteUrl)
-                        }}>
+                        <Nav.Link onClick={() => handleOpenLink(props.selectedProduct.websiteUrl)}>
                             Website Listing
                         </Nav.Link>
                     }
                     {(props.selectedProduct.quickSpecsUrl as string) != null &&
-                        <Nav.Link onClick={async () => {
-                            window.open(props.selectedProduct.quickSpecsUrl)
-                        }}>
+                        <Nav.Link onClick={() => handleOpenLink(props.selectedProduct.quickSpecsUrl)}>
                             HPE Quick Specs
                         </Nav.Link>
                     }
-                    <Nav.Link onClick={() => {
-                        setAddSimpleQuoteSwitch(true);
-                    }}>
+                    <Nav.Link onClick={() => setActiveModal(ModalType.ADD_SIMPLE_QUOTE)}>
                         Quick Quote
                     </Nav.Link>
-                    <Nav.Link onClick={() => {
-                        setAddInventorySwitch(true);
-                        setShowHasOrderAlert(true);
-                    }
-                    }>Add Inventory</Nav.Link>
-                    <Nav.Link onClick={() => {
-                        setHideQuotes(!hideQuotes);
-                        if (viewQuotesLbl === 'View Quotes') {
-                            setViewQuotesLbl('Hide Quotes')
-                        } else {
-                            setViewQuotesLbl('View Quotes')
-                        }
-                    }}>{viewQuotesLbl}</Nav.Link>
+                    <Nav.Link onClick={() => setActiveModal(ModalType.HAS_ORDER_ALERT)}>Add Inventory</Nav.Link>
+                    <Nav.Link onClick={() => setQuotesView(!isQuotesView)}>
+                        {isQuotesView ? 'Hide Quotes' : 'View Quotes'}
+                    </Nav.Link>
                 </Nav>
             </Navbar>
-            {hideQuotes ?
+            {loading ? <SpinnerBlock /> : isQuotesView ?
+                <div>
+                    <hr />
+                    <div id="example-collapse-text">
+                        <br />
+                        <PaginationProvider
+                            pagination={paginationFactory(options)}
+                        >
+                            {
+                                ({
+                                    paginationProps,
+                                    paginationTableProps
+                                }) => (
+                                    <div>
+                                        <BootstrapTable
+                                            key='quote_table'
+                                            bootstrap4
+                                            condensed
+                                            {...paginationTableProps}
+                                            columns={quotes_column}
+                                            keyField="id"
+                                            data={quotedProducts}
+                                            classes="table table-dark table-hover table-striped"
+                                            noDataIndication="Table is Empty"
+                                        />
+                                        <div className='d-flex justify-content-between'>
+                                            <SizePerPageDropdownStandalone
+                                                {...paginationProps}
+                                            />
+                                            <PaginationListStandalone
+                                                {...paginationProps}
+                                            />
+                                        </div>
+                                    </div>
+                                )
+                            }
+                        </PaginationProvider>
+                    </div>
+                    <hr />
+                </div>
+                :
                 <div>
                     <hr />
                     <div className='d-flex justify-content-between' style={{ paddingLeft: 15, paddingRight: 15 }}>
-                        <p>Factory Sealed: {factorySealed}</p>
-                        <p>New Opened Box: {newOpenedBox}</p>
-                        <p>Refurbished: {refurbished}</p>
-                        <p>Renew: {renew}</p>
-                        <p>Used: {used}</p>
-                        <p>Damaged: {damaged}</p>
+                        <p>Factory Sealed: {conditionCounts.factorySealed}</p>
+                        <p>New Opened Box: {conditionCounts.newOpenedBox}</p>
+                        <p>Refurbished: {conditionCounts.refurbished}</p>
+                        <p>Renew: {conditionCounts.renew}</p>
+                        <p>Used: {conditionCounts.used}</p>
+                        <p>Damaged: {conditionCounts.damaged}</p>
                     </ div>
                     <hr />
                     <div className='d-flex' style={{ padding: 20, justifyContent: 'space-between' }}>
@@ -271,128 +196,82 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                                 <p><strong style={{ fontWeight: 500 }}>Quoted To:</strong></p>
                             </div>
                             <div>
-                                <p>$ {displayedQuoteInfo.averageQuote.toFixed(2)}</p>
-                                <p>$ {displayedQuoteInfo.lastQuotedPrice.toFixed(2)}</p>
-                                <p>{displayedQuoteInfo.quotedBy}</p>
-                                <p>{displayedQuoteInfo.quotedTo}</p>
+                                <p>$ {quoteInfo.averageQuote.toFixed(2)}</p>
+                                <p>$ {quoteInfo.lastQuotedPrice.toFixed(2)}</p>
+                                <p>{quoteInfo.quotedBy}</p>
+                                <p>{quoteInfo.quotedTo}</p>
                             </div>
                         </ div>
                     </ div>
                     <hr />
                     <div style={{ textAlign: 'center' }}>
                         <Button
-                            aria-controls="example-collapse-text"
-                            aria-expanded={openState}
+                            aria-controls="inventory-collapse-text"
+                            aria-expanded={isInventoryExpanded}
                             variant='dark'
-                            onClick={() => {
-                                setOpenState(!openState);
-                                if (expandInventoryLbl === 'Expand Inventory Table') {
-                                    setExpandInventoryLbl('Collapse Inventory Table')
-                                } else {
-                                    setExpandInventoryLbl('Expand Inventory Table')
-                                }
-                            }}
+                            onClick={() => setInventoryExpanded(!isInventoryExpanded)}
                         >
-                            {expandInventoryLbl}
+                            {isInventoryExpanded ? 'Collapse Inventory Table' : 'Expand Inventory Table'}
                         </Button>
-                        <Collapse in={openState}>
-                            <div id="example-collapse-text" style={{ height: 'auto' }}>
+                        <Collapse in={isInventoryExpanded}>
+                            <div id="inventory-collapse-text" style={{ height: 'auto' }}>
                                 <InventoryTable
                                     inventory={inventory}
                                     selectedProduct={props.selectedProduct}
-                                    onInventoryUpdate={getAllInventory}
+                                    onInventoryUpdate={refetchData}
                                 />
                             </div>
                         </Collapse>
                     </div>
                     <hr />
                 </div>
-                :
-                <div>
-                    <hr />
-                    <div id="example-collapse-text">
-                        <br />
-                        <PaginationProvider
-                            pagination={paginationFactory(options)}
-                        >
-                            {
-                                ({
-                                    paginationProps,
-                                    paginationTableProps
-                                }) => (
-                                    <div>
-                                        <BootstrapTable
-                                            key='quote_table'
-                                            bootstrap4
-                                            condensed
-                                            {...paginationTableProps}
-                                            columns={quotes_column}
-                                            keyField="id"
-                                            data={quoteProductsList}
-                                            classes="table table-dark table-hover table-striped"
-                                            noDataIndication="Table is Empty"
-                                        />
-                                        <div className='d-flex justify-content-between'>
-                                            <SizePerPageDropdownStandalone
-                                                {...paginationProps}
-                                            />
-                                            <PaginationListStandalone
-                                                {...paginationProps}
-                                            />
-                                        </div>
-                                    </div>
-                                )
-                            }
-                        </PaginationProvider>
-                    </div>
-                    <hr />
-                </div>
             }
             {
-                addInventoryAlertSwitch &&
+                activeModal === ModalType.ADD_INVENTORY_ALERT &&
                 <div className='modal-dialog'>
                     <EditInventoryAlertModal
-                        modalVisible={addInventoryAlertSwitch}
-                        onClose={async () => {
-                            setAddInventoryAlertSwitch(false);
+                        modalVisible={activeModal === ModalType.ADD_INVENTORY_ALERT}
+                        onClose={() => setActiveModal(null)}
+                        onContinue={() => {
+                            setActiveModal(ModalType.ADD_INVENTORY);
                         }}
                     />
                 </div>
             }
             {
-                addInventorySwitch &&
+                activeModal === ModalType.ADD_INVENTORY &&
                 <div className='modal-dialog'>
                     <AddInventoryModal
-                        modalVisible={addInventorySwitch}
+                        modalVisible={activeModal === ModalType.ADD_INVENTORY}
                         selectedProduct={props.selectedProduct}
-                        onClose={async () => {
-                            setAddInventorySwitch(false);
+                        onClose={() => setActiveModal(null)}
+                        onSuccess={() => {
+                            refetchData();
+                            props.fetchProducts();
                         }}
                     />
                 </div>
             }
             {
-                /// TODO
-                showHasOrderAlert &&
+                activeModal === ModalType.HAS_ORDER_ALERT &&
                 <div className='modal-dialog'>
                     <AddOrEditOrderModal
-                        modalVisible={showHasOrderAlert}
-                        onClose={async () => {
-                            setShowHasOrderAlert(false);
+                        modalVisible={activeModal === ModalType.HAS_ORDER_ALERT}
+                        onClose={() => setActiveModal(null)}
+                        onContinue={() => {
+                            setActiveModal(ModalType.ADD_INVENTORY);
                         }}
                     />
                 </div>
             }
             {
-                addSimpleQuoteSwitch &&
+                activeModal === ModalType.ADD_SIMPLE_QUOTE &&
                 <div className='modal-dialog'>
                     <AddSimpleQuoteModal
-                        modalVisible={addSimpleQuoteSwitch}
+                        modalVisible={activeModal === ModalType.ADD_SIMPLE_QUOTE}
                         selectedProduct={props.selectedProduct}
-                        getAllQuotes={getAllQuotedProducts}
-                        onClose={async () => {
-                            setAddSimpleQuoteSwitch(false);
-                        }}
+                        getAllQuotes={refetchData}
+                        onClose={() => setActiveModal(null)}
                     />
                 </div>
             }

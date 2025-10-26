@@ -2,12 +2,13 @@ import React, { HTMLAttributes, FunctionComponent } from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { PAGE_ROUTES } from '../../../constants/PageRoutes';
-
+ 
 interface AddOrEditOrderModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
-    onClose: () => Promise<void>;
+    onClose: () => void;
     modalVisible: boolean;
+    onContinue: () => void;
 }
-
+ 
 const AddOrEditOrderModalComponent: FunctionComponent<AddOrEditOrderModalProps> = (props) => {
     return (
         <div>
@@ -40,13 +41,7 @@ const AddOrEditOrderModalComponent: FunctionComponent<AddOrEditOrderModalProps> 
                     <Button
                         variant="primary"
                         onClick={() => {
-                            props.onClose();
-                            
-                            /*
-                                TODO
-                                need to CLose this Modal, then Navigate to Add Inventory Modal
-                                Add this to Expanded Product Row class
-                            */
+                            props.onContinue();
                         }}>
                         Continue
                     </Button>

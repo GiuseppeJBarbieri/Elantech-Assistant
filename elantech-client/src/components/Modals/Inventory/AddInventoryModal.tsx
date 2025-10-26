@@ -10,9 +10,10 @@ import { defaultAlert } from '../../../constants/Defaults';
 import { requestAddInventory, requestAddMultipleInventory } from '../../../utils/Requests';
 
 interface AddInventoryModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
-    onClose: () => Promise<void>;
+    onClose: () => void;
     modalVisible: boolean;
     selectedProduct: IProduct;
+    onSuccess: () => void;
 }
 const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props) => {
     const [alert, setAlert] = useState(defaultAlert);
@@ -40,6 +41,7 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                 await requestAddInventory(addInvObj);
                 setInventoryObj({ ...inventoryObj, serialNumber: '' });
                 setIsSaving(false);
+                props.onSuccess();
             } catch (err) {
                 setAlert({ ...alert, label: `${err}`, show: true });
                 setTimeout(() => setAlert({ ...alert, show: false }), 3000);
@@ -61,6 +63,7 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
             try {
                 await requestAddMultipleInventory(tmpList);
                 setIsSaving(false);
+                props.onSuccess();
                 props.onClose();
             } catch (err) {
                 setAlert({ ...alert, label: `${err}`, show: true });

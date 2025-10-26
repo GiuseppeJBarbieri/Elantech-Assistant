@@ -270,7 +270,6 @@ export const HomeLayout: FunctionComponent<HomeProps> = () => {
           />
         </div>
       }
-
     </section >
   );
 };

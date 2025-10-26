@@ -1,11 +1,13 @@
 
 import React, { HTMLAttributes, FunctionComponent } from "react";
-import { Modal, Form, Button } from "react-bootstrap";
+import { Modal, Button } from "react-bootstrap";
 import { RouteComponentProps, withRouter } from "react-router-dom";
+import { PAGE_ROUTES } from "../../constants/PageRoutes";
 
 interface EditInventoryAlertModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
-    onClose: () => Promise<void>;
+    onClose: () => void;
     modalVisible: boolean;
+    onContinue: () => void;
 }
 
 const EditInventoryAlertModalComponent: FunctionComponent<EditInventoryAlertModalProps> = (props) => {
@@ -18,35 +20,26 @@ const EditInventoryAlertModalComponent: FunctionComponent<EditInventoryAlertModa
             >
                 <Modal.Header style={{ background: '#212529', color: 'white', borderBottom: '1px solid rgb(61 66 70)' }} closeButton>
                     <Modal.Title>
-                        <h2 style={{ verticalAlign: '', fontWeight: 300 }}>Adding Inventory</h2>
-                        <p style={{ color: 'darkgray', fontSize: 18, fontWeight: 300 }}>Do you have a po number?</p>
+                        <h2 style={{ verticalAlign: '', fontWeight: 300 }}>Existing Order?</h2>
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body style={{ background: '#2c3034', color: 'white' }}>
-                    <div className='container d-grid gap-2' style={{ marginBottom: 15 }}>
-                            <Form className="container d-grid" >
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Please enter a reason for removal</Form.Label>
-                                    <Form.Select aria-label="Default select example">
-                                        <option>Too many added</option>
-                                        <option value="CPU">No longer here</option>
-                                        <option value="Riser">Other</option>
-                                        <option value="Other">Other</option>
-                                    </Form.Select>
-                                </Form.Group>
-                            </Form>
-                    </div>
+                    <p>If you have a PO or would like to create one, please select Go to Receiving. Otherwise, select Continue.</p>
                 </Modal.Body>
-                <Modal.Footer style={{ background: '#212529', color: 'white', borderTop: '1px solid rgb(61 66 70)', display: 'left' }}>
-                    <div style={{ textAlign: 'center' }}>
-                        <Button
-                            variant="dark"
-                            onClick={async () => {
-                                props.onClose();
-                            }}>
-                            Finish
-                        </Button>
-                    </div>
+                <Modal.Footer style={{ background: '#212529', color: 'white', borderTop: '1px solid rgb(61 66 70)' }}>
+                    <Button
+                        variant="secondary"
+                        onClick={() => {
+                            props.onClose();
+                            props.history.replace(PAGE_ROUTES.RECEIVING);
+                        }}>
+                        Go to Receiving
+                    </Button>
+                    <Button
+                        variant="primary"
+                        onClick={props.onContinue}>
+                        Continue
+                    </Button>
                 </Modal.Footer>
             </Modal>
         </div>

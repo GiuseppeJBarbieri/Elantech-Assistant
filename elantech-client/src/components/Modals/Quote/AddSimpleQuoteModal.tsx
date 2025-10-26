@@ -15,10 +15,10 @@ import { DebounceInput } from 'react-debounce-input';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 
 interface AddSimpleQuoteModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
-    onClose: () => Promise<void>;
+    onClose: () => void;
     modalVisible: boolean;
     selectedProduct: IProduct;
-    getAllQuotes: (productId: number) => void;
+    getAllQuotes: () => void;
 }
 
 const AddSimpleQuoteModalComponent: FunctionComponent<AddSimpleQuoteModalProps> = (props) => {
@@ -109,7 +109,7 @@ const AddSimpleQuoteModalComponent: FunctionComponent<AddSimpleQuoteModalProps> 
                     quotedProduct.productId = props.selectedProduct.id as number;
                     quote.quotedProducts = [quotedProduct];
                     await requestAddQuote(quote);
-                    props.getAllQuotes(props.selectedProduct.id as number);
+                    props.getAllQuotes();
                     setIsSaving(false);
                     props.onClose();
                 } catch (err) {
