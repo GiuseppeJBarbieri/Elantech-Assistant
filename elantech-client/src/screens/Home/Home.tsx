@@ -9,7 +9,6 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { ExpandedProductRow } from '../../components/ExpandedProductRow/ExpandedProductRow';
 import { ProductModal } from '../../components/Modals/Product/ProductModal';
 import { RemoveProductModal } from '../../components/Modals/Product/RemoveProductModal';
-import { TopHomeBar } from '../../components/TopPageBars/TopHomeBar';
 import { defaultProduct } from '../../constants/Defaults';
 import { brandOptionsList, typeOptionsList } from '../../constants/Options';
 import IProduct from '../../types/IProduct';
