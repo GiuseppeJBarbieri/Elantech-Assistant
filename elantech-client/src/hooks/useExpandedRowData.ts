@@ -19,7 +19,7 @@ interface QuoteInfo {
     quotedTo: string;
 }
 
-export const useExpandedRowData = (productId: number | undefined) => {
+export const UseExpandedRowData = (productId: number | undefined) => {
     const [inventory, setInventory] = useState<IInventory[]>([]);
     const [quotedProducts, setQuotedProducts] = useState<IQuotedProduct[]>([]);
     const [loading, setLoading] = useState(true);

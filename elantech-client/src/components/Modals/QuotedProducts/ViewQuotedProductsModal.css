@@ -1,0 +1,46 @@
+.modal-header-custom {
+    background: #212529;
+    color: white;
+    border-bottom: 1px solid rgb(61 66 70);
+}
+
+.modal-title-custom {
+    font-weight: 300;
+}
+
+.modal-title-sub-custom {
+    color: darkgray;
+    font-size: 18px;
+    font-weight: 300;
+}
+
+.modal-body-custom {
+    background: #2c3034;
+    color: white;
+}
+
+.spinner-div-custom {
+    margin: auto;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.form-label-custom {
+    font-weight: 300;
+}
+
+.form-label-title-custom {
+    font-weight: 300;
+    font-size: 18px;
+}
+
+.info-container-custom {
+    display: inline-grid;
+}
+
+.modal-footer-custom {
+    background: #212529;
+    color: white;
+    border-top: 1px solid rgb(61 66 70);
+    display: flex; /* Changed from 'left' to 'flex' for valid CSS */
+}

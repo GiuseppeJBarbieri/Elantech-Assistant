@@ -1,0 +1,55 @@
+.modal-header-edit-multi {
+    background: #212529;
+    color: white;
+    border-bottom: 1px solid rgb(61 66 70);
+}
+
+.modal-title-edit-multi {
+    font-weight: 300;
+}
+
+.modal-title-sub-edit-multi {
+    color: darkgray;
+    font-size: 18px;
+    font-weight: 300;
+}
+
+.modal-body-edit-multi {
+    background: #2c3034;
+    color: white;
+}
+
+.container-edit-multi {
+    margin-bottom: 15px;
+}
+
+.form-title-edit-multi {
+    font-weight: 300;
+}
+
+.form-container-edit-multi {
+    display: flex;
+    justify-content: space-between;
+}
+
+.radio-group-container-edit-multi {
+    text-align: center;
+    padding-top: 7px;
+}
+
+.submit-button-container-edit-multi {
+    text-align: center;
+    display: grid;
+    margin-top: 47px;
+    height: 40px;
+}
+
+.modal-footer-edit-multi {
+    background: #212529;
+    color: white;
+    border-top: 1px solid rgb(61 66 70);
+}
+
+.footer-button-container-edit-multi {
+    text-align: center;
+}

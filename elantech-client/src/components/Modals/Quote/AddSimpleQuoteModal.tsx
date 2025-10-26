@@ -1,6 +1,6 @@
 import React, { HTMLAttributes, FunctionComponent, useEffect, useState } from 'react';
-import { Modal, Form, Button, Col, InputGroup } from 'react-bootstrap';
-import BootstrapTable, { SelectRowProps } from 'react-bootstrap-table-next';
+import { Modal, Form, Button, InputGroup } from 'react-bootstrap';
+import BootstrapTable, { ColumnDescription, SelectRowProps } from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { requestAddQuote, requestAllCompanies } from '../../../utils/Requests';
@@ -8,11 +8,14 @@ import { defaultAlert, defaultQuote, defaultQuotedProduct } from '../../../const
 import { conditionList } from '../../../constants/Options';
 import ICompany from '../../../types/ICompany';
 import IProduct from '../../../types/IProduct';
+import IQuote from '../../../types/IQuote';
+import IQuotedProduct from '../../../types/IQuotedProduct';
 import { SpinnerBlock } from '../../LoadingAnimation/SpinnerBlock';
 import { CustomAlert } from '../../Alerts/CustomAlert';
 import { Search } from 'react-bootstrap-icons';
 import { DebounceInput } from 'react-debounce-input';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
+import './AddSimpleQuoteModal.css';
 
 interface AddSimpleQuoteModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     onClose: () => void;
@@ -21,71 +24,45 @@ interface AddSimpleQuoteModalProps extends RouteComponentProps, HTMLAttributes<H
     getAllQuotes: () => void;
 }
 
+const customTotal = (from: number, to: number, size: number) => (
+    <span className="react-bootstrap-table-pagination-total" style={{ marginLeft: 5 }}>
+        {size} Results
+    </span>
+);
+
+const paginationOptions = {
+    showTotal: true,
+    paginationTotalRenderer: customTotal,
+};
+
+const companyTableColumns: ColumnDescription<ICompany>[] = [
+    { dataField: 'type', text: 'Type', sort: true },
+    { dataField: 'name', text: 'Name', sort: true },
+    { dataField: 'representative', text: 'Representative', sort: true },
+    { dataField: 'phone', text: 'Phone Number', sort: false, headerAlign: 'center' },
+    { dataField: 'email', text: 'Email', sort: false, headerAlign: 'center' },
+    { dataField: 'location', text: 'Location', sort: false },
+    { dataField: 'comments', text: 'Comments', sort: false },
+];
+
+const handleSearch = (input: string, searchProps: { onSearch: (value: string) => void; }) => {
+    if (input !== undefined) {
+        searchProps.onSearch(input);
+    }
+};
+
 const AddSimpleQuoteModalComponent: FunctionComponent<AddSimpleQuoteModalProps> = (props) => {
     const [companyList, setCompanyList] = useState<ICompany[]>([]);
     const [isSaving, setIsSaving] = useState(false);
     const [alert, setAlert] = useState(defaultAlert);
-    const [quote, setQuote] = useState(defaultQuote);
-    const [quotedProduct, setQuotedProduct] = useState(defaultQuotedProduct);
-    const [searchString] = useState<string>('');
-    const [isSearching] = useState(false);
-    const [dateQuoted, setDateQuoted] = useState<Date>(new Date());
+    const [quote, setQuote] = useState<IQuote>(defaultQuote);
+    const [quotedProduct, setQuotedProduct] = useState<IQuotedProduct>(defaultQuotedProduct);
 
-    const customTotal = (from: number, to: number, size: number) => {
-        return (
-            <span className="react-bootstrap-table-pagination-total"
-                style={{ marginLeft: 5 }}>
-                {size} Results
-            </span>)
-    };
-    const options = {
-        showTotal: true,
-        paginationTotalRenderer: customTotal,
-    };
-    const column = [
-        {
-            dataField: 'type',
-            text: 'Type',
-            sort: true,
-        },
-        {
-            dataField: 'name',
-            text: 'Name',
-            sort: true,
-        },
-        {
-            dataField: 'representative',
-            text: 'Representative',
-            sort: true,
-        },
-        {
-            dataField: 'phone',
-            text: 'Phone Number',
-            sort: false,
-            headerAlign: 'center',
-        },
-        {
-            dataField: 'email',
-            text: 'Email',
-            sort: false,
-            headerAlign: 'center',
-        },
-        {
-            dataField: 'location',
-            text: 'Location',
-            sort: false,
-        },
-        {
-            dataField: 'comments',
-            text: 'Comments',
-            sort: false,
-        },
-    ];
     const getCompanyList = async () => {
-        const req = await requestAllCompanies();
-        setCompanyList(req);
-    }
-    const selectRow = {
+        setCompanyList(await requestAllCompanies());
+    };
+
+    const selectRow: SelectRowProps<ICompany> = {
         mode: 'radio',
         clickToSelect: true,
         bgColor: '#0da7fd73 !important',
@@ -93,53 +70,68 @@ const AddSimpleQuoteModalComponent: FunctionComponent<AddSimpleQuoteModalProps> 
             setQuote({ ...quote, companyId: (row.id as number) });
         },
     };
+
     const submitQuote = () => {
         setIsSaving(true);
         setTimeout(async () => {
-            if (quotedProduct.productCondition === '' || quotedProduct.quantity === 0 || !quote.dateQuoted) {
-                setAlert({ ...alert, label: 'Missing Required Information!', show: true });
-                setTimeout(() => setAlert({ ...alert, show: false }), 3000);
-                setIsSaving(false);
-            } else if (quote.companyId === 0) {
-                setAlert({ ...alert, label: 'Please Select a Company', show: true });
-                setTimeout(() => setAlert({ ...alert, show: false }), 3000);
-                setIsSaving(false);
+            if (quotedProduct.productCondition === '' || quotedProduct.productCondition === 'Condition' || quotedProduct.quantity === 0 || quotedProduct.quotedPrice === 0) {
+                setAlert({ label: 'Missing Required Information!', show: true, type: 'danger' });
+            } else if (!quote.companyId) {
+                setAlert({ label: 'Please Select a Company', show: true, type: 'danger' });
             } else {
                 try {
-                    quotedProduct.productId = props.selectedProduct.id as number;
-                    quote.quotedProducts = [quotedProduct];
-                    await requestAddQuote(quote);
+                    const finalQuote: IQuote = {
+                        ...quote,
+                        quotedProducts: [{ ...quotedProduct, productId: props.selectedProduct.id as number }],
+                    };
+                    await requestAddQuote(finalQuote);
                     props.getAllQuotes();
-                    setIsSaving(false);
                     props.onClose();
                 } catch (err) {
-                    setAlert({ ...alert, label: `${err}`, show: true });
-                    setTimeout(() => setAlert({ ...alert, show: false }), 3000);
+                    setAlert({ label: `${err}`, show: true, type: 'danger' });
+                } finally {
                     setIsSaving(false);
                 }
             }
+
+            if (alert.show) {
+                setIsSaving(false);
+                setTimeout(() => setAlert(defaultAlert), 3000);
+            }
         }, 500);
     };
-    const handleSearch = (input: string, props: { searchText?: string; onSearch: any; onClear?: () => void; }) => {
-        if (input !== undefined) {
-            props.onSearch(input);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        const { id, value } = e.target;
+        const isNumericField = ['quantity', 'quotedPrice'].includes(id);
+
+        if (['sold', 'dateQuoted'].includes(id)) {
+            const newQuoteValue = id === 'sold' ? value === 'true' : new Date(value);
+            setQuote(prev => ({ ...prev, [id]: newQuoteValue }));
+        } else {
+            setQuotedProduct(prev => ({
+                ...prev,
+                [id]: isNumericField ? (value === '' ? 0 : parseFloat(value)) : value,
+            }));
         }
     };
+
     useEffect(() => {
         getCompanyList();
-    }, [setCompanyList]);
+    }, []);
+
     return (
         <div>
             <Modal backdrop="static" show={props.modalVisible} onHide={props.onClose} fullscreen={true}>
-                <Modal.Header style={{ background: '#212529', color: 'white', borderBottom: '1px solid rgb(61 66 70)' }} closeButton>
+                <Modal.Header className="modal-header-simple-quote" closeButton>
                     <Modal.Title>
-                        <h2 style={{ verticalAlign: '', fontWeight: 300 }} >Quick Quote</h2>
-                        <p style={{ color: 'darkgray', fontSize: 18, fontWeight: 300 }}>Please enter quote information.</p>
+                        <h2 className="modal-title-simple-quote">Quick Quote</h2>
+                        <p className="modal-subtitle-simple-quote">Please enter quote information.</p>
                         <p className={'required-text'}>Required *</p>
                     </Modal.Title>
                 </Modal.Header>
-                <Modal.Body style={{ background: '#2c3034', color: 'white' }}>
-                    <div className='container d-grid gap-2' style={{ marginBottom: 15 }}>
+                <Modal.Body className="modal-body-simple-quote">
+                    <div className='container d-grid gap-2 container-simple-quote'>
                         {isSaving ?
                             <SpinnerBlock />
                             :
@@ -147,9 +139,12 @@ const AddSimpleQuoteModalComponent: FunctionComponent<AddSimpleQuoteModalProps> 
                                 <CustomAlert label={alert.label} type={alert.type} showAlert={alert.show} />
                                 <Form.Group className="mb-3">
                                     <Form.Label>Condition<Form.Label className={'required-text-asterisk'}>*</Form.Label></Form.Label>
-                                    <Form.Select aria-label="Default select example"
+                                    <Form.Select
+                                        id="productCondition"
+                                        aria-label="Condition"
                                         value={quotedProduct.productCondition}
-                                        onChange={(e) => setQuotedProduct({ ...quotedProduct, productCondition: (e.target.value) })}>
+                                        onChange={handleInputChange}
+                                    >
                                         <option>Condition</option>
                                         {
                                             conditionList.map(condition => {
@@ -161,68 +156,49 @@ const AddSimpleQuoteModalComponent: FunctionComponent<AddSimpleQuoteModalProps> 
                                 <Form.Group className="mb-3">
                                     <Form.Label>Quantity<Form.Label className={'required-text-asterisk'}>*</Form.Label></Form.Label>
                                     <Form.Control
-                                        id="Quantity" type="number" placeholder="Quantity"
-                                        value={quotedProduct.quantity}
-                                        onChange={(e) => {
-                                            if (e.target.value != '') {
-                                                setQuotedProduct({ ...quotedProduct, quantity: Number.parseInt(e.target.value) })
-                                            } else {
-                                                setQuotedProduct({ ...quotedProduct, quantity: 0 })
-                                            }
-                                        }}
+                                        id="quantity" type="number" placeholder="Quantity"
+                                        value={quotedProduct.quantity === 0 ? '' : quotedProduct.quantity}
+                                        onChange={handleInputChange}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Price<Form.Label className={'required-text-asterisk'}>*</Form.Label></Form.Label>
                                     <Form.Control
-                                        id="Price" type="text" placeholder="Price"
-                                        value={quotedProduct.quotedPrice}
-                                        onChange={(e) => {
-                                            if (e.target.value != '') {
-                                                setQuotedProduct({ ...quotedProduct, quotedPrice: Number.parseInt(e.target.value) })
-                                            } else {
-                                                setQuotedProduct({ ...quotedProduct, quotedPrice: 0 })
-                                            }
-                                        }}
+                                        id="quotedPrice" type="number" placeholder="Price"
+                                        value={quotedProduct.quotedPrice === 0 ? '' : quotedProduct.quotedPrice}
+                                        onChange={handleInputChange}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Date<Form.Label className={'required-text-asterisk'}>*</Form.Label></Form.Label>
-                                    <Form.Control id="Date" type="date"
-                                        value={dateQuoted.toISOString().split("T")[0]}
-                                        onChange={(e) => {
-                                            if (e.target.value != '') {
-                                                const newDate = new Date(e.target.value);
-                                                setDateQuoted(newDate);
-                                                setQuote({ ...quote, dateQuoted: newDate });
-                                            }
-                                        }}
+                                    <Form.Control
+                                        id="dateQuoted" type="date"
+                                        value={quote.dateQuoted ? new Date(quote.dateQuoted).toISOString().split("T")[0] : ''}
+                                        onChange={handleInputChange}
                                     />
                                 </Form.Group>
-                                <Form.Group as={Col} className="mb-3">
+                                <Form.Group className="mb-3">
                                     <Form.Label>Sold</Form.Label>
                                     <InputGroup>
-                                        <div key={'inline-radio-2'} style={{ justifyContent: 'space-between' }}>
+                                        <div>
                                             <Form.Check
                                                 inline
-                                                defaultChecked
                                                 label="Yes"
-                                                name='group2'
+                                                name='sold'
                                                 type={'radio'}
-                                                id={'inline-radio-3'}
-                                                onClick={() => {
-                                                    setQuote({ ...quote, sold: true })
-                                                }}
+                                                id="sold-yes"
+                                                value="true"
+                                                checked={quote.sold === true}
+                                                onChange={handleInputChange}
                                             />
                                             <Form.Check
                                                 inline
                                                 label="No"
                                                 name='group2'
-                                                type={'radio'}
-                                                id={'inline-radio-4'}
-                                                onClick={() => {
-                                                    setQuote({ ...quote, sold: false })
-                                                }}
+                                                id="sold-no"
+                                                value="false"
+                                                checked={quote.sold === false}
+                                                onChange={handleInputChange}
                                             />
                                         </div>
                                     </InputGroup>
@@ -230,9 +206,9 @@ const AddSimpleQuoteModalComponent: FunctionComponent<AddSimpleQuoteModalProps> 
                                 <Form.Group className="mb-3">
                                     <Form.Label>Comments</Form.Label>
                                     <Form.Control
-                                        id="Comments" as="textarea" placeholder="Comments"
+                                        id="comment" as="textarea" placeholder="Comments"
                                         value={quotedProduct.comment}
-                                        onChange={(e) => setQuotedProduct({ ...quotedProduct, comment: e.target.value })}
+                                        onChange={handleInputChange}
                                     />
                                 </Form.Group>
                                 <hr />
@@ -242,51 +218,39 @@ const AddSimpleQuoteModalComponent: FunctionComponent<AddSimpleQuoteModalProps> 
                                         <div>
                                             <ToolkitProvider
                                                 keyField="id"
-                                                data={companyList}
-                                                columns={column}
+                                                data={companyList || []}
+                                                columns={companyTableColumns}
                                                 search >
                                                 {
-                                                    props => {
-                                                        return (
-                                                            <div>
-                                                                {isSearching ?
-                                                                    <SpinnerBlock />
-                                                                    :
-                                                                    <div>
-                                                                        <InputGroup className="mb-3">
-                                                                            <InputGroup.Text id="basic-addon2">
-                                                                                <Search />
-                                                                            </InputGroup.Text>
-                                                                            <DebounceInput
-                                                                                type="text"
-                                                                                className='debounce'
-                                                                                placeholder="Search..."
-                                                                                debounceTimeout={500}
-                                                                                value={searchString}
-                                                                                onChange={e => {
-                                                                                    handleSearch(e.target.value, { ...props.searchProps });
-                                                                                }} />
-                                                                        </InputGroup>
+                                                    searchProps => (
+                                                        <div>
+                                                            <InputGroup className="mb-3">
+                                                                <InputGroup.Text id="basic-addon2">
+                                                                    <Search />
+                                                                </InputGroup.Text>
+                                                                <DebounceInput
+                                                                    type="text"
+                                                                    className='debounce form-control'
+                                                                    placeholder="Search..."
+                                                                    debounceTimeout={500}
+                                                                    onChange={e => handleSearch(e.target.value, searchProps.searchProps)}
+                                                                />
+                                                            </InputGroup>
 
-                                                                        <BootstrapTable
-                                                                            {...props.baseProps}
-                                                                            keyField="id"
-                                                                            bootstrap4
-                                                                            condensed
-                                                                            striped
-                                                                            hover
-                                                                            selectRow={selectRow as SelectRowProps<ICompany>}
-                                                                            pagination={paginationFactory(options)}
-                                                                            data={companyList}
-                                                                            columns={column}
-                                                                            classes="table table-dark table-hover table-striped"
-                                                                            noDataIndication='TABLE IS EMPTY'
-                                                                        />
-                                                                    </div>
-                                                                }
-                                                            </div>
-                                                        );
-                                                    }
+                                                            <BootstrapTable
+                                                                {...searchProps.baseProps}
+                                                                keyField="id"
+                                                                bootstrap4
+                                                                condensed
+                                                                striped
+                                                                hover
+                                                                selectRow={selectRow as SelectRowProps<ICompany>}
+                                                                pagination={paginationFactory(paginationOptions)}
+                                                                classes="table table-dark table-hover table-striped"
+                                                                noDataIndication='TABLE IS EMPTY'
+                                                            />
+                                                        </div>
+                                                    )
                                                 }
                                             </ToolkitProvider>
                                         </div>
@@ -296,13 +260,9 @@ const AddSimpleQuoteModalComponent: FunctionComponent<AddSimpleQuoteModalProps> 
                         }
                     </div>
                 </Modal.Body>
-                <Modal.Footer style={{ background: '#212529', color: 'white', borderTop: '1px solid rgb(61 66 70)' }}>
-                    <div style={{ textAlign: 'center' }}>
-                        <Button
-                            variant="dark"
-                            onClick={async () => {
-                                submitQuote();
-                            }}>
+                <Modal.Footer className="modal-footer-simple-quote">
+                    <div className="w-100 footer-button-container-simple-quote">
+                        <Button variant="dark" onClick={submitQuote}>
                             Finish
                         </Button>
                     </div>

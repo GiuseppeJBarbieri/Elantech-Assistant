@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FunctionComponent, HTMLAttributes, useEffect, useState } from 'react';
+import { FunctionComponent, HTMLAttributes, useEffect, useMemo, useState } from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
 import { Pencil, ThreeDots, Trash } from 'react-bootstrap-icons';
 import BootstrapTable from 'react-bootstrap-table-next';
@@ -7,198 +7,136 @@ import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, P
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import ICompany from '../../types/ICompany';
 import IQuote from '../../types/IQuote';
-import IQuotedProduct from '../../types/IQuotedProduct';
 import { requestAllQuotesByCompanyID } from '../../utils/Requests';
 import { AddMultiQuoteModal } from '../Modals/Quote/AddMultiQuoteModal';
 import { EditQuoteModal } from '../Modals/Quote/EditQuoteModal';
 import { ViewQuotedProductsModal } from '../Modals/QuotedProducts/ViewQuotedProductsModal';
-import { defaultQuote } from '../../constants/Defaults';
 import { RemoveQuoteModal } from '../Modals/Quote/RemoveQuoteModal';
+import './ExpandedQuoteRow.css';
 
 interface ExpandedQuoteRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     selectedCompany: ICompany;
     fetchCompanies: () => void;
 }
 
-const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (props) => {
-    const [addQuoteSwitch, setAddQuoteSwitch] = useState(false);
-    const [editQuoteSwitch, setEditQuoteSwitch] = useState(false);
-    const [quotes, setQuotes] = useState<IQuote[]>([]);
-    const [selectedQuote, setSelectedQuote] = useState<IQuote>(defaultQuote);
-    const [viewMoreSwitch, setViewMoreSwitch] = useState(false);
-    const [removeQuoteSwitch, setRemoveQuoteSwitch] = useState(false);
+enum ModalType {
+    ADD = 'add',
+    EDIT = 'edit',
+    VIEW_MORE = 'viewMore',
+    REMOVE = 'remove',
+}
 
-    const rankFormatterViewMore = (hm: any, _data: any, _index: any) => {
-        return (
-            <div
-                style={{
-                    textAlign: 'center',
-                    cursor: 'pointer',
-                    lineHeight: 'normal',
-                    zIndex: 0
-                }}
-                onClick={(e) => {
-                    e.stopPropagation()
-                }} >
-                <div onClick={(_e) => {
-                    const quote: IQuote = {
-                        id: _data.id,
-                        companyId: _data.companyId,
-                        userId: _data.userId,
-                        dateQuoted: _data.dateQuoted,
-                        sold: _data.sold,
-                        user: { firstName: _data.user.firstName, lastName: _data.user.lastName },
-                        quotedProducts: _data.quotedProducts
-                    }
-                    setSelectedQuote(quote);
-                    setViewMoreSwitch(true);
-                }}
-                >
-                    <ThreeDots style={{ fontSize: 20, color: 'white' }} />
-                </div>
-            </div>
-        );
+const createActionCell = (onClick: () => void, Icon: React.ElementType) => (
+    <div className="action-cell" onClick={(e) => e.stopPropagation()}>
+        <div onClick={onClick}>
+            <Icon className="action-icon" />
+        </div>
+    </div>
+);
+
+const getColumnDefinitions = (
+    onViewMore: (quote: IQuote) => void,
+    onEdit: (quote: IQuote) => void,
+    onRemove: (quote: IQuote) => void
+) => [
+    {
+        dataField: 'quantity',
+        text: 'Number of Products',
+        formatter: (_: any, row: IQuote) =>
+            row.quotedProducts?.reduce((sum, p) => sum + p.quantity, 0),
+        sort: false,
+    },
+    {
+        dataField: 'quotedBy',
+        text: 'Quoted By',
+        formatter: (_: any, row: IQuote) => `${row.user?.firstName}  ${row.user?.lastName}`,
+        sort: true,
+    },
+    {
+        dataField: 'dateQuoted',
+        text: 'Date',
+        sort: true,
+    },
+    {
+        dataField: 'totalQuote',
+        text: 'Total Quote',
+        formatter: (_: any, row: IQuote) => {
+            const total = row.quotedProducts?.reduce((sum, p) => sum + (p.quotedPrice || 0), 0);
+            return `$${total?.toFixed(2)}`;
+        },
+        sort: true,
+    },
+    {
+        dataField: 'sold',
+        text: 'Sold',
+        sort: true,
+    },
+    {
+        dataField: 'view',
+        text: 'View More',
+        sort: false,
+        formatter: (_: any, row: IQuote) => createActionCell(() => onViewMore(row), ThreeDots),
+        headerAlign: 'center',
+    },
+    {
+        dataField: 'edit',
+        text: 'Edit',
+        sort: false,
+        formatter: (_: any, row: IQuote) => createActionCell(() => onEdit(row), Pencil),
+        headerAlign: 'center',
+    },
+    {
+        dataField: 'remove',
+        text: 'Delete',
+        sort: false,
+        formatter: (_: any, row: IQuote) => createActionCell(() => onRemove(row), Trash),
+        headerAlign: 'center',
+    },
+];
+
+const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (props) => {
+    const [activeModal, setActiveModal] = useState<ModalType | null>(null);
+    const [quotes, setQuotes] = useState<IQuote[]>([]);
+    const [selectedQuote, setSelectedQuote] = useState<IQuote | null>(null);
+
+    const handleAction = (modalType: ModalType, quote: IQuote) => {
+        setSelectedQuote(quote);
+        setActiveModal(modalType);
     };
-    const rankFormatterEdit = (_: any, data: any, _index: any) => {
-        return (
-            <div
-                style={{
-                    textAlign: 'center',
-                    cursor: 'pointer',
-                    lineHeight: 'normal',
-                    zIndex: 0
-                }}
-                onClick={(e) => {
-                    e.stopPropagation()
-                }}>
-                <div onClick={(_e) => {
-                    setSelectedQuote(data);
-                    setEditQuoteSwitch(true);
-                }}>
-                    <Pencil style={{ fontSize: 20, color: 'white' }} />
-                </div>
-            </div>
-        );
-    };
-    const rankFormatterRemove = (_: any, data: any, _index: any) => {
-        return (
-            <div
-                style={{
-                    textAlign: 'center',
-                    cursor: 'pointer',
-                    lineHeight: 'normal'
-                }}
-                onClick={(e) => {
-                    e.stopPropagation()
-                }} >
-                <div onClick={() => {
-                    setSelectedQuote(data);
-                    setRemoveQuoteSwitch(true);
-                }}
-                >
-                    <Trash style={{ fontSize: 20, color: 'white' }} />
-                </div>
-            </div>
-        );
-    };
-    const column = [
-        {
-            dataField: 'quantity',
-            text: 'Number of Products',
-            formatter: (cell: any, row: any) => {
-                var total = 0;
-                row.quotedProducts.forEach((element: IQuotedProduct) => {
-                    total += element.quantity;
-                });
-                return `${total}`;
-            },
-            sort: false,
-        },
-        {
-            dataField: 'quotedBy',
-            text: 'Quoted By',
-            formatter: (cell: any, row: any) => {
-                return `${row.user.firstName}  ${row.user.lastName}`;
-            },
-            sort: true,
-        },
-        {
-            dataField: 'dateQuoted',
-            text: 'Date',
-            sort: true,
-        },
-        {
-            dataField: 'totalQuote',
-            text: 'Total Quote',
-            formatter: (cell: any, row: any) => {
-                var total = 0;
-                row.quotedProducts.forEach((element: IQuotedProduct) => {
-                    total += element.quotedPrice;
-                });
-                return `$${total}`;
-            },
-            sort: true,
-        },
-        {
-            dataField: 'sold',
-            text: 'Sold',
-            sort: true,
-        },
-        {
-            dataField: 'view',
-            text: 'View More',
-            sort: false,
-            formatter: rankFormatterViewMore,
-            headerAlign: 'center',
-        },
-        {
-            dataField: 'edit',
-            text: 'Edit',
-            sort: false,
-            formatter: rankFormatterEdit,
-            headerAlign: 'center',
-        },
-        {
-            dataField: 'remove',
-            text: 'Delete',
-            sort: false,
-            formatter: rankFormatterRemove,
-            headerAlign: 'center',
-        },
-        // {
-        //     dataField: 'Add',
-        //     text: 'Create Order',
-        //     sort: false,
-        //     formatter: rankFormatterAdd,
-        //     headerAlign: 'center',
-        // },
-    ];
+
+    const columns = useMemo(() => getColumnDefinitions(
+        (quote) => handleAction(ModalType.VIEW_MORE, quote),
+        (quote) => handleAction(ModalType.EDIT, quote),
+        (quote) => handleAction(ModalType.REMOVE, quote)
+    ), []);
+
     const options = {
         custom: true,
         sizePerPage: 5,
         totalSize: quotes.length
     };
-    const getAllQuotes = (companyId: number) => {
-        setTimeout(async () => {
-            try {
-                const quotes = await requestAllQuotesByCompanyID(companyId);
-                setQuotes(quotes);
-            } catch (err) {
-                console.log(err);
-            }
-        }, 400)
+
+    const getAllQuotes = async (companyId: number) => {
+        try {
+            const fetchedQuotes = await requestAllQuotesByCompanyID(companyId);
+            setQuotes(fetchedQuotes);
+        } catch (err) {
+            console.error("Failed to fetch quotes:", err);
+        }
     };
+
     useEffect(() => {
-        getAllQuotes(props.selectedCompany.id as number);
+        if (props.selectedCompany.id) {
+            getAllQuotes(props.selectedCompany.id);
+        }
     }, []);
+
     return (
-        <div style={{ padding: 20 }} className='expandedProductRow'>
+        <div className='expanded-quote-row'>
             <Navbar bg="dark" variant="dark">
                 <Navbar.Brand>Quotes</Navbar.Brand>
-                <Nav className="me-auto" style={{ marginBottom: -3 }}>
-                    <Nav.Link onClick={() => {
-                        setAddQuoteSwitch(true);
-                    }}>
+                <Nav className="me-auto quote-nav">
+                    <Nav.Link onClick={() => setActiveModal(ModalType.ADD)}>
                         Add Quote
                     </Nav.Link>
                 </Nav>
@@ -219,7 +157,7 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
                                     bootstrap4
                                     condensed
                                     {...paginationTableProps}
-                                    columns={column}
+                                            columns={columns}
                                     keyField="id"
                                     data={quotes}
                                     classes="table table-dark table-hover table-striped"
@@ -240,53 +178,46 @@ const ExpandedQuoteRowComponent: FunctionComponent<ExpandedQuoteRowProps> = (pro
             </div>
             <hr />
             {
-                addQuoteSwitch &&
+                activeModal === ModalType.ADD &&
                 <div className='modal-dialog'>
                     <AddMultiQuoteModal
-                        modalVisible={addQuoteSwitch}
+                        modalVisible={activeModal === ModalType.ADD}
                         selectedCompany={props.selectedCompany}
                         getAllQuotes={getAllQuotes}
-                        onClose={async () => {
-                            setAddQuoteSwitch(false);
-                        }}
+                        onClose={() => setActiveModal(null)}
                     />
                 </div>
             }
             {
-                editQuoteSwitch &&
+                activeModal === ModalType.EDIT && selectedQuote &&
                 <div className='modal-dialog'>
                     <EditQuoteModal
-                        modalVisible={editQuoteSwitch}
+                        modalVisible={activeModal === ModalType.EDIT}
                         selectedCompany={props.selectedCompany}
                         selectedQuote={selectedQuote}
-                        onClose={async () => {
-                            setEditQuoteSwitch(false);
-                        }}
+                        onClose={() => setActiveModal(null)}
                     />
                 </div>
             }
             {
-                viewMoreSwitch &&
+                activeModal === ModalType.VIEW_MORE && selectedQuote &&
                 <div className='modal-dialog'>
                     <ViewQuotedProductsModal
-                        modalVisible={viewMoreSwitch}
-                        onClose={async () => {
-                            setViewMoreSwitch(false);
-                        }}
+                        modalVisible={activeModal === ModalType.VIEW_MORE}
+                        onClose={() => setActiveModal(null)}
                         selectedCompany={props.selectedCompany}
-                        selectedQuote={selectedQuote} />
+                        selectedQuote={selectedQuote}
+                    />
                 </div>
             }
             {
-                removeQuoteSwitch &&
+                activeModal === ModalType.REMOVE && selectedQuote &&
                 <div className='modal-dialog'>
                     <RemoveQuoteModal
-                        modalVisible={removeQuoteSwitch}
+                        modalVisible={activeModal === ModalType.REMOVE}
                         selectedQuote={selectedQuote}
                         getAllQuotes={getAllQuotes}
-                        onClose={async () => {
-                            setRemoveQuoteSwitch(false);
-                        }}
+                        onClose={() => setActiveModal(null)}
                     />
                 </div>
             }

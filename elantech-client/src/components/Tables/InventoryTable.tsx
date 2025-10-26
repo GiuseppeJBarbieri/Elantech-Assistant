@@ -1,15 +1,15 @@
-import React, { FunctionComponent, HTMLAttributes, useEffect, useState } from 'react';
+import React, { FunctionComponent, HTMLAttributes, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { Pencil, Trash } from 'react-bootstrap-icons';
 import BootstrapTable, { SelectRowProps } from 'react-bootstrap-table-next';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import IInventory from '../../types/IInventory';
 import IProduct from '../../types/IProduct';
-import { EditInventoryModal } from '../Modals/Inventory/EditInventoryModal';
-import { RemoveInventoryModal } from '../Modals/Inventory/RemoveInventoryModal';
 import { requestUpdateInventory } from '../../utils/Requests';
 import { EditMultipleInventoryModal } from '../Modals/Inventory/EditMultipleInventoryModal';
-
+import { EditInventoryModal } from '../Modals/Inventory/EditInventoryModal';
+import { RemoveInventoryModal } from '../Modals/Inventory/RemoveInventoryModal';
+import './InventoryTable.css';
 
 interface InventoryTableProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     inventory: IInventory[];
@@ -17,279 +17,149 @@ interface InventoryTableProps extends RouteComponentProps, HTMLAttributes<HTMLDi
     onInventoryUpdate: (productId: number) => void;
 }
 
-const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) => {
-    const [inventoryList, setInventoryList] = useState<IInventory[]>([]);
-    const [selectedInventoryList, setSelectedInventoryList] = useState<IInventory[]>([]);
-    const [editInventorySwitch, setEditInventorySwitch] = useState(false);
-    const [removeInventorySwitch, setRemoveInventorySwitch] = useState(false);
-    const [tempSelected, setTempSelected] = useState<string[]>([]);
-    const [editMultipleInventorySwitch, setEditMultipleInventorySwitch] = useState(false);
-    const [lastSelected, setLastSelected] = useState(-1);
-    const tableRef: any = React.useRef();
-    const [selectedInventory, setSelectedInventory] = useState<IInventory>(
-        {
-            id: 0,
-            productId: 0,
-            removedInventoryId: 0,
-            purchaseOrderId: 0,
-            serialNumber: '',
-            condition: '',
-            warrantyExpiration: new Date(),
-            tested: false,
-            testedDate: new Date(),
-            comment: '',
-            location: '',
-            reserved: false,
-            receiving: {
-                id: 0,
-                companyId: 0,
-                userId: 0,
-                purchaseOrderNumber: '',
-                orderType: '',
-                trackingNumber: '',
-                dateReceived: new Date(),
-                shippedVia: '',
-                comment: '',
-                company: {
-                    name: '',
-                }
-            }
-        }
-    );
-    const rankFormatterRemove = (_: any, data: any, index: any) => {
-        return (
-            <div
-                style={{
-                    textAlign: 'center',
-                    cursor: 'pointer',
-                    lineHeight: 'normal'
-                }}
-                onClick={(e) => {
-                    e.stopPropagation()
-                }} >
-                <div onClick={(e) => {
-                    setRemoveInventorySwitch(true);
-                    setSelectedInventory(data);
+enum ModalType {
+    EDIT,
+    REMOVE,
+    EDIT_MULTIPLE,
+}
 
-                }}
-                >
-                    <Trash style={{ fontSize: 20, color: 'white' }} />
-                </div>
-            </div>
-        );
-    };
-    const rankFormatterEdit = (_: any, data: any, index: any) => {
-        return (
-            <div
-                style={{
-                    textAlign: 'center',
-                    cursor: 'pointer',
-                    lineHeight: 'normal',
-                    zIndex: 0
-                }}
-                onClick={(e) => {
-                    e.stopPropagation()
-                }} >
-                <div onClick={(e) => {
-                    setEditInventorySwitch(true);
-                    setSelectedInventory(data);
-                }}
-                >
-                    <Pencil style={{ fontSize: 20, color: 'white' }} />
-                </div>
-            </div>
-        );
-    };
-    const columns = [
+const dateFormatter = (cell: string | Date | undefined | null) => {
+    if (!cell) return '';
+    try {
+        return new Date(cell).toISOString().split("T")[0];
+    } catch (e) {
+        return '';
+    }
+};
+
+const createActionCell = (onClick: () => void, Icon: React.ElementType) => (
+    <div className="action-cell" onClick={(e) => e.stopPropagation()}>
+        <div onClick={onClick}>
+            <Icon className="action-icon" />
+        </div>
+    </div>
+);
+
+const getColumnDefinitions = (
+    onEdit: (inventory: IInventory) => void,
+    onRemove: (inventory: IInventory) => void
+) => [
+        { dataField: 'serialNumber', text: 'Serial Number', sort: false },
+        { dataField: 'condition', text: 'Condition', sort: true },
+        { dataField: 'receiving.company.name', text: 'Company Name', sort: false },
+        { dataField: 'receiving.purchaseOrderNumber', text: 'Order Number', sort: false },
+        { dataField: 'receiving.dateReceived', text: 'Date Received', sort: true, formatter: dateFormatter },
+        { dataField: 'warrantyExpiration', text: 'Warranty Expiration', sort: false, formatter: dateFormatter },
+        { dataField: 'comment', text: 'Comment', sort: false },
+        { dataField: 'location', text: 'Location', sort: false },
+        { dataField: 'testedDate', text: 'Date Tested', sort: false, formatter: dateFormatter },
+        { dataField: 'tested', text: 'Tested', sort: false, headerAlign: 'center' },
+        { dataField: 'reserved', text: 'Reserved', sort: false, headerAlign: 'center' },
         {
-            id: 1,
-            dataField: 'serialNumber',
-            text: 'Serial Number',
-            sort: false,
-        },
-        {
-            id: 2,
-            dataField: 'condition',
-            text: 'Condition',
-            sort: true,
-        },
-        {
-            id: 3,
-            dataField: 'receiving.company.name',
-            text: 'Company Name',
-            sort: false,
-        },
-        {
-            id: 4,
-            dataField: 'receiving.purchaseOrderNumber',
-            text: 'Order Number',
-            sort: false,
-        },
-        {
-            id: 5,
-            dataField: 'receiving.dateReceived',
-            text: 'Date Received',
-            sort: true,
-            formatter: (cell: any, row: IInventory) => {
-                if (row.receiving?.dateReceived === undefined
-                    || row.receiving?.dateReceived === null) return '';
-                return (new Date(row.receiving.dateReceived)).toISOString().split("T")[0];
-            },
-        },
-        {
-            id: 6,
-            dataField: 'warrantyExpiration',
-            text: 'Warranty Expiration',
-            sort: false,
-            formatter: (cell: any, row: IInventory) => {
-                if (row.warrantyExpiration === undefined || row.warrantyExpiration === null) return '';
-                return (new Date(row.warrantyExpiration)).toISOString().split("T")[0];
-            },
-        },
-        {
-            id: 7,
-            dataField: 'comment',
-            text: 'Comment',
-            sort: false,
-        },
-        {
-            id: 8,
-            dataField: 'location',
-            text: 'Location',
-            sort: false,
-        },
-        {
-            id: 9,
-            dataField: 'testedDate',
-            text: 'Date Tested',
-            sort: false,
-            formatter: (cell: any, row: IInventory) => {
-                if (row.testedDate === undefined || row.testedDate === null) return '';
-                return (new Date(row.testedDate)).toISOString().split("T")[0];
-            },
-        },
-        {
-            id: 10,
-            dataField: 'tested',
-            text: 'Tested',
-            sort: false,
-            headerAlign: 'center',
-        },
-        {
-            id: 11,
-            dataField: 'reserved',
-            text: 'Reserved',
-            sort: false,
-            headerAlign: 'center',
-        },
-        {
-            id: 11,
             dataField: 'edit',
             text: 'Edit',
             sort: false,
-            formatter: rankFormatterEdit,
+            formatter: (_: any, row: IInventory) => createActionCell(() => onEdit(row), Pencil),
         },
         {
-            id: 12,
             dataField: 'remove',
             text: 'Remove',
             sort: false,
-            formatter: rankFormatterRemove,
-        }
+            formatter: (_: any, row: IInventory) => createActionCell(() => onRemove(row), Trash),
+        },
     ];
+
+const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) => {
+    const [inventoryList, setInventoryList] = useState<IInventory[]>(props.inventory);
+    const [selectedInventoryList, setSelectedInventoryList] = useState<IInventory[]>([]);
+    const [activeModal, setActiveModal] = useState<ModalType | null>(null);
+    const [selectedInventory, setSelectedInventory] = useState<IInventory | null>(null);
+    const [lastSelected, setLastSelected] = useState(-1);
+    const tableRef = useRef<BootstrapTable<IInventory, any>>(null);
+
+    const handleAction = (modalType: ModalType, inventory: IInventory) => {
+        setSelectedInventory(inventory);
+        setActiveModal(modalType);
+    };
+
+    const columns = useMemo(() => getColumnDefinitions(
+        (inventory) => handleAction(ModalType.EDIT, inventory),
+        (inventory) => handleAction(ModalType.REMOVE, inventory)
+    ), []);
+
     const selectRow = {
         mode: 'checkbox',
         clickToSelect: true,
         bgColor: '#0da7fd73 !important',
-        selected: tempSelected,
-        selectColumnStyle:
-        {
-
-        },
+        selected: selectedInventoryList.map(inv => inv.serialNumber),
         onSelect: (row: IInventory, isSelect: boolean, rowIndex: number, e: any) => {
+            let newSelectedList = [...selectedInventoryList];
+
             if (e.shiftKey) {
                 if (isSelect === true && lastSelected !== -1) {
+                    const start = Math.min(lastSelected, rowIndex);
+                    const end = Math.max(lastSelected, rowIndex);
                     if (lastSelected > rowIndex) {
-                        for (let i = lastSelected; i > rowIndex; i--) {
-                            if (!selectedInventoryList.includes(inventoryList[i])) selectedInventoryList.push(inventoryList[i]);
-                            if (!tempSelected.includes(inventoryList[i].serialNumber)) tempSelected.push(inventoryList[i].serialNumber);
-                            setLastSelected(-1);
+                        for (let i = start; i <= end; i++) {
+                            if (!newSelectedList.find(item => item.serialNumber === inventoryList[i].serialNumber)) {
+                                newSelectedList.push(inventoryList[i]);
+                            }
                         }
-                    } else {
-                        for (let i = lastSelected; i < rowIndex; i++) {
-                            if (!selectedInventoryList.includes(inventoryList[i])) selectedInventoryList.push(inventoryList[i]);
-                            if (!tempSelected.includes(inventoryList[i].serialNumber)) tempSelected.push(inventoryList[i].serialNumber);
-                            setLastSelected(-1);
-                        }
+                        setLastSelected(-1);
                     }
                 }
                 if (lastSelected === -1) {
                     setLastSelected(rowIndex);
                 }
-            }
-            if (isSelect === true) {
-                // Add inventory to list
-                selectedInventoryList.push(row);
-                tempSelected.push(row.serialNumber);
-                setSelectedInventoryList([...selectedInventoryList]);
-                setLastSelected(rowIndex);
             } else {
-                // Remove Inventory from list
-                const index = selectedInventoryList.indexOf(row);
-                selectedInventoryList.splice(index, 1);
-                tempSelected.splice(index, 1);
-                setSelectedInventoryList([...selectedInventoryList]);
+                setLastSelected(rowIndex);
             }
+
+            if (isSelect === true) {
+                if (!newSelectedList.find(item => item.serialNumber === row.serialNumber)) {
+                    newSelectedList.push(row);
+                }
+            } else {
+                newSelectedList = newSelectedList.filter(item => item.serialNumber !== row.serialNumber);
+            }
+            setSelectedInventoryList(newSelectedList);
         },
         onSelectAll: (isSelect: any, rows: IInventory[], e: any) => {
             setLastSelected(-1);
-            if (isSelect === true) {
-                for (let i = 0; i < rows.length; i++) {
-                    selectedInventoryList.push(rows[i]);
-                    tempSelected.push(rows[i].serialNumber);
-                }
-                setSelectedInventoryList([...selectedInventoryList]);
-
-            } else {
-                setSelectedInventoryList([]);
-                setTempSelected([]);
-            }
+            setSelectedInventoryList(isSelect ? rows : []);
         }
     };
-    // This will probably be removed
+
     const reserveItem = () => {
         selectedInventoryList.forEach((inventory: IInventory) => {
-            if (inventory.reserved == null) {
-                inventory.reserved = true;
-            } else {
-                inventory.reserved = !inventory.reserved;
-            }
-            requestUpdateInventory(inventory);
+            const updatedInventory = { ...inventory, reserved: !inventory.reserved };
+            requestUpdateInventory(updatedInventory);
         });
         if (props.selectedProduct.id !== undefined) {
             props.onInventoryUpdate(props.selectedProduct.id);
         }
     };
+
     useEffect(() => {
         setInventoryList(props.inventory);
-    });
+    }, [props.inventory]);
+
     return (
         <div>
             <br />
             <div>
                 <div>
-                    <div className='d-flex flex-row-reverse' style={{ marginBottom: 5 }}>
+                    <div className='d-flex flex-row-reverse inventory-controls'>
                         <input type='text'
-                            className="form-control custom-input d-flex flex-row-reverse"
+                            className="form-control custom-input d-flex flex-row-reverse inventory-count-input"
                             placeholder="0"
                             value={selectedInventoryList.length}
                             readOnly={true}
-                            style={{ width: 70, textAlign: 'center', marginLeft: 5 }}
                         />
                         {
                             selectedInventoryList.length > 0 &&
                             <div className='fade-in-right' aria-controls="example-fade-text">
-                                <Button variant='dark' style={{ marginLeft: 5 }}
+                                <Button variant='dark' className="inventory-action-button"
                                     onClick={() => {
                                         reserveItem();
                                     }}>
@@ -300,19 +170,16 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                         {
                             selectedInventoryList.length > 1 &&
                             <div className='fade-in-right' aria-controls="example-fade-text">
-                                <Button variant='dark' style={{ marginLeft: 5 }}
+                                <Button variant='dark' className="inventory-action-button"
                                     onClick={() => {
-                                        tableRef.current.selectionContext.selected = [];
-                                        setEditMultipleInventorySwitch(true);
-
+                                        setSelectedInventoryList([]);
+                                        setActiveModal(ModalType.EDIT_MULTIPLE);
                                     }}
                                 >
                                     Edit Multiple Inventory
                                 </Button>
-                                <Button variant='dark' style={{ marginLeft: 5 }}
-                                    onClick={() => {
-                                        setRemoveInventorySwitch(true);
-                                    }}
+                                <Button variant='dark' className="inventory-action-button"
+                                    onClick={() => setActiveModal(ModalType.REMOVE)}
                                 >
                                     Remove Multiple
                                 </Button>
@@ -321,7 +188,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                     </div>
                 </div>
             </div>
-            <div style={{ overflowX: 'auto', maxHeight: 500 }} className='no-highlight'>
+            <div className='no-highlight inventory-table-container'>
                 <BootstrapTable
                     ref={tableRef}
                     key='inventory_table'
@@ -336,49 +203,47 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                 />
             </div>
             {
-                editInventorySwitch &&
+                activeModal === ModalType.EDIT && selectedInventory &&
                 <div className='modal-dialog'>
                     <EditInventoryModal
-                        modalVisible={editInventorySwitch}
+                        modalVisible={activeModal === ModalType.EDIT}
                         selectedInventory={selectedInventory}
                         selectedProduct={props.selectedProduct}
                         onSuccess={() => {
                             props.onInventoryUpdate(props.selectedProduct.id as number);
                         }}
-                        onClose={async () => {
-                            setEditInventorySwitch(false);
-                        }}
+                        onClose={() => setActiveModal(null)}
                     />
                 </div>
             }
             {
-                removeInventorySwitch &&
+                activeModal === ModalType.REMOVE &&
                 <div className='modal-dialog'>
                     <RemoveInventoryModal
-                        modalVisible={removeInventorySwitch}
-                        selectedInventory={selectedInventory}
+                        modalVisible={activeModal === ModalType.REMOVE}
+                        selectedInventory={selectedInventory!}
                         selectedInventoryList={selectedInventoryList}
                         selectedProduct={props.selectedProduct}
                         onSuccess={() => props.onInventoryUpdate(props.selectedProduct.id as number)}
-                        onClose={async () => {
-                            setRemoveInventorySwitch(false);
+                        onClose={() => {
+                            setActiveModal(null);
                             setSelectedInventoryList([]);
                         }}
                     />
                 </div>
             }
             {
-                editMultipleInventorySwitch &&
+                activeModal === ModalType.EDIT_MULTIPLE &&
                 <div className='modal-dialog'>
                     <EditMultipleInventoryModal
-                        modalVisible={editMultipleInventorySwitch}
+                        modalVisible={activeModal === ModalType.EDIT_MULTIPLE}
                         selectedInventory={selectedInventoryList}
                         selectedProduct={props.selectedProduct}
                         onSuccess={() => {
                             props.onInventoryUpdate(props.selectedProduct.id as number);
                         }}
-                        onClose={async () => {
-                            setEditMultipleInventorySwitch(false);
+                        onClose={() => {
+                            setActiveModal(null);
                             setSelectedInventoryList([]);
                         }}
                     />

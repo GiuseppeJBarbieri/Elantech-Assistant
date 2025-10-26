@@ -9,10 +9,73 @@ import IProduct from '../../../types/IProduct';
 import { requestUpdateMultipleInventory } from '../../../utils/Requests';
 import { CustomAlert } from '../../Alerts/CustomAlert';
 import { SpinnerBlock } from '../../LoadingAnimation/SpinnerBlock';
+import './EditMultipleInventoryModal.css';
+
+const dateFormatter = (cell: string | Date | undefined | null) => {
+    if (!cell) return '';
+    try {
+        return new Date(cell).toISOString().split("T")[0];
+    } catch (e) {
+        return '';
+    }
+};
+
+const columns = [
+    {
+        dataField: 'serialNumber',
+        text: 'Serial Number',
+        sort: false,
+    },
+    {
+        dataField: 'condition',
+        text: 'Condition',
+        sort: true,
+    },
+    {
+        dataField: 'receiving.company.name',
+        text: 'Company Name',
+        sort: false,
+    },
+    {
+        dataField: 'receiving.purchaseOrderNumber',
+        text: 'Order Number',
+        sort: false,
+    },
+    {
+        dataField: 'receiving.dateReceived',
+        text: 'Date Received',
+        sort: true,
+        formatter: dateFormatter,
+    },
+    {
+        dataField: 'warrantyExpiration',
+        text: 'Warranty Expiration',
+        sort: false,
+        formatter: dateFormatter,
+    },
+    {
+        dataField: 'comment',
+        text: 'Comment',
+        sort: false,
+    },
+    {
+        dataField: 'location',
+        text: 'Location',
+        sort: false,
+    },
+    {
+        dataField: 'testedDate',
+        text: 'Date Tested',
+        sort: false,
+        formatter: dateFormatter,
+    },
+    { dataField: 'tested', text: 'Tested', sort: false, headerAlign: 'center' },
+    { dataField: 'reserved', text: 'Reserved', sort: false, headerAlign: 'center' },
+];
 
 interface EditMultipleInventoryModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     selectedInventory: IInventory[];
-    onClose: () => Promise<void>;
+    onClose: () => void;
     onSuccess: () => void;
     modalVisible: boolean;
     selectedProduct: IProduct;
@@ -23,217 +86,90 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
     const [inventoryTableList, setInventoryTableList] = useState<IInventory[]>([]);
     const [selectedInventoryList, setSelectedInventoryList] = useState<IInventory[]>([]);
     const [alert, setAlert] = useState(defaultAlert);
-    const [changeIsTested, setChangeIsTested] = useState(false);
     const tableRef: any = React.useRef();
+
     const defaultAttributes = {
         condition: '',
-        warrantyExpiration: new Date(0),
-        tested: false,
-        testedDate: new Date(0),
+        warrantyExpiration: '',
+        tested: null as boolean | null,
+        testedDate: '',
         comment: '',
         location: '',
-    }
-    const [attributes, setAttributes] = useState(defaultAttributes)
+    };
+    const [attributes, setAttributes] = useState(defaultAttributes);
 
-    const handleConditionSort = (order: string) => {
-        if (order === 'desc') {
-            selectedInventoryList.sort((a, b) => b.condition.localeCompare(a.condition));
-        } else {
-            selectedInventoryList.sort((a, b) => a.condition.localeCompare(b.condition));
-        }
-    }
-    const columns = [
-        {
-            id: 1,
-            dataField: 'serialNumber',
-            text: 'Serial Number',
-            sort: false,
-        },
-        {
-            id: 2,
-            dataField: 'condition',
-            text: 'Condition',
-            sort: true,
-            onSort: (field: any, order: string) => {
-                handleConditionSort(order);
-            }
-        },
-        {
-            id: 3,
-            dataField: 'receiving.company.name',
-            text: 'Company Name',
-            sort: false,
-        },
-        {
-            id: 4,
-            dataField: 'receiving.purchaseOrderNumber',
-            text: 'Order Number',
-            sort: false,
-        },
-        {
-            id: 5,
-            dataField: 'receiving.dateReceived',
-            text: 'Date Received',
-            sort: true,
-            formatter: (cell: any, row: IInventory) => {
-                if (row.receiving?.dateReceived === undefined
-                    || row.receiving?.dateReceived === null) return '';
-                return (new Date(row.receiving.dateReceived)).toISOString().split("T")[0];
-            },
-        },
-        {
-            id: 6,
-            dataField: 'warrantyExpiration',
-            text: 'Warranty Expiration',
-            sort: false,
-            formatter: (cell: any, row: IInventory) => {
-                if (row.warrantyExpiration === undefined || row.warrantyExpiration === null) return '';
-                return (new Date(row.warrantyExpiration)).toISOString().split("T")[0];
-            },
-        },
-        {
-            id: 7,
-            dataField: 'comment',
-            text: 'Comment',
-            sort: false,
-        },
-        {
-            id: 8,
-            dataField: 'location',
-            text: 'Location',
-            sort: false,
-        },
-        {
-            id: 9,
-            dataField: 'testedDate',
-            text: 'Date Tested',
-            sort: false,
-            formatter: (cell: any, row: IInventory) => {
-                if (row.testedDate === undefined || row.testedDate === null) return '';
-                return (new Date(row.testedDate)).toISOString().split("T")[0];
-            },
-        },
-        {
-            id: 10,
-            dataField: 'tested',
-            text: 'Tested',
-            sort: false,
-            headerAlign: 'center',
-        },
-        {
-            id: 11,
-            dataField: 'reserved',
-            text: 'Reserved',
-            sort: false,
-            headerAlign: 'center',
-        },
-    ];
     const selectRow = {
         mode: 'checkbox',
         clickToSelect: true,
         onSelect: (row: IInventory, isSelect: boolean) => {
-            if (isSelect === true) {
-                // Add inventory to list
-                selectedInventoryList.push(row);
-                setSelectedInventoryList([...selectedInventoryList]);
-            } else {
-                // Remove Inventory from list
-                const index = selectedInventoryList.indexOf(row);
-                selectedInventoryList.splice(index, 1);
-                setSelectedInventoryList([...selectedInventoryList]);
-            }
+            setSelectedInventoryList(prevList =>
+                isSelect ? [...prevList, row] : prevList.filter(item => item.serialNumber !== row.serialNumber)
+            );
         },
         onSelectAll: (isSelect: any, rows: IInventory[]) => {
-            if (isSelect === true) {
-                for (let i = 0; i < rows.length; i++) {
-                    selectedInventoryList.push(rows[i]);
-                }
-                setSelectedInventoryList([...selectedInventoryList]);
-            } else {
-                setSelectedInventoryList([]);
-            }
+            setSelectedInventoryList(isSelect ? rows : []);
         },
     };
+
     const submitChanges = () => {
-        // Make changes on selected items
         if (selectedInventoryList.length === 0) {
             setAlert({ ...alert, label: 'Please select at least one item to edit.', show: true });
             setTimeout(() => setAlert({ ...alert, show: false }), 3000);
-        } else {
-            const tmpList: IInventory[] = [];
-            selectedInventoryList.forEach((selectedInventory) => {
-                let tempObj: IInventory = selectedInventory;
-                // Check condition update
-                if (attributes.condition != defaultAttributes.condition) {
-                    tempObj = { ...tempObj, condition: attributes.condition };
-                }
-                // Check Location Update
-                if (attributes.location != defaultAttributes.location) {
-                    tempObj = { ...tempObj, location: attributes.location };
-                }
-                // Check warranty expiration date
-                if (attributes.warrantyExpiration.toUTCString() != defaultAttributes.warrantyExpiration.toUTCString()) {
-                    tempObj = { ...tempObj, warrantyExpiration: attributes.warrantyExpiration };
-                }
-                // check comments
-                if (attributes.comment != defaultAttributes.comment) {
-                    tempObj = { ...tempObj, comment: attributes.comment };
-                }
-                // check date tested
-                if (attributes.testedDate.toUTCString() != defaultAttributes.testedDate.toUTCString()) {
-                    tempObj = { ...tempObj, testedDate: attributes.testedDate };
-                }
-                // check tested flags
-                if (changeIsTested) {
-                    tempObj = { ...tempObj, tested: attributes.tested };
-                }
-                tmpList.push(tempObj);
-            });
-            const updatedList: IInventory[] = []
-            inventoryTableList.forEach(oldItem => {
-                const newItem = tmpList.find(newItem => newItem.serialNumber === oldItem.serialNumber);
-                updatedList.push(newItem ? newItem : oldItem);
-            });
-            tableRef.current.selectionContext.selected = [];
-            setSelectedInventoryList([]);
-            setChangeIsTested(false);
-            setAttributes(defaultAttributes);
-            setInventoryTableList(updatedList);
+            return;
         }
+
+        const updatedList = inventoryTableList.map(item => {
+            if (selectedInventoryList.some(selected => selected.serialNumber === item.serialNumber)) {
+                const changes: Partial<IInventory> = {};
+                if (attributes.condition !== defaultAttributes.condition) changes.condition = attributes.condition;
+                if (attributes.location !== defaultAttributes.location) changes.location = attributes.location;
+                if (attributes.warrantyExpiration !== defaultAttributes.warrantyExpiration) changes.warrantyExpiration = new Date(attributes.warrantyExpiration);
+                if (attributes.comment !== defaultAttributes.comment) changes.comment = attributes.comment;
+                if (attributes.testedDate !== defaultAttributes.testedDate) changes.testedDate = new Date(attributes.testedDate);
+                if (attributes.tested !== defaultAttributes.tested) changes.tested = attributes.tested as boolean;
+                return { ...item, ...changes };
+            }
+            return item;
+        });
+
+        setInventoryTableList(updatedList);
+        if (tableRef.current?.selectionContext) {
+            tableRef.current.selectionContext.selected = [];
+        }
+        setSelectedInventoryList([]);
+        setAttributes(defaultAttributes);
     };
+
     const finish = () => {
         setIsSaving(true);
         setTimeout(async () => {
             try {
-                // This should really just pass the whole list instead of a single item
                 await requestUpdateMultipleInventory(inventoryTableList);
+                props.onSuccess();
+                props.onClose();
             } catch (err) {
                 setAlert({ ...alert, label: `${err}`, show: true });
                 setTimeout(() => setAlert({ ...alert, show: false }), 3000);
                 setIsSaving(false);
-                return;
             }
-            props.onSuccess();
-            props.onClose();
-        }, 500)
-    }
-    const setInventoryList = (inventoryList: IInventory[]) => {
-        setInventoryTableList(inventoryList);
-    }
+        }, 500);
+    };
+
     useEffect(() => {
-        setInventoryList(props.selectedInventory);
-    }, []);
+        setInventoryTableList(props.selectedInventory);
+    }, [props.selectedInventory]);
+
     return (
         <div>
             <Modal backdrop="static" show={props.modalVisible} onHide={props.onClose} fullscreen={true}>
-                <Modal.Header style={{ background: '#212529', color: 'white', borderBottom: '1px solid rgb(61 66 70)' }} closeButton>
+                <Modal.Header className="modal-header-edit-multi" closeButton>
                     <Modal.Title>
-                        <h2 style={{ verticalAlign: '', fontWeight: 300 }} >Edit Inventory </h2>
-                        <p style={{ color: 'darkgray', fontSize: 18, fontWeight: 300 }}>Please enter inventory information.</p>
+                        <h2 className="modal-title-edit-multi" >Edit Inventory </h2>
+                        <p className="modal-title-sub-edit-multi">Please enter inventory information.</p>
                     </Modal.Title>
                 </Modal.Header>
-                <Modal.Body style={{ background: '#2c3034', color: 'white' }}>
-                    <div className='container d-grid gap-2' style={{ marginBottom: 15 }}>
+                <Modal.Body className="modal-body-edit-multi">
+                    <div className='container d-grid gap-2 container-edit-multi'>
                         {isSaving ?
                             <SpinnerBlock />
                             :
@@ -241,14 +177,14 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
                                 <div>
                                     <CustomAlert label={alert.label} type={alert.type} showAlert={alert.show} />
                                     <Form className="d-grid" >
-                                        <h2 style={{ fontWeight: 300 }}>Editable Fields</h2>
-                                        <div className='d-flex justify-content-between'>
+                                        <h2 className="form-title-edit-multi">Editable Fields</h2>
+                                        <div className="form-container-edit-multi">
                                             <div className="container">
                                                 <Form.Group className="mb-3">
                                                     <Form.Label>Condition</Form.Label>
                                                     <Form.Select aria-label="Default select example"
                                                         value={attributes.condition}
-                                                        onChange={(e) => setAttributes({ ...attributes, condition: (e.target.value) })}
+                                                        onChange={(e) => setAttributes({ ...attributes, condition: e.target.value })}
                                                     >
                                                         <option value={''}>Choose Condition</option>
                                                         <option value="New Factory Sealed">New Factory Sealed</option>
@@ -263,7 +199,7 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
                                                     <Form.Control
                                                         id="comments" type="text" placeholder="Comments"
                                                         value={attributes.comment}
-                                                        onChange={(e) => setAttributes({ ...attributes, comment: (e.target.value) })}
+                                                        onChange={(e) => setAttributes({ ...attributes, comment: e.target.value })}
                                                     />
                                                 </Form.Group>
                                             </div>
@@ -273,37 +209,29 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
                                                     <Form.Control
                                                         id="location" type="text" placeholder="Location"
                                                         value={attributes.location}
-                                                        onChange={(e) => setAttributes({ ...attributes, location: (e.target.value.toString()) })}
+                                                        onChange={(e) => setAttributes({ ...attributes, location: e.target.value })}
                                                     />
                                                 </Form.Group>
                                                 <Form.Group className="mb-3">
                                                     <Form.Label>Date Tested</Form.Label>
                                                     <Form.Control id="dateTested" type="date"
-                                                        value={attributes.testedDate.toISOString().split("T")[0]}
-                                                        onChange={(e) => {
-                                                            if (e.target.value !== '') {
-                                                                const newDate = new Date(e.target.value);
-                                                                setAttributes({ ...attributes, testedDate: newDate })
-                                                            }
-                                                        }} />
+                                                        value={attributes.testedDate}
+                                                        onChange={(e) => setAttributes({ ...attributes, testedDate: e.target.value })} />
                                                 </Form.Group>
                                             </div>
                                             <div className="container">
                                                 <Form.Group className="mb-3">
                                                     <Form.Label>Warranty Expiration</Form.Label>
                                                     <Form.Control id="orderNumber" type="date"
-                                                        value={attributes.warrantyExpiration.toISOString().split("T")[0]}
+                                                        value={attributes.warrantyExpiration}
                                                         onChange={(e) => {
-                                                            if (e.target.value !== '') {
-                                                                const newDate = new Date(e.target.value)
-                                                                setAttributes({ ...attributes, warrantyExpiration: newDate })
-                                                            }
+                                                            setAttributes({ ...attributes, warrantyExpiration: e.target.value })
                                                         }} />
                                                 </Form.Group>
                                                 <Form.Group className="mb-3">
-                                                    <Form.Label>Tested</Form.Label>
-                                                    <InputGroup style={{ textAlign: 'center', paddingTop: 7 }}>
-                                                        <div key={'inline-radio-2'}>
+                                                    <Form.Label>Tested Status</Form.Label>
+                                                    <InputGroup className="radio-group-container-edit-multi">
+                                                        <div>
                                                             <Form.Check
                                                                 inline
                                                                 defaultChecked
@@ -312,7 +240,7 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
                                                                 type={'radio'}
                                                                 id={'inline-radio-5'}
                                                                 onClick={() => {
-                                                                    setChangeIsTested(false);
+                                                                    setAttributes({ ...attributes, tested: null });
                                                                 }}
                                                             />
                                                             <Form.Check
@@ -322,8 +250,7 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
                                                                 type={'radio'}
                                                                 id={'inline-radio-3'}
                                                                 onClick={() => {
-                                                                    setAttributes({ ...attributes, tested: (true) })
-                                                                    setChangeIsTested(true);
+                                                                    setAttributes({ ...attributes, tested: true });
                                                                 }}
                                                             />
                                                             <Form.Check
@@ -333,14 +260,13 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
                                                                 type={'radio'}
                                                                 id={'inline-radio-4'}
                                                                 onClick={() => {
-                                                                    setAttributes({ ...attributes, tested: (false) })
-                                                                    setChangeIsTested(true);
+                                                                    setAttributes({ ...attributes, tested: false });
                                                                 }}
                                                             />
                                                         </div>
                                                     </InputGroup>
                                                 </Form.Group>
-                                                <div className="mb-3" style={{ textAlign: 'center', display: 'grid', marginTop: 47, height: 40 }}>
+                                                <div className="mb-3 submit-button-container-edit-multi">
                                                     <Button variant="dark" onClick={() => submitChanges()}>Submit Changes</Button>
                                                 </div>
                                             </div>
@@ -351,7 +277,6 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
                                 <div>
                                     <BootstrapTable
                                         ref={tableRef}
-                                        key='inventory_table'
                                         keyField='serialNumber'
                                         data={inventoryTableList}
                                         columns={columns}
@@ -365,8 +290,8 @@ const EditMultipleInventoryComponent: FunctionComponent<EditMultipleInventoryMod
                         }
                     </div>
                 </Modal.Body>
-                <Modal.Footer style={{ background: '#212529', color: 'white', borderTop: '1px solid rgb(61 66 70)' }}>
-                    <div style={{ textAlign: 'center' }}>
+                <Modal.Footer className="modal-footer-edit-multi">
+                    <div className="footer-button-container-edit-multi">
                         <Button variant="dark" onClick={() => finish()}>
                             Finish
                         </Button>

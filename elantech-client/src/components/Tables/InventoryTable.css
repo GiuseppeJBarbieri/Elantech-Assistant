@@ -1,0 +1,29 @@
+.action-cell {
+    text-align: center;
+    cursor: pointer;
+    line-height: normal;
+}
+
+.action-icon {
+    font-size: 20px;
+    color: white;
+}
+
+.inventory-controls {
+    margin-bottom: 5px;
+}
+
+.inventory-count-input {
+    width: 70px;
+    text-align: center;
+    margin-left: 5px;
+}
+
+.inventory-action-button {
+    margin-left: 5px;
+}
+
+.inventory-table-container {
+    overflow-x: auto;
+    max-height: 500px;
+}

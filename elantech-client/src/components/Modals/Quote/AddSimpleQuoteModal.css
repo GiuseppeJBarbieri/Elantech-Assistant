@@ -1,0 +1,28 @@
+.modal-header-simple-quote {
+    background: #212529;
+    color: white;
+    border-bottom: 1px solid rgb(61, 66, 70);
+}
+
+.modal-title-simple-quote {
+    font-weight: 300;
+}
+
+.modal-subtitle-simple-quote {
+    color: darkgray;
+    font-size: 18px;
+    font-weight: 300;
+}
+
+.modal-body-simple-quote {
+    background: #2c3034;
+    color: white;
+}
+
+.container-simple-quote {
+    margin-bottom: 15px;
+}
+
+.footer-button-container-simple-quote {
+    text-align: center;
+}

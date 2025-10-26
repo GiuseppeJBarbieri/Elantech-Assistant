@@ -11,7 +11,7 @@ import { defaultAlert } from '../../../constants/Defaults';
 import { requestUpdateInventory } from '../../../utils/Requests';
 
 interface EditInventoryModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
-    onClose: () => Promise<void>;
+    onClose: () => void;
     onSuccess: () => void;
     selectedInventory: IInventory;
     modalVisible: boolean;

@@ -1,0 +1,41 @@
+.modal-body-add-multi {
+    background: #2c3034;
+    color: white;
+}
+
+.container-add-multi {
+    margin-bottom: 15px;
+}
+
+.form-label-title {
+    font-weight: 300;
+    font-size: 18px;
+}
+
+.info-container {
+    display: inline-grid;
+}
+
+.form-label-info {
+    font-weight: 300;
+}
+
+.add-product-form-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.add-product-form-inner {
+    display: flex;
+    gap: 5px;
+}
+
+.add-product-button-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.footer-button-container {
+    text-align: center;
+}

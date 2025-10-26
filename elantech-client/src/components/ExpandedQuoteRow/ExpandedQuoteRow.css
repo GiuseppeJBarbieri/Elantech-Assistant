@@ -1,0 +1,18 @@
+.expanded-quote-row {
+    padding: 20px;
+}
+
+.action-cell {
+    text-align: center;
+    cursor: pointer;
+    line-height: normal;
+}
+
+.action-icon {
+    font-size: 20px;
+    color: white;
+}
+
+.quote-nav {
+    margin-bottom: -3px;
+}

@@ -1,0 +1,49 @@
+.modal-header-edit-quote {
+    background: #212529;
+    color: white;
+    border-bottom: 1px solid rgb(61, 66, 70);
+}
+
+.modal-title-edit-quote {
+    vertical-align: '';
+    font-weight: 300;
+}
+
+.modal-subtitle-edit-quote {
+    color: darkgray;
+    font-size: 18px;
+    font-weight: 300;
+}
+
+.modal-body-edit-quote {
+    background: #2c3034;
+    color: white;
+}
+
+.container-edit-quote {
+    margin-bottom: 15px;
+}
+
+.info-container {
+    display: inline-grid;
+}
+
+.form-label-title {
+    font-weight: 300;
+    font-size: 18px;
+}
+
+.form-label-info {
+    font-weight: 300;
+}
+
+.add-product-form {
+    display: flex;
+    gap: 5px;
+}
+
+.add-product-button-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}

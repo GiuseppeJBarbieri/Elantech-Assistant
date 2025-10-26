@@ -11,7 +11,7 @@ import { requestRemoveInventory } from '../../../utils/Requests';
 import IRemovedInventory from '../../../types/IRemovedInventory';
 
 interface RemoveInventoryModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
-    onClose: () => Promise<void>;
+    onClose: () => void;
     onSuccess: () => void;
     modalVisible: boolean;
     selectedInventory: IInventory;

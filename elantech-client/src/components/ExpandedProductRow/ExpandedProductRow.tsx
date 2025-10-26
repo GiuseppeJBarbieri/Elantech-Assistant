@@ -10,7 +10,7 @@ import { InventoryTable } from '../Tables/InventoryTable';
 import { EditInventoryAlertModal } from '../Alerts/EditInventoryAlertModal';
 import IQuotedProduct from '../../types/IQuotedProduct';
 import { AddOrEditOrderModal } from '../Modals/Inventory/AddOrEditOrderModal';
-import { useExpandedRowData } from '../../hooks/useExpandedRowData';
+import { UseExpandedRowData } from '../../hooks/UseExpandedRowData';
 import { SpinnerBlock } from '../LoadingAnimation/SpinnerBlock';
 
 enum ModalType {
@@ -29,7 +29,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
     const [isQuotesView, setQuotesView] = useState(false);
     const [activeModal, setActiveModal] = useState<ModalType | null>(null);
 
-    const { inventory, quotedProducts, loading, conditionCounts, quoteInfo, refetchData } = useExpandedRowData(props.selectedProduct.id);
+    const { inventory, quotedProducts, loading, conditionCounts, quoteInfo, refetchData } = UseExpandedRowData(props.selectedProduct.id);
 
     const quotes_column = useMemo(() => [
         {

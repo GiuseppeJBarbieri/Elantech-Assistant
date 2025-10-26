@@ -10,7 +10,7 @@ interface RemoveQuoteModalProps extends RouteComponentProps, HTMLAttributes<HTML
     modalVisible: boolean;
     selectedQuote: IQuote;
     getAllQuotes: (quoteId: number) => void;
-    onClose: () => Promise<void>;
+    onClose: () => void;
 }
 
 const RemoveQuoteModalComponent: FunctionComponent<RemoveQuoteModalProps> = (props) => {
