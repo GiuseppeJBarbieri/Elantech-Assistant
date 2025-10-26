@@ -182,7 +182,6 @@ const AddMultiQuoteModalComponent: FunctionComponent<AddMultiQuoteModalProps> = 
     };
 
     const addQuotedProductToTable = () => {
-        console.log('Selected Product:', selectedProduct);
         if (JSON.stringify(selectedProduct) === '{}') {
             setAlert({ ...alert, label: 'Please select a product.', show: true });
             setTimeout(() => setAlert({ ...alert, show: false }), 5000);

@@ -11,9 +11,7 @@ import { ExpandedProductRow } from '../../components/ExpandedProductRow/Expanded
 import { ProductModal } from '../../components/Modals/Product/ProductModal';
 import { RemoveProductModal } from '../../components/Modals/Product/RemoveProductModal';
 import { PAGE_ROUTES } from '../../constants/PageRoutes';
-import { clearCookie } from '../../utils/Auth';
 import { TopHomeBar } from '../../components/TopPageBars/TopHomeBar';
-import { requestLogout } from '../../utils/Requests';
 import { defaultProduct } from '../../constants/Defaults';
 import { brandOptionsList, typeOptionsList } from '../../constants/Options';
 
@@ -95,7 +93,7 @@ const getColumns = (
   }
 ]);
 
-export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, setLoggedIn }) => {
+export const HomeLayout: FunctionComponent<HomeProps> = () => {
   const [activeModal, setActiveModal] = useState<ModalType | null>(null);
   const [searchString, setSearchString] = useState<string>('');
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
@@ -195,7 +193,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = ({ history, loggedIn, se
                                 key={'dark'}
                                 variant='dark'
                                 menuVariant='dark'
-                                title='History'
+                                title=''
                                 onSelect={e => {
                                   setTimeout(() => { handleSearch(e as string) }, 100);
                                 }}

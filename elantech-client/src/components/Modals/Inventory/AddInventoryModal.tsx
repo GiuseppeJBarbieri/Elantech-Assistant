@@ -11,7 +11,6 @@ import { requestAddInventory, requestAddMultipleInventory } from '../../../utils
 
 interface AddInventoryModalProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     onClose: () => Promise<void>;
-    onSuccess: () => void;
     modalVisible: boolean;
     selectedProduct: IProduct;
 }
@@ -40,7 +39,6 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
                 const addInvObj: IInventory = inventoryObj;
                 await requestAddInventory(addInvObj);
                 setInventoryObj({ ...inventoryObj, serialNumber: '' });
-                props.onSuccess();
                 setIsSaving(false);
             } catch (err) {
                 setAlert({ ...alert, label: `${err}`, show: true });
@@ -58,12 +56,11 @@ const AddInventoryComponent: FunctionComponent<AddInventoryModalProps> = (props)
         for (let i = 0; i < quantity; i++) {
             tmpList.push({ ...addInvObj, serialNumber: v4() });
         }
-        console.log(addInvObj)
+        
         setTimeout(async () => {
             try {
                 await requestAddMultipleInventory(tmpList);
                 setIsSaving(false);
-                props.onSuccess();
                 props.onClose();
             } catch (err) {
                 setAlert({ ...alert, label: `${err}`, show: true });

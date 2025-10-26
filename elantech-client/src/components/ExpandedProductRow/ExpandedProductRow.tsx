@@ -365,9 +365,6 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                     <AddInventoryModal
                         modalVisible={addInventorySwitch}
                         selectedProduct={props.selectedProduct}
-                        onSuccess={() => {
-                            props.refetchProducts();
-                        }}
                         onClose={async () => {
                             setAddInventorySwitch(false);
                         }}

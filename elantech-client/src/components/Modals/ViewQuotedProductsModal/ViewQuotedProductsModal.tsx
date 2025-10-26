@@ -105,7 +105,6 @@ const ViewQuotedProductsModalComponent: FunctionComponent<ViewQuotedProductsModa
             try {
                 const quotedProducts = await requestAllProductQuotesByQuoteId(quoteId);
                 setQuotedProducts(quotedProducts);
-                console.log(quotedProducts);
                 let totalQuote = 0;
                 quotedProducts.forEach(element => {
                     totalQuote += element.quotedPrice;

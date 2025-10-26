@@ -4,7 +4,7 @@ import logger from '../../utils/logging/Logger';
 import IRepoError from '../../utils/interfaces/IRepoError';
 import IInventory from './IInventory';
 import IRemovedInventory from '../removedInventory/IRemovedInventory';
-import { log } from 'console';
+import EventBus from '../../utils/EventBus';
 
 /// /////////////////
 /// / INTERNALS /////
@@ -56,7 +56,7 @@ export default {
           productId: _inventory.productId,
         },
       });
-      await db.product.update(
+      const updatedProduct = await db.product.update(
         { quantity: numOfInventory },
         {
           where: {
@@ -64,6 +64,11 @@ export default {
           },
         },
       );
+      EventBus.emit('product.updated', {
+        action: 'updated',
+        ids: [updatedProduct.id],
+        timestamp: Date.now(),
+      });
       return;
     } catch (err) {
       const repoError = { ...repoErr, message: err.message };
@@ -85,7 +90,7 @@ export default {
 
       const list = await db.inventory.bulkCreate(inventory, { transaction });
 
-      await db.product.update(
+      const updatedProduct = await db.product.update(
         { quantity: numOfInventory },
         {
           where: {
@@ -95,6 +100,12 @@ export default {
         { transaction },
       );
       await transaction.commit();
+
+      EventBus.emit('product.updated', {
+        action: 'updated',
+        ids: [updatedProduct.id],
+        timestamp: Date.now(),
+      });
 
       return Promise.resolve(list);
     } catch (err) {
@@ -159,7 +170,7 @@ export default {
 
       const list = await db.inventory.bulkCreate(inventoryList, { transaction });
 
-      await db.product.update(
+      const updatedProduct = await db.product.update(
         { quantity: numOfInventory },
         {
           where: {
@@ -177,6 +188,12 @@ export default {
         },
         { transaction },
       );
+
+      EventBus.emit('product.updated', {
+        action: 'updated',
+        ids: [updatedProduct.id],
+        timestamp: Date.now(),
+      });
 
       await transaction.commit();
 
@@ -258,7 +275,7 @@ export default {
         quantity = product.quantity - inventoryList.length;
       }
       // Update quantity for the product
-      await db.product.update(
+      const updatedProduct = await db.product.update(
         { quantity },
         {
           where: {
@@ -267,7 +284,13 @@ export default {
         },
         transaction,
       );
-      return await transaction.commit();
+      await transaction.commit();
+      EventBus.emit('product.updated', {
+        action: 'updated',
+        ids: [updatedProduct.id],
+        timestamp: Date.now(),
+      });
+      return;
     } catch (err) {
       const repoError = { ...repoErr, message: err.message };
       logger.warn(repoError);
