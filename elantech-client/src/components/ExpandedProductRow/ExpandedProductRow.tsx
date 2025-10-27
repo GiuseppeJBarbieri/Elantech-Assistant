@@ -1,5 +1,5 @@
 import React, { FunctionComponent, HTMLAttributes, useCallback, useRef, useMemo, useState } from 'react';
-import { Button, Collapse, ButtonGroup } from 'react-bootstrap';
+import { Button, ButtonGroup } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
@@ -24,7 +24,6 @@ interface ExpandedProductRowProps extends RouteComponentProps, HTMLAttributes<HT
     fetchProducts: () => void;
 }
 const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = (props) => {
-    const [isInventoryExpanded, setInventoryExpanded] = useState(false);
     const [isQuotesView, setQuotesView] = useState(false);
     const [activeModal, setActiveModal] = useState<ModalType | null>(null);
 

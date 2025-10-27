@@ -65,6 +65,7 @@ export const UseExpandedRowData = (productId: number | undefined) => {
     }, [fetchInventoryData, fetchQuoteData]);
 
     const conditionCounts = useMemo((): ConditionCounts => {
+        console.log('Calculating condition counts...', inventory);
         return inventory.reduce((acc, item) => {
             if (item.condition === 'New Factory Sealed') acc.factorySealed++;
             else if (item.condition === 'New Opened Box') acc.newOpenedBox++;
