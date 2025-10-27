@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import IInventory from '../types/IInventory';
 import IQuotedProduct from '../types/IQuotedProduct';
 import { requestAllInventoryByProductID, requestAllQuotesByProductId } from '../utils/Requests';
+import SocketService from '../utils/SocketService';
 
 interface ConditionCounts {
     factorySealed: number;
@@ -22,12 +23,21 @@ interface QuoteInfo {
 export const UseExpandedRowData = (productId: number | undefined) => {
     const [inventory, setInventory] = useState<IInventory[]>([]);
     const [quotedProducts, setQuotedProducts] = useState<IQuotedProduct[]>([]);
-    const [loading, setLoading] = useState(true);
 
-    const fetchData = useCallback(async () => {
+    const fetchInventoryData = useCallback(async () => {
         if (productId === undefined) return;
 
-        setLoading(true);
+        try {
+            const inventoryData = await requestAllInventoryByProductID(productId);
+            setInventory(inventoryData);
+        } catch (err) {
+            console.error('Failed to fetch expanded row data:', err);
+        }
+    }, [productId]);
+
+    const fetchQuoteData = useCallback(async () => {
+        if (productId === undefined) return;
+
         try {
             const [inventoryData, quotesData] = await Promise.all([
                 requestAllInventoryByProductID(productId),
@@ -37,14 +47,22 @@ export const UseExpandedRowData = (productId: number | undefined) => {
             setQuotedProducts(quotesData);
         } catch (err) {
             console.error('Failed to fetch expanded row data:', err);
-        } finally {
-            setLoading(false);
         }
     }, [productId]);
 
     useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+        fetchInventoryData();
+        fetchQuoteData();
+
+        SocketService.connect();
+        SocketService.on('inventory.updated', fetchInventoryData);
+        SocketService.on('quotes.updated', fetchInventoryData);
+
+        return () => {
+            SocketService.off('product.updated', fetchInventoryData);
+            SocketService.off('quotes.updated', fetchQuoteData);
+        }
+    }, [fetchInventoryData, fetchQuoteData]);
 
     const conditionCounts = useMemo((): ConditionCounts => {
         return inventory.reduce((acc, item) => {
@@ -81,6 +99,5 @@ export const UseExpandedRowData = (productId: number | undefined) => {
         };
     }, [quotedProducts]);
 
-
-    return { inventory, quotedProducts, loading, conditionCounts, quoteInfo, refetchData: fetchData };
+    return { inventory, quotedProducts, conditionCounts, quoteInfo, fetchInventoryData, fetchQuoteData };
 };

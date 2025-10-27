@@ -27,3 +27,10 @@
     overflow-x: auto;
     max-height: 500px;
 }
+
+.table-sticky-header thead th {
+    position: sticky;
+    top: -1px;
+    /* Ensures it sticks to the very top */
+    z-index: 1;
+}

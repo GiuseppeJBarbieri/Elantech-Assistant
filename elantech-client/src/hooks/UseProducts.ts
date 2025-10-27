@@ -13,11 +13,11 @@ export const UseProducts = () => {
     try {
       const fetchedProducts = await requestAllProducts();
       setProducts(fetchedProducts);
-      setAlert({ ...alert, label: 'Table has been updated', type: 'success', show: true });
-      setTimeout(() => setAlert({ ...alert, show: false }), 3000);
+      setAlert((prev) => ({ ...prev, label: 'Table has been updated', type: 'success', show: true }));
+      setTimeout(() => setAlert((prev) => ({ ...prev, show: false })), 3000);
     } catch (error) {
-      setAlert({ ...alert, label: `${error}`, show: true });
-      setTimeout(() => setAlert({ ...alert, show: false }), 3000);
+      setAlert((prev) => ({ ...prev, label: `Failed to fetch expanded row data: ${error}`, show: true, type: 'danger' }));
+      setTimeout(() => setAlert((prev) => ({ ...prev, show: false })), 3000);
     }
   }, []);
 

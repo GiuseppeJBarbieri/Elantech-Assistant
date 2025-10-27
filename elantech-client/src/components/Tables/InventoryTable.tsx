@@ -1,5 +1,5 @@
 import React, { FunctionComponent, HTMLAttributes, useEffect, useMemo, useRef, useState } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, ButtonGroup } from 'react-bootstrap';
 import { Pencil, Trash } from 'react-bootstrap-icons';
 import BootstrapTable, { SelectRowProps } from 'react-bootstrap-table-next';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
@@ -146,45 +146,39 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
 
     return (
         <div>
-            <br />
             <div>
                 <div>
-                    <div className='d-flex flex-row-reverse inventory-controls'>
-                        <input type='text'
-                            className="form-control custom-input d-flex flex-row-reverse inventory-count-input"
-                            placeholder="0"
-                            value={selectedInventoryList.length}
-                            readOnly={true}
-                        />
-                        {
-                            selectedInventoryList.length > 0 &&
-                            <div className='fade-in-right' aria-controls="example-fade-text">
-                                <Button variant='dark' className="inventory-action-button"
-                                    onClick={() => {
-                                        reserveItem();
-                                    }}>
-                                    Reserve Items
-                                </Button>
+                    <div className='d-flex inventory-controls' style={{ justifyContent: 'space-between', marginLeft: 20, marginRight: 20, marginTop: 20, marginBottom: 20 }}>
+                        <h5 style={{ fontWeight: 300 }}>Inventory Details</h5>
+                        <div className='d-flex align-items-center'>
+                            <div className="d-flex justify-content-left align-items-center" style={{ borderColor: '#404040' }}>
+                                <ButtonGroup>
+                                    {
+                                        selectedInventoryList.length > 0 &&
+                                        <Button variant="dark" style={{ backgroundColor: '#2c3034' }} onClick={() => reserveItem()}>
+                                            Reserve Items
+                                        </Button>
+                                    }
+                                    {
+                                        selectedInventoryList.length > 1 &&
+                                        <Button variant="dark" style={{ backgroundColor: '#2c3034' }} onClick={async () => {
+                                            setSelectedInventoryList([]);
+                                            setActiveModal(ModalType.EDIT_MULTIPLE);
+                                        }}>
+                                            Edit Multiple Inventory
+                                        </Button>
+
+                                    }
+                                    {
+                                        selectedInventoryList.length > 1 &&
+                                        <Button variant="dark" style={{ backgroundColor: '#2c3034' }} onClick={async () => setActiveModal(ModalType.REMOVE)}>
+                                            Remove Multiple
+                                        </Button>
+                                    }
+                                </ButtonGroup>
                             </div>
-                        }
-                        {
-                            selectedInventoryList.length > 1 &&
-                            <div className='fade-in-right' aria-controls="example-fade-text">
-                                <Button variant='dark' className="inventory-action-button"
-                                    onClick={() => {
-                                        setSelectedInventoryList([]);
-                                        setActiveModal(ModalType.EDIT_MULTIPLE);
-                                    }}
-                                >
-                                    Edit Multiple Inventory
-                                </Button>
-                                <Button variant='dark' className="inventory-action-button"
-                                    onClick={() => setActiveModal(ModalType.REMOVE)}
-                                >
-                                    Remove Multiple
-                                </Button>
-                            </div>
-                        }
+                            <p className="mb-0 ms-3">{selectedInventoryList.length} items selected</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -198,7 +192,7 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                     data={inventoryList}
                     columns={columns}
                     keyField='serialNumber'
-                    classes="table table-dark table-hover table-striped"
+                    classes="table table-dark table-hover table-striped table-sticky-header"
                     noDataIndication="Table is Empty"
                 />
             </div>

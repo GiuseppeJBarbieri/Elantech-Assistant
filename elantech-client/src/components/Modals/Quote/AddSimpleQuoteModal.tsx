@@ -21,7 +21,6 @@ interface AddSimpleQuoteModalProps extends RouteComponentProps, HTMLAttributes<H
     onClose: () => void;
     modalVisible: boolean;
     selectedProduct: IProduct;
-    getAllQuotes: () => void;
 }
 
 const customTotal = (from: number, to: number, size: number) => (
@@ -85,7 +84,6 @@ const AddSimpleQuoteModalComponent: FunctionComponent<AddSimpleQuoteModalProps> 
                         quotedProducts: [{ ...quotedProduct, productId: props.selectedProduct.id as number }],
                     };
                     await requestAddQuote(finalQuote);
-                    props.getAllQuotes();
                     props.onClose();
                 } catch (err) {
                     setAlert({ label: `${err}`, show: true, type: 'danger' });
