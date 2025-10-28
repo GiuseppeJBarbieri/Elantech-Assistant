@@ -1,8 +1,8 @@
 import React, { FunctionComponent } from 'react';
 import { useHistory, withRouter, RouteComponentProps } from 'react-router-dom';
 import { Container, Button, Row, Col, Nav } from 'react-bootstrap';
-import IProduct from '../../../types/IProduct';
-import { PAGE_ROUTES } from '../../../constants/PageRoutes';
+import IProduct from '../../../../types/IProduct';
+import { PAGE_ROUTES } from '../../../../constants/PageRoutes';
 import { BoxSeam, CheckCircleFill, Link45deg, ListTask, Plus } from 'react-bootstrap-icons';
 
 interface LocationState {

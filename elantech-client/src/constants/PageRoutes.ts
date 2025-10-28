@@ -31,5 +31,7 @@ export const PAGE_ROUTES = {
 
     NEW_PRODUCT: '/new-product',
     NEW_PRODUCT_SUCCESS: '/new-product/success',
+    EDIT_PRODUCT: '/edit-product',
+    EDIT_PRODUCT_SUCCESS: '/edit-product/success',
 
 };

@@ -7,7 +7,6 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { ExpandedProductRow } from '../../components/ExpandedProductRow/ExpandedProductRow';
-import { ProductModal } from '../../components/Modals/Product/DEP-ProductModal';
 import { RemoveProductModal } from '../../components/Modals/Product/RemoveProductModal';
 import { defaultProduct } from '../../constants/Defaults';
 import { brandOptions, typeOptions } from '../../constants/Options';
@@ -109,14 +108,20 @@ export const HomeLayout: FunctionComponent<HomeProps> = () => {
   }, [history]);
 
   const handleEditClick = useCallback((product: IProduct) => {
-    setSelectedProduct(product);
-    setActiveModal(ModalType.EDIT);
+    history.push({
+      pathname: PAGE_ROUTES.EDIT_PRODUCT,
+      state: { product }
+    });
   }, []);
 
   const handleRemoveClick = useCallback((product: IProduct) => {
     setSelectedProduct(product);
     setActiveModal(ModalType.REMOVE);
   }, []);
+
+  const handleNewProductClick = () => {
+    history.push(PAGE_ROUTES.NEW_PRODUCT)
+  };
 
   const rankFormatterRemove = useCallback((_: unknown, data: IProduct) => (
     <div className='action-cell' onClick={() => handleRemoveClick(data)}>
@@ -169,7 +174,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = () => {
         <div className='d-flex justify-content-between'>
           <h2 style={{ fontWeight: 300 }}>Products</h2>
           <div>
-            <Button variant="dark" onClick={() => history.push(PAGE_ROUTES.NEW_PRODUCT)}>
+            <Button variant="dark" onClick={() => handleNewProductClick()}>
               <Plus height="25" width="25" style={{ marginTop: -3, marginLeft: -10 }} />New Product
             </Button>
           </div>
@@ -246,30 +251,6 @@ export const HomeLayout: FunctionComponent<HomeProps> = () => {
           }
         </ToolkitProvider>
       </div>
-      {
-        activeModal === ModalType.ADD &&
-        <div className='modal-dialog'>
-          <ProductModal
-            modalVisible={activeModal === ModalType.ADD}
-            modalSwitch={0}
-            selectedProduct={defaultProduct()}
-            onClose={() => setActiveModal(null)}
-            onSuccess={fetchProducts}
-          />
-        </div>
-      }
-      {
-        activeModal === ModalType.EDIT &&
-        <div className='modal-dialog'>
-          <ProductModal
-            modalVisible={activeModal === ModalType.EDIT}
-            modalSwitch={1}
-            selectedProduct={selectedProduct}
-            onClose={() => setActiveModal(null)}
-            onSuccess={fetchProducts}
-          />
-        </div>
-      }
       {
         activeModal === ModalType.REMOVE &&
         <div className='modal-dialog'>

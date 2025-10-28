@@ -21,8 +21,11 @@ import { useEffect } from 'react';
 import SocketService from './utils/SocketService';
 
 import NotFound from './screens/NotFound/NotFound';
-import { NewProduct } from './screens/sub-screens/products/NewProduct';
-import { NewProductSuccess } from './screens/sub-screens/products/NewProductSuccess';
+import { NewProduct } from './screens/SubScreens/Products/NewProduct/NewProduct';
+import { NewProductSuccess } from './screens/SubScreens/Products/NewProduct/NewProductSuccess';
+import { EditProductSuccess } from './screens/SubScreens/Products/EditProduct/EditProductSuccess';
+import { EditProduct } from './screens/SubScreens/Products/EditProduct/EditProduct';
+
 // import AuthGuard from './utils/AuthGuard';
 
 interface AppProps {
@@ -67,6 +70,8 @@ const App: React.FunctionComponent<AppProps> = (props) => {
           <Route exact path="/settings" render={() => <Settings loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
           <Route exact path="/new-product" component={NewProduct} />
           <Route exact path="/new-product/success" component={NewProductSuccess} />
+          <Route exact path="/edit-product" component={EditProduct} />
+          <Route exact path="/edit-product/success" component={EditProductSuccess} />
           {/* </AuthGuard> */}
           <Route component={NotFound} />
         </Switch>

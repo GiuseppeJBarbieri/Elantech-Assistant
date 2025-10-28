@@ -1,14 +1,14 @@
 import React, { FunctionComponent, HTMLAttributes, useRef, useState } from "react";
 import { Container, Form, Row, Col, Button, Spinner } from "react-bootstrap";
 import { RouteComponentProps, useHistory, withRouter } from "react-router-dom";
-import { CustomAlert } from "../../../components/Alerts/CustomAlert";
+import { CustomAlert } from "../../../../components/Alerts/CustomAlert";
 import { BoxSeam, InfoCircle, Link45deg, Tag } from 'react-bootstrap-icons';
-import { typeOptions, brandOptions } from "../../../constants/Options";
-import { defaultAlert, defaultProduct } from "../../../constants/Defaults";
-import IProduct from "../../../types/IProduct";
-import { requestAddProduct } from "../../../utils/Requests";
-import { isValidWebAddress } from "../../../utils/WebAddressValidation";
-import { PAGE_ROUTES } from "../../../constants/PageRoutes";
+import { typeOptions, brandOptions } from "../../../../constants/Options";
+import { defaultAlert, defaultProduct } from "../../../../constants/Defaults";
+import IProduct from "../../../../types/IProduct";
+import { requestAddProduct } from "../../../../utils/Requests";
+import { isValidWebAddress } from "../../../../utils/WebAddressValidation";
+import { PAGE_ROUTES } from "../../../../constants/PageRoutes";
 
 interface NewProductProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> { }
 
