@@ -1,13 +1,13 @@
-import React, { FunctionComponent, HTMLAttributes, useState, useCallback, useMemo } from 'react';
+import React, { FunctionComponent, HTMLAttributes, useState, useCallback, useMemo, useEffect } from 'react';
 import filterFactory, { selectFilter } from 'react-bootstrap-table2-filter';
 import { Button, Dropdown, DropdownButton, InputGroup } from 'react-bootstrap';
 import { Pencil, Plus, Search, Trash } from 'react-bootstrap-icons';
-import { DebounceInput } from 'react-debounce-input';
+import { DebounceInput } from "react-debounce-input";
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { ExpandedProductRow } from '../../components/ExpandedProductRow/ExpandedProductRow';
-import { ProductModal } from '../../components/Modals/Product/ProductModal';
+import { ProductModal } from '../../components/Modals/Product/DEP-ProductModal';
 import { RemoveProductModal } from '../../components/Modals/Product/RemoveProductModal';
 import { defaultProduct } from '../../constants/Defaults';
 import { brandOptions, typeOptions } from '../../constants/Options';
@@ -16,7 +16,9 @@ import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import { UseProducts } from '../../hooks/UseProducts';
 import { CustomAlert } from '../../components/Alerts/CustomAlert';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+import { useHistory } from "react-router-dom";
 import './Home.css';
+import { PAGE_ROUTES } from '../../constants/PageRoutes';
 
 interface HomeProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
   loggedIn: boolean;
@@ -94,7 +96,17 @@ export const HomeLayout: FunctionComponent<HomeProps> = () => {
   const [searchString, setSearchString] = useState<string>('');
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<IProduct>(defaultProduct);
+  const history = useHistory();
   const { products, alert, fetchProducts } = UseProducts();
+
+  useEffect(() => {
+    const locationState = history.location.state as { newProductNumber?: string };
+    if (locationState?.newProductNumber) {
+      handleSearch(locationState.newProductNumber);
+      // Clear the state so it doesn't trigger again on refresh
+      history.replace({ ...history.location, state: undefined });
+    }
+  }, [history]);
 
   const handleEditClick = useCallback((product: IProduct) => {
     setSelectedProduct(product);
@@ -157,7 +169,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = () => {
         <div className='d-flex justify-content-between'>
           <h2 style={{ fontWeight: 300 }}>Products</h2>
           <div>
-            <Button variant="dark" onClick={() => { setActiveModal(ModalType.ADD) }}>
+            <Button variant="dark" onClick={() => history.push(PAGE_ROUTES.NEW_PRODUCT)}>
               <Plus height="25" width="25" style={{ marginTop: -3, marginLeft: -10 }} />New Product
             </Button>
           </div>

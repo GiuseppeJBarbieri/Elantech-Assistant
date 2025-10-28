@@ -167,7 +167,6 @@ const InventoryTableComponent: FunctionComponent<InventoryTableProps> = (props) 
                                         }}>
                                             Edit Multiple Inventory
                                         </Button>
-
                                     }
                                     {
                                         selectedInventoryList.length > 1 &&

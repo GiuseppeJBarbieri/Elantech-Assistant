@@ -3,6 +3,8 @@ import IInventory from '../types/IInventory';
 import IQuotedProduct from '../types/IQuotedProduct';
 import { requestAllInventoryByProductID, requestAllQuotesByProductId } from '../utils/Requests';
 import SocketService from '../utils/SocketService';
+import IAlert from '../types/IAlert';
+import { defaultAlert } from '../constants/Defaults';
 
 interface ConditionCounts {
     factorySealed: number;
@@ -23,6 +25,7 @@ interface QuoteInfo {
 export const UseExpandedRowData = (productId: number | undefined) => {
     const [inventory, setInventory] = useState<IInventory[]>([]);
     const [quotedProducts, setQuotedProducts] = useState<IQuotedProduct[]>([]);
+    const [alert, setAlert] = useState<IAlert>(defaultAlert);
 
     const fetchInventoryData = useCallback(async () => {
         if (productId === undefined) return;
@@ -30,8 +33,12 @@ export const UseExpandedRowData = (productId: number | undefined) => {
         try {
             const inventoryData = await requestAllInventoryByProductID(productId);
             setInventory(inventoryData);
-        } catch (err) {
-            console.error('Failed to fetch expanded row data:', err);
+            setAlert((prev) => ({ ...prev, label: 'Table has been updated', type: 'success', show: true }));
+            setTimeout(() => setAlert((prev) => ({ ...prev, show: false })), 3000);
+        } catch (error) {
+            console.error('Failed to fetch expanded row data:', error);
+            setAlert((prev) => ({ ...prev, label: `Failed to fetch expanded row data: ${error}`, show: true, type: 'danger' }));
+            setTimeout(() => setAlert((prev) => ({ ...prev, show: false })), 3000);
         }
     }, [productId]);
 
@@ -45,8 +52,12 @@ export const UseExpandedRowData = (productId: number | undefined) => {
             ]);
             setInventory(inventoryData);
             setQuotedProducts(quotesData);
-        } catch (err) {
-            console.error('Failed to fetch expanded row data:', err);
+            setAlert((prev) => ({ ...prev, label: 'Table has been updated', type: 'success', show: true }));
+            setTimeout(() => setAlert((prev) => ({ ...prev, show: false })), 3000);
+        } catch (error) {
+            console.error('Failed to fetch expanded row data:', error);
+            setAlert((prev) => ({ ...prev, label: `Failed to fetch expanded row data: ${error}`, show: true, type: 'danger' }));
+            setTimeout(() => setAlert((prev) => ({ ...prev, show: false })), 3000);
         }
     }, [productId]);
 
@@ -65,7 +76,6 @@ export const UseExpandedRowData = (productId: number | undefined) => {
     }, [fetchInventoryData, fetchQuoteData]);
 
     const conditionCounts = useMemo((): ConditionCounts => {
-        console.log('Calculating condition counts...', inventory);
         return inventory.reduce((acc, item) => {
             if (item.condition === 'New Factory Sealed') acc.factorySealed++;
             else if (item.condition === 'New Opened Box') acc.newOpenedBox++;
@@ -100,5 +110,5 @@ export const UseExpandedRowData = (productId: number | undefined) => {
         };
     }, [quotedProducts]);
 
-    return { inventory, quotedProducts, conditionCounts, quoteInfo, fetchInventoryData, fetchQuoteData };
+    return { inventory, quotedProducts, alert, conditionCounts, quoteInfo, fetchInventoryData, fetchQuoteData };
 };

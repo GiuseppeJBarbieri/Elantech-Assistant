@@ -206,7 +206,6 @@ const ReceivingAddProductModalComponent: FunctionComponent<ReceivingAddProductMo
         setReceivedItemState({ ...receivedItemState, quantity: 0, cud: '', comment: '' });
     };
     const onSubmit = () => {
-        console.log(orderList);
         setIsSaving(true);
         if (orderList.length === 0) {
             setIsSaving(false);

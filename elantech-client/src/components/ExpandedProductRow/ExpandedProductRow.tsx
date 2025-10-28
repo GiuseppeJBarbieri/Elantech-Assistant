@@ -1,4 +1,4 @@
-import React, { FunctionComponent, HTMLAttributes, useCallback, useRef, useMemo, useState } from 'react';
+import React, { FunctionComponent, HTMLAttributes, useCallback, useMemo, useState } from 'react';
 import { Button, ButtonGroup } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
@@ -131,16 +131,16 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                     </ div>
                     <div
                         className="p-4 rounded d-flex"
-                        style={{ backgroundColor: '#2c3034', border: '1px solid #404040', minWidth: '130px', flexDirection: 'column'}}
+                        style={{ backgroundColor: '#2c3034', border: '1px solid #404040', minWidth: '130px', flexDirection: 'column' }}
                     >
-                        <h5 style={{ fontWeight: 300, paddingLeft: 20}}>Product Information</h5>
-                        <div style={{ padding: 20, display: 'flex', flexDirection: 'row', gap: '300px' }}>
+                        <h5 style={{ fontWeight: 300, paddingLeft: 20 }}>Product Information</h5>
+                        <div style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 20, paddingBottom: 5, display: 'flex', flexDirection: 'row', gap: '300px' }}>
                             <div>
                                 <div>
                                     <p className="text-secondary mb-1">Product Number</p>
                                     <p>{props.selectedProduct.productNumber}</p>
                                 </div>
-                                <div className='d-flex' style={{ marginRight: 50 }}>
+                                <div className='d-flex'>
                                     <div>
                                         <p className="text-secondary mb-1">Alternate Numbers</p>
                                         <div className='d-flex' style={{ gap: '10px', flexWrap: 'wrap' }}>
@@ -152,7 +152,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                                                 props.selectedProduct.altNumber5,
                                                 props.selectedProduct.altNumber6,
                                             ].filter(Boolean).map((altNum, index) => (
-                                                <div key={index} className="p-1 rounded" style={{ backgroundColor: '#111111ff', border: '1px solid #404040' }}>
+                                                <div key={index} className="p-1 rounded" style={{ backgroundColor: '#212529', border: '1px solid #404040' }}>
                                                     <p className="mb-0 text-white">{altNum}</p>
                                                 </div>
                                             ))}
@@ -180,31 +180,37 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                     </div>
                 </div>
                 :
-                <div>
-                    <hr />
-                    <div className='d-flex justify-content-between' style={{ marginRight: 50, marginLeft: 50 }}>
-                        <div className='d-flex' style={{ marginRight: 50 }}>
-                            <div style={{ marginRight: 20 }}>
-                                <p><strong style={{ fontWeight: 500 }}>Average Quote:</strong></p>
-                                <p><strong style={{ fontWeight: 500 }}>Last Quoted Price:</strong></p>
+                <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: '20px' }} className='expandedProductRow'>
+                    <div
+                        className="p-4 rounded d-flex"
+                        style={{ backgroundColor: '#2c3034', border: '1px solid #404040', minWidth: '130px', flexDirection: 'column' }}
+                    >
+                        <h5 style={{ fontWeight: 300, paddingLeft: 20 }}>Quote Information</h5>
+                        <div style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 20, display: 'flex', flexDirection: 'row', gap: '300px' }}>
+                            <div>
+                                <div>
+                                    <p className="text-secondary mb-1">Quoted By</p>
+                                    <p>{quoteInfo.quotedBy}</p>
+                                </ div>
+                                <div>
+                                    <p className="text-secondary mb-1">Quoted To</p>
+                                    <p>{quoteInfo.quotedTo}</p>
+                                </ div>
                             </div>
                             <div>
-                                <p>$ {quoteInfo.averageQuote.toFixed(2)}</p>
-                                <p>$ {quoteInfo.lastQuotedPrice.toFixed(2)}</p>
-                            </div>
-                        </ div>
-                        <div className='d-flex' style={{ marginRight: 50 }}>
-                            <div style={{ marginRight: 20 }}>
-                                <p><strong style={{ fontWeight: 500 }}>Quoted By:</strong></p>
-                                <p><strong style={{ fontWeight: 500 }}>Quoted To:</strong></p>
+                                <div>
+                                    <p className="text-secondary mb-1">Last Quoted Price</p>
+                                    <p>$ {quoteInfo.lastQuotedPrice.toFixed(2)}</p>
+                                </div>
                             </div>
                             <div>
-                                <p>{quoteInfo.quotedBy}</p>
-                                <p>{quoteInfo.quotedTo}</p>
+                                <div>
+                                    <p className="text-secondary mb-1">Average Quote</p>
+                                    <p>$ {quoteInfo.averageQuote.toFixed(2)}</p>
+                                </div>
                             </div>
-                        </ div>
-                    </div>
-                    <hr />
+                        </div>
+                    </ div>
                     <div id="example-collapse-text">
                         <br />
                         <PaginationProvider
@@ -215,32 +221,42 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                                     paginationProps,
                                     paginationTableProps
                                 }) => (
+
                                     <div>
-                                        <BootstrapTable
-                                            key='quote_table'
-                                            bootstrap4
-                                            condensed
-                                            {...paginationTableProps}
-                                            columns={quotes_column}
-                                            keyField="id"
-                                            data={quotedProducts}
-                                            classes="table table-dark table-hover table-striped"
-                                            noDataIndication="Table is Empty"
-                                        />
-                                        <div className='d-flex justify-content-between'>
-                                            <SizePerPageDropdownStandalone
-                                                {...paginationProps}
-                                            />
-                                            <PaginationListStandalone
-                                                {...paginationProps}
-                                            />
+                                        <div
+                                            className="rounded"
+                                            style={{ backgroundColor: '#2c3034', border: '1px solid #404040', minWidth: '130px' }}
+                                        >
+                                            <div style={{ margin: 20}}>
+                                                <h5 style={{ fontWeight: 300 }}>Quote Details</h5>
+                                            </div>
+                                            <div style={{ height: 'auto', paddingLeft: 20, paddingRight: 20, paddingBottom: -15 }}>
+                                                <BootstrapTable
+                                                    key='quote_table'
+                                                    bootstrap4
+                                                    condensed
+                                                    {...paginationTableProps}
+                                                    columns={quotes_column}
+                                                    keyField="id"
+                                                    data={quotedProducts}
+                                                    classes="table table-dark table-hover table-striped"
+                                                    noDataIndication="Table is Empty"
+                                                />
+                                                <div className='d-flex justify-content-between'>
+                                                    <SizePerPageDropdownStandalone
+                                                        {...paginationProps}
+                                                    />
+                                                    <PaginationListStandalone
+                                                        {...paginationProps}
+                                                    />
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 )
                             }
                         </PaginationProvider>
                     </div>
-                    <hr />
                 </div>
             }
             {

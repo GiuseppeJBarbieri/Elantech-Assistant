@@ -25,5 +25,11 @@ export const PAGE_ROUTES = {
 
     SETTINGS: '/settings',
 
+    /**
+     * FORMS
+     */
+
+    NEW_PRODUCT: '/new-product',
+    NEW_PRODUCT_SUCCESS: '/new-product/success',
 
 };
