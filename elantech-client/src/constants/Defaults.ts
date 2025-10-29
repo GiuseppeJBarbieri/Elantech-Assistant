@@ -1,5 +1,6 @@
 import IAlert from '../types/IAlert';
 import ICompany from '../types/ICompany';
+import IInventory from '../types/IInventory';
 import IProduct from '../types/IProduct';
 import IQuote from '../types/IQuote';
 import IQuotedProduct from '../types/IQuotedProduct';
@@ -25,6 +26,21 @@ export const defaultProduct = (): IProduct => {
         websiteUrl: '',
         quickSpecsUrl: '',
         relatedTags: ''
+    }))
+}
+
+export const defaultInventory = (): IInventory => {
+    return JSON.parse(JSON.stringify({
+        id: 0,
+        productId: 0,
+        serialNumber: '',
+        condition: '',
+        warrantyExpiration: undefined,
+        tested: false,
+        testedDate: undefined,
+        comment: '',
+        location: '',
+        reserved: false,
     }))
 }
 
