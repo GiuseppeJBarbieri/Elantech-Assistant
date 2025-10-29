@@ -9,13 +9,32 @@ export const UseProducts = () => {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [alert, setAlert] = useState<IAlert>(defaultAlert);
 
+  // Add these useState hooks for FloatingAlert
+  const [alertMessage, setAlertMessage] = useState<string>('');
+  const [alertType, setAlertType] = useState<'success' | 'error' | 'warning' | 'info'>('info');
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+
+  // Add handler for closing the alert
+  const handleAlertClose = () => {
+    setShowAlert(false);
+  };
+
   const fetchProducts = useCallback(async () => {
     try {
       const fetchedProducts = await requestAllProducts();
       setProducts(fetchedProducts);
+
+      setAlertMessage('Table has been updated');
+      setAlertType('success');
+      setShowAlert(true);
+
       setAlert((prev) => ({ ...prev, label: 'Table has been updated', type: 'success', show: true }));
       setTimeout(() => setAlert((prev) => ({ ...prev, show: false })), 3000);
     } catch (error) {
+      setAlertMessage(`Failed to fetch expanded row data: ${error}`);
+      setAlertType('warning');
+      setShowAlert(true);
+
       setAlert((prev) => ({ ...prev, label: `Failed to fetch expanded row data: ${error}`, show: true, type: 'danger' }));
       setTimeout(() => setAlert((prev) => ({ ...prev, show: false })), 3000);
     }
@@ -30,5 +49,5 @@ export const UseProducts = () => {
     return () => SocketService.off('product.updated', fetchProducts);
   }, [fetchProducts]);
 
-  return { products, alert, fetchProducts };
+  return { products, showAlert, alertType, alertMessage, handleAlertClose, fetchProducts };
 };

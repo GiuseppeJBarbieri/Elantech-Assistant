@@ -1,0 +1,34 @@
+.floating-alert-container {
+    position: fixed;
+    /* Stays in place when scrolling */
+    top: -100px;
+    /* Start above the viewport */
+    right: 20px;
+    
+    /* Adjust for true centering */
+    width: auto;
+    /* Adjust width based on content */
+    max-width: 500px;
+    /* Optional: limit maximum width */
+    z-index: 1050;
+    /* Ensure it's above most other content (Bootstrap modal default is 1050) */
+    transition: top 0.5s ease-out;
+    /* Smooth dropdown animation */
+    padding: 15px;
+    /* Add some padding around the alert */
+}
+
+.floating-alert-container.show {
+    top: 20px;
+    /* Drop down to 20px from the top */
+}
+
+/* Optional: Style the alert itself if you want to override Bootstrap defaults */
+.floating-alert-container .alert {
+    margin-bottom: 0;
+    /* Remove default margin-bottom from Bootstrap Alert */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow for depth */
+    border-radius: 8px;
+    /* Slightly rounded corners */
+}

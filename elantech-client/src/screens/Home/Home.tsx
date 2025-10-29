@@ -15,6 +15,7 @@ import { CustomAlert } from '../../components/Alerts/CustomAlert';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import './Home.css';
 import { PAGE_ROUTES } from '../../constants/PageRoutes';
+import FloatingAlert from '../../components/Alerts/FloatingAlert';
 
 interface HomeProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
   loggedIn: boolean;
@@ -85,7 +86,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = () => {
   const [searchString, setSearchString] = useState<string>('');
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const history = useHistory();
-  const { products, alert, fetchProducts } = UseProducts();
+  const { products, showAlert, alertType, alertMessage, handleAlertClose, fetchProducts } = UseProducts();
 
   useEffect(() => {
     const locationState = history.location.state as { newProductNumber?: string };
@@ -158,10 +159,17 @@ export const HomeLayout: FunctionComponent<HomeProps> = () => {
     showTotal: true,
     paginationTotalRenderer: customTotal
   };
+
   return (
     <section className='text-white main-section overflow-auto'>
       <div className='home-container'>
-        <CustomAlert label={alert.label} type={alert.type} showAlert={alert.show} />
+        {/* <CustomAlert label={alert.label} type={alert.type} showAlert={alert.show} /> */}
+        <FloatingAlert
+          message={alertMessage}
+          type={alertType}
+          show={showAlert}
+          onClose={handleAlertClose}
+        />
         <div className='d-flex justify-content-between'>
           <h2 style={{ fontWeight: 300 }}>Products</h2>
           <div>
