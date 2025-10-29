@@ -2,7 +2,7 @@ import React, { FunctionComponent, HTMLAttributes, useCallback, useMemo, useStat
 import { Button, ButtonGroup } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory, { PaginationProvider, SizePerPageDropdownStandalone, PaginationListStandalone } from 'react-bootstrap-table2-paginator';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { RouteComponentProps, useHistory, withRouter } from 'react-router-dom';
 import IProduct from '../../types/IProduct';
 import { AddInventoryModal } from '../Modals/Inventory/AddInventoryModal';
 import { AddSimpleQuoteModal } from '../Modals/Quote/AddSimpleQuoteModal';
@@ -11,6 +11,7 @@ import { EditInventoryAlertModal } from '../Alerts/EditInventoryAlertModal';
 import IQuotedProduct from '../../types/IQuotedProduct';
 import { AddOrEditOrderModal } from '../Modals/Inventory/AddOrEditOrderModal';
 import { UseExpandedRowData } from '../../hooks/useExpandedRowData';
+import { PAGE_ROUTES } from '../../constants/PageRoutes';
 
 enum ModalType {
     ADD_INVENTORY = 'addInventory',
@@ -25,6 +26,7 @@ interface ExpandedProductRowProps extends RouteComponentProps, HTMLAttributes<HT
 const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = (props) => {
     const [isQuotesView, setQuotesView] = useState(false);
     const [activeModal, setActiveModal] = useState<ModalType | null>(null);
+    const history = useHistory();
 
     const { inventory, quotedProducts, conditionCounts, quoteInfo, fetchInventoryData, fetchQuoteData } = UseExpandedRowData(props.selectedProduct.id);
 
@@ -226,7 +228,7 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                                             className="rounded"
                                             style={{ backgroundColor: '#2c3034', border: '1px solid #404040', minWidth: '130px' }}
                                         >
-                                            <div style={{ margin: 20}}>
+                                            <div style={{ margin: 20 }}>
                                                 <h5 style={{ fontWeight: 300 }}>Quote Details</h5>
                                             </div>
                                             <div style={{ height: 'auto', paddingLeft: 20, paddingRight: 20, paddingBottom: -15 }}>
@@ -290,7 +292,10 @@ const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = 
                         modalVisible={activeModal === ModalType.HAS_ORDER_ALERT}
                         onClose={() => setActiveModal(null)}
                         onContinue={() => {
-                            setActiveModal(ModalType.ADD_INVENTORY);
+                            history.push({
+                                pathname: PAGE_ROUTES.NEW_INVENTORY,
+                                state: { product: props.selectedProduct }
+                            });
                         }}
                     />
                 </div>

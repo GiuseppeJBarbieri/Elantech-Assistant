@@ -11,7 +11,6 @@ import { brandOptions, typeOptions } from '../../constants/Options';
 import IProduct from '../../types/IProduct';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import { UseProducts } from '../../hooks/UseProducts';
-import { CustomAlert } from '../../components/Alerts/CustomAlert';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import './Home.css';
 import { PAGE_ROUTES } from '../../constants/PageRoutes';

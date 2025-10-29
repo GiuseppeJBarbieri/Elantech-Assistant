@@ -27,6 +27,7 @@ import { EditProductSuccess } from './screens/SubScreens/Products/EditProduct/Ed
 import { EditProduct } from './screens/SubScreens/Products/EditProduct/EditProduct';
 import { DeleteProduct } from './screens/SubScreens/Products/DeleteProduct/DeleteProduct';
 import { DeleteProductSuccess } from './screens/SubScreens/Products/DeleteProduct/DeleteProductSuccess';
+import { NewInventory } from './screens/SubScreens/Inventory/NewInventory';
 
 // import AuthGuard from './utils/AuthGuard';
 
@@ -76,6 +77,7 @@ const App: React.FunctionComponent<AppProps> = (props) => {
           <Route exact path="/edit-product/success" component={EditProductSuccess} />
           <Route exact path="/delete-product" component={DeleteProduct} />
           <Route exact path="/delete-product/success" component={DeleteProductSuccess} />
+          <Route exact path="/inventory/new-order" component={NewInventory} />
           {/* </AuthGuard> */}
           <Route component={NotFound} />
         </Switch>
