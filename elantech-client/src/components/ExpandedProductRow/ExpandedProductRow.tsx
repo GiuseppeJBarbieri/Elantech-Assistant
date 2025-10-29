@@ -10,7 +10,7 @@ import { InventoryTable } from '../Tables/InventoryTable';
 import { EditInventoryAlertModal } from '../Alerts/EditInventoryAlertModal';
 import IQuotedProduct from '../../types/IQuotedProduct';
 import { AddOrEditOrderModal } from '../Modals/Inventory/AddOrEditOrderModal';
-import { UseExpandedRowData } from '../../hooks/UseExpandedRowData';
+import { UseExpandedRowData } from '../../hooks/useExpandedRowData';
 
 enum ModalType {
     ADD_INVENTORY = 'addInventory',
@@ -21,7 +21,6 @@ enum ModalType {
 
 interface ExpandedProductRowProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
     selectedProduct: IProduct;
-    fetchProducts: () => void;
 }
 const ExpandedProductRowComponent: FunctionComponent<ExpandedProductRowProps> = (props) => {
     const [isQuotesView, setQuotesView] = useState(false);

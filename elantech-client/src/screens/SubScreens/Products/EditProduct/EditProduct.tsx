@@ -359,7 +359,7 @@ export const EditProductLayout: FunctionComponent<RouteComponentProps<{}, {}, Lo
                         }}>
                             Discard & Exit
                         </Button>
-                        <Button variant="primary" type="submit" disabled={isSaving}>
+                        <Button variant="dark" type="submit" disabled={isSaving}>
                             {isSaving ? (
                                 <>
                                     <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />

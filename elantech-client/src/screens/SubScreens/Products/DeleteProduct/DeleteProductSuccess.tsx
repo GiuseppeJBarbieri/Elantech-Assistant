@@ -3,27 +3,20 @@ import { useHistory, withRouter, RouteComponentProps } from 'react-router-dom';
 import { Container, Button, Row, Col, Nav } from 'react-bootstrap';
 import IProduct from '../../../../types/IProduct';
 import { PAGE_ROUTES } from '../../../../constants/PageRoutes';
-import { BoxSeam, CheckCircleFill, Link45deg, ListTask, Plus } from 'react-bootstrap-icons';
+import { ArrowLeft, ArrowLeftShort, BoxSeam, CheckCircleFill, ExclamationTriangle, Link45deg, ListTask, Plus } from 'react-bootstrap-icons';
 
 interface LocationState {
     product?: IProduct;
 }
 
-const EditProductSuccessLayout: FunctionComponent<RouteComponentProps<{}, {}, LocationState>> = (props) => {
+const DeleteProductSuccessLayout: FunctionComponent<RouteComponentProps<{}, {}, LocationState>> = (props) => {
     const history = useHistory();
     const product = props.location.state?.product;
 
     const altNumbers = product ? Array.from({ length: 6 }, (_, i) => product[`altNumber${i + 1}` as keyof IProduct]).filter(Boolean) : [];
 
-    const handleCreateAnother = () => {
-        history.push(PAGE_ROUTES.NEW_PRODUCT);
-    };
-
-    const handleViewAll = () => {
-        history.push({
-            pathname: PAGE_ROUTES.HOME,
-            state: { productNumber: product?.productNumber }
-        });
+    const handleBackToProducts = () => {
+        history.push(PAGE_ROUTES.HOME);
     };
 
     return (
@@ -39,8 +32,8 @@ const EditProductSuccessLayout: FunctionComponent<RouteComponentProps<{}, {}, Lo
                         <CheckCircleFill size={48} color="#28a745" />
                     </div>
                     <div className="ms-3 mt-2">
-                        <h1 className="h3 mb-0">Product Updated Successfully!</h1>
-                        <p className="text-muted mb-0">Your changes have been saved to the product.</p>
+                        <h1 className="h3 mb-0">Product Deleted Successfully!</h1>
+                        <p className="text-muted mb-0">The product has been permanently removed from your inventory.</p>
                     </div>
                 </div>
 
@@ -50,10 +43,10 @@ const EditProductSuccessLayout: FunctionComponent<RouteComponentProps<{}, {}, Lo
                 >
                     <div className="mb-1" style={{ background: 'linear-gradient(to bottom, rgba(40, 167, 69, 0.2), transparent)', padding: '1rem', borderRadius: '0.25rem' }}>
                         <div className="d-flex align-items-center mb-2">
-                            <BoxSeam size={25} />
-                            <h5 className="mb-0 ms-3" style={{ fontWeight: 300 }}>Basic Information</h5>
+                            <ExclamationTriangle size={25} viewBox='0 1 16 16' />
+                            <h5 className="mb-0 ms-2" style={{ fontWeight: 300 }}>Deleted Product</h5>
                         </div>
-                        <p className="text-muted">Updated product information</p>
+                        <p className="text-muted">This product is no longer in your system</p>
                     </div>
                     <div style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 10, paddingBottom: 5, display: 'flex', flexDirection: 'row', gap: '300px' }}>
                         <div>
@@ -63,17 +56,17 @@ const EditProductSuccessLayout: FunctionComponent<RouteComponentProps<{}, {}, Lo
                             </div>
                             <div>
                                 <p className="text-secondary mb-1">Brand</p>
-                                <p>{product?.brand}</p>
+                                <p>{product?.productNumber}</p>
                             </div>
                             <div>
                                 <p className="text-secondary mb-1">Description</p>
-                                <p>{product?.description}</p>
+                                <p>{product?.productNumber}</p>
                             </div>
                         </div>
                         <div>
                             <div>
                                 <p className="text-secondary mb-1">Product Type</p>
-                                <p>{product?.productType}</p>
+                                <p>{product?.description}</p>
                             </ div>
                             {product?.relatedTags &&
                                 <div>
@@ -135,21 +128,14 @@ const EditProductSuccessLayout: FunctionComponent<RouteComponentProps<{}, {}, Lo
                         </div>
                     )}
                 </div>
-                <div className="d-flex justify-content-center" style={{ gap: '20px' }}>
-                    <div>
-                        <Button variant="dark" onClick={handleCreateAnother}>
-                            <Plus height="25" width="25" style={{ marginTop: -3, marginLeft: -10 }} />Continue Editing
-                        </Button>
-                    </div>
-                    <div>
-                        <Button variant="outline-light" onClick={handleViewAll}>
-                            <ListTask height="25" width="25" style={{ marginRight: 5 }} />View All Products
-                        </Button>
-                    </div>
+                <div className="d-flex justify-content-center">
+                    <Button variant="dark" onClick={handleBackToProducts}>
+                        <ArrowLeftShort height="25" width="25" style={{ marginRight: 5 }} /><span style={{marginRight: 10}}>Back to Products</span>
+                    </Button>
                 </div>
             </Container>
         </section >
     );
 };
 
-export const EditProductSuccess = withRouter(EditProductSuccessLayout);
+export const DeleteProductSuccess = withRouter(DeleteProductSuccessLayout);

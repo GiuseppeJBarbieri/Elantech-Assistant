@@ -28,7 +28,7 @@ export default class Server {
 
   private io: IOServer | null = null;
 
-  private httpServer: http.Server | null = null;
+  private httpServer: any = null;
 
   constructor(app: Express) {
     this.app = app;
@@ -239,7 +239,7 @@ export default class Server {
     // =============================================================================================== //
     // start the server
     try {
-      this.httpServer = http.createServer(this.app);
+      this.httpServer = (http.createServer as any)(this.app);
       this.setupSocketIO();
 
       this.httpServer.listen(config.app.PORT, () => {

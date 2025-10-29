@@ -5,29 +5,20 @@ import { Pencil, Plus, Search, Trash } from 'react-bootstrap-icons';
 import { DebounceInput } from "react-debounce-input";
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { RouteComponentProps, withRouter, useHistory } from 'react-router-dom';
 import { ExpandedProductRow } from '../../components/ExpandedProductRow/ExpandedProductRow';
-import { RemoveProductModal } from '../../components/Modals/Product/RemoveProductModal';
-import { defaultProduct } from '../../constants/Defaults';
 import { brandOptions, typeOptions } from '../../constants/Options';
 import IProduct from '../../types/IProduct';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import { UseProducts } from '../../hooks/UseProducts';
 import { CustomAlert } from '../../components/Alerts/CustomAlert';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
-import { useHistory } from "react-router-dom";
 import './Home.css';
 import { PAGE_ROUTES } from '../../constants/PageRoutes';
 
 interface HomeProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
   loggedIn: boolean;
   setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-enum ModalType {
-  ADD = 'add',
-  EDIT = 'edit',
-  REMOVE = 'remove',
 }
 
 const getColumns = (
@@ -91,10 +82,8 @@ const getColumns = (
 ]);
 
 export const HomeLayout: FunctionComponent<HomeProps> = () => {
-  const [activeModal, setActiveModal] = useState<ModalType | null>(null);
   const [searchString, setSearchString] = useState<string>('');
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<IProduct>(defaultProduct);
   const history = useHistory();
   const { products, alert, fetchProducts } = UseProducts();
 
@@ -115,8 +104,10 @@ export const HomeLayout: FunctionComponent<HomeProps> = () => {
   }, []);
 
   const handleRemoveClick = useCallback((product: IProduct) => {
-    setSelectedProduct(product);
-    setActiveModal(ModalType.REMOVE);
+    history.push({
+      pathname: PAGE_ROUTES.DELETE_PRODUCT,
+      state: { product }
+    });
   }, []);
 
   const handleNewProductClick = () => {
@@ -239,8 +230,7 @@ export const HomeLayout: FunctionComponent<HomeProps> = () => {
                       renderer: (row: IProduct) => {
                         return (
                           <ExpandedProductRow
-                            selectedProduct={row}
-                            fetchProducts={fetchProducts} />
+                            selectedProduct={row} />
                         );
                       }
                     }}
@@ -251,17 +241,6 @@ export const HomeLayout: FunctionComponent<HomeProps> = () => {
           }
         </ToolkitProvider>
       </div>
-      {
-        activeModal === ModalType.REMOVE &&
-        <div className='modal-dialog'>
-          <RemoveProductModal
-            modalVisible={activeModal === ModalType.REMOVE}
-            selectedProduct={selectedProduct}
-            onClose={() => setActiveModal(null)}
-            onSuccess={fetchProducts}
-          />
-        </div>
-      }
     </section >
   );
 };

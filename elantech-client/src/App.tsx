@@ -25,6 +25,8 @@ import { NewProduct } from './screens/SubScreens/Products/NewProduct/NewProduct'
 import { NewProductSuccess } from './screens/SubScreens/Products/NewProduct/NewProductSuccess';
 import { EditProductSuccess } from './screens/SubScreens/Products/EditProduct/EditProductSuccess';
 import { EditProduct } from './screens/SubScreens/Products/EditProduct/EditProduct';
+import { DeleteProduct } from './screens/SubScreens/Products/DeleteProduct/DeleteProduct';
+import { DeleteProductSuccess } from './screens/SubScreens/Products/DeleteProduct/DeleteProductSuccess';
 
 // import AuthGuard from './utils/AuthGuard';
 
@@ -72,6 +74,8 @@ const App: React.FunctionComponent<AppProps> = (props) => {
           <Route exact path="/new-product/success" component={NewProductSuccess} />
           <Route exact path="/edit-product" component={EditProduct} />
           <Route exact path="/edit-product/success" component={EditProductSuccess} />
+          <Route exact path="/delete-product" component={DeleteProduct} />
+          <Route exact path="/delete-product/success" component={DeleteProductSuccess} />
           {/* </AuthGuard> */}
           <Route component={NotFound} />
         </Switch>

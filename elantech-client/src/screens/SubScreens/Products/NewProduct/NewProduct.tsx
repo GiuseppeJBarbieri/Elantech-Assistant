@@ -349,22 +349,31 @@ export const NewProductLayout: FunctionComponent<NewProductProps> = () => {
                             </Form.Text>
                         </Form.Group>
                     </div>
-                    {/* Submit Button */}
-                    <div className="d-flex justify-content-end gap-2">
-                        <Button variant="secondary" onClick={() => {
-                            setProduct(defaultProduct);
-                            sectionRef.current?.scrollTo(0, 0);
-                        }}>
-                            Clear Form
-                        </Button>
-                        <Button variant="primary" type="submit" disabled={isSaving}>
-                            {isSaving ? (
-                                <>
-                                    <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-                                    <span className="ms-2">Saving...</span>
-                                </>
-                            ) : 'Create Product'}
-                        </Button>
+                    {/* Form Buttons */}
+                    <div className="d-flex justify-content-between">
+                        <div>
+                            <Button variant="secondary" onClick={() => {
+                                history.goBack();
+                            }}>
+                                Cancel
+                            </Button>
+                        </div>
+                        <div className="d-flex gap-2">
+                            <Button variant="outline-secondary" onClick={() => {
+                                setProduct(defaultProduct);
+                                sectionRef.current?.scrollTo(0, 0);
+                            }}>
+                                Clear Form
+                            </Button>
+                            <Button variant="dark" type="submit" disabled={isSaving}>
+                                {isSaving ? (
+                                    <>
+                                        <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                                        <span className="ms-2">Saving...</span>
+                                    </>
+                                ) : 'Create Product'}
+                            </Button>
+                        </div>
                     </div>
                 </Form>
             </Container>

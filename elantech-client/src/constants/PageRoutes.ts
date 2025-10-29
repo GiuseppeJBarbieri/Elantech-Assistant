@@ -33,5 +33,7 @@ export const PAGE_ROUTES = {
     NEW_PRODUCT_SUCCESS: '/new-product/success',
     EDIT_PRODUCT: '/edit-product',
     EDIT_PRODUCT_SUCCESS: '/edit-product/success',
+    DELETE_PRODUCT: '/delete-product',
+    DELETE_PRODUCT_SUCCESS: '/delete-product/success',
 
 };
