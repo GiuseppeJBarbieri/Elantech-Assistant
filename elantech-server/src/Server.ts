@@ -1,5 +1,8 @@
 import { Express } from 'express';
 
+import { Server as IOServer, Socket } from 'socket.io';
+import http from 'http';
+
 // Library imports
 import * as rateLimit from 'express-rate-limit';
 import * as bodyParser from 'body-parser';
@@ -17,14 +20,103 @@ import swaggerDocument from '../docs/swagger.json';
 import UserController from './features/users/UserController';
 import db from './models';
 
+import EventBus from './utils/EventBus';
+
 const DB_PARAMS = config.db;
 
 export default class Server {
   private app: Express;
 
+  private io: IOServer | null = null;
+
+  private httpServer: any = null;
+
   constructor(app: Express) {
     this.app = app;
   }
+
+  // =============================================================================================== //
+  //  SOCKET SETUP                                                                                   //
+  // =============================================================================================== //
+  private setupSocketIO(): void {
+    if (!this.httpServer) {
+      throw new Error('HTTP Server must be created before Socket.IO setup');
+    }
+
+    this.io = new IOServer(this.httpServer, {
+      cors: {
+        origin: 'http://localhost:3000',
+        methods: ['GET', 'POST'],
+        credentials: true,
+      },
+    });
+
+    this.registerSocketEvents();
+    this.subscribeToEventBus();
+
+    logger.info('Socket.IO server configured successfully');
+  }
+
+  private registerSocketEvents(): void {
+    if (!this.io) return;
+
+    this.io.on('connection', (socket: Socket) => {
+      logger.info(`Client connected with ID: ${socket.id}`);
+
+      socket.on('disconnect', (reason) => {
+        logger.info(`Client ${socket.id} disconnected: ${reason}`);
+      });
+
+      socket.on('join-room', (room: string) => {
+        socket.join(room);
+        logger.info(`Client ${socket.id} joined room: ${room}`);
+      });
+    });
+  }
+
+  private subscribeToEventBus(): void {
+    EventBus.on('product.updated', (data) => {
+      this.broadcastToClients('product.updated', data);
+    });
+
+    EventBus.on('quote.updated', (data) => {
+      this.broadcastToClients('quote.updated', data);
+    });
+
+    EventBus.on('quotedProduct.updated', (data) => {
+      this.broadcastToClients('quotedProduct.updated', data);
+    });
+    EventBus.on('inventory.updated', (data) => {
+      this.broadcastToClients('inventory.updated', data);
+    });
+
+    EventBus.on('receiving.updated', (data) => {
+      this.broadcastToClients('receiving.updated', data);
+    });
+
+    EventBus.on('receivedItem.updated', (data) => {
+      this.broadcastToClients('receivedItem.updated', data);
+    });
+
+    EventBus.on('company.updated', (data) => {
+      this.broadcastToClients('company.updated', data);
+    });
+  }
+
+  private broadcastToClients(event: string, data: any): void {
+    if (this.io) {
+      this.io.emit(event, data);
+      logger.info(`Broadcasting ${event} to all connected clients`);
+    }
+  }
+
+  public getIOInstance(): IOServer | null {
+    return this.io;
+  }
+
+  // =============================================================================================== //
+  //  SOCKET SETUP ^^^^                                                                              //
+  // =============================================================================================== //
 
   public async start(): Promise<void> {
     logger.info('****************************** Server Starting Up ******************************');
@@ -155,6 +247,15 @@ export default class Server {
     // =============================================================================================== //
     // start the server
     try {
+      this.httpServer = (http.createServer as any)(this.app);
+      this.setupSocketIO();
+
+      this.httpServer.listen(3002, () => {
+        logger.info(
+          `****************************** Server Listening on Port:${3002} ******************************`,
+        );
+      });
+
       this.app.listen(config.app.PORT, () => {
         logger.info(
           `****************************** Server Listening on Port:${config.app.PORT} ******************************`,
@@ -178,7 +279,7 @@ export default class Server {
     } catch (err) {
       logger.error(`${'error occurred starting express: '
         + '\n('}${err.toString()
-      }).\nrestart the app when the database is ready to connect to`);
+        }).\nrestart the app when the database is ready to connect to`);
       onServerClosed();
     }
 

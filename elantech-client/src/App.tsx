@@ -22,6 +22,7 @@ import { Outgoing } from './screens/Outgoing/Outgoing';
 import { BrokerBin } from './screens/BrokerBin/BrokerBin';
 
 import NotFound from './screens/NotFound/NotFound';
+import SocketService from './utils/SocketService';
 // import AuthGuard from './utils/AuthGuard';
 
 interface AppProps {
@@ -31,12 +32,21 @@ interface AppProps {
 const App: React.FunctionComponent<AppProps> = (props) => {
   const [panelVisible, setPanelVisible] = React.useState(false);
   const [loggedIn, setLoggedIn] = React.useState(isLoggedIn);
+  React.useEffect(() => {
+    // Initialize socket connection when app starts
+    SocketService.connect();
+
+    // Cleanup on app unmount
+    return () => {
+      SocketService.disconnect();
+    };
+  }, []);
   return (
     <HashRouter>
       <div className="App">
         {loggedIn && <TopToolBar setPanelVisible={setPanelVisible} />}
         {loggedIn && <SideNavBar panelVisible={panelVisible} setPanelVisible={setPanelVisible} />}
-      
+
         <Switch>
           {/* Initial route based on if currently logged in */}
           <Route exact path="/" render={() => {
@@ -49,15 +59,15 @@ const App: React.FunctionComponent<AppProps> = (props) => {
 
           <Route exact path="/login" render={() => <Login loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
           {/* <AuthGuard> */}
-            <Route exact path="/home" render={() => <Home loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
-            <Route exact path="/forgotPassword" component={ForgotPassword} />
-            <Route exact path="/register" component={Register} />
-            <Route exact path="/quotes" component={Quotes} />
-            <Route exact path="/receiving" component={Receiving} />
-            <Route exact path="/procurement" component={Procurement} />
-            <Route exact path="/outgoing" component={Outgoing} />
-            <Route exact path="/brokerBin" component={BrokerBin} />
-            <Route exact path="/settings" render={() => <Settings loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
+          <Route exact path="/home" render={() => <Home loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
+          <Route exact path="/forgotPassword" component={ForgotPassword} />
+          <Route exact path="/register" component={Register} />
+          <Route exact path="/quotes" component={Quotes} />
+          <Route exact path="/receiving" component={Receiving} />
+          <Route exact path="/procurement" component={Procurement} />
+          <Route exact path="/outgoing" component={Outgoing} />
+          <Route exact path="/brokerBin" component={BrokerBin} />
+          <Route exact path="/settings" render={() => <Settings loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
           {/* </AuthGuard> */}
           <Route component={NotFound} />
         </Switch>
