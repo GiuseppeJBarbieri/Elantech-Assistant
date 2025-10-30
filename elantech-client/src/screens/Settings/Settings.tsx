@@ -5,6 +5,9 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 
 import './Settings.css';
+import { clearCookie } from '../../utils/Auth';
+import { PAGE_ROUTES } from '../../constants/PageRoutes';
+import Button from 'react-bootstrap/esm/Button';
 
 interface SettingsProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> {
   loggedIn: boolean;
@@ -12,13 +15,13 @@ interface SettingsProps extends RouteComponentProps, HTMLAttributes<HTMLDivEleme
 }
 
 export const SettingsLayout: FunctionComponent<SettingsProps> = ({ history, loggedIn, setLoggedIn }) => {
-  // const title = 'Settings';
+  const title = 'Settings';
 
-  // const logoutClicked = (): void => {
-  //   clearCookie();
-  //   setLoggedIn(false);
-  //   history.push(PAGE_ROUTES.LOGIN);
-  // };
+  const logoutClicked = (): void => {
+    clearCookie();
+    setLoggedIn(false);
+    history.push(PAGE_ROUTES.LOGIN);
+  };
 
   return (
     <section className="text-white main-section overflow-auto">
@@ -28,7 +31,7 @@ export const SettingsLayout: FunctionComponent<SettingsProps> = ({ history, logg
         </div>
         <hr />
         <div className='d-flex justify-content-between'>
-
+          <Button variant="outline-light" onClick={logoutClicked}>Logout</Button>
         </div>
       </div>
     </section >
