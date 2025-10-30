@@ -6,7 +6,7 @@ import { CustomAlert } from "../../../components/Alerts/CustomAlert";
 import { defaultAlert, defaultInventory } from "../../../constants/Defaults";
 import { orderType } from "../../../constants/Options";
 import IInventory from "../../../types/IInventory";
-import { requestAddInventory } from "../../../utils/Requests";
+import { requestAddInventory, requestAddMultipleInventory } from "../../../utils/Requests";
 
 interface NewInventoryProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement> { }
 
